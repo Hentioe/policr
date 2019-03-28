@@ -1,0 +1,6 @@
+version: 1.0
+shards:
+  ameba:
+    github: veelenga/ameba
+    version: 0.9.1
+

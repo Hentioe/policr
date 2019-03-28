@@ -1,0 +1,18 @@
+name: policr
+version: 0.1.0-dev
+
+authors:
+  - Hentioe <me@bluerain.io>
+
+targets:
+  policr:
+    main: src/policr.cr
+
+crystal: 0.27.2
+
+license: MIT
+
+development_dependencies:
+  ameba:
+    github: veelenga/ameba
+    version: ~> 0.9.1
