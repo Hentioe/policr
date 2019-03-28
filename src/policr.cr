@@ -1,6 +1,11 @@
-# TODO: Write documentation for `Policr`
+require "./policr/**"
+
 module Policr
   VERSION = "0.1.0-dev"
 
-  # TODO: Put your code here
+  def self.start
+    puts "Hello Policr!"
+  end
 end
+
+Policr.start

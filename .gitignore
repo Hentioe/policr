@@ -3,3 +3,8 @@
 /bin/
 /.shards/
 *.dwarf
+
+/.idea
+/sentry
+/policr
+/dev
