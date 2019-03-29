@@ -16,6 +16,11 @@ dependencies:
   telegram_bot:
     github: Hentioe/telegram_bot
     branch: fixbug
+  dotenv:
+    github: gdotdesign/cr-dotenv
+  admiral:
+    github: jwaldrip/admiral.cr
+    version: ~> 1.8.0
 
 development_dependencies:
   ameba:

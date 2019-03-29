@@ -1,4 +1,5 @@
 require "./policr/**"
+require "dotenv"
 
 module Policr
   VERSION = "0.1.0-dev"
@@ -10,8 +11,15 @@ module Policr
   end
 
   def self.start
+    CLI::Parser.run
+    config = CLI::Config.instance
+
+    unless config.prod
+      Dotenv.load! "configs/dev.secret.env"
+    end
+
     @@token = ENV["POLICR_BOT_TOKEN"]? || raise Exception.new("Please provide the bot's Token")
-    puts "Start Policr...:"
+    puts "Start Policr..."
     Bot.new.polling
   end
 end

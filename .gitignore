@@ -8,3 +8,5 @@
 /sentry
 /policr
 /dev
+*.secret.env
+

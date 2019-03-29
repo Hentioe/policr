@@ -1,8 +1,16 @@
 version: 1.0
 shards:
+  admiral:
+    github: jwaldrip/admiral.cr
+    version: 1.8.0
+
   ameba:
     github: veelenga/ameba
     version: 0.9.1
+
+  dotenv:
+    github: gdotdesign/cr-dotenv
+    version: 0.2.0
 
   telegram_bot:
     github: Hentioe/telegram_bot
