@@ -13,6 +13,6 @@ shards:
     version: 0.2.0
 
   telegram_bot:
-    github: Hentioe/telegram_bot
-    commit: 210aba8fb4ede940af9341f5c0285d0e1fd715c6
+    github: hangyas/telegram_bot
+    commit: c46f930d19f394c0e26b3ddc77e967916c12bb08
 
