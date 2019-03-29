@@ -12,6 +12,11 @@ crystal: 0.27.2
 
 license: MIT
 
+dependencies:
+  telegram_bot:
+    github: Hentioe/telegram_bot
+    branch: fixbug
+
 development_dependencies:
   ameba:
     github: veelenga/ameba

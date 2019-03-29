@@ -4,3 +4,7 @@ shards:
     github: veelenga/ameba
     version: 0.9.1
 
+  telegram_bot:
+    github: Hentioe/telegram_bot
+    commit: 210aba8fb4ede940af9341f5c0285d0e1fd715c6
+
