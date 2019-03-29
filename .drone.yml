@@ -1,0 +1,23 @@
+clone:
+  git:
+    image: plugins/git
+    recursive: false
+
+pipeline:
+  test:
+    image: crystallang/crystal:0.27.2-build
+    commands:
+      - shards --production
+      - POLICR_ENV=test crystal spec
+
+  build:
+    image: crystallang/crystal:0.27.2-build
+    commands:
+      - shards build --release --progress --production
+
+  build-image:
+    image: docker
+    commands:
+      - docker build . -t bluerain/policr
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

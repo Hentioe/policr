@@ -1,4 +1,5 @@
 require "telegram_bot"
+require "json"
 
 module Policr
   class Bot < TelegramBot::Bot
@@ -9,11 +10,6 @@ module Policr
 
       cmd "hello" do |msg|
         reply msg, "world!"
-      end
-
-      # /add 5 7 => 12
-      cmd "add" do |msg, params|
-        reply msg, "#{params[0].to_i + params[1].to_i}"
       end
     end
 
@@ -31,10 +27,17 @@ module Policr
     end
 
     private def tick_with_report(msg, member)
-      puts send_message(chat_id: msg.chat.id, text: "Found a halal").inspect
-      kick_r = kick_chat_member(msg.chat.id, member.id)
-      puts send_message(chat_id: msg.chat.id, text: "Removing a halal failed~") unless kick_r
-      puts send_message(chat_id: msg.chat.id, text: "Successfully removed a halal!") if kick_r
+      sended_msg = reply msg, "d(`･∀･)b 诶发现一名清真，看我干掉它……"
+      if sended_msg
+        begin
+          kick_r = kick_chat_member(msg.chat.id, member.id)
+          edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
+            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！") if kick_r
+        rescue e : TelegramBot::APIException
+          edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
+            text: "╰(〒皿〒)╯ 啥情况，这枚清真移除失败了。") unless kick_r
+        end
+      end
     end
   end
 end
