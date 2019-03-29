@@ -14,8 +14,8 @@ license: MIT
 
 dependencies:
   telegram_bot:
-    github: Hentioe/telegram_bot
-    branch: fixbug
+    github: hangyas/telegram_bot
+    branch: master
   dotenv:
     github: gdotdesign/cr-dotenv
   admiral:
