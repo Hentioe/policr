@@ -19,9 +19,11 @@ module Policr
     end
 
     @@token = ENV["POLICR_BOT_TOKEN"]? || raise Exception.new("Please provide the bot's Token")
-    puts "Start Policr..."
+    puts "Start Policr... "
     Bot.new.polling
   end
 end
 
-Policr.start
+unless (ENV["POLICR_ENV"]? && (ENV["POLICR_ENV"] == "test"))
+  Policr.start
+end
