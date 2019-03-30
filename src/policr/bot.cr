@@ -2,6 +2,9 @@ require "telegram_bot"
 require "json"
 
 module Policr
+  SAFE_MSG_SIZE     = 2
+  ARABIC_CHARACTERS = /^[\X{0600}-\x{06FF}-\x{0750}-\x{077F}-\x{08A0}-\x{08FF}-\x{FB50}-\x{FDFF}-\x{FE70}-\x{FEFF}-\x{10E60}-\x{10E7F}-\x{1EC70}-\x{1ECBF}-\x{1ED00}-\x{1ED4F}-\x{1EE00}-\x{1EEFF} ]+$/
+
   class Bot < TelegramBot::Bot
     include TelegramBot::CmdHandler
 
@@ -13,8 +16,6 @@ module Policr
       end
     end
 
-    ARABIC_CHARACTERS = /^[\x{0600}-\x{06ff}-\x{0750}-\x{077f}-\x{08A0}-\x{08ff}-\x{fb50}-\x{fdff}-\x{fe70}-\x{feff} ]+$/
-
     def handle(msg : TelegramBot::Message)
       new_members = msg.new_chat_members
       new_members.each do |member|
@@ -22,7 +23,7 @@ module Policr
         tick_with_report(msg, member) if name =~ ARABIC_CHARACTERS
       end if new_members
       if (text = msg.text) && (user = msg.from)
-        tick_with_report(msg, user) if text =~ ARABIC_CHARACTERS
+        tick_with_report(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
     end
 
