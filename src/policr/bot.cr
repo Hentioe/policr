@@ -26,7 +26,7 @@ module Policr
           begin
             unban_r = unban_chat_member(chat_id, user_id.to_i)
             edit_message_text(chat_id: chat_id, message_id: message.message_id,
-              text: "已经被解封了，快通知他回来。", reply_markup: nil) if unban_r
+              text: "(,,・ω・,,) 已经被解封了，快通知他回来。", reply_markup: nil) if unban_r
           rescue e : TelegramBot::APIException
             reason = "原因不明"
             if data = e.data
