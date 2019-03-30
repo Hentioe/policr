@@ -111,7 +111,7 @@ module Policr
       sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: ikb_list)
       @auth_status[member.id] = false
       if sended_msg && (message_id = sended_msg.message_id)
-        Schedule.after(TORTURE_SEC.seconds) do
+        Schedule.after(1.seconds) do
           unless @auth_status[member.id]?
             @auth_status.delete member.id
             not_auth_pass(msg.chat.id, message_id, member.id)
