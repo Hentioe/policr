@@ -34,6 +34,8 @@ module Policr
             end
             answer_callback_query(query.id, text: "解封失败，#{reason}", show_alert: true)
           end
+        else
+          answer_callback_query(query.id, text: "(((ﾟДﾟ;))) 你既然不是管理员，那就他的同伙，不听你的", show_alert: true)
         end
       end
     end
