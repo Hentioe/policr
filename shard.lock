@@ -12,7 +12,11 @@ shards:
     github: gdotdesign/cr-dotenv
     version: 0.2.0
 
+  schedule:
+    github: hugoabonizio/schedule.cr
+    version: 0.2.1
+
   telegram_bot:
-    github: hangyas/telegram_bot
-    commit: c46f930d19f394c0e26b3ddc77e967916c12bb08
+    github: Hentioe/telegram_bot
+    commit: e1e7cc713f530857f918586754e082e9ca0595ad
 

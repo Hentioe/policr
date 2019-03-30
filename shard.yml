@@ -14,13 +14,15 @@ license: MIT
 
 dependencies:
   telegram_bot:
-    github: hangyas/telegram_bot
-    branch: master
+    github: Hentioe/telegram_bot
+    branch: bugfix
   dotenv:
     github: gdotdesign/cr-dotenv
   admiral:
     github: jwaldrip/admiral.cr
     version: ~> 1.8.0
+  schedule:
+    github: hugoabonizio/schedule.cr
 
 development_dependencies:
   ameba:
