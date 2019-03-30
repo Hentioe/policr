@@ -1,4 +1,4 @@
-# Policr Bot[![Build Status](https://github-ci.bluerain.io/api/badges/Hentioe/policr/status.svg)](https://github-ci.bluerain.io/Hentioe/policr)
+# Policr Bot [![Build Status](https://github-ci.bluerain.io/api/badges/Hentioe/policr/status.svg)](https://github-ci.bluerain.io/Hentioe/policr)
 
 即将成为 Telegram 平台最强大的审核机器人
 
@@ -12,7 +12,7 @@
 
 ![封杀清真](https://github.com/Hentioe/policr/raw/master/.policr/2.png)
 
-各种奇怪的买萌反馈
+各种搞怪的买萌反馈
 
 ![通过验证](https://github.com/Hentioe/policr/raw/master/.policr/3.png)
 
