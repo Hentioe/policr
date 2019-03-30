@@ -89,7 +89,7 @@ module Policr
     private def failed_verification(chat_id, message_id, user_id)
       logger.info "User ID '#{user_id}' has not been verified and has been banned"
       edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: "(〒︿〒) 他还没来得及打招呼就离开了我们。", reply_markup: nil)
+        text: "(〒︿〒) 他还没来得及打招呼就离开了我们。", reply_markup: add_banned_menu(user_id))
       kick_chat_member(chat_id, user_id)
     end
 
@@ -136,10 +136,8 @@ module Policr
         begin
           kick_r = kick_chat_member(msg.chat.id, member.id)
           member_id = member.id
-          ikb_list = TelegramBot::InlineKeyboardMarkup.new
-          ikb_list << TelegramBot::InlineKeyboardButton.new(text: "解除封禁", callback_data: "BanedMenu:#{member_id}:unban")
           edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: ikb_list) if kick_r
+            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: add_banned_menu(member_id)) if kick_r
           logger.info "Halal '#{name}' has been banned"
         rescue ex : TelegramBot::APIException
           edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
@@ -148,6 +146,12 @@ module Policr
           logger.info "Halal '#{name}' banned failure, reason: #{reason}"
         end
       end
+    end
+
+    private def add_banned_menu(member_id)
+      ikb_list = TelegramBot::InlineKeyboardMarkup.new
+      ikb_list << TelegramBot::InlineKeyboardButton.new(text: "解除封禁", callback_data: "BanedMenu:#{member_id}:unban")
+      ikb_list
     end
 
     private def get_fullname(member)
