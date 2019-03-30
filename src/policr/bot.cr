@@ -19,7 +19,7 @@ module Policr
       end
     end
 
-    private def handle_torture(query, chooese, chat_id, target_user_id, from_user_id, message_id)
+    private def handle_torture(query, chooese, chat_id, target_user_id, target_username, from_user_id, message_id)
       if target_user_id != from_user_id
         logger.info "Irrelevant User ID '#{from_user_id}' clicked on the verification inline keyboard button"
         answer_callback_query(query.id, text: "(#`Д´)ﾉ 请无关人员不要来搞事", show_alert: true)
@@ -29,36 +29,38 @@ module Policr
         status = @auth_status[target_user_id]?
         @auth_status[target_user_id] = true
         if status == false
-          logger.info "User ID '#{target_user_id}' passed verification"
+          logger.info "Username '#{target_username}' passed verification"
           answer_callback_query(query.id, text: "验证通过", show_alert: true)
           edit_message_text(chat_id: chat_id, message_id: message_id,
             text: "(*´∀`)~♥ 恭喜您通过了验证，逃过一劫。", reply_markup: nil)
         elsif status == nil
-          logger.info "User ID '#{target_user_id}' verification is a bit slower"
+          logger.info "Username '#{target_username}' verification is a bit slower"
           answer_callback_query(query.id, text: "验证通过，但是晚了一点点，再去试试？", show_alert: true)
           edit_message_text(chat_id: chat_id, message_id: message_id,
             text: "(´ﾟдﾟ`) 他通过了验证，但是手慢了那么一点点，再给他一次机会……", reply_markup: nil)
           unban_chat_member(chat_id, target_user_id)
         end
       else
-        logger.info "User ID '#{target_user_id}' did not pass verification"
+        logger.info "Username '#{target_username}' did not pass verification"
         answer_callback_query(query.id, text: "未通过验证", show_alert: true)
-        failed_verification(chat_id, message_id, target_user_id)
+        failed_verification(chat_id, message_id, target_user_id, target_username)
       end
     end
 
-    def handle_baned_menu(query, chat_id, target_user_id, from_user_id, message_id)
+    def handle_baned_menu(query, chat_id, target_user_id, target_username, from_user_id, message_id)
       operator = get_chat_member(chat_id, from_user_id)
       if operator.status == "creator" || operator.status == "admin"
         begin
-          logger.info "User ID '#{target_user_id}' has been unbanned by the administrator"
+          logger.info "Username '#{target_username}' has been unbanned by the administrator"
           unban_r = unban_chat_member(chat_id, target_user_id)
+          ikb_list = TelegramBot::InlineKeyboardMarkup.new
+          ikb_list << TelegramBot::InlineKeyboardButton.new(text: "叫 TA 回来", url: "t.me/#{target_username}")
           edit_message_text(chat_id: chat_id, message_id: message_id,
-            text: "(,,・ω・,,) 已经被解封了，快通知他回来。", reply_markup: nil) if unban_r
+            text: "(,,・ω・,,) 已经被解封了，让他注意。", reply_markup: ikb_list) if unban_r
         rescue ex : TelegramBot::APIException
           _, reason = get_failure_code_with_reason(ex)
           answer_callback_query(query.id, text: "解封失败，#{reason}", show_alert: true)
-          logger.info "User ID '#{target_user_id}' unsealing failed, reason: #{reason}"
+          logger.info "Username '#{target_username}' unsealing failed, reason: #{reason}"
         end
       else
         logger.info "User ID '#{from_user_id}' without permission Click to unbanned button"
@@ -69,27 +71,27 @@ module Policr
     def handle(query : TelegramBot::CallbackQuery)
       if (data = query.data) && (message = query.message)
         report = data.split(":")
-        if report.size < 3
+        if report.size < 4
           logger.info "'#{get_fullname(query.from)}' clicked on the invalid inline keyboard button"
           answer_callback_query(query.id, text: "( ×ω× ) 这副内联键盘已经失效了哦", show_alert: true)
           return
         end
         chat_id = message.chat.id
         from_user_id = query.from.id
-        type, target_id, chooese = report
+        type, target_id, target_username, chooese = report
         case type
         when "Torture"
-          handle_torture(query, chooese, chat_id, target_id.to_i, from_user_id, message.message_id)
+          handle_torture(query, chooese, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
         when "BanedMenu"
-          handle_baned_menu(query, chat_id, target_id.to_i, from_user_id, message.message_id)
+          handle_baned_menu(query, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
         end
       end
     end
 
-    private def failed_verification(chat_id, message_id, user_id)
-      logger.info "User ID '#{user_id}' has not been verified and has been banned"
+    private def failed_verification(chat_id, message_id, user_id, username)
+      logger.info "Username '#{username}' has not been verified and has been banned"
       edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: "(〒︿〒) 他还没来得及打招呼就离开了我们。", reply_markup: add_banned_menu(user_id))
+        text: "(〒︿〒) 他没能挺过这一关，永久的离开了我们。", reply_markup: add_banned_menu(user_id, username))
       kick_chat_member(chat_id, user_id)
     end
 
@@ -111,10 +113,11 @@ module Policr
       text = "请在 #{TORTURE_SEC} 秒内选出「#{source_text}」的下一句"
       reply_id = msg.message_id
       member_id = member.id.to_s
+      member_username = member.username
       ikb_list = TelegramBot::InlineKeyboardMarkup.new
-      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "朝辞白帝彩云间", callback_data: "Torture:#{member_id}:1")]
-      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "忽闻岸上踏歌声", callback_data: "Torture:#{member_id}:2")]
-      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "一行白鹭上青天", callback_data: "Torture:#{member_id}:3")]
+      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "朝辞白帝彩云间", callback_data: "Torture:#{member_id}:#{member_username}:1")]
+      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "忽闻岸上踏歌声", callback_data: "Torture:#{member_id}:#{member_username}:2")]
+      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "一行白鹭上青天", callback_data: "Torture:#{member_id}:#{member_username}:3")]
       sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: ikb_list)
       @auth_status[member.id] = false
       if sended_msg && (message_id = sended_msg.message_id)
@@ -122,7 +125,7 @@ module Policr
           unless @auth_status[member.id]?
             logger.info "User '#{name}' torture time expired and has been banned"
             @auth_status.delete member.id
-            failed_verification(msg.chat.id, message_id, member.id)
+            failed_verification(msg.chat.id, message_id, member.id, member.username)
           end
         end
       end
@@ -137,7 +140,7 @@ module Policr
           kick_r = kick_chat_member(msg.chat.id, member.id)
           member_id = member.id
           edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: add_banned_menu(member_id)) if kick_r
+            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: add_banned_menu(member_id, member.username)) if kick_r
           logger.info "Halal '#{name}' has been banned"
         rescue ex : TelegramBot::APIException
           edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
@@ -148,9 +151,9 @@ module Policr
       end
     end
 
-    private def add_banned_menu(member_id)
+    private def add_banned_menu(user_id, username)
       ikb_list = TelegramBot::InlineKeyboardMarkup.new
-      ikb_list << TelegramBot::InlineKeyboardButton.new(text: "解除封禁", callback_data: "BanedMenu:#{member_id}:unban")
+      ikb_list << TelegramBot::InlineKeyboardButton.new(text: "解除封禁", callback_data: "BanedMenu:#{user_id}:#{username}::unban")
       ikb_list
     end
 
