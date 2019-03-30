@@ -11,8 +11,8 @@ module Policr
     def initialize
       super("PolicrBot", Policr.token)
 
-      cmd "hello" do |msg|
-        reply msg, "world!"
+      cmd "ping" do |msg|
+        reply msg, "pong"
       end
     end
 
@@ -54,15 +54,15 @@ module Policr
       if sended_msg
         begin
           kick_r = kick_chat_member(msg.chat.id, member.id)
-          edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！") if kick_r
-        rescue e : TelegramBot::APIException
           channed_id = msg.chat.id
           user_id = member.id
           ikb_list = TelegramBot::InlineKeyboardMarkup.new
           ikb_list << TelegramBot::InlineKeyboardButton.new(text: "解除封禁", callback_data: user_id.to_s)
           edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "╰(〒皿〒)╯ 啥情况，这枚清真移除失败了。", reply_markup: ikb_list) unless kick_r
+            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: ikb_list) if kick_r
+        rescue e : TelegramBot::APIException
+          edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
+            text: "╰(〒皿〒)╯ 啥情况，这枚清真移除失败了。") unless kick_r
         end
       end
     end
