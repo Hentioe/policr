@@ -19,6 +19,49 @@ module Policr
       end
     end
 
+    private def handle_torture(query, chooese, chat_id, target_user_id, from_user_id, message_id)
+      if target_user_id != from_user_id
+        answer_callback_query(query.id, text: "(#`Д´)ﾉ 请无关人员不要来搞事", show_alert: true)
+        return
+      end
+      if chooese.to_i == 3
+        status = @auth_status[target_user_id]?
+        @auth_status[target_user_id] = true
+        if status == false
+          answer_callback_query(query.id, text: "验证通过", show_alert: true)
+          edit_message_text(chat_id: chat_id, message_id: message_id,
+            text: "(*´∀`)~♥ 恭喜您通过了验证，逃过一劫。", reply_markup: nil)
+        elsif status == nil
+          answer_callback_query(query.id, text: "验证通过，但是晚了一点点，再去试试？", show_alert: true)
+          edit_message_text(chat_id: chat_id, message_id: message_id,
+            text: "(´ﾟдﾟ`) 他通过了验证，但是手慢了那么一点点，再给他一次机会……", reply_markup: nil)
+          unban_chat_member(chat_id, target_user_id)
+        end
+      else
+        answer_callback_query(query.id, text: "未通过验证", show_alert: true)
+        not_auth_pass(chat_id, message_id, target_user_id)
+      end
+    end
+
+    def handle_baned_menu(query, chat_id, target_user_id, from_user_id, message_id)
+      operator = get_chat_member(chat_id, from_user_id)
+      if operator.status == "creator" || operator.status == "admin"
+        begin
+          unban_r = unban_chat_member(chat_id, target_user_id)
+          edit_message_text(chat_id: chat_id, message_id: message_id,
+            text: "(,,・ω・,,) 已经被解封了，快通知他回来。", reply_markup: nil) if unban_r
+        rescue e : TelegramBot::APIException
+          reason = "原因不明"
+          if data = e.data
+            reason = data["description"]
+          end
+          answer_callback_query(query.id, text: "解封失败，#{reason}", show_alert: true)
+        end
+      else
+        answer_callback_query(query.id, text: "你既然不是管理员，那就是他的同伙，不听你的", show_alert: true)
+      end
+    end
+
     def handle(query : TelegramBot::CallbackQuery)
       if (data = query.data) && (message = query.message)
         report = data.split(":")
@@ -31,44 +74,9 @@ module Policr
         type, target_id, chooese = report
         case type
         when "Torture"
-          if target_id.to_i != from_user_id
-            answer_callback_query(query.id, text: "(#`Д´)ﾉ 请无关人员不要来搞事", show_alert: true)
-            return
-          end
-          if chooese.to_i == 3
-            status = @auth_status[target_id.to_i]?
-            @auth_status[target_id.to_i] = true
-            if status == false
-              answer_callback_query(query.id, text: "验证通过", show_alert: true)
-              edit_message_text(chat_id: chat_id, message_id: message.message_id,
-                text: "(*´∀`)~♥ 恭喜您通过了验证，逃过一劫。", reply_markup: nil)
-            elsif status == nil
-              answer_callback_query(query.id, text: "验证通过，但是晚了一点点，再去试试？", show_alert: true)
-              edit_message_text(chat_id: chat_id, message_id: message.message_id,
-                text: "(´ﾟдﾟ`) 他通过了验证，但是手慢了那么一点点，再给他一次机会……", reply_markup: nil)
-              unban_chat_member(chat_id, target_id.to_i)
-            end
-          else
-            answer_callback_query(query.id, text: "未通过验证", show_alert: true)
-            not_auth_pass(chat_id, message.message_id, target_id.to_i)
-          end
+          handle_torture(query, chooese, chat_id, target_id.to_i, from_user_id, message.message_id)
         when "BanedMenu"
-          operator = get_chat_member(chat_id, from_user_id)
-          if operator.status == "creator" || operator.status == "admin"
-            begin
-              unban_r = unban_chat_member(chat_id, target_id.to_i)
-              edit_message_text(chat_id: chat_id, message_id: message.message_id,
-                text: "(,,・ω・,,) 已经被解封了，快通知他回来。", reply_markup: nil) if unban_r
-            rescue e : TelegramBot::APIException
-              reason = "原因不明"
-              if data = e.data
-                reason = data["description"]
-              end
-              answer_callback_query(query.id, text: "解封失败，#{reason}", show_alert: true)
-            end
-          else
-            answer_callback_query(query.id, text: "你既然不是管理员，那就是他的同伙，不听你的", show_alert: true)
-          end
+          handle_baned_menu(query, chat_id, target_id.to_i, from_user_id, message.message_id)
         end
       end
     end
@@ -117,7 +125,6 @@ module Policr
       if sended_msg
         begin
           kick_r = kick_chat_member(msg.chat.id, member.id)
-          channed_id = msg.chat.id
           member_id = member.id
           ikb_list = TelegramBot::InlineKeyboardMarkup.new
           ikb_list << TelegramBot::InlineKeyboardButton.new(text: "解除封禁", callback_data: "BanedMenu:#{member_id}:unban")
