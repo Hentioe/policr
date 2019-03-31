@@ -4,7 +4,7 @@
 
 ## 介绍
 
-使用内联键盘的消息审核加群成员，支持倒计时
+使用内联键盘的消息审核加群成员，支持倒计时。管理员可直接对新成员进行操作
 
 ![审核加群](https://github.com/Hentioe/policr/raw/master/.policr/1.png)
 
@@ -12,11 +12,17 @@
 
 ![封杀清真](https://github.com/Hentioe/policr/raw/master/.policr/2.png)
 
+考虑到你的愧疚心，特意添加了解封后的私聊入口
+
+![私聊入口](https://github.com/Hentioe/policr/raw/master/.policr/2.1.png)
+
 各种搞怪的买萌反馈
 
 ![通过验证](https://github.com/Hentioe/policr/raw/master/.policr/3.png)
 
-面对奇怪的人故意触发内联键盘的按钮，也并不会产生任何副作用
+![走后门](https://github.com/Hentioe/policr/raw/master/.policr/3.1.png)
+
+面对奇怪的人捣乱，也并不会产生任何副作用
 
 ![无关人士点击内联键盘按钮](https://github.com/Hentioe/policr/raw/master/.policr/4.png)
 
@@ -24,7 +30,7 @@
 
 ![速度慢了](https://github.com/Hentioe/policr/raw/master/.policr/5.png)
 
-从封禁中自动解除，不限次数的重给机会
+将从封禁中自动解除，不限次数的重给机会
 
 ![再给一次机会](https://github.com/Hentioe/policr/raw/master/.policr/6.png)
 
