@@ -17,6 +17,12 @@ module Policr
       cmd "ping" do |msg|
         reply msg, "pong"
       end
+
+      cmd "start" do |msg|
+        text =
+          "欢迎使用 ε٩(๑> ₃ <)۶з 我是强大的审核机器人 PolicrBot。只需要将我加入到您的群组中，并给予 `admin` 权限，便会自动开始工作。"
+        send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+      end
     end
 
     private def handle_torture(query, chooese, chat_id, target_user_id, target_username, from_user_id, message_id)
@@ -96,6 +102,7 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
+      puts msg.text
       new_members = msg.new_chat_members
       new_members.each do |member|
         name = get_fullname(member)
@@ -104,6 +111,8 @@ module Policr
       if (text = msg.text) && (user = msg.from)
         tick_with_report(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
+
+      super
     end
 
     private def torture_action(msg, member)
@@ -114,11 +123,16 @@ module Policr
       reply_id = msg.message_id
       member_id = member.id.to_s
       member_username = member.username
-      ikb_list = TelegramBot::InlineKeyboardMarkup.new
-      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "朝辞白帝彩云间", callback_data: "Torture:#{member_id}:#{member_username}:1")]
-      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "忽闻岸上踏歌声", callback_data: "Torture:#{member_id}:#{member_username}:2")]
-      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "一行白鹭上青天", callback_data: "Torture:#{member_id}:#{member_username}:3")]
-      sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: ikb_list)
+      ikb_markup = TelegramBot::InlineKeyboardMarkup.new
+      ikb_set = Set{
+        [TelegramBot::InlineKeyboardButton.new(text: "朝辞白帝彩云间", callback_data: "Torture:#{member_id}:#{member_username}:1")],
+        [TelegramBot::InlineKeyboardButton.new(text: "忽闻岸上踏歌声", callback_data: "Torture:#{member_id}:#{member_username}:2")],
+        [TelegramBot::InlineKeyboardButton.new(text: "一行白鹭上青天", callback_data: "Torture:#{member_id}:#{member_username}:3")],
+      }
+      ikb_set.each do |ikb|
+        ikb_markup << ikb
+      end
+      sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: ikb_markup)
       @auth_status[member.id] = false
       if sended_msg && (message_id = sended_msg.message_id)
         Schedule.after(TORTURE_SEC.seconds) do
