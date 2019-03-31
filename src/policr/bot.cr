@@ -135,7 +135,6 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
-      puts msg.text
       new_members = msg.new_chat_members
       new_members.each do |member|
         name = get_fullname(member)
