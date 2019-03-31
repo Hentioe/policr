@@ -156,19 +156,7 @@ module Policr
       reply_id = msg.message_id
       member_id = member.id.to_s
       member_username = member.username
-<<<<<<< HEAD
-      ikb_markup = TelegramBot::InlineKeyboardMarkup.new
-      ikb_set = Set{
-        [TelegramBot::InlineKeyboardButton.new(text: "朝辞白帝彩云间", callback_data: "Torture:#{member_id}:#{member_username}:1")],
-        [TelegramBot::InlineKeyboardButton.new(text: "忽闻岸上踏歌声", callback_data: "Torture:#{member_id}:#{member_username}:2")],
-        [TelegramBot::InlineKeyboardButton.new(text: "一行白鹭上青天", callback_data: "Torture:#{member_id}:#{member_username}:3")],
-      }
-      ikb_set.each do |ikb|
-        ikb_markup << ikb
-      end
-      sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: ikb_markup)
-      @auth_status[member.id] = false
-=======
+
       ikb_list = TelegramBot::InlineKeyboardMarkup.new
       ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "朝辞白帝彩云间", callback_data: "Torture:#{member_id}:#{member_username}:1")]
       ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "忽闻岸上踏歌声", callback_data: "Torture:#{member_id}:#{member_username}:2")]
@@ -177,8 +165,8 @@ module Policr
       ban_btn = TelegramBot::InlineKeyboardButton.new(text: "人工封禁", callback_data: "Torture:#{member_id}:#{member_username}:-1")
       ikb_list << [pass_btn, ban_btn]
       sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: ikb_list)
+
       @verify_status[member.id] = VeryfiStatus::Init
->>>>>>> 2688089a0f48b0e3ee46972caf905c6383d3b02e
       if sended_msg && (message_id = sended_msg.message_id)
         Schedule.after(TORTURE_SEC.seconds) do
           if @verify_status[member.id]? == VeryfiStatus::Init
