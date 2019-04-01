@@ -13,6 +13,9 @@ module Policr
   end
 
   class Bot < TelegramBot::Bot
+    alias Button = TelegramBot::InlineKeyboardButton
+    alias Markup = TelegramBot::InlineKeyboardMarkup
+
     include TelegramBot::CmdHandler
 
     @verify_status = Hash(Int32, VeryfiStatus).new
@@ -116,10 +119,11 @@ module Policr
           answer_callback_query(query.id, text: "( ×ω× ) 这副内联键盘已经失效了哦", show_alert: true)
           return
         end
+
         chat_id = message.chat.id
         from_user_id = query.from.id
-        type, target_id, target_username, chooese = report
-        case type
+        operate, target_id, target_username, chooese = report
+        case operate
         when "Torture"
           handle_torture(query, chooese, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
         when "BanedMenu"
@@ -147,16 +151,20 @@ module Policr
       reply_id = msg.message_id
       member_id = member.id.to_s
       member_username = member.username
-      ikb_list = TelegramBot::InlineKeyboardMarkup.new
-      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "朝辞白帝彩云间", callback_data: "Torture:#{member_id}:#{member_username}:1")]
-      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "忽闻岸上踏歌声", callback_data: "Torture:#{member_id}:#{member_username}:2")]
-      ikb_list << [TelegramBot::InlineKeyboardButton.new(text: "一行白鹭上青天", callback_data: "Torture:#{member_id}:#{member_username}:3")]
-      pass_btn = TelegramBot::InlineKeyboardButton.new(text: "人工通过", callback_data: "Torture:#{member_id}:#{member_username}:0")
-      ban_btn = TelegramBot::InlineKeyboardButton.new(text: "人工封禁", callback_data: "Torture:#{member_id}:#{member_username}:-1")
-      ikb_list << [pass_btn, ban_btn]
-      sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: ikb_list)
+
+      btn = ->(text : String, chooese_id : Int32) {
+        Button.new(text: text, callback_data: "Torture:#{member_id}:#{member_username}:#{chooese_id}")
+      }
+      markup = Markup.new
+      markup << [btn.call("朝辞白帝彩云间", 1)]
+      markup << [btn.call("忽闻岸上踏歌声", 2)]
+      markup << [btn.call("一行白鹭上青天", 3)]
+      markup << [btn.call("人工通过", 0), btn.call("人工封禁", -1)]
+      sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: markup)
+
       @verify_status[member.id] = VeryfiStatus::Init
-      if sended_msg && (message_id = sended_msg.message_id)
+
+      timer_ban = ->(message_id : Int32) {
         Schedule.after(TORTURE_SEC.seconds) do
           if @verify_status[member.id]? == VeryfiStatus::Init
             logger.info "User '#{name}' torture time expired and has been banned"
@@ -164,6 +172,9 @@ module Policr
             unverified_with_receipt(msg.chat.id, message_id, member.id, member.username)
           end
         end
+      }
+      if sended_msg && (message_id = sended_msg.message_id)
+        timer_ban.call(message_id)
       end
     end
 
@@ -188,9 +199,9 @@ module Policr
     end
 
     private def add_banned_menu(user_id, username)
-      ikb_list = TelegramBot::InlineKeyboardMarkup.new
-      ikb_list << TelegramBot::InlineKeyboardButton.new(text: "解除封禁", callback_data: "BanedMenu:#{user_id}:#{username}::unban")
-      ikb_list
+      markup = Markup.new
+      markup << Button.new(text: "解除封禁", callback_data: "BanedMenu:#{user_id}:#{username}::unban")
+      markup
     end
 
     private def get_fullname(member)
