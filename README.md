@@ -8,7 +8,7 @@
 
 ![审核加群](https://github.com/Hentioe/policr/raw/master/.policr/1.png)
 
-对最大的 SPAM 势力之一的清真毫不留情，面对误封，管理员也能便捷的解除封禁
+对最大的 SPAM 势力之一的清真毫不留情。面对误封，管理员也能便捷的解除封禁
 
 ![封杀清真](https://github.com/Hentioe/policr/raw/master/.policr/2.png)
 
