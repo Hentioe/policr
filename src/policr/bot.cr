@@ -26,6 +26,12 @@ module Policr
       cmd "ping" do |msg|
         reply msg, "pong"
       end
+
+      cmd "start" do |msg|
+        text =
+          "欢迎使用 ε٩(๑> ₃ <)۶з 我是强大的审核机器人 PolicrBot。只需要将我加入到您的群组中，并给予 `admin` 权限，便会自动开始工作。"
+        send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+      end
     end
 
     private def verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin = false)
@@ -141,6 +147,8 @@ module Policr
       if (text = msg.text) && (user = msg.from)
         tick_with_report(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
+
+      super
     end
 
     private def torture_action(msg, member)
