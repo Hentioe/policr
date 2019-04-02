@@ -37,9 +37,11 @@ module Policr
     private def verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin = false)
       @verify_status[target_user_id] = VeryfiStatus::Pass
       logger.info "Username '#{target_username}' passed verification"
+
       answer_callback_query(query.id, text: "验证通过", show_alert: true) unless admin
       text = "(*´∀`)~♥ 恭喜您通过了验证，逃过一劫。"
       text = "Σ(*ﾟдﾟﾉ)ﾉ 这家伙走后门进来的，大家快喷他。" if admin
+
       edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil)
     end
@@ -47,29 +49,37 @@ module Policr
     private def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
       @verify_status.delete user_id
       logger.info "Username '#{username}' has not been verified and has been banned"
+
       text = "(〒︿〒) 他没能挺过这一关，永久的离开了我们。"
       text = "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了他。" if admin
+
       edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: add_banned_menu(user_id, username))
+
       kick_chat_member(chat_id, user_id)
     end
 
     private def slow_with_receipt(query, chat_id, target_user_id, target_username, message_id)
       logger.info "Username '#{target_username}' verification is a bit slower"
+
       answer_callback_query(query.id, text: "验证通过，但是晚了一点点，再去试试？", show_alert: true)
+
       edit_message_text(chat_id: chat_id, message_id: message_id,
         text: "(´ﾟдﾟ`) 他通过了验证，但是手慢了那么一点点，再给他一次机会……", reply_markup: nil)
+
       unban_chat_member(chat_id, target_user_id)
     end
 
     private def handle_torture(query, chooese, chat_id, target_user_id, target_username, from_user_id, message_id)
       chooese_i = chooese.to_i
+
       if chooese_i == 3
         if target_user_id != from_user_id
           logger.info "Irrelevant User ID '#{from_user_id}' clicked on the verification inline keyboard button"
           answer_callback_query(query.id, text: "(#`Д´)ﾉ 请无关人员不要来搞事", show_alert: true)
           return
         end
+
         status = @verify_status[target_user_id]?
         verified_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VeryfiStatus::Init
         slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VeryfiStatus::Slow
@@ -93,22 +103,23 @@ module Policr
     end
 
     def handle_baned_menu(query, chat_id, target_user_id, target_username, from_user_id, message_id)
-      if is_admin(chat_id, from_user_id)
-        begin
-          logger.info "Username '#{target_username}' has been unbanned by the administrator"
-          unban_r = unban_chat_member(chat_id, target_user_id)
-          ikb_list = TelegramBot::InlineKeyboardMarkup.new
-          ikb_list << TelegramBot::InlineKeyboardButton.new(text: "叫 TA 回来", url: "t.me/#{target_username}")
-          edit_message_text(chat_id: chat_id, message_id: message_id,
-            text: "(,,・ω・,,) 已经被解封了，让他注意。", reply_markup: ikb_list) if unban_r
-        rescue ex : TelegramBot::APIException
-          _, reason = get_failure_code_with_reason(ex)
-          answer_callback_query(query.id, text: "解封失败，#{reason}", show_alert: true)
-          logger.info "Username '#{target_username}' unsealing failed, reason: #{reason}"
-        end
-      else
-        logger.info "User ID '#{from_user_id}' without permission Click to unbanned button"
+      unless is_admin(chat_id, from_user_id)
+        logger.info "User ID '#{from_user_id}' without permission click to unbanned button"
         answer_callback_query(query.id, text: "你既然不是管理员，那就是他的同伙，不听你的", show_alert: true)
+        return
+      end
+
+      begin
+        logger.info "Username '#{target_username}' has been unbanned by the administrator"
+        unban_r = unban_chat_member(chat_id, target_user_id)
+        markup = Markup.new
+        markup << Button.new(text: "叫 TA 回来", url: "t.me/#{target_username}")
+        edit_message_text(chat_id: chat_id, message_id: message_id,
+          text: "(,,・ω・,,) 已经被解封了，让他注意。", reply_markup: markup) if unban_r
+      rescue ex : TelegramBot::APIException
+        _, reason = get_error_code_with_reason(ex)
+        answer_callback_query(query.id, text: "解封失败，#{reason}", show_alert: true)
+        logger.info "Username '#{target_username}' unsealing failed, reason: #{reason}"
       end
     end
 
@@ -142,10 +153,11 @@ module Policr
       new_members = msg.new_chat_members
       new_members.each do |member|
         name = get_fullname(member)
-        name =~ ARABIC_CHARACTERS ? tick_with_report(msg, member) : torture_action(msg, member)
+        name =~ ARABIC_CHARACTERS ? tick_halal_with_receipt(msg, member) : torture_action(msg, member)
       end if new_members
+
       if (text = msg.text) && (user = msg.from)
-        tick_with_report(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
+        tick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
 
       super
@@ -171,36 +183,36 @@ module Policr
       sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: markup)
 
       @verify_status[member.id] = VeryfiStatus::Init
-
-      timer_ban = ->(message_id : Int32) {
-        Schedule.after(TORTURE_SEC.seconds) do
-          if @verify_status[member.id]? == VeryfiStatus::Init
-            logger.info "User '#{name}' torture time expired and has been banned"
-            @verify_status[member.id] = VeryfiStatus::Slow
-            unverified_with_receipt(msg.chat.id, message_id, member.id, member.username)
-          end
+      ban_task = ->(message_id : Int32) {
+        if @verify_status[member.id]? == VeryfiStatus::Init
+          logger.info "User '#{name}' torture time expired and has been banned"
+          @verify_status[member.id] = VeryfiStatus::Slow
+          unverified_with_receipt(msg.chat.id, message_id, member.id, member.username)
         end
       }
+
+      ban_timer = ->(message_id : Int32) { Schedule.after(TORTURE_SEC.seconds) { ban_task.call(message_id) } }
       if sended_msg && (message_id = sended_msg.message_id)
-        timer_ban.call(message_id)
+        ban_timer.call(message_id)
       end
     end
 
-    private def tick_with_report(msg, member)
+    private def tick_halal_with_receipt(msg, member)
       name = get_fullname(member)
       logger.info "Found a halal '#{name}'"
       sended_msg = reply msg, "d(`･∀･)b 诶发现一名清真，看我干掉它……"
+
       if sended_msg
         begin
-          kick_r = kick_chat_member(msg.chat.id, member.id)
+          kick_chat_member(msg.chat.id, member.id)
           member_id = member.id
           edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: add_banned_menu(member_id, member.username)) if kick_r
+            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: add_banned_menu(member_id, member.username))
           logger.info "Halal '#{name}' has been banned"
         rescue ex : TelegramBot::APIException
           edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "╰(〒皿〒)╯ 啥情况，这枚清真移除失败了。") unless kick_r
-          _, reason = get_failure_code_with_reason(ex)
+            text: "╰(〒皿〒)╯ 啥情况，这枚清真移除失败了。")
+          _, reason = get_error_code_with_reason(ex)
           logger.info "Halal '#{name}' banned failure, reason: #{reason}"
         end
       end
@@ -218,7 +230,7 @@ module Policr
       "#{first_name}#{last_name}"
     end
 
-    private def get_failure_code_with_reason(ex : TelegramBot::APIException)
+    private def get_error_code_with_reason(ex : TelegramBot::APIException)
       code = -1
       reason = "Unknown"
 
