@@ -52,7 +52,6 @@ module Policr
 
       text = "(〒︿〒) 他没能挺过这一关，永久的离开了我们。"
       text = "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了他。" if admin
-
       edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: add_banned_menu(user_id, username))
 
@@ -63,10 +62,8 @@ module Policr
       logger.info "Username '#{target_username}' verification is a bit slower"
 
       answer_callback_query(query.id, text: "验证通过，但是晚了一点点，再去试试？", show_alert: true)
-
       edit_message_text(chat_id: chat_id, message_id: message_id,
         text: "(´ﾟдﾟ`) 他通过了验证，但是手慢了那么一点点，再给他一次机会……", reply_markup: nil)
-
       unban_chat_member(chat_id, target_user_id)
     end
 
@@ -129,7 +126,7 @@ module Policr
     end
 
     def handle(query : TelegramBot::CallbackQuery)
-      if (data = query.data) && (message = query.message)
+      _handle = ->(data : String, message : TelegramBot::Message) {
         report = data.split(":")
         if report.size < 4
           logger.info "'#{get_fullname(query.from)}' clicked on the invalid inline keyboard button"
@@ -146,6 +143,9 @@ module Policr
         when "BanedMenu"
           handle_baned_menu(query, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
         end
+      }
+      if (data = query.data) && (message = query.message)
+        _handle.call(data, message)
       end
     end
 
