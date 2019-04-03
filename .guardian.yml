@@ -1,5 +1,0 @@
-files: ./**/*.cr
-run: crystal run ./src/policr.cr
----
-files: ./shard.yml
-run: shards
