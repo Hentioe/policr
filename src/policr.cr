@@ -29,6 +29,7 @@ module Policr
 
     @@token = ENV["POLICR_BOT_TOKEN"]? || raise Exception.new("Please provide the bot's Token")
     @@username = ENV["POLICR_BOT_USERNAME"]? || raise Exception.new("Please provide the bot's Username")
+    DB.connect config.dpath
     puts "Start Policr..."
     Bot.new.polling
   end

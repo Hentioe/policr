@@ -12,6 +12,10 @@ shards:
     github: gdotdesign/cr-dotenv
     version: 0.2.0
 
+  rocksdb:
+    github: maiha/rocksdb.cr
+    version: 0.5.1
+
   schedule:
     github: hugoabonizio/schedule.cr
     version: 0.2.1
