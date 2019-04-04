@@ -27,10 +27,6 @@ module Policr
         reply msg, "pong"
       end
 
-      cmd "ping@bluerain_test_bot" do |msg|
-        reply msg, "pong"
-      end
-
       cmd "start" do |msg|
         text =
           "欢迎使用 ε٩(๑> ₃ <)۶з 我是强大的审核机器人 PolicrBot。只需要将我加入到您的群组中，并给予 `admin` 权限，便会自动开始工作。"
