@@ -21,9 +21,13 @@ module Policr
     @verify_status = Hash(Int32, VeryfiStatus).new
 
     def initialize
-      super("PolicrBot", Policr.token)
+      super(Policr.username, Policr.token)
 
       cmd "ping" do |msg|
+        reply msg, "pong"
+      end
+
+      cmd "ping@bluerain_test_bot" do |msg|
         reply msg, "pong"
       end
 
@@ -163,11 +167,12 @@ module Policr
       super
     end
 
+    QUESTION_TEXT = "两个黄鹂鸣翠柳"
+
     private def torture_action(msg, member)
       name = get_fullname(member)
       logger.info "Start to torture '#{name}'"
-      source_text = "两个黄鹂鸣翠柳"
-      text = "请在 #{TORTURE_SEC} 秒内选出「#{source_text}」的下一句"
+      question = "请在 #{TORTURE_SEC} 秒内选出「#{QUESTION_TEXT}」的下一句"
       reply_id = msg.message_id
       member_id = member.id.to_s
       member_username = member.username
@@ -180,7 +185,7 @@ module Policr
       markup << [btn.call("忽闻岸上踏歌声", 2)]
       markup << [btn.call("一行白鹭上青天", 3)]
       markup << [btn.call("人工通过", 0), btn.call("人工封禁", -1)]
-      sended_msg = send_message(msg.chat.id, text, reply_to_message_id: reply_id, reply_markup: markup)
+      sended_msg = send_message(msg.chat.id, question, reply_to_message_id: reply_id, reply_markup: markup)
 
       @verify_status[member.id] = VeryfiStatus::Init
       ban_task = ->(message_id : Int32) {

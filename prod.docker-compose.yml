@@ -6,4 +6,5 @@ services:
     stdin_open: true
     environment:
       POLICR_BOT_TOKEN: <Your_Bot_Token>
+      POLICR_BOT_USERNAME: <Your_Bot_Username>
     restart: always

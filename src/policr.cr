@@ -2,15 +2,24 @@ require "./policr/**"
 require "dotenv"
 
 module Policr
+  extend self
+
   VERSION = "0.1.0-dev"
 
-  @@token = "undefined"
+  UNDEFINED = "undefined"
 
-  def self.token
+  @@username = UNDEFINED
+  @@token = UNDEFINED
+
+  def token
     @@token
   end
 
-  def self.start
+  def username
+    @@username
+  end
+
+  def start
     CLI::Parser.run
     config = CLI::Config.instance
 
@@ -19,6 +28,7 @@ module Policr
     end
 
     @@token = ENV["POLICR_BOT_TOKEN"]? || raise Exception.new("Please provide the bot's Token")
+    @@username = ENV["POLICR_BOT_USERNAME"]? || raise Exception.new("Please provide the bot's Username")
     puts "Start Policr..."
     Bot.new.polling
   end
