@@ -5,13 +5,13 @@ clone:
 
 pipeline:
   test:
-    image: crystallang/crystal:0.27.2-build
+    image: bluerain/policr:build
     commands:
       - shards --production
       - POLICR_ENV=test crystal spec
 
   build:
-    image: crystallang/crystal:0.27.2-build
+    image: bluerain/policr:build
     commands:
       - shards build --release --progress --production
 

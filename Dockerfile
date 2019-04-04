@@ -1,4 +1,4 @@
-FROM bluerain/crystal:runtime
+FROM bluerain/policr:runtime
 
 
 ARG APP_HOME=/home/policr
