@@ -160,7 +160,7 @@ module Policr
         end
       end
       edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: "原来你是通过「#{all_from[chooese_id]?}」进来的，好的已经知道了。")
+        text: "原来是通过「#{all_from[chooese_id]?}」进来的，大家心里已经有数了。")
     end
 
     private def is_admin(chat_id, user_id)
@@ -205,8 +205,8 @@ module Policr
         tick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
 
-      if (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && @@from_chats.includes?(reply_msg_id)
-        logger.info "Enable from investigate for ChatID '#{msg.chat.id}'"
+      if (user = msg.from) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && @@from_chats.includes?(reply_msg_id) && is_admin(msg.chat.id, user.id)
+        logger.info "Enable From Investigate for ChatID '#{msg.chat.id}'"
         DB.put_chat_from(msg.chat.id, msg.text)
       end
 
