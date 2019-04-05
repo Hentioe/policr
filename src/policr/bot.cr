@@ -160,7 +160,7 @@ module Policr
         end
       end
       edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: "原来是通过「#{all_from[chooese_id]?}」进来的，大家心里已经有数了。")
+        text: "原来是从「#{all_from[chooese_id]?}」过来的，大家心里已经有数了。")
     end
 
     private def is_admin(chat_id, user_id)
