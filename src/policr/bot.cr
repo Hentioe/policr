@@ -6,6 +6,19 @@ module Policr
   TORTURE_SEC       = 25
   ARABIC_CHARACTERS = /^[\x{0600}-\x{06FF}-\x{0750}-\x{077F}-\x{08A0}-\x{08FF}-\x{FB50}-\x{FDFF}-\x{FE70}-\x{FEFF}-\x{10E60}-\x{10E7F}-\x{1EC70}-\x{1ECBF}-\x{1ED00}-\x{1ED4F}-\x{1EE00}-\x{1EEFF} ]+$/
 
+  FROM_TIPS =
+    <<-TEXT
+    您正在设置来源调查，一个具体的例子：
+
+    ```
+    -短来源1 -短来源2
+    -长长长长长来源3
+    -长长长长长来源4
+    ```
+    如上，每一个来源需要前缀「-」，当多个来源位于同一行时将并列显示，否则独占一行。
+    消息不要使用 `Markdown` 格式，在 PC 客户端可能需要 `<Ctrl>+<Enter>` 组合键才能换行。请注意，**只有回复本消息才会被认为是设置来源调查**，并且随着机器人的重启，本消息很可能存在回复有效期。
+    TEXT
+
   enum VeryfiStatus
     Init
     Pass
@@ -20,6 +33,8 @@ module Policr
 
     @verify_status = Hash(Int32, VeryfiStatus).new
 
+    @@from_chats = Set(Int32).new
+
     def initialize
       super(Policr.username, Policr.token)
 
@@ -31,6 +46,13 @@ module Policr
         text =
           "欢迎使用 ε٩(๑> ₃ <)۶з 我是强大的审核机器人 PolicrBot。只需要将我加入到您的群组中，并给予 `admin` 权限，便会自动开始工作。"
         send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+      end
+
+      cmd "from" do |msg|
+        sended_msg = send_message(msg.chat.id, FROM_TIPS, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+        if sended_msg
+          @@from_chats << sended_msg.message_id
+        end
       end
     end
 
@@ -44,6 +66,8 @@ module Policr
 
       edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil)
+
+      from_investigate(chat_id, message_id, target_username, target_user_id)
     end
 
     private def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
@@ -120,6 +144,25 @@ module Policr
       end
     end
 
+    def handle_from(query, chooese_id, chat_id, target_user_id, target_username, from_user_id, message_id)
+      unless from_user_id == target_user_id
+        logger.info "Unrelated User ID '#{from_user_id}' click to From Investigate button"
+        answer_callback_query(query.id, text: "又不是问你，自作多情", show_alert: true)
+        return
+      end
+
+      logger.info "Username '#{target_username}' has selected from: #{chooese_id}"
+
+      all_from = Array(String).new
+      if from_list = DB.get_chat_from(chat_id)
+        from_list.each do |btn_list|
+          btn_list.each { |btn_text| all_from << btn_text }
+        end
+      end
+      edit_message_text(chat_id: chat_id, message_id: message_id,
+        text: "原来你是通过「#{all_from[chooese_id]?}」进来的，好的已经知道了。")
+    end
+
     private def is_admin(chat_id, user_id)
       operator = get_chat_member(chat_id, user_id)
       operator.status == "creator" || operator.status == "admin"
@@ -142,6 +185,8 @@ module Policr
           handle_torture(query, chooese, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
         when "BanedMenu"
           handle_baned_menu(query, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
+        when "From"
+          handle_from(query, chooese.to_i, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
         end
       }
       if (data = query.data) && (message = query.message)
@@ -160,7 +205,27 @@ module Policr
         tick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
 
+      if (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && @@from_chats.includes?(reply_msg_id)
+        logger.info "Enable from investigate for ChatID '#{msg.chat.id}'"
+        DB.put_chat_from(msg.chat.id, msg.text)
+      end
+
       super
+    end
+
+    def from_investigate(chat_id, message_id, username, user_id)
+      logger.info "From investigation of '#{username}'"
+      if from_list = DB.get_chat_from(chat_id)
+        index = -1
+        btn = ->(text : String) {
+          Button.new(text: text, callback_data: "From:#{user_id}:#{username}:#{index += 1}")
+        }
+        markup = Markup.new
+        from_list.each do |btn_text_list|
+          markup << btn_text_list.map { |text| btn.call(text) }
+        end
+        send_message(chat_id, "欢迎 @#{username} 来到这里，告诉大家你从哪里来的吧？小手轻轻一点就行了~", reply_to_message_id: message_id, reply_markup: markup)
+      end
     end
 
     QUESTION_TEXT = "两个黄鹂鸣翠柳"
