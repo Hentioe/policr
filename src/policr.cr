@@ -23,18 +23,19 @@ module Policr
     CLI::Parser.run
     config = CLI::Config.instance
 
-    unless config.prod
-      Dotenv.load! "configs/dev.secret.env"
-    end
+    Dotenv.load! "configs/dev.secret.env" unless config.prod
 
-    @@token = ENV["POLICR_BOT_TOKEN"]? || raise Exception.new("Please provide the bot's Token")
-    @@username = ENV["POLICR_BOT_USERNAME"]? || raise Exception.new("Please provide the bot's Username")
+    @@token = load_cfg_item("POLICR_BOT_TOKEN")
+    @@username = load_cfg_item("POLICR_BOT_USERNAME")
+
     DB.connect config.dpath
     puts "Start Policr..."
     Bot.new.polling
   end
+
+  def load_cfg_item(evar_name)
+    ENV[evar_name]? || raise Exception.new("Missing configuration variable: '#{evar_name}'")
+  end
 end
 
-unless (ENV["POLICR_ENV"]? && (ENV["POLICR_ENV"] == "test"))
-  Policr.start
-end
+Policr.start unless (ENV["POLICR_ENV"]? && (ENV["POLICR_ENV"] == "test"))
