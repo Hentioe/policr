@@ -30,6 +30,11 @@ module Policr
 
     DB.connect config.dpath
     puts "Start Policr..."
+    spawn do
+      puts "Start Web..."
+      Web.start
+    end
+    puts "Start Bot..."
     Bot.new.polling
   end
 

@@ -26,6 +26,8 @@ dependencies:
   rocksdb:
     github: maiha/rocksdb.cr
     version: 0.5.1
+  kemal:
+    github: kemalcr/kemal
 
 development_dependencies:
   ameba:

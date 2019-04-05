@@ -3,23 +3,26 @@ require "admiral"
 module Policr::CLI
   DEFAULT_DPATH = "."
   DEFAULT_PROD  = false
+  DEFAULT_PORT  = 8080
 
   class Config
     @@instance = Config.new
 
     getter prod = DEFAULT_PROD
     getter dpath = DEFAULT_DPATH
+    getter port = DEFAULT_PORT
 
     def initialize
     end
 
-    private def initialize(@prod, @dpath)
+    private def initialize(@prod, @dpath, @port)
     end
 
     def self.init(flags)
       @@instance = self.new(
         flags.prod,
-        flags.dpath
+        flags.dpath,
+        flags.port
       )
     end
 
@@ -41,6 +44,13 @@ module Policr::CLI
       description: "Data path (does not contain data directory)",
       default: DEFAULT_DPATH,
       long: dpath,
+      required: true
+
+    define_flag port : Int32,
+      description: "Web service listening port",
+      default: DEFAULT_PORT,
+      long: port,
+      short: p,
       required: true
 
     def run
