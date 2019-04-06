@@ -45,7 +45,7 @@ module Policr::DB
     if (db = @@db) && (text = db.get?("from_#{chat_id.to_s}"))
       list = Array(Array(String)).new
       text.split("\n") do |line|
-        list += [line.split("-").select { |s| s != "" }]
+        list += [line.split("-").select { |s| s != "" }.map { |s| s.strip }]
       end
       list
     end
