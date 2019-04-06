@@ -9,7 +9,7 @@ module Policr::Web
     public_folder "public"
 
     get "/" do
-      "Hello Policr!"
+      render "src/views/index.ecr"
     end
 
     Kemal.config.env = "production" if config.prod
