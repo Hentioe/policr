@@ -15,4 +15,10 @@ COPY public "$APP_HOME/public"
 WORKDIR $APP_HOME
 
 
-ENTRYPOINT policr --prod --dpath /data
+VOLUME ["/data"]
+
+
+EXPOSE 8080
+
+
+ENTRYPOINT policr --prod --dpath /data -p 8080
