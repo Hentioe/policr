@@ -2,7 +2,7 @@
 
 即将成为 Telegram 平台最强大的审核机器人
 
-## 介绍
+## 需知
 
 * 更多的详情请访问[官网](https://policr.bluerain.io)
 * 务必关注社区频道掌握最新的功能更新通知：[PolicrBot Community](https://t.me/policr_community)
