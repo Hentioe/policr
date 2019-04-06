@@ -34,6 +34,3 @@
 
 ![再给一次机会](https://github.com/Hentioe/policr/raw/master/.policr/6.png)
 
-## 自行部署
-
-[WIP]
