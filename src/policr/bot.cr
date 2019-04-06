@@ -35,13 +35,13 @@ module Policr
 
     @@from_chats = Set(Int32).new
 
-    getter self_id : Int32
+    getter self_id : Int64
 
     def initialize
       super(Policr.username, Policr.token)
 
       me = get_me || raise Exception.new("Failed to get bot data")
-      @self_id = me["id"].as_i
+      @self_id = me["id"].as_i64
 
       cmd "ping" do |msg|
         reply msg, "pong"
@@ -202,7 +202,7 @@ module Policr
     def handle(msg : TelegramBot::Message)
       new_members = msg.new_chat_members
 
-      new_members.each do |member|
+      new_members.select { |m| m.id != @self_id }.each do |member|
         name = get_fullname(member)
         name =~ ARABIC_CHARACTERS ? tick_halal_with_receipt(msg, member) : torture_action(msg, member)
       end if new_members
