@@ -202,7 +202,7 @@ module Policr
     def handle(msg : TelegramBot::Message)
       new_members = msg.new_chat_members
 
-      new_members.select { |m| m.id != @self_id }.each do |member|
+      new_members.select { |m| m.is_bot == false }.each do |member|
         name = get_fullname(member)
         name =~ ARABIC_CHARACTERS ? tick_halal_with_receipt(msg, member) : torture_action(msg, member)
       end if new_members
