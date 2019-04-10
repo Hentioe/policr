@@ -9,7 +9,11 @@ module Policr::Web
     public_folder "public"
 
     get "/" do
-      render "src/views/index.ecr"
+      render "src/views/index.html.ecr"
+    end
+
+    error 404 do
+      "建设中……"
     end
 
     Kemal.config.env = "production" if config.prod

@@ -47,7 +47,7 @@ module Policr::CLI
       required: true
 
     define_flag port : Int32,
-      description: "Web service listening port",
+      description: "Web server listening port",
       default: DEFAULT_PORT,
       long: port,
       short: p,
