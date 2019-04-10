@@ -59,6 +59,22 @@ module Policr
           @@from_chats << sended_msg.message_id
         end
       end
+
+      cmd "enable_examine" do |msg|
+        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+          DB.enable_examine(msg.chat.id)
+          text = "已启动审核，包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被开启。"
+          reply msg, text
+        end
+      end
+
+      cmd "disable_examine" do |msg|
+        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+          DB.disable_examine(msg.chat.id)
+          text = "已禁用审核，包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被关闭。"
+          reply msg, text
+        end
+      end
     end
 
     private def verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin = false)
@@ -205,9 +221,9 @@ module Policr
       new_members.select { |m| m.is_bot == false }.each do |member|
         name = get_fullname(member)
         name =~ ARABIC_CHARACTERS ? tick_halal_with_receipt(msg, member) : torture_action(msg, member)
-      end if new_members
+      end if new_members && DB.enable_examine?(msg.chat.id)
 
-      if (text = msg.text) && (user = msg.from)
+      if DB.enable_examine?(msg.chat.id) && (text = msg.text) && (user = msg.from)
         tick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
 
