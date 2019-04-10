@@ -5,12 +5,6 @@ module Policr::DB
 
   @@db = nil
 
-  def conn?
-    if db = @@db
-      yield db
-    end
-  end
-
   def connect(path)
     @@db = RocksDB::DB.new("#{path}/rocks#data#policr")
   end
@@ -41,8 +35,8 @@ module Policr::DB
   end
 
   def enabled_from?(chat_id)
-    if db = @@db
-      db.get("enabled_from_#{chat_id.to_s}")
+    if (db = @@db) && (i = db.get?("enabled_from_#{chat_id.to_s}"))
+      i.to_i == 1
     end
   end
 
@@ -58,20 +52,20 @@ module Policr::DB
   end
 
   def enable_examine(chat_id)
-    conn? do |db|
+    if db = @@db
       db.put("enabled_examine_#{chat_id.to_s}", 1)
     end
   end
 
   def disable_examine(chat_id)
-    conn? do |db|
+    if db = @@db
       db.delete("enabled_examine_#{chat_id.to_s}")
     end
   end
 
   def enable_examine?(chat_id)
-    conn? do |db|
-      db.get("enabled_examine_#{chat_id.to_s}")
+    if (db = @@db) && (i = db.get?("enabled_examine_#{chat_id.to_s}"))
+      i.to_i == 1
     end
   end
 end

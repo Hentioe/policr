@@ -63,7 +63,7 @@ module Policr
       cmd "enable_examine" do |msg|
         if (user = msg.from) && is_admin(msg.chat.id, user.id)
           DB.enable_examine(msg.chat.id)
-          text = "已启动审核，包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被开启。"
+          text = "已启动审核。包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被开启。"
           reply msg, text
         end
       end
@@ -71,7 +71,7 @@ module Policr
       cmd "disable_examine" do |msg|
         if (user = msg.from) && is_admin(msg.chat.id, user.id)
           DB.disable_examine(msg.chat.id)
-          text = "已禁用审核，包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被关闭。"
+          text = "已禁用审核。包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被关闭。"
           reply msg, text
         end
       end
