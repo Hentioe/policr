@@ -41,7 +41,6 @@ module Policr::DB
   end
 
   def get_chat_from(chat_id)
-    return unless enabled_from?(chat_id)
     if (db = @@db) && (text = db.get?("from_#{chat_id.to_s}"))
       list = Array(Array(String)).new
       text.split("\n") do |line|
