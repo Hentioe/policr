@@ -54,9 +54,11 @@ module Policr
       end
 
       cmd "from" do |msg|
-        sended_msg = send_message(msg.chat.id, FROM_TIPS, reply_to_message_id: msg.message_id, parse_mode: "markdown")
-        if sended_msg
-          @@from_chats << sended_msg.message_id
+        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+          sended_msg = send_message(msg.chat.id, FROM_TIPS, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+          if sended_msg
+            @@from_chats << sended_msg.message_id
+          end
         end
       end
 
@@ -91,14 +93,11 @@ module Policr
 
       cmd "disable_from" do |msg|
         if (user = msg.from) && is_admin(msg.chat.id, user.id)
-          if DB.get_chat_from(msg.chat.id)
-            DB.enable_chat_from(msg.chat.id)
-            text = "已禁用来源调查功能，相关设置将会在下次启用时继续沿用。"
-            send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
-          else
-            text = "已禁用来源调查功能，启用请使用 `/from` 指令完成设置。"
-            send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
-          end
+          DB.disable_chat_from(msg.chat.id)
+
+          text = "已禁用来源调查功能，启用请使用 `/from` 指令完成设置。"
+          text = "已禁用来源调查功能，相关设置将会在下次启用时继续沿用。" if DB.get_chat_from(msg.chat.id)
+          send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
         end
       end
     end
