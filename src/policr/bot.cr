@@ -75,6 +75,32 @@ module Policr
           reply msg, text
         end
       end
+
+      cmd "enable_from" do |msg|
+        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+          if DB.get_chat_from(msg.chat.id)
+            DB.enable_chat_from(msg.chat.id)
+            text = "已启用来源调查并沿用了之前的设置。如果需要重新设置调查列表，请使用 `/from` 指令。"
+            send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+          else
+            text = "没有检测到之前的来源设置，请使用 `/from` 指令完成设置。"
+            send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+          end
+        end
+      end
+
+      cmd "disable_from" do |msg|
+        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+          if DB.get_chat_from(msg.chat.id)
+            DB.enable_chat_from(msg.chat.id)
+            text = "已禁用来源调查功能，相关设置将会在下次启用时继续沿用。"
+            send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+          else
+            text = "已禁用来源调查功能，启用请使用 `/from` 指令完成设置。"
+            send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+          end
+        end
+      end
     end
 
     private def verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin = false)
@@ -88,7 +114,7 @@ module Policr
       edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil)
 
-      from_investigate(chat_id, message_id, target_username, target_user_id)
+      from_investigate(chat_id, message_id, target_username, target_user_id) if DB.enabled_from?(chat_id)
     end
 
     private def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
