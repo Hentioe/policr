@@ -113,6 +113,8 @@ module Policr
       edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil)
 
+      restrict_chat_member(chat_id, target_user_id, can_send_messages: true)
+
       from_investigate(chat_id, message_id, target_username, target_user_id) if DB.enabled_from?(chat_id)
     end
 
@@ -278,6 +280,9 @@ module Policr
     QUESTION_TEXT = "两个黄鹂鸣翠柳"
 
     private def torture_action(msg, member)
+      # 禁言用户
+      restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
+
       name = get_fullname(member)
       logger.info "Start to torture '#{name}'"
       question = "请在 #{TORTURE_SEC} 秒内选出「#{QUESTION_TEXT}」的下一句"
