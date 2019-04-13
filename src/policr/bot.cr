@@ -64,8 +64,12 @@ module Policr
 
       cmd "enable_examine" do |msg|
         if (user = msg.from) && is_admin(msg.chat.id, user.id)
-          DB.enable_examine(msg.chat.id)
           text = "已启动审核。包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被开启。"
+          unless is_admin(msg.chat.id, @self_id.to_i32)
+            text = "不给权限还想让人家干活，做梦。"
+          else
+            DB.enable_examine(msg.chat.id)
+          end
           reply msg, text
         end
       end
@@ -213,7 +217,7 @@ module Policr
 
     private def is_admin(chat_id, user_id)
       operator = get_chat_member(chat_id, user_id)
-      operator.status == "creator" || operator.status == "admin"
+      operator.status == "creator" || operator.status == "administrator"
     end
 
     def handle(query : TelegramBot::CallbackQuery)
