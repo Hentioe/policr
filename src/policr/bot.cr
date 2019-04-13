@@ -111,7 +111,7 @@ module Policr
         end
       end
 
-      cmd "DEFAULT_TORTURE_SEC" do |msg|
+      cmd "torture_sec" do |msg|
         if (user = msg.from) && is_admin(msg.chat.id, user.id)
           current = "此群组当前使用 Bot 默认的时长（#{DEFAULT_TORTURE_SEC} 秒）"
           if sec = DB.get_torture_sec(msg.chat.id, -1)
