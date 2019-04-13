@@ -67,4 +67,18 @@ module Policr::DB
       i.to_i == 1
     end
   end
+
+  def set_torture_sec(chat_id, sec)
+    if db = @@db
+      db.put("torture_sec_#{chat_id.to_s}", sec)
+    end
+  end
+
+  def get_torture_sec(chat_id, default)
+    if (db = @@db) && (sec = db.get?("torture_sec_#{chat_id.to_s}"))
+      sec.to_i
+    else
+      default
+    end
+  end
 end

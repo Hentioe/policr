@@ -2,9 +2,9 @@ require "telegram_bot"
 require "schedule"
 
 module Policr
-  SAFE_MSG_SIZE     =  2
-  TORTURE_SEC       = 45
-  ARABIC_CHARACTERS = /^[\x{0600}-\x{06FF}-\x{0750}-\x{077F}-\x{08A0}-\x{08FF}-\x{FB50}-\x{FDFF}-\x{FE70}-\x{FEFF}-\x{10E60}-\x{10E7F}-\x{1EC70}-\x{1ECBF}-\x{1ED00}-\x{1ED4F}-\x{1EE00}-\x{1EEFF} ]+$/
+  SAFE_MSG_SIZE       =  2 # 消息的安全长度
+  DEFAULT_TORTURE_SEC = 45 # 默认验证等待时长（秒）
+  ARABIC_CHARACTERS   = /^[\x{0600}-\x{06FF}-\x{0750}-\x{077F}-\x{08A0}-\x{08FF}-\x{FB50}-\x{FDFF}-\x{FE70}-\x{FEFF}-\x{10E60}-\x{10E7F}-\x{1EC70}-\x{1ECBF}-\x{1ED00}-\x{1ED4F}-\x{1EE00}-\x{1EEFF} ]+$/
 
   FROM_TIPS =
     <<-TEXT
@@ -25,6 +25,11 @@ module Policr
     Slow
   end
 
+  enum TortureTimeType
+    Sec
+    Min
+  end
+
   class Bot < TelegramBot::Bot
     alias Button = TelegramBot::InlineKeyboardButton
     alias Markup = TelegramBot::InlineKeyboardMarkup
@@ -32,6 +37,7 @@ module Policr
     include TelegramBot::CmdHandler
 
     @verify_status = Hash(Int32, VeryfiStatus).new
+    @torture_time_msg = Hash(Int32, TortureTimeType).new
 
     @@from_chats = Set(Int32).new
 
@@ -49,7 +55,7 @@ module Policr
 
       cmd "start" do |msg|
         text =
-          "欢迎使用 ε٩(๑> ₃ <)۶з 我是强大的审核机器人 PolicrBot。只需要将我加入到您的群组中，并给予 `admin` 权限，便会自动开始工作。"
+          "欢迎使用 ε٩(๑> ₃ <)۶з 我是强大的审核机器人 PolicrBot。我的主要功能不会主动开启，需要通过指令手动启用或设置。推荐在 Github 上查看我的指令用法 ~"
         send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
       end
 
@@ -102,6 +108,34 @@ module Policr
           text = "已禁用来源调查功能，启用请使用 `/from` 指令完成设置。"
           text = "已禁用来源调查功能，相关设置将会在下次启用时继续沿用。" if DB.get_chat_from(msg.chat.id)
           send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+        end
+      end
+
+      cmd "DEFAULT_TORTURE_SEC" do |msg|
+        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+          current = "此群组当前使用 Bot 默认的时长（#{DEFAULT_TORTURE_SEC} 秒）"
+          if sec = DB.get_torture_sec(msg.chat.id, -1)
+            current = "此群组当前已设置时长（#{sec} 秒）" if sec != -1
+          end
+
+          text = "欢迎设置入群验证的等待时间，#{current}。请使用有效的数字作为秒数回复此消息以设置或更新独立的验证时间。注意：此消息可能因为机器人的重启而失效，请即时回复。"
+          if send_message = reply msg, text
+            @torture_time_msg[send_message.message_id] = TortureTimeType::Sec
+          end
+        end
+      end
+
+      cmd "torture_min" do |msg|
+        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+          current = "此群组当前使用 Bot 默认的时长（#{DEFAULT_TORTURE_SEC} 秒）"
+          if sec = DB.get_torture_sec(msg.chat.id, -1)
+            current = "此群组当前已设置时长（#{sec} 秒）" if sec != -1
+          end
+
+          text = "欢迎设置入群验证的等待时间，#{current}。请使用有效的数字作为分钟数回复此消息以设置或更新独立的验证时间，支持小数。注意：此消息可能因为机器人的重启而失效，请即时回复。"
+          if send_message = reply msg, text
+            @torture_time_msg[send_message.message_id] = TortureTimeType::Min
+          end
         end
       end
     end
@@ -249,18 +283,32 @@ module Policr
     def handle(msg : TelegramBot::Message)
       new_members = msg.new_chat_members
 
+      # 审核新加入群成员
       new_members.select { |m| m.is_bot == false }.each do |member|
         name = get_fullname(member)
         name =~ ARABIC_CHARACTERS ? tick_halal_with_receipt(msg, member) : torture_action(msg, member)
       end if new_members && DB.enable_examine?(msg.chat.id)
 
+      # 审核消息内容
       if DB.enable_examine?(msg.chat.id) && (text = msg.text) && (user = msg.from)
         tick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
 
+      # 回复消息设置来源调查列表
       if (user = msg.from) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && @@from_chats.includes?(reply_msg_id) && is_admin(msg.chat.id, user.id)
         logger.info "Enable From Investigate for ChatID '#{msg.chat.id}'"
         DB.put_chat_from(msg.chat.id, msg.text)
+      end
+
+      # 回复消息设置验证时间
+      if (user = msg.from) && (text = msg.text) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && (time_type = @torture_time_msg[reply_msg_id]?) && is_admin(msg.chat.id, user.id)
+        sec = case time_type
+              when TortureTimeType::Sec
+                text.to_i
+              when TortureTimeType::Min
+                (60 * (text.to_f)).to_i
+              end
+        DB.set_torture_sec(msg.chat.id, sec)
       end
 
       super
@@ -287,9 +335,10 @@ module Policr
       # 禁言用户
       restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
 
+      torture_sec = DB.get_torture_sec(msg.chat.id, DEFAULT_TORTURE_SEC)
       name = get_fullname(member)
       logger.info "Start to torture '#{name}'"
-      question = "请在 #{TORTURE_SEC} 秒内选出「#{QUESTION_TEXT}」的下一句"
+      question = "请在 #{torture_sec} 秒内选出「#{QUESTION_TEXT}」的下一句"
       reply_id = msg.message_id
       member_id = member.id.to_s
       member_username = member.username
@@ -313,7 +362,7 @@ module Policr
         end
       }
 
-      ban_timer = ->(message_id : Int32) { Schedule.after(TORTURE_SEC.seconds) { ban_task.call(message_id) } }
+      ban_timer = ->(message_id : Int32) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id) } }
       if sended_msg && (message_id = sended_msg.message_id)
         ban_timer.call(message_id)
       end
