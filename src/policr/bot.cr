@@ -25,20 +25,14 @@ module Policr
     Slow
   end
 
-  enum TortureTimeType
-    Sec
-    Min
-  end
-
   class Bot < TelegramBot::Bot
     alias Button = TelegramBot::InlineKeyboardButton
     alias Markup = TelegramBot::InlineKeyboardMarkup
+    alias TortureTimeType = Cache::TortureTimeType
 
     include TelegramBot::CmdHandler
 
     @verify_status = Hash(Int32, VeryfiStatus).new
-    @torture_time_msg = Hash(Int32, TortureTimeType).new
-
     @@from_chats = Set(Int32).new
 
     getter self_id : Int64
@@ -120,7 +114,7 @@ module Policr
 
           text = "欢迎设置入群验证的等待时间，#{current}。请使用有效的数字作为秒数回复此消息以设置或更新独立的验证时间。注意：此消息可能因为机器人的重启而失效，请即时回复。"
           if send_message = reply msg, text
-            @torture_time_msg[send_message.message_id] = TortureTimeType::Sec
+            Cache.carving_torture_time_msg_sec(send_message.message_id)
           end
         end
       end
@@ -134,7 +128,7 @@ module Policr
 
           text = "欢迎设置入群验证的等待时间，#{current}。请使用有效的数字作为分钟数回复此消息以设置或更新独立的验证时间，支持小数。注意：此消息可能因为机器人的重启而失效，请即时回复。"
           if send_message = reply msg, text
-            @torture_time_msg[send_message.message_id] = TortureTimeType::Min
+            Cache.carving_torture_time_msg_min(send_message.message_id)
           end
         end
       end
@@ -301,7 +295,7 @@ module Policr
       end
 
       # 回复消息设置验证时间
-      if (user = msg.from) && (text = msg.text) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && (time_type = @torture_time_msg[reply_msg_id]?) && is_admin(msg.chat.id, user.id)
+      if (user = msg.from) && (text = msg.text) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && (time_type = Cache.torture_time_msg?(reply_msg_id)) && is_admin(msg.chat.id, user.id)
         sec = case time_type
               when TortureTimeType::Sec
                 text.to_i
