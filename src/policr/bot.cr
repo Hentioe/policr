@@ -19,20 +19,14 @@ module Policr
     消息不要使用 `Markdown` 格式，在 PC 客户端可能需要 `<Ctrl>+<Enter>` 组合键才能换行。请注意，**只有回复本消息才会被认为是设置来源调查**，并且随着机器人的重启，本消息很可能存在回复有效期。
     TEXT
 
-  enum VeryfiStatus
-    Init
-    Pass
-    Slow
-  end
-
   class Bot < TelegramBot::Bot
     alias Button = TelegramBot::InlineKeyboardButton
     alias Markup = TelegramBot::InlineKeyboardMarkup
     alias TortureTimeType = Cache::TortureTimeType
+    alias VerifyStatus = Cache::VerifyStatus
 
     include TelegramBot::CmdHandler
 
-    @verify_status = Hash(Int32, VeryfiStatus).new
     @@from_chats = Set(Int32).new
 
     getter self_id : Int64
@@ -135,7 +129,7 @@ module Policr
     end
 
     private def verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin = false)
-      @verify_status[target_user_id] = VeryfiStatus::Pass
+      Cache.verify_passed(target_user_id)
       logger.info "Username '#{target_username}' passed verification"
 
       answer_callback_query(query.id, text: "验证通过", show_alert: true) unless admin
@@ -151,7 +145,7 @@ module Policr
     end
 
     private def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
-      @verify_status.delete user_id
+      Cache.verify_status_clear user_id
       logger.info "Username '#{username}' has not been verified and has been banned"
 
       text = "(〒︿〒) 他没能挺过这一关，永久的离开了我们。"
@@ -181,9 +175,9 @@ module Policr
           return
         end
 
-        status = @verify_status[target_user_id]?
-        verified_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VeryfiStatus::Init
-        slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VeryfiStatus::Slow
+        status = Cache.verify?(target_user_id)
+        verified_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Init
+        slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
       elsif chooese_i <= 0
         if is_admin(chat_id, from_user_id)
           logger.info "The administrator ended the torture by: #{chooese_i}"
@@ -347,11 +341,11 @@ module Policr
       markup << [btn.call("人工通过", 0), btn.call("人工封禁", -1)]
       sended_msg = send_message(msg.chat.id, question, reply_to_message_id: reply_id, reply_markup: markup)
 
-      @verify_status[member.id] = VeryfiStatus::Init
+      Cache.verify_init(member.id)
       ban_task = ->(message_id : Int32) {
-        if @verify_status[member.id]? == VeryfiStatus::Init
+        if Cache.verify?(member.id) == VerifyStatus::Init
           logger.info "User '#{name}' torture time expired and has been banned"
-          @verify_status[member.id] = VeryfiStatus::Slow
+          Cache.verify_slowed(member.id)
           unverified_with_receipt(msg.chat.id, message_id, member.id, member.username)
         end
       }
