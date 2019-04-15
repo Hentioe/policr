@@ -145,13 +145,18 @@ module Policr
     private def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
       Cache.verify_status_clear user_id
       logger.info "Username '#{username}' has not been verified and has been banned"
-
-      text = "(〒︿〒) 他没能挺过这一关，永久的离开了我们。"
-      text = "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了他。" if admin
-      edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: text, reply_markup: add_banned_menu(user_id, username))
-
-      kick_chat_member(chat_id, user_id)
+      begin
+        kick_chat_member(chat_id, user_id)
+      rescue ex : TelegramBot::APIException
+        text = "踢不掉他诶（自己想想什么原因？）……"
+        edit_message_text(chat_id: chat_id, message_id: message_id,
+          text: text)
+      else
+        text = "(〒︿〒) 他没能挺过这一关，永久的离开了我们。"
+        text = "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了他。" if admin
+        edit_message_text(chat_id: chat_id, message_id: message_id,
+          text: text, reply_markup: add_banned_menu(user_id, username))
+      end
     end
 
     private def slow_with_receipt(query, chat_id, target_user_id, target_username, message_id)
@@ -296,7 +301,7 @@ module Policr
       # 审核新加入群成员
       new_members.select { |m| m.is_bot == false }.each do |member|
         name = get_fullname(member)
-        name =~ ARABIC_CHARACTERS ? tick_halal_with_receipt(msg, member) : torture_action(msg, member)
+        name =~ ARABIC_CHARACTERS ? kick_halal_with_receipt(msg, member) : torture_action(msg, member)
       end if new_members && is_examine
 
       # New join bot
@@ -306,7 +311,7 @@ module Policr
 
       # 审核消息内容
       if DB.enable_examine?(msg.chat.id) && (text = msg.text) && (user = msg.from)
-        tick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
+        kick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
 
       # 回复消息设置来源调查列表
@@ -397,7 +402,7 @@ module Policr
       end
     end
 
-    private def tick_halal_with_receipt(msg, member)
+    private def kick_halal_with_receipt(msg, member)
       name = get_fullname(member)
       logger.info "Found a halal '#{name}'"
       sended_msg = reply msg, "d(`･∀･)b 诶发现一名清真，看我干掉它……"
