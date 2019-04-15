@@ -81,4 +81,22 @@ module Policr::DB
       default
     end
   end
+
+  def trust_admin(chat_id)
+    if db = @@db
+      db.put("trust_admin_#{chat_id.to_s}", 1)
+    end
+  end
+
+  def trust_admin?(chat_id)
+    if (db = @@db) && (status = db.get?("trust_admin_#{chat_id.to_s}"))
+      status.to_i == 1
+    end
+  end
+
+  def distrust_admin(chat_id)
+    if db = @@db
+      db.delete("trust_admin_#{chat_id.to_s}")
+    end
+  end
 end

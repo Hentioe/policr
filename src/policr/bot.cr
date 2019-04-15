@@ -46,7 +46,8 @@ module Policr
       end
 
       cmd "from" do |msg|
-        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+        role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+        if (user = msg.from) && has_permission?(msg.chat.id, user.id, role)
           sended_msg = send_message(msg.chat.id, FROM_TIPS, reply_to_message_id: msg.message_id, parse_mode: "markdown")
           if sended_msg
             Cache.carying_from_setting_msg sended_msg.message_id
@@ -55,7 +56,8 @@ module Policr
       end
 
       cmd "enable_examine" do |msg|
-        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+        role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+        if (user = msg.from) && has_permission?(msg.chat.id, user.id, role)
           text = "已启动审核。包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被开启。"
           unless is_admin(msg.chat.id, @self_id.to_i32)
             text = "不给权限还想让人家干活，做梦。"
@@ -67,7 +69,8 @@ module Policr
       end
 
       cmd "disable_examine" do |msg|
-        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+        role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+        if (user = msg.from) && has_permission?(msg.chat.id, user.id, role)
           DB.disable_examine(msg.chat.id)
           text = "已禁用审核。包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被关闭。"
           reply msg, text
@@ -75,7 +78,8 @@ module Policr
       end
 
       cmd "enable_from" do |msg|
-        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+        role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+        if (user = msg.from) && has_permission?(msg.chat.id, user.id, role)
           if DB.get_chat_from(msg.chat.id)
             DB.enable_chat_from(msg.chat.id)
             text = "已启用来源调查并沿用了之前的设置。如果需要重新设置调查列表，请使用 `/from` 指令。"
@@ -88,7 +92,8 @@ module Policr
       end
 
       cmd "disable_from" do |msg|
-        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+        role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+        if (user = msg.from) && has_permission?(msg.chat.id, user.id, role)
           DB.disable_chat_from(msg.chat.id)
 
           text = "已禁用来源调查功能，启用请使用 `/from` 指令完成设置。"
@@ -98,7 +103,8 @@ module Policr
       end
 
       cmd "torture_sec" do |msg|
-        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+        role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+        if (user = msg.from) && has_permission?(msg.chat.id, user.id, role)
           current = "此群组当前使用 Bot 默认的时长（#{DEFAULT_TORTURE_SEC} 秒）"
           if sec = DB.get_torture_sec(msg.chat.id, -1)
             current = "此群组当前已设置时长（#{sec} 秒）" if sec != -1
@@ -112,7 +118,8 @@ module Policr
       end
 
       cmd "torture_min" do |msg|
-        if (user = msg.from) && is_admin(msg.chat.id, user.id)
+        role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+        if (user = msg.from) && has_permission?(msg.chat.id, user.id, role)
           current = "此群组当前使用 Bot 默认的时长（#{DEFAULT_TORTURE_SEC} 秒）"
           if sec = DB.get_torture_sec(msg.chat.id, -1)
             current = "此群组当前已设置时长（#{sec} 秒）" if sec != -1
@@ -122,6 +129,20 @@ module Policr
           if send_message = reply msg, text
             Cache.carving_torture_time_msg_min(send_message.message_id)
           end
+        end
+      end
+
+      cmd "trust_admin" do |msg|
+        if (user = msg.from) && has_permission?(msg.chat.id, user.id, :creator)
+          DB.trust_admin msg.chat.id
+          reply msg, "已赋予管理员使用指令调整大部分设置的权力。"
+        end
+      end
+
+      cmd "distrust_admin" do |msg|
+        if (user = msg.from) && has_permission?(msg.chat.id, user.id, :creator)
+          DB.distrust_admin msg.chat.id
+          reply msg, "已回收其它管理员使用指令调整设置的权力。"
         end
       end
     end
@@ -182,7 +203,9 @@ module Policr
         verified_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Init
         slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
       elsif chooese_i <= 0
-        if is_admin(chat_id, from_user_id)
+        role = DB.trust_admin?(chat_id) ? :admin : :creator
+
+        if has_permission? chat_id, from_user_id, role
           logger.info "The administrator ended the torture by: #{chooese_i}"
           case chooese_i
           when 0
@@ -201,7 +224,9 @@ module Policr
     end
 
     def handle_baned_menu(query, chat_id, target_user_id, target_username, from_user_id, message_id)
-      unless is_admin(chat_id, from_user_id)
+      role = DB.trust_admin?(chat_id) ? :admin : :creator
+
+      unless has_permission? chat_id, from_user_id, role
         logger.info "User ID '#{from_user_id}' without permission click to unbanned button"
         answer_callback_query(query.id, text: "你既然不是管理员，那就是他的同伙，不听你的", show_alert: true)
         return
@@ -241,7 +266,9 @@ module Policr
     end
 
     def handle_restrict_bot(query, chooese_id, chat_id, bot_id, from_user_id, message_id)
-      unless is_admin(chat_id, from_user_id)
+      role = DB.trust_admin?(chat_id) ? :admin : :creator
+
+      unless has_permission? chat_id, from_user_id, role
         logger.info "User ID '#{from_user_id}' without permission click to unrestrict button"
         answer_callback_query(query.id, text: "你既然不是管理员，那就是它的同伙，不听你的", show_alert: true)
         return
@@ -262,8 +289,20 @@ module Policr
     end
 
     private def is_admin(chat_id, user_id)
-      operator = get_chat_member(chat_id, user_id)
-      operator.status == "creator" || operator.status == "administrator"
+      has_permission?(chat_id, user_id, :admin)
+    end
+
+    private def has_permission?(chat_id, user_id, role)
+      user = get_chat_member(chat_id, user_id)
+      is_creator = user.status == "creator"
+      case role
+      when :creator
+        is_creator
+      when :admin
+        is_creator || user.status == "administrator"
+      else
+        false
+      end
     end
 
     def handle(query : TelegramBot::CallbackQuery)
@@ -297,6 +336,7 @@ module Policr
     def handle(msg : TelegramBot::Message)
       new_members = msg.new_chat_members
       is_examine = DB.enable_examine?(msg.chat.id)
+      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
 
       # 审核新加入群成员
       new_members.select { |m| m.is_bot == false }.each do |member|
@@ -310,19 +350,19 @@ module Policr
       end if new_members && is_examine
 
       # 审核消息内容
-      if DB.enable_examine?(msg.chat.id) && (text = msg.text) && (user = msg.from)
+      if is_examine && (text = msg.text) && (user = msg.from)
         kick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
 
       # 回复消息设置来源调查列表
-      if (user = msg.from) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && Cache.from_setting_msg?(reply_msg_id) && is_admin(msg.chat.id, user.id)
+      if (user = msg.from) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && Cache.from_setting_msg?(reply_msg_id) && has_permission?(msg.chat.id, user.id, role)
         logger.info "Enable From Investigate for ChatID '#{msg.chat.id}'"
         DB.put_chat_from(msg.chat.id, msg.text)
         reply msg, "已完成设置。"
       end
 
       # 回复消息设置验证时间
-      if (user = msg.from) && (text = msg.text) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && (time_type = Cache.torture_time_msg?(reply_msg_id)) && is_admin(msg.chat.id, user.id)
+      if (user = msg.from) && (text = msg.text) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && (time_type = Cache.torture_time_msg?(reply_msg_id)) && has_permission?(msg.chat.id, user.id, role)
         sec = case time_type
               when TortureTimeType::Sec
                 text.to_i
