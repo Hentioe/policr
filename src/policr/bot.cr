@@ -313,6 +313,7 @@ module Policr
       if (user = msg.from) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && Cache.from_setting_msg?(reply_msg_id) && is_admin(msg.chat.id, user.id)
         logger.info "Enable From Investigate for ChatID '#{msg.chat.id}'"
         DB.put_chat_from(msg.chat.id, msg.text)
+        reply msg, "已完成设置。"
       end
 
       # 回复消息设置验证时间
@@ -324,6 +325,7 @@ module Policr
                 (60 * (text.to_f)).to_i
               end
         DB.set_torture_sec(msg.chat.id, sec)
+        reply msg, "已完成设置。"
       end
 
       super
