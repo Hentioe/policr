@@ -27,8 +27,6 @@ module Policr
 
     include TelegramBot::CmdHandler
 
-    @@from_chats = Set(Int32).new
-
     getter self_id : Int64
 
     def initialize
@@ -51,7 +49,7 @@ module Policr
         if (user = msg.from) && is_admin(msg.chat.id, user.id)
           sended_msg = send_message(msg.chat.id, FROM_TIPS, reply_to_message_id: msg.message_id, parse_mode: "markdown")
           if sended_msg
-            @@from_chats << sended_msg.message_id
+            Cache.carying_from_setting_msg sended_msg.message_id
           end
         end
       end
@@ -283,7 +281,7 @@ module Policr
       end
 
       # 回复消息设置来源调查列表
-      if (user = msg.from) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && @@from_chats.includes?(reply_msg_id) && is_admin(msg.chat.id, user.id)
+      if (user = msg.from) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && Cache.from_setting_msg?(reply_msg_id) && is_admin(msg.chat.id, user.id)
         logger.info "Enable From Investigate for ChatID '#{msg.chat.id}'"
         DB.put_chat_from(msg.chat.id, msg.text)
       end
