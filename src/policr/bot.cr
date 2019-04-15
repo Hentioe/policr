@@ -235,6 +235,27 @@ module Policr
         text: "原来是从「#{all_from[chooese_id]?}」过来的，大家心里已经有数了。")
     end
 
+    def handle_restrict_bot(query, chooese_id, chat_id, bot_id, from_user_id, message_id)
+      unless is_admin(chat_id, from_user_id)
+        logger.info "User ID '#{from_user_id}' without permission click to unrestrict button"
+        answer_callback_query(query.id, text: "你既然不是管理员，那就是它的同伙，不听你的", show_alert: true)
+        return
+      end
+
+      text = "已解除限制，希望是个有用的机器人。"
+      case chooese_id
+      when 0
+        restrict_chat_member(chat_id, bot_id, can_send_messages: true)
+      when -1
+        kick_chat_member(chat_id, bot_id)
+        text = "已经被移除啦~安全危机解除！"
+      else
+        text = "此消息的内联键盘功能已经过时了，没有进行任何操作~"
+      end
+      edit_message_text(chat_id: chat_id, message_id: message_id,
+        text: text, reply_markup: nil)
+    end
+
     private def is_admin(chat_id, user_id)
       operator = get_chat_member(chat_id, user_id)
       operator.status == "creator" || operator.status == "administrator"
@@ -259,6 +280,8 @@ module Policr
           handle_baned_menu(query, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
         when "From"
           handle_from(query, chooese.to_i, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
+        when "BotJoin"
+          handle_restrict_bot(query, chooese.to_i, chat_id, target_id.to_i, from_user_id, message.message_id)
         end
       }
       if (data = query.data) && (message = query.message)
@@ -268,12 +291,18 @@ module Policr
 
     def handle(msg : TelegramBot::Message)
       new_members = msg.new_chat_members
+      is_examine = DB.enable_examine?(msg.chat.id)
 
       # 审核新加入群成员
       new_members.select { |m| m.is_bot == false }.each do |member|
         name = get_fullname(member)
         name =~ ARABIC_CHARACTERS ? tick_halal_with_receipt(msg, member) : torture_action(msg, member)
-      end if new_members && DB.enable_examine?(msg.chat.id)
+      end if new_members && is_examine
+
+      # New join bot
+      new_members.select { |m| m.is_bot }.each do |member|
+        restrict_bot(msg, member)
+      end if new_members && is_examine
 
       # 审核消息内容
       if DB.enable_examine?(msg.chat.id) && (text = msg.text) && (user = msg.from)
@@ -298,6 +327,18 @@ module Policr
       end
 
       super
+    end
+
+    def restrict_bot(msg, bot)
+      restrict_chat_member(msg.chat.id, bot.id, can_send_messages: false)
+
+      btn = ->(text : String, chooese_id : Int32) {
+        Button.new(text: text, callback_data: "BotJoin:#{bot.id}:[none]:#{chooese_id}")
+      }
+      markup = Markup.new
+      markup << [btn.call("解除限制", 0), btn.call("直接移除", -1)]
+      sended_msg = send_message(msg.chat.id, "抓到一个新加入的机器人，安全考虑已对其进行限制。如有需要可自行解除，否则请移除。", reply_to_message_id: msg.message_id, reply_markup: markup)
+      logger.info "Bot '#{bot.id}' has been restricted"
     end
 
     def from_investigate(chat_id, message_id, username, user_id)
