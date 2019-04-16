@@ -145,6 +145,15 @@ module Policr
           reply msg, "已回收其它管理员使用指令调整设置的权力。"
         end
       end
+
+      cmd "token" do |msg|
+        case msg.chat.type
+        when "supergroup" # 生成令牌
+          nil
+        when "private" # 获取令牌列表
+          nil
+        end
+      end
     end
 
     private def verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin = false)
