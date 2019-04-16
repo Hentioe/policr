@@ -347,6 +347,11 @@ module Policr
       is_examine = DB.enable_examine?(msg.chat.id)
       role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
 
+      # 避免入群的瞬间广告
+      if (user = msg.from) && (status = Cache.verify?(user.id))
+        delete_message(msg.chat.id, msg.message_id) if status == VerifyStatus::Init
+      end
+
       # 审核新加入群成员
       new_members.select { |m| m.is_bot == false }.each do |member|
         name = get_fullname(member)
@@ -415,6 +420,8 @@ module Policr
     QUESTION_TEXT = "两个黄鹂鸣翠柳"
 
     private def torture_action(msg, member)
+      Cache.verify_init(member.id)
+
       # 禁言用户
       restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
 
@@ -436,7 +443,6 @@ module Policr
       markup << [btn.call("人工通过", 0), btn.call("人工封禁", -1)]
       sended_msg = send_message(msg.chat.id, question, reply_to_message_id: reply_id, reply_markup: markup)
 
-      Cache.verify_init(member.id)
       ban_task = ->(message_id : Int32) {
         if Cache.verify?(member.id) == VerifyStatus::Init
           logger.info "User '#{name}' torture time expired and has been banned"
