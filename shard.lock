@@ -8,6 +8,10 @@ shards:
     github: veelenga/ameba
     version: 0.9.1
 
+  base62:
+    github: Sija/base62.cr
+    version: 0.1.1
+
   dotenv:
     github: gdotdesign/cr-dotenv
     version: 0.2.0
@@ -22,6 +26,10 @@ shards:
 
   kilt:
     github: jeromegn/kilt
+    version: 0.4.0
+
+  ksuid:
+    github: Sija/ksuid.cr
     version: 0.4.0
 
   radix:

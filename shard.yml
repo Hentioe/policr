@@ -28,6 +28,8 @@ dependencies:
     version: 0.5.1
   kemal:
     github: kemalcr/kemal
+  ksuid:
+    github: Sija/ksuid.cr
 
 development_dependencies:
   ameba:
