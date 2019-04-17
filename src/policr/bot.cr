@@ -37,6 +37,8 @@ module Policr
       handlers[:join_bot] = JoinBotHandler.new self
       handlers[:unverified_message] = UnverifiedMessage.new self
       handlers[:halal_message] = HalalMessageHandler.new self
+      handlers[:from_setting] = FromSettingHandler.new self
+      handlers[:verify_time_setting] = VerifyTimeSettingHandler.new self
 
       cmd "ping" do |msg|
         reply msg, "pong"
@@ -335,29 +337,8 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
-
       handlers.each do |_, handler|
         handler.registry(msg)
-      end
-
-      # 回复消息设置来源调查列表
-      if (user = msg.from) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && Cache.from_setting_msg?(reply_msg_id) && has_permission?(msg.chat.id, user.id, role)
-        logger.info "Enable From Investigate for ChatID '#{msg.chat.id}'"
-        DB.put_chat_from(msg.chat.id, msg.text)
-        reply msg, "已完成设置。"
-      end
-
-      # 回复消息设置验证时间
-      if (user = msg.from) && (text = msg.text) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && (time_type = Cache.torture_time_msg?(reply_msg_id)) && has_permission?(msg.chat.id, user.id, role)
-        sec = case time_type
-              when TortureTimeType::Sec
-                text.to_i
-              when TortureTimeType::Min
-                (60 * (text.to_f)).to_i
-              end
-        DB.set_torture_sec(msg.chat.id, sec)
-        reply msg, "已完成设置。"
       end
 
       super
