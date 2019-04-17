@@ -1,5 +1,5 @@
 module Policr
-  class UnverifiedMessage < Handler
+  class UnverifiedMessageHandler < Handler
     alias VerifyStatus = Cache::VerifyStatus
 
     @status : (Nil | VerifyStatus)

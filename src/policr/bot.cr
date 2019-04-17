@@ -35,7 +35,7 @@ module Policr
 
       handlers[:join_user] = JoinUserHandler.new self
       handlers[:join_bot] = JoinBotHandler.new self
-      handlers[:unverified_message] = UnverifiedMessage.new self
+      handlers[:unverified_message] = UnverifiedMessageHandler.new self
       handlers[:halal_message] = HalalMessageHandler.new self
       handlers[:from_setting] = FromSettingHandler.new self
       handlers[:verify_time_setting] = VerifyTimeSettingHandler.new self
