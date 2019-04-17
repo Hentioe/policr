@@ -4,7 +4,6 @@ require "schedule"
 module Policr
   SAFE_MSG_SIZE       =  2 # 消息的安全长度
   DEFAULT_TORTURE_SEC = 45 # 默认验证等待时长（秒）
-  ARABIC_CHARACTERS   = /^[\x{0600}-\x{06FF}-\x{0750}-\x{077F}-\x{08A0}-\x{08FF}-\x{FB50}-\x{FDFF}-\x{FE70}-\x{FEFF}-\x{10E60}-\x{10E7F}-\x{1EC70}-\x{1ECBF}-\x{1ED00}-\x{1ED4F}-\x{1EE00}-\x{1EEFF} ]+$/
 
   FROM_TIPS =
     <<-TEXT
@@ -20,20 +19,24 @@ module Policr
     TEXT
 
   class Bot < TelegramBot::Bot
-    alias Button = TelegramBot::InlineKeyboardButton
-    alias Markup = TelegramBot::InlineKeyboardMarkup
     alias TortureTimeType = Cache::TortureTimeType
     alias VerifyStatus = Cache::VerifyStatus
 
     include TelegramBot::CmdHandler
 
     getter self_id : Int64
+    getter handlers = Hash(Symbol, Handler).new
 
     def initialize
       super(Policr.username, Policr.token)
 
       me = get_me || raise Exception.new("Failed to get bot data")
       @self_id = me["id"].as_i64
+
+      handlers[:join_user] = JoinUserHandler.new self
+      handlers[:join_bot] = JoinBotHandler.new self
+      handlers[:unverified_message] = UnverifiedMessage.new self
+      handlers[:halal_message] = HalalMessageHandler.new self
 
       cmd "ping" do |msg|
         reply msg, "pong"
@@ -59,10 +62,10 @@ module Policr
         role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
         if (user = msg.from) && has_permission?(msg.chat.id, user.id, role)
           text = "已启动审核。包含: 新入群成员主动验证、清真移除、清真消息封禁等功能被开启。"
-          unless is_admin(msg.chat.id, @self_id.to_i32)
-            text = "不给权限还想让人家干活，做梦。"
-          else
+          if is_admin(msg.chat.id, @self_id.to_i32)
             DB.enable_examine(msg.chat.id)
+          else
+            text = "不给权限还想让人家干活，做梦。"
           end
           reply msg, text
         end
@@ -172,23 +175,6 @@ module Policr
       from_investigate(chat_id, message_id, target_username, target_user_id) if DB.enabled_from?(chat_id)
     end
 
-    private def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
-      Cache.verify_status_clear user_id
-      logger.info "Username '#{username}' has not been verified and has been banned"
-      begin
-        kick_chat_member(chat_id, user_id)
-      rescue ex : TelegramBot::APIException
-        text = "踢不掉他诶（自己想想什么原因？）……"
-        edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: text)
-      else
-        text = "(〒︿〒) 他没能挺过这一关，永久的离开了我们。"
-        text = "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了他。" if admin
-        edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: text, reply_markup: add_banned_menu(user_id, username))
-      end
-    end
-
     private def slow_with_receipt(query, chat_id, target_user_id, target_username, message_id)
       logger.info "Username '#{target_username}' verification is a bit slower"
 
@@ -229,6 +215,12 @@ module Policr
         logger.info "Username '#{target_username}' did not pass verification"
         answer_callback_query(query.id, text: "未通过验证", show_alert: true)
         unverified_with_receipt(chat_id, message_id, target_user_id, target_username)
+      end
+    end
+
+    def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
+      if (handler = handlers[:join_user]?) && handler.is_a?(JoinUserHandler)
+        handler.unverified_with_receipt(chat_id, message_id, user_id, username, admin)
       end
     end
 
@@ -297,11 +289,11 @@ module Policr
         text: text, reply_markup: nil)
     end
 
-    private def is_admin(chat_id, user_id)
+    def is_admin(chat_id, user_id)
       has_permission?(chat_id, user_id, :admin)
     end
 
-    private def has_permission?(chat_id, user_id, role)
+    def has_permission?(chat_id, user_id, role)
       user = get_chat_member(chat_id, user_id)
       is_creator = user.status == "creator"
       case role
@@ -343,29 +335,10 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
-      new_members = msg.new_chat_members
-      is_examine = DB.enable_examine?(msg.chat.id)
       role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
 
-      # 避免入群的瞬间广告
-      if (user = msg.from) && (status = Cache.verify?(user.id))
-        delete_message(msg.chat.id, msg.message_id) if status == VerifyStatus::Init
-      end
-
-      # 审核新加入群成员
-      new_members.select { |m| m.is_bot == false }.each do |member|
-        name = get_fullname(member)
-        name =~ ARABIC_CHARACTERS ? kick_halal_with_receipt(msg, member) : torture_action(msg, member)
-      end if new_members && is_examine
-
-      # New join bot
-      new_members.select { |m| m.is_bot }.each do |member|
-        restrict_bot(msg, member)
-      end if new_members && is_examine
-
-      # 审核消息内容
-      if is_examine && (text = msg.text) && (user = msg.from)
-        kick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
+      handlers.each do |_, handler|
+        handler.registry(msg)
       end
 
       # 回复消息设置来源调查列表
@@ -398,7 +371,7 @@ module Policr
       }
       markup = Markup.new
       markup << [btn.call("解除限制", 0), btn.call("直接移除", -1)]
-      sended_msg = send_message(msg.chat.id, "抓到一个新加入的机器人，安全考虑已对其进行限制。如有需要可自行解除，否则请移除。", reply_to_message_id: msg.message_id, reply_markup: markup)
+      send_message(msg.chat.id, "抓到一个新加入的机器人，安全考虑已对其进行限制。如有需要可自行解除，否则请移除。", reply_to_message_id: msg.message_id, reply_markup: markup)
       logger.info "Bot '#{bot.id}' has been restricted"
     end
 
@@ -417,80 +390,17 @@ module Policr
       end
     end
 
-    QUESTION_TEXT = "两个黄鹂鸣翠柳"
-
-    private def torture_action(msg, member)
-      Cache.verify_init(member.id)
-
-      # 禁言用户
-      restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
-
-      torture_sec = DB.get_torture_sec(msg.chat.id, DEFAULT_TORTURE_SEC)
-      name = get_fullname(member)
-      logger.info "Start to torture '#{name}'"
-      question = "请在 #{torture_sec} 秒内选出「#{QUESTION_TEXT}」的下一句"
-      reply_id = msg.message_id
-      member_id = member.id.to_s
-      member_username = member.username
-
-      btn = ->(text : String, chooese_id : Int32) {
-        Button.new(text: text, callback_data: "Torture:#{member_id}:#{member_username}:#{chooese_id}")
-      }
-      markup = Markup.new
-      markup << [btn.call("朝辞白帝彩云间", 1)]
-      markup << [btn.call("忽闻岸上踏歌声", 2)]
-      markup << [btn.call("一行白鹭上青天", 3)]
-      markup << [btn.call("人工通过", 0), btn.call("人工封禁", -1)]
-      sended_msg = send_message(msg.chat.id, question, reply_to_message_id: reply_id, reply_markup: markup)
-
-      ban_task = ->(message_id : Int32) {
-        if Cache.verify?(member.id) == VerifyStatus::Init
-          logger.info "User '#{name}' torture time expired and has been banned"
-          Cache.verify_slowed(member.id)
-          unverified_with_receipt(msg.chat.id, message_id, member.id, member.username)
-        end
-      }
-
-      ban_timer = ->(message_id : Int32) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id) } }
-      if sended_msg && (message_id = sended_msg.message_id)
-        ban_timer.call(message_id)
-      end
-    end
-
-    private def kick_halal_with_receipt(msg, member)
-      name = get_fullname(member)
-      logger.info "Found a halal '#{name}'"
-      sended_msg = reply msg, "d(`･∀･)b 诶发现一名清真，看我干掉它……"
-
-      if sended_msg
-        begin
-          kick_chat_member(msg.chat.id, member.id)
-          member_id = member.id
-          edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: add_banned_menu(member_id, member.username))
-          logger.info "Halal '#{name}' has been banned"
-        rescue ex : TelegramBot::APIException
-          edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "╰(〒皿〒)╯ 啥情况，这枚清真移除失败了。")
-          _, reason = get_error_code_with_reason(ex)
-          logger.info "Halal '#{name}' banned failure, reason: #{reason}"
-        end
-      end
-    end
-
-    private def add_banned_menu(user_id, username)
-      markup = Markup.new
-      markup << Button.new(text: "解除封禁", callback_data: "BanedMenu:#{user_id}:#{username}::unban")
-      markup
-    end
-
-    private def get_fullname(member)
+    def get_fullname(member)
       first_name = member.first_name
       last_name = member.last_name ? " #{member.last_name}" : ""
       "#{first_name}#{last_name}"
     end
 
-    private def get_error_code_with_reason(ex : TelegramBot::APIException)
+    def log(text)
+      logger.info text
+    end
+
+    def get_error_code_with_reason(ex : TelegramBot::APIException)
       code = -1
       reason = "Unknown"
 

@@ -2,6 +2,9 @@ require "./policr/**"
 require "dotenv"
 
 module Policr
+  alias Button = TelegramBot::InlineKeyboardButton
+  alias Markup = TelegramBot::InlineKeyboardMarkup
+
   extend self
 
   VERSION = "0.1.0-dev"
