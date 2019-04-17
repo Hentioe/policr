@@ -2,23 +2,22 @@ require "telegram_bot"
 require "schedule"
 
 module Policr
-  SAFE_MSG_SIZE       =  2 # 消息的安全长度
   DEFAULT_TORTURE_SEC = 45 # 默认验证等待时长（秒）
 
-  FROM_TIPS =
-    <<-TEXT
-    您正在设置来源调查，一个具体的例子：
-
-    ```
-    -短来源1 -短来源2
-    -长长长长长来源3
-    -长长长长长来源4
-    ```
-    如上，每一个来源需要前缀「-」，当多个来源位于同一行时将并列显示，否则独占一行。
-    消息不要使用 `Markdown` 格式，在 PC 客户端可能需要 `<Ctrl>+<Enter>` 组合键才能换行。请注意，**只有回复本消息才会被认为是设置来源调查**，并且随着机器人的重启，本消息很可能存在回复有效期。
-    TEXT
-
   class Bot < TelegramBot::Bot
+    FROM_TIPS =
+      <<-TEXT
+        您正在设置来源调查，一个具体的例子：
+
+        ```
+        -短来源1 -短来源2
+        -长长长长长来源3
+        -长长长长长来源4
+        ```
+        如上，每一个来源需要前缀「-」，当多个来源位于同一行时将并列显示，否则独占一行。
+        消息不要使用 `Markdown` 格式，在 PC 客户端可能需要 `<Ctrl>+<Enter>` 组合键才能换行。请注意，**只有回复本消息才会被认为是设置来源调查**，并且随着机器人的重启，本消息很可能存在回复有效期。
+        TEXT
+
     alias TortureTimeType = Cache::TortureTimeType
     alias VerifyStatus = Cache::VerifyStatus
 
@@ -42,6 +41,9 @@ module Policr
       handlers[:verify_time_setting] = VerifyTimeSettingHandler.new self
 
       callbacks[:torture] = TortureCallback.new self
+      callbacks[:baned_menu] = BanedMenuCallback.new self
+      callbacks[:bot_join] = BotJoinCallback.new self
+      callbacks[:from] = FromCallback.new self
 
       cmd "ping" do |msg|
         reply msg, "pong"
@@ -153,7 +155,7 @@ module Policr
           reply msg, "已回收其它管理员使用指令调整设置的权力。"
         end
 
-        cmd "token" do |msg|
+        cmd "token" do |_msg|
           case msg.chat.type
           when "supergroup" # 生成令牌
             nil
@@ -173,91 +175,15 @@ module Policr
           return
         end
 
-        chat_id = message.chat.id
-        from_user_id = query.from.id
-        call_name, target_id, target_username, chooese = report
+        call_name, _, _, _ = report
 
         callbacks.each do |_, callback|
           callback.handle(query, message, report) if callback.match?(call_name)
-        end
-
-        case call_name
-        when "BanedMenu"
-          handle_baned_menu(query, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
-        when "From"
-          handle_from(query, chooese.to_i, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
-        when "BotJoin"
-          handle_restrict_bot(query, chooese.to_i, chat_id, target_id.to_i, from_user_id, message.message_id)
         end
       }
       if (data = query.data) && (message = query.message)
         _handle.call(data, message)
       end
-    end
-
-    def handle_baned_menu(query, chat_id, target_user_id, target_username, from_user_id, message_id)
-      role = DB.trust_admin?(chat_id) ? :admin : :creator
-
-      unless has_permission? chat_id, from_user_id, role
-        logger.info "User ID '#{from_user_id}' without permission click to unbanned button"
-        answer_callback_query(query.id, text: "你既然不是管理员，那就是他的同伙，不听你的", show_alert: true)
-        return
-      end
-
-      begin
-        logger.info "Username '#{target_username}' has been unbanned by the administrator"
-        unban_r = unban_chat_member(chat_id, target_user_id)
-        markup = Markup.new
-        markup << Button.new(text: "叫 TA 回来", url: "t.me/#{target_username}")
-        edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: "(,,・ω・,,) 已经被解封了，让他注意。", reply_markup: markup) if unban_r
-      rescue ex : TelegramBot::APIException
-        _, reason = get_error_code_with_reason(ex)
-        answer_callback_query(query.id, text: "解封失败，#{reason}", show_alert: true)
-        logger.info "Username '#{target_username}' unsealing failed, reason: #{reason}"
-      end
-    end
-
-    def handle_from(query, chooese_id, chat_id, target_user_id, target_username, from_user_id, message_id)
-      unless from_user_id == target_user_id
-        logger.info "Unrelated User ID '#{from_user_id}' click to From Investigate button"
-        answer_callback_query(query.id, text: "又不是问你，自作多情", show_alert: true)
-        return
-      end
-
-      logger.info "Username '#{target_username}' has selected from: #{chooese_id}"
-
-      all_from = Array(String).new
-      if from_list = DB.get_chat_from(chat_id)
-        from_list.each do |btn_list|
-          btn_list.each { |btn_text| all_from << btn_text }
-        end
-      end
-      edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: "原来是从「#{all_from[chooese_id]?}」过来的，大家心里已经有数了。")
-    end
-
-    def handle_restrict_bot(query, chooese_id, chat_id, bot_id, from_user_id, message_id)
-      role = DB.trust_admin?(chat_id) ? :admin : :creator
-
-      unless has_permission? chat_id, from_user_id, role
-        logger.info "User ID '#{from_user_id}' without permission click to unrestrict button"
-        answer_callback_query(query.id, text: "你既然不是管理员，那就是它的同伙，不听你的", show_alert: true)
-        return
-      end
-
-      text = "已解除限制，希望是个有用的机器人。"
-      case chooese_id
-      when 0
-        restrict_chat_member(chat_id, bot_id, can_send_messages: true)
-      when -1
-        kick_chat_member(chat_id, bot_id)
-        text = "已经被移除啦~安全危机解除！"
-      else
-        text = "此消息的内联键盘功能已经过时了，没有进行任何操作~"
-      end
-      edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: text, reply_markup: nil)
     end
 
     def is_admin(chat_id, user_id)

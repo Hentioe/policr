@@ -9,7 +9,7 @@ module Policr
     def handle(query, msg, report)
       chat_id = msg.chat.id
       from_user_id = query.from.id
-      call_name, target_id, target_username, chooese = report
+      target_id, target_username, chooese = report
 
       chooese_i = chooese.to_i
       target_user_id = target_id.to_i
