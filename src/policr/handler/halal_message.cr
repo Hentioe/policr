@@ -15,10 +15,8 @@ module Policr
     end
 
     def handle(msg)
-      if (text = @text) && (user = @user) && (join_user_handler = bot.handlers[:join_user]?)
-        if join_user_handler.is_a?(JoinUserHandler)
-          join_user_handler.kick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
-        end
+      if (text = @text) && (user = @user) && (join_user_handler = bot.handlers[:join_user]?) && join_user_handler.is_a?(JoinUserHandler)
+        join_user_handler.kick_halal_with_receipt(msg, user) if (text.size > SAFE_MSG_SIZE && text =~ ARABIC_CHARACTERS)
       end
     end
   end
