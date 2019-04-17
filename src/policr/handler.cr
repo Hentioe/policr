@@ -1,7 +1,7 @@
 module Policr
   abstract class Handler
     getter bot : Bot
-    @current_msg : (Nil | TelegramBot::Message)
+    @current_msg : TelegramBot::Message?
 
     def initialize(bot_instance)
       @bot = bot_instance

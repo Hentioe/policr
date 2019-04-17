@@ -26,6 +26,7 @@ module Policr
 
     getter self_id : Int64
     getter handlers = Hash(Symbol, Handler).new
+    getter callbacks = Hash(Symbol, Callback).new
 
     def initialize
       super(Policr.username, Policr.token)
@@ -39,6 +40,8 @@ module Policr
       handlers[:halal_message] = HalalMessageHandler.new self
       handlers[:from_setting] = FromSettingHandler.new self
       handlers[:verify_time_setting] = VerifyTimeSettingHandler.new self
+
+      callbacks[:torture] = TortureCallback.new self
 
       cmd "ping" do |msg|
         reply msg, "pong"
@@ -149,80 +152,46 @@ module Policr
           DB.distrust_admin msg.chat.id
           reply msg, "已回收其它管理员使用指令调整设置的权力。"
         end
-      end
 
-      cmd "token" do |msg|
-        case msg.chat.type
-        when "supergroup" # 生成令牌
-          nil
-        when "private" # 获取令牌列表
-          nil
+        cmd "token" do |msg|
+          case msg.chat.type
+          when "supergroup" # 生成令牌
+            nil
+          when "private" # 获取令牌列表
+            nil
+          end
         end
       end
     end
 
-    private def verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin = false)
-      Cache.verify_passed(target_user_id)
-      logger.info "Username '#{target_username}' passed verification"
-
-      answer_callback_query(query.id, text: "验证通过", show_alert: true) unless admin
-      text = "(*´∀`)~♥ 恭喜您通过了验证，逃过一劫。"
-      text = "Σ(*ﾟдﾟﾉ)ﾉ 这家伙走后门进来的，大家快喷他。" if admin
-
-      edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: text, reply_markup: nil)
-
-      restrict_chat_member(chat_id, target_user_id, can_send_messages: true)
-
-      from_investigate(chat_id, message_id, target_username, target_user_id) if DB.enabled_from?(chat_id)
-    end
-
-    private def slow_with_receipt(query, chat_id, target_user_id, target_username, message_id)
-      logger.info "Username '#{target_username}' verification is a bit slower"
-
-      answer_callback_query(query.id, text: "验证通过，但是晚了一点点，再去试试？", show_alert: true)
-      edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: "(´ﾟдﾟ`) 他通过了验证，但是手慢了那么一点点，再给他一次机会……", reply_markup: nil)
-      unban_chat_member(chat_id, target_user_id)
-    end
-
-    private def handle_torture(query, chooese, chat_id, target_user_id, target_username, from_user_id, message_id)
-      chooese_i = chooese.to_i
-
-      if chooese_i == 3
-        if target_user_id != from_user_id
-          logger.info "Irrelevant User ID '#{from_user_id}' clicked on the verification inline keyboard button"
-          answer_callback_query(query.id, text: "(#`Д´)ﾉ 请无关人员不要来搞事", show_alert: true)
+    def handle(query : TelegramBot::CallbackQuery)
+      _handle = ->(data : String, message : TelegramBot::Message) {
+        report = data.split(":")
+        if report.size < 4
+          logger.info "'#{get_fullname(query.from)}' clicked on the invalid inline keyboard button"
+          answer_callback_query(query.id, text: "( ×ω× ) 这副内联键盘已经失效了哦", show_alert: true)
           return
         end
 
-        status = Cache.verify?(target_user_id)
-        verified_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Init
-        slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
-      elsif chooese_i <= 0
-        role = DB.trust_admin?(chat_id) ? :admin : :creator
+        chat_id = message.chat.id
+        from_user_id = query.from.id
+        call_name, target_id, target_username, chooese = report
 
-        if has_permission? chat_id, from_user_id, role
-          logger.info "The administrator ended the torture by: #{chooese_i}"
-          case chooese_i
-          when 0
-            verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin: true)
-          when -1
-            unverified_with_receipt(chat_id, message_id, target_user_id, target_username, admin: true)
-          end
-        else
-          answer_callback_query(query.id, text: "你既然不是管理员，那就是他的同伙，不听你的", show_alert: true)
+        callbacks.each do |_, callback|
+          callback.handle(query, message, report) if callback.match?(call_name)
         end
-      else
-        logger.info "Username '#{target_username}' did not pass verification"
-        answer_callback_query(query.id, text: "未通过验证", show_alert: true)
-        unverified_with_receipt(chat_id, message_id, target_user_id, target_username)
-      end
-    end
 
-    def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
-      if (handler = handlers[:join_user]?) && handler.is_a?(JoinUserHandler)
-        handler.unverified_with_receipt(chat_id, message_id, user_id, username, admin)
+        case call_name
+        when "BanedMenu"
+          handle_baned_menu(query, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
+        when "From"
+          handle_from(query, chooese.to_i, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
+        when "BotJoin"
+          handle_restrict_bot(query, chooese.to_i, chat_id, target_id.to_i, from_user_id, message.message_id)
+        end
+      }
+      if (data = query.data) && (message = query.message)
+        _handle.call(data, message)
       end
     end
 
@@ -308,55 +277,12 @@ module Policr
       end
     end
 
-    def handle(query : TelegramBot::CallbackQuery)
-      _handle = ->(data : String, message : TelegramBot::Message) {
-        report = data.split(":")
-        if report.size < 4
-          logger.info "'#{get_fullname(query.from)}' clicked on the invalid inline keyboard button"
-          answer_callback_query(query.id, text: "( ×ω× ) 这副内联键盘已经失效了哦", show_alert: true)
-          return
-        end
-
-        chat_id = message.chat.id
-        from_user_id = query.from.id
-        operate, target_id, target_username, chooese = report
-        case operate
-        when "Torture"
-          handle_torture(query, chooese, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
-        when "BanedMenu"
-          handle_baned_menu(query, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
-        when "From"
-          handle_from(query, chooese.to_i, chat_id, target_id.to_i, target_username, from_user_id, message.message_id)
-        when "BotJoin"
-          handle_restrict_bot(query, chooese.to_i, chat_id, target_id.to_i, from_user_id, message.message_id)
-        end
-      }
-      if (data = query.data) && (message = query.message)
-        _handle.call(data, message)
-      end
-    end
-
     def handle(msg : TelegramBot::Message)
       handlers.each do |_, handler|
         handler.registry(msg)
       end
 
       super
-    end
-
-    def from_investigate(chat_id, message_id, username, user_id)
-      logger.info "From investigation of '#{username}'"
-      if from_list = DB.get_chat_from(chat_id)
-        index = -1
-        btn = ->(text : String) {
-          Button.new(text: text, callback_data: "From:#{user_id}:#{username}:#{index += 1}")
-        }
-        markup = Markup.new
-        from_list.each do |btn_text_list|
-          markup << btn_text_list.map { |text| btn.call(text) }
-        end
-        send_message(chat_id, "欢迎 @#{username} 来到这里，告诉大家你从哪里来的吧？小手轻轻一点就行了~", reply_to_message_id: message_id, reply_markup: markup)
-      end
     end
 
     def get_fullname(member)
