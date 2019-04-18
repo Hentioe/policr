@@ -57,7 +57,7 @@ module Policr
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil)
 
-      bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true)
+      bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
 
       from_investigate(chat_id, message_id, target_username, target_user_id) if DB.enabled_from?(chat_id)
     end

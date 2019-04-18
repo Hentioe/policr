@@ -57,6 +57,7 @@ module Policr
       handlers.each do |_, handler|
         handler.registry(msg)
       end
+
       super
     end
 
