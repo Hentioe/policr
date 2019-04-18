@@ -65,7 +65,7 @@ module Policr
         call_name, _, _, _ = report
 
         callbacks.each do |_, callback|
-          callback.handle(query, message, report.skip(1)) if callback.match?(call_name)
+          callback.handle(query, message, report[1..]) if callback.match?(call_name)
         end
       }
       if (data = query.data) && (message = query.message)

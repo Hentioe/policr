@@ -8,7 +8,7 @@ targets:
   policr:
     main: src/policr.cr
 
-crystal: 0.27.2
+crystal: 0.28.0
 
 license: MIT
 

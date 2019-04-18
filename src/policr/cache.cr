@@ -2,14 +2,11 @@ module Policr::Cache
   extend self
 
   enum TortureTimeType
-    Sec
-    Min
+    Sec; Min
   end
 
   enum VerifyStatus
-    Init
-    Pass
-    Slow
+    Init; Pass; Slow
   end
 
   @@torture_time_msg = Hash(Int32, TortureTimeType).new

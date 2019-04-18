@@ -2,7 +2,7 @@ module Policr
   class UnverifiedMessageHandler < Handler
     alias VerifyStatus = Cache::VerifyStatus
 
-    @status : (Nil | VerifyStatus)
+    @status : VerifyStatus?
 
     def match(msg)
       if (!msg.new_chat_members) && (user = msg.from)
