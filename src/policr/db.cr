@@ -3,7 +3,7 @@ require "rocksdb"
 module Policr::DB
   extend self
 
-  @@db = nil
+  @@db : RocksDB::DB?
 
   def connect(path)
     @@db = RocksDB::DB.new("#{path}/rocks#data#policr")

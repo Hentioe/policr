@@ -5,7 +5,7 @@ module Policr
     @members = Array(TelegramBot::User).new
 
     def match(msg)
-      if (members = msg.new_chat_members) && DB.enable_examine?(msg.chat.id)
+      if DB.enable_examine?(msg.chat.id) && (members = msg.new_chat_members) 
         @members = members
       end
     end
