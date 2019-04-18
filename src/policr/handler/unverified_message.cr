@@ -5,7 +5,7 @@ module Policr
     @status : (Nil | VerifyStatus)
 
     def match(msg)
-      if user = msg.from
+      if (!msg.new_chat_members) && (user = msg.from)
         @status = Cache.verify?(user.id)
       end
     end

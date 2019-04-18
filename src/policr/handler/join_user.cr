@@ -40,7 +40,7 @@ module Policr
 
     def add_banned_menu(user_id, username)
       markup = Markup.new
-      markup << Button.new(text: "解除封禁", callback_data: "BanedMenu:#{user_id}:#{username}::unban")
+      markup << Button.new(text: "解除封禁", callback_data: "BanedMenu:#{user_id}:#{username}:unban")
       markup
     end
 
@@ -50,7 +50,7 @@ module Policr
       Cache.verify_init(member.id)
 
       # 禁言用户
-      bot.restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
+      # bot.restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
 
       torture_sec = DB.get_torture_sec(msg.chat.id, DEFAULT_TORTURE_SEC)
       name = bot.get_fullname(member)
