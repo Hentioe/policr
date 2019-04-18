@@ -26,5 +26,3 @@
 * 更多的详情请访问[官网](https://policr.bluerain.io)
 * 务必关注社区频道掌握最新的功能更新通知：[PolicrBot Community](https://t.me/policr_community)
 * 最佳的贡献方式是**反馈有价值的建议**，而不是试图提交代码
-
-代码正在积极重构中（模块拆分，注释）……
