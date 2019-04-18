@@ -37,11 +37,11 @@ module Policr
             unverified_with_receipt(chat_id, message_id, target_user_id, target_username, admin: true)
           end
         else
-          bot.answer_callback_query(query.id, text: "你既然不是管理员，那就是他的同伙，不听你的", show_alert: true)
+          bot.answer_callback_query(query.id, text: "你怕不是他的同伙吧？不听你的", show_alert: true)
         end
       else
         bot.log "Username '#{target_username}' did not pass verification"
-        bot.answer_callback_query(query.id, text: "未通过验证", show_alert: true)
+        bot.answer_callback_query(query.id, text: "✖ 未通过验证", show_alert: true)
         unverified_with_receipt(chat_id, message_id, target_user_id, target_username)
       end
     end
@@ -50,14 +50,14 @@ module Policr
       Cache.verify_passed(target_user_id)
       bot.log "Username '#{target_username}' passed verification"
 
-      bot.answer_callback_query(query.id, text: "验证通过", show_alert: true) unless admin
+      bot.answer_callback_query(query.id, text: "✔ 验证通过", show_alert: true) unless admin
       text = "(*´∀`)~♥ 恭喜您通过了验证，逃过一劫。"
       text = "Σ(*ﾟдﾟﾉ)ﾉ 这家伙走后门进来的，大家快喷他。" if admin
 
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil)
 
-      bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true)
+      bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
 
       from_investigate(chat_id, message_id, target_username, target_user_id) if DB.enabled_from?(chat_id)
     end

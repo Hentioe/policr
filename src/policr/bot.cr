@@ -53,6 +53,14 @@ module Policr
       end
     end
 
+    def handle(msg : TelegramBot::Message)
+      handlers.each do |_, handler|
+        handler.registry(msg)
+      end
+
+      super
+    end
+
     def handle(query : TelegramBot::CallbackQuery)
       _handle = ->(data : String, message : TelegramBot::Message) {
         report = data.split(":")
@@ -90,14 +98,6 @@ module Policr
       end
     end
 
-    def handle(msg : TelegramBot::Message)
-      handlers.each do |_, handler|
-        handler.registry(msg)
-      end
-
-      super
-    end
-
     def get_fullname(member)
       first_name = member.first_name
       last_name = member.last_name ? " #{member.last_name}" : ""
@@ -117,14 +117,6 @@ module Policr
         code = data["error_code"]? || code
       end
       {code, reason}
-    end
-
-    def name
-      @name
-    end
-
-    def external_logger
-      logger
     end
   end
 end

@@ -17,14 +17,14 @@ module Policr
 
       unless bot.has_permission? chat_id, from_user_id, role
         bot.log "User ID '#{from_user_id}' without permission click to unrestrict button"
-        bot.answer_callback_query(query.id, text: "你既然不是管理员，那就是它的同伙，不听你的", show_alert: true)
+        bot.answer_callback_query(query.id, text: "你怕不是它的同伙吧？不听你的", show_alert: true)
         return
       end
 
       text = "已解除限制，希望是个有用的机器人。"
       case chooese_id
       when 0
-        bot.restrict_chat_member(chat_id, bot_id, can_send_messages: true)
+        bot.restrict_chat_member(chat_id, bot_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
       when -1
         bot.kick_chat_member(chat_id, bot_id)
         text = "已经被移除啦~安全危机解除！"
