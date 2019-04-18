@@ -1,21 +1,17 @@
 module Policr
   abstract class Handler
     getter bot : Bot
-    @current_msg : TelegramBot::Message?
 
     def initialize(bot_instance)
       @bot = bot_instance
     end
 
     def registry(msg)
-      @current_msg = msg
-      preprocess
+      preprocess msg
     end
 
-    private def preprocess
-      if (msg = @current_msg) && match(msg)
-        handle(msg)
-      end
+    private def preprocess(msg)
+      handle(msg) if match(msg)
     end
 
     abstract def match(msg)
