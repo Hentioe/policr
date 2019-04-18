@@ -24,7 +24,7 @@ module Policr
       text = "已解除限制，希望是个有用的机器人。"
       case chooese_id
       when 0
-        bot.restrict_chat_member(chat_id, bot_id, can_send_messages: true)
+        bot.restrict_chat_member(chat_id, bot_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
       when -1
         bot.kick_chat_member(chat_id, bot_id)
         text = "已经被移除啦~安全危机解除！"
