@@ -99,4 +99,16 @@ module Policr::DB
       db.delete("trust_admin_#{chat_id.to_s}")
     end
   end
+
+  def add_to_whitelist(user_id)
+    if db = @@db
+      db.put("halal_white_#{user_id}", 1)
+    end
+  end
+
+  def halal_white?(user_id)
+    if (db = @@db) && (status = db.get?("halal_white_#{user_id}"))
+      status.to_i == 1
+    end
+  end
 end

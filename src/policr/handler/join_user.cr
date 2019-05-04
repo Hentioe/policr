@@ -20,6 +20,10 @@ module Policr
     def kick_halal_with_receipt(msg, member)
       name = bot.get_fullname(member)
       bot.log "Found a halal '#{name}'"
+      if DB.halal_white? member.id
+        bot.log "Halal '#{name}' in whitelist, ignored"
+        return
+      end
       sended_msg = bot.reply msg, "d(`･∀･)b 诶发现一名清真，看我干掉它……"
 
       if sended_msg
@@ -41,6 +45,7 @@ module Policr
     def add_banned_menu(user_id, username)
       markup = Markup.new
       markup << Button.new(text: "解除封禁", callback_data: "BanedMenu:#{user_id}:#{username}:unban")
+      markup << Button.new(text: "加入白名单", callback_data: "BanedMenu:#{user_id}:#{username}:whitelist")
       markup
     end
 
