@@ -8,6 +8,20 @@ module Policr
   alias Markup = TelegramBot::InlineKeyboardMarkup
 
   class Bot < TelegramBot::Bot
+    private def register(name : Symbol, filter_type)
+      filter = filter_type.new self
+      case filter
+      when Handler
+        handlers[name] = filter
+      when Callback
+        callbacks[name] = filter
+      when Commander
+        commanders[name] = filter
+      else
+        raise "type '#{filter}' that does not support registration"
+      end
+    end
+
     include TelegramBot::CmdHandler
 
     getter self_id : Int64
@@ -21,30 +35,30 @@ module Policr
       me = get_me || raise Exception.new("Failed to get bot data")
       @self_id = me["id"].as_i64
 
-      handlers[:join_user] = JoinUserHandler.new self
-      handlers[:join_bot] = JoinBotHandler.new self
-      handlers[:unverified_message] = UnverifiedMessageHandler.new self
-      handlers[:halal_message] = HalalMessageHandler.new self
-      handlers[:from_setting] = FromSettingHandler.new self
-      handlers[:verify_time_setting] = VerifyTimeSettingHandler.new self
+      register :join_user, JoinUserHandler
+      register :join_bot, JoinBotHandler
+      register :unverified_message, UnverifiedMessageHandler
+      register :halal_message, HalalMessageHandler
+      register :from_setting, FromSettingHandler
+      register :verify_time_setting, VerifyTimeSettingHandler
 
-      callbacks[:torture] = TortureCallback.new self
-      callbacks[:baned_menu] = BanedMenuCallback.new self
-      callbacks[:bot_join] = BotJoinCallback.new self
-      callbacks[:from] = FromCallback.new self
+      register :torture, TortureCallback
+      register :baned_menu, BanedMenuCallback
+      register :bot_join, BotJoinCallback
+      register :from, FromCallback
 
-      commanders[:start] = StartCommander.new self
-      commanders[:ping] = PingCommander.new self
-      commanders[:from] = FromCommander.new self
-      commanders[:enable_examine] = EnableExamineCommander.new self
-      commanders[:disable_examine] = DisableExamineCommander.new self
-      commanders[:enable_from] = EnableFromCommander.new self
-      commanders[:disable_from] = DisableFromCommander.new self
-      commanders[:torture_sec] = TortureSecCommander.new self
-      commanders[:torture_min] = TortureMinCommander.new self
-      commanders[:trust_admin] = TrustAdminCommander.new self
-      commanders[:distrust_admin] = DistrustAdminCommander.new self
-      commanders[:token] = TokenCommander.new self
+      register :start, StartCommander
+      register :ping, PingCommander
+      register :from, FromCommander
+      register :enable_examine, EnableExamineCommander
+      register :disable_examine, DisableExamineCommander
+      register :enable_from, EnableFromCommander
+      register :disable_from, DisableFromCommander
+      register :torture_sec, TortureSecCommander
+      register :torture_min, TortureMinCommander
+      register :trust_admin, TrustAdminCommander
+      register :distrust_admin, DistrustAdminCommander
+      register :token, TokenCommander
 
       commanders.each do |_, command|
         cmd command.name do |msg|
