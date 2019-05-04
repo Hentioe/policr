@@ -14,6 +14,8 @@ module Policr
           text = "不给权限还想让人家干活，做梦。"
         end
         bot.reply msg, text
+      else
+        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
   end

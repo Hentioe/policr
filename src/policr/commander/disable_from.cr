@@ -12,6 +12,8 @@ module Policr
         text = "已禁用来源调查功能，启用请使用 `/from` 指令完成设置。"
         text = "已禁用来源调查功能，相关设置将会在下次启用时继续沿用。" if DB.get_chat_from(msg.chat.id)
         bot.send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
+      else
+        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
   end

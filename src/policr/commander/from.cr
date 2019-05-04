@@ -24,6 +24,8 @@ module Policr
         if sended_msg
           Cache.carying_from_setting_msg sended_msg.message_id
         end
+      else
+        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
   end

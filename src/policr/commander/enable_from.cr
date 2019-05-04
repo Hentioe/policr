@@ -15,6 +15,8 @@ module Policr
           text = "没有检测到之前的来源设置，请使用 `/from` 指令完成设置。"
           bot.send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, parse_mode: "markdown")
         end
+      else
+        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
   end

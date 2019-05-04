@@ -16,6 +16,8 @@ module Policr
         if send_message = bot.reply msg, text
           Cache.carving_torture_time_msg_min(send_message.message_id)
         end
+      else
+        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
   end
