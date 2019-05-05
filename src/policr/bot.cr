@@ -59,6 +59,8 @@ module Policr
       register :trust_admin, TrustAdminCommander
       register :distrust_admin, DistrustAdminCommander
       register :token, TokenCommander
+      register :clean_mode, EnableCleanModeCommander
+      register :record_mode, EnableRecordModeCommander
 
       commanders.each do |_, command|
         cmd command.name do |msg|

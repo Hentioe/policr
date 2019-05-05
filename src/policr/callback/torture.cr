@@ -57,8 +57,13 @@ module Policr
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil)
 
+      # 干净模式删除消息
+      Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } if DB.clean_mode?(chat_id)
+
+      # 初始化用户权限
       bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
 
+      # 来源调查
       from_investigate(chat_id, message_id, target_username, target_user_id) if DB.enabled_from?(chat_id)
     end
 
@@ -73,7 +78,7 @@ module Policr
         from_list.each do |btn_text_list|
           markup << btn_text_list.map { |text| btn.call(text) }
         end
-        bot.send_message(chat_id, "欢迎 @#{username} 来到这里，告诉大家你从哪里来的吧？小手轻轻一点就行了~", reply_to_message_id: message_id, reply_markup: markup)
+        bot.send_message(chat_id, "欢迎 @#{username} 来到这里，告诉大家你从哪里来的吧？小手轻轻一点就行了~", reply_markup: markup)
       end
     end
 

@@ -111,4 +111,24 @@ module Policr::DB
       status.to_i == 1
     end
   end
+
+  def clean_mode(chat_id)
+    if db = @@db
+      db.put("clean_mode_#{chat_id}", 1)
+      db.delete("record_mode_#{chat_id}")
+    end
+  end
+
+  def clean_mode?(chat_id)
+    if (db = @@db) && (level = db.get?("clean_mode_#{chat_id}"))
+      level.to_i == 1
+    end
+  end
+
+  def record_mode(chat_id)
+    if db = @@db
+      db.put("record_mode_#{chat_id}", 1)
+      db.delete("clean_mode_#{chat_id}")
+    end
+  end
 end
