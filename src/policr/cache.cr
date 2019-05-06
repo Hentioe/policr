@@ -12,6 +12,7 @@ module Policr::Cache
   @@torture_time_msg = Hash(Int32, TortureTimeType).new
   @@from_setting_msg = Set(Int32).new
   @@verify_status = Hash(Int32, VerifyStatus).new
+  @@custom_msg = Set(Int32).new
 
   def carving_torture_time_msg_sec(message_id)
     @@torture_time_msg[message_id] = TortureTimeType::Sec
@@ -31,6 +32,14 @@ module Policr::Cache
 
   def from_setting_msg?(message_id)
     @@from_setting_msg.includes? message_id
+  end
+
+  def carying_custom_msg(message_id)
+    @@custom_msg << message_id
+  end
+
+  def custom_msg?(message_id)
+    @@custom_msg.includes? message_id
   end
 
   def verify_passed(user_id)

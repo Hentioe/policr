@@ -41,6 +41,7 @@ module Policr
       register :halal_message, HalalMessageHandler
       register :from_setting, FromSettingHandler
       register :verify_time_setting, VerifyTimeSettingHandler
+      register :custom, CustomHandler
 
       register :torture, TortureCallback
       register :baned_menu, BanedMenuCallback
@@ -61,6 +62,7 @@ module Policr
       register :token, TokenCommander
       register :clean_mode, EnableCleanModeCommander
       register :record_mode, EnableRecordModeCommander
+      register :custom, CustomCommander
 
       commanders.each do |_, command|
         cmd command.name do |msg|
