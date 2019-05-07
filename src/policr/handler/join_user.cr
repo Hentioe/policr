@@ -49,14 +49,12 @@ module Policr
       markup
     end
 
-    QUESTION_TEXT = "两个黄鹂鸣翠柳"
-
     def torture_action(msg, member)
       Cache.verify_init(member.id)
       default =
         {
           1,
-          "你觉得自己能不能通过验证？",
+          "你认为自己能不能进来？",
           [
             "是的，我觉得可以",
             "不能，请踢掉我吧",
