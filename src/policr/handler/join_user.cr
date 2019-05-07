@@ -53,6 +53,18 @@ module Policr
 
     def torture_action(msg, member)
       Cache.verify_init(member.id)
+      default =
+        {
+          1,
+          "你觉得自己能不能通过验证？",
+          [
+            "是的，我觉得可以",
+            "不能，请踢掉我吧",
+          ],
+        }
+      custom = DB.custom(msg.chat.id)
+
+      _, title, answers = custom ? custom : default
 
       # 禁言用户
       bot.restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
@@ -60,7 +72,7 @@ module Policr
       torture_sec = DB.get_torture_sec(msg.chat.id, DEFAULT_TORTURE_SEC)
       name = bot.get_fullname(member)
       bot.log "Start to torture '#{name}'"
-      question = "请在 #{torture_sec} 秒内选出「#{QUESTION_TEXT}」的下一句"
+      question = "请在 #{torture_sec} 秒内确认「#{title}」以通过验证"
       reply_id = msg.message_id
       member_id = member.id.to_s
       member_username = member.username
@@ -69,9 +81,7 @@ module Policr
         Button.new(text: text, callback_data: "Torture:#{member_id}:#{member_username}:#{chooese_id}")
       }
       markup = Markup.new
-      markup << [btn.call("朝辞白帝彩云间", 1)]
-      markup << [btn.call("忽闻岸上踏歌声", 2)]
-      markup << [btn.call("一行白鹭上青天", 3)]
+      answers.each_with_index { |answer, i| markup << [btn.call(answer, i + 1)] }
       markup << [btn.call("人工通过", 0), btn.call("人工封禁", -1)]
       sended_msg = bot.send_message(msg.chat.id, question, reply_to_message_id: reply_id, reply_markup: markup)
 

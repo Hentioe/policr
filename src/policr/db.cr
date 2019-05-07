@@ -131,4 +131,22 @@ module Policr::DB
       db.delete("clean_mode_#{chat_id}")
     end
   end
+
+  def custom_text(chat_id, text)
+    if db = @@db
+      db.put("custom_text_#{chat_id}", text)
+    end
+  end
+
+  def custom(chat_id)
+    if (db = @@db) && (text = db.get?("custom_text_#{chat_id}"))
+      lines = text.split("\n").map { |line| line.strip }.select { |line| line != "" }
+      true_index = -1
+      answers = lines[1..].map_with_index do |line, index|
+        true_index = index + 1 if line.starts_with?("+")
+        line[1..]
+      end
+      {true_index, lines[0], answers}
+    end
+  end
 end

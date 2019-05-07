@@ -15,7 +15,10 @@ module Policr
       target_user_id = target_id.to_i
       message_id = msg.message_id
 
-      if chooese_i == 3
+      custom = DB.custom(msg.chat.id)
+      true_index = custom ? custom.[0] : 3
+
+      if chooese_i == true_index
         if target_user_id != from_user_id
           bot.log "Irrelevant User ID '#{from_user_id}' clicked on the verification inline keyboard button"
           bot.answer_callback_query(query.id, text: "(#`Д´)ﾉ 请无关人员不要来搞事", show_alert: true)

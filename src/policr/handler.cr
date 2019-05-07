@@ -1,5 +1,11 @@
 module Policr
   abstract class Handler
+    macro all_pass?(conditions)
+      {% for condition, index in conditions %}
+        {{condition}} {% if index < conditions.size - 1 %} && {% end %}
+      {% end %}
+    end
+
     getter bot : Bot
 
     def initialize(bot_instance)
