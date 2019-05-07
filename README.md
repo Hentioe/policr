@@ -20,6 +20,7 @@
 | `/distrust_admin`  | 不信任管理员         | 开关 |  略  |
 | `/clean_mode`      | 干净模式             | 开关 |  略  |
 | `/record_mode`     | 记录模式             | 开关 |  略  |
+| `/custom`          | 定制验证             | 设置 |  略  |
 
 ### 快速入门
 
@@ -57,6 +58,12 @@
 
 ```
 /clean_mode@policr_bot
+```
+
+默认的验证方式太简单了，我想调整一下
+
+```
+/custom@policr_bot
 ```
 
 机器人正在积极更新功能中……
