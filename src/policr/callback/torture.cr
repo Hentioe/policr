@@ -16,19 +16,9 @@ module Policr
       message_id = msg.message_id
 
       custom = DB.custom(msg.chat.id)
-      true_index = custom ? custom.[0] : 3
+      true_index = custom ? custom.[0] : 1
 
-      if chooese_i == true_index
-        if target_user_id != from_user_id
-          bot.log "Irrelevant User ID '#{from_user_id}' clicked on the verification inline keyboard button"
-          bot.answer_callback_query(query.id, text: "(#`Д´)ﾉ 请无关人员不要来搞事", show_alert: true)
-          return
-        end
-
-        status = Cache.verify?(target_user_id)
-        verified_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Init
-        slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
-      elsif chooese_i <= 0
+      if chooese_i <= 0 # 管理员菜单
         role = DB.trust_admin?(chat_id) ? :admin : :creator
 
         if bot.has_permission? chat_id, from_user_id, role
@@ -43,9 +33,21 @@ module Policr
           bot.answer_callback_query(query.id, text: "你怕不是他的同伙吧？不听你的", show_alert: true)
         end
       else
-        bot.log "Username '#{target_username}' did not pass verification"
-        bot.answer_callback_query(query.id, text: "✖ 未通过验证", show_alert: true)
-        unverified_with_receipt(chat_id, message_id, target_user_id, target_username)
+        if target_user_id != from_user_id # 无关人士
+          bot.log "Irrelevant User ID '#{from_user_id}' clicked on the verification inline keyboard button"
+          bot.answer_callback_query(query.id, text: "(#`Д´)ﾉ 请无关人员不要来搞事", show_alert: true)
+          return
+        end
+
+        if chooese_i == true_index # 通过验证
+          status = Cache.verify?(target_user_id)
+          verified_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Init
+          slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
+        else # 未通过验证
+          bot.log "Username '#{target_username}' did not pass verification"
+          bot.answer_callback_query(query.id, text: "✖ 未通过验证", show_alert: true)
+          unverified_with_receipt(chat_id, message_id, target_user_id, target_username)
+        end
       end
     end
 
