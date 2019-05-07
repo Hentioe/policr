@@ -31,7 +31,7 @@ module Policr
           bot.kick_chat_member(msg.chat.id, member.id)
           member_id = member.id
           bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: add_banned_menu(member_id, member.username))
+            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: add_banned_menu(member_id, member.username, true))
           bot.log "Halal '#{name}' has been banned"
         rescue ex : TelegramBot::APIException
           bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
@@ -42,10 +42,10 @@ module Policr
       end
     end
 
-    def add_banned_menu(user_id, username)
+    def add_banned_menu(user_id, username, is_halal = false)
       markup = Markup.new
       markup << Button.new(text: "解除封禁", callback_data: "BanedMenu:#{user_id}:#{username}:unban")
-      markup << Button.new(text: "加入白名单", callback_data: "BanedMenu:#{user_id}:#{username}:whitelist")
+      markup << Button.new(text: "加入白名单", callback_data: "BanedMenu:#{user_id}:#{username}:whitelist") if is_halal
       markup
     end
 
