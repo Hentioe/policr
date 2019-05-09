@@ -3,7 +3,13 @@ module Policr
     def match(msg)
       role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
 
-      (user = msg.from) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && Cache.from_setting_msg?(reply_msg_id) && bot.has_permission?(msg.chat.id, user.id, role)
+      all_pass? [
+        (user = msg.from),
+        (reply_msg = msg.reply_to_message),
+        (reply_msg_id = reply_msg.message_id),
+        Cache.from_setting_msg?(reply_msg_id), # 回复目标为设置来源指令？
+        bot.has_permission?(msg.chat.id, user.id, role),
+      ]
     end
 
     def handle(msg)

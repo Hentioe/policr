@@ -2,17 +2,18 @@ module Policr
   class JoinBotHandler < Handler
     alias VerifyStatus = Cache::VerifyStatus
 
-    @members = Array(TelegramBot::User).new
-
     def match(msg)
-      if DB.enable_examine?(msg.chat.id) && (members = msg.new_chat_members)
-        @members = members
-      end
+      all_pass? [
+        DB.enable_examine?(msg.chat.id),
+        msg.new_chat_members,
+      ]
     end
 
     def handle(msg)
-      @members.select { |m| m.is_bot }.each do |member|
-        restrict_bot(msg, member)
+      if members = msg.new_chat_members
+        members.select { |m| m.is_bot }.each do |member|
+          restrict_bot(msg, member)
+        end
       end
     end
 

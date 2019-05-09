@@ -2,18 +2,19 @@ module Policr
   class JoinUserHandler < Handler
     alias VerifyStatus = Cache::VerifyStatus
 
-    @members = Array(TelegramBot::User).new
-
     def match(msg)
-      if DB.enable_examine?(msg.chat.id) && (members = msg.new_chat_members)
-        @members = members
-      end
+      all_pass? [
+        DB.enable_examine?(msg.chat.id),
+        msg.new_chat_members,
+      ]
     end
 
     def handle(msg)
-      @members.select { |m| m.is_bot == false }.each do |member|
-        name = bot.get_fullname(member)
-        name =~ HalalMessageHandler::ARABIC_CHARACTERS ? kick_halal_with_receipt(msg, member) : torture_action(msg, member)
+      if members = msg.new_chat_members
+        members.select { |m| m.is_bot == false }.each do |member|
+          name = bot.get_fullname(member)
+          name =~ HalalMessageHandler::ARABIC_CHARACTERS ? kick_halal_with_receipt(msg, member) : torture_action(msg, member)
+        end
       end
     end
 

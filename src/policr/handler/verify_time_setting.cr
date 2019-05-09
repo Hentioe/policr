@@ -8,7 +8,14 @@ module Policr
     def match(msg)
       role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
 
-      if (user = msg.from) && (text = msg.text) && (reply_msg = msg.reply_to_message) && (reply_msg_id = reply_msg.message_id) && (time_type = Cache.torture_time_msg?(reply_msg_id)) && bot.has_permission?(msg.chat.id, user.id, role)
+      if all_pass? [
+           (user = msg.from),
+           (text = msg.text),
+           (reply_msg = msg.reply_to_message),
+           (reply_msg_id = reply_msg.message_id),
+           (time_type = Cache.torture_time_msg?(reply_msg_id)),
+           bot.has_permission?(msg.chat.id, user.id, role),
+         ]
         @time_type = time_type
         @text = text
       end
