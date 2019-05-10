@@ -28,7 +28,7 @@ module Policr
         end
       end
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: "( ～'ω')～ 原来 @#{target_username} 是从「#{all_from[chooese_id]?}」过来的，大家心里已经有数了。")
+        text: "( ՞ټ՞)  原来是从「#{all_from[chooese_id]?}」过来的，大家心里已经有数了。")
     end
   end
 end

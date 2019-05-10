@@ -13,6 +13,7 @@ module Policr::Cache
   @@from_setting_msg = Set(Int32).new
   @@verify_status = Hash(Int32, VerifyStatus).new
   @@custom_msg = Set(Int32).new
+  @@new_join_user_msg = Hash(String, Int32).new
 
   def carving_torture_time_msg_sec(message_id)
     @@torture_time_msg[message_id] = TortureTimeType::Sec
@@ -60,5 +61,13 @@ module Policr::Cache
 
   def verify_status_clear(user_id)
     @@verify_status.delete user_id
+  end
+
+  def associate_join_msg(user_id, chat_id, msg_id)
+    @@new_join_user_msg["#{user_id}_#{chat_id}"] = msg_id
+  end
+
+  def find_join_msg_id(user_id, chat_id)
+    @@new_join_user_msg["#{user_id}_#{chat_id}"]?
   end
 end
