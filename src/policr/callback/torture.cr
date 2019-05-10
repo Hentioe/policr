@@ -84,7 +84,7 @@ module Policr
           markup << btn_text_list.map { |text| btn.call(text) }
         end
         reply_to_message_id = Cache.find_join_msg_id(user_id, chat_id)
-        bot.send_message(chat_id, "( ˘•ω•˘ ) 欢迎加入本群，告诉大家你从哪个渠道进来的吧？小手轻轻一点就行了~", reply_to_message_id: reply_to_message_id, reply_markup: markup)
+        bot.send_message(chat_id, "欢迎加入本群，告诉大家你从哪个渠道进来的吧？小手轻轻一点就行了~", reply_to_message_id: reply_to_message_id, reply_markup: markup)
       end
     end
 

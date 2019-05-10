@@ -12,6 +12,8 @@ module Policr
     def handle(msg)
       if members = msg.new_chat_members
         members.select { |m| m.is_bot == false }.each do |member|
+          # 关联并缓存入群消息
+          Cache.associate_join_msg(member.id, msg.chat.id, msg.message_id)
           name = bot.get_fullname(member)
           name =~ HalalMessageHandler::ARABIC_CHARACTERS ? kick_halal_with_receipt(msg, member) : torture_action(msg, member)
         end

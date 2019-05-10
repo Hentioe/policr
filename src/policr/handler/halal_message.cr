@@ -6,8 +6,8 @@ module Policr
     def match(msg)
       all_pass? [
         DB.enable_examine?(msg.chat.id),
+        msg.from,
         (text = msg.text),
-        (user = msg.from),
         text.size > SAFE_MSG_SIZE, # 大于安全长度
         text =~ ARABIC_CHARACTERS, # 全文匹配阿拉伯字符
       ]
