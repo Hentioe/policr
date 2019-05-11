@@ -1,0 +1,10 @@
+{
+  "overrides": [
+    {
+      "files": "*.html.ecr",
+      "options": {
+        "parser": "html"
+      }
+    }
+  ]
+}

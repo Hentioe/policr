@@ -1,206 +1,246 @@
 <!DOCTYPE html>
 <html class="has-navbar-fixed-top">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"
+    />
     <title>Policr - 专注于审核的 Telegram 机器人</title>
-    <link rel="stylesheet" href="/lib/bulma-0.7.4/bulma.min.css">
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/lib/bulma-0.7.4/bulma.min.css" />
+    <link rel="stylesheet" href="/css/index.css" />
     <script defer src="/js/index.js"></script>
-    <script defer src="/lib/fontawesome-5.7.2/all.min.js"></script>
-</head>
+    <script defer src="/lib/fontawesome-5.8.1/all.min.js"></script>
+  </head>
 
-<body>
+  <body>
     <div id="root">
-        <nav class="navbar has-shadow is-fixed-top" role="navigation" aria-label="main navigation">
-            <div class="container">
-                <div class="navbar-brand">
-                    <a class="navbar-item" href="/">
-                        <strong>Policr</strong>
-                    </a>
-
-                    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-                        data-target="navbarBasicExample">
-                        <span aria-hidden="true"></span>
-                        <span aria-hidden="true"></span>
-                        <span aria-hidden="true"></span>
-                    </a>
-                </div>
-
-                <div id="navbarBasicExample" class="navbar-menu">
-                    <div class="navbar-start">
-                        <a class="navbar-item" href="/guide">
-                            <span class="icon has-text-primary">
-                                <i class="fas fa-book-reader"></i>
-                            </span>
-                            <span>
-                                指南
-                            </span>
-                        </a>
-
-                        <a class="navbar-item" target="_blank" href="https://t.me/policr_community">
-                            <span class="icon">
-                                <i class="fab fa-telegram" style="color:#2994C5"></i>
-                            </span>
-                            <span>
-                                频道
-                            </span>
-                        </a>
-
-                        <a class="navbar-item" target="_blank" href="https://github.com/Hentioe/policr/issues">
-                            <span class="icon">
-                                <i class="fas fa-info-circle" style="color:#1C9B5C;"></i>
-                            </span>
-                            <span>
-                                帮助
-                            </span>
-                        </a>
-
-                        <a class="navbar-item" href="/admin">
-                            <span class="icon">
-                                <i class="fas fa-cannabis" style="color:#1C619B;"></i>
-                            </span>
-                            <span>
-                                后台
-                            </span>
-                        </a>
-                        <a class="navbar-item" href="/api">
-                            <span class="icon">
-                                <i class="fas fa-rss-square" style="color:#719B1C;"></i>
-                            </span>
-                            <span>
-                                接口
-                            </span>
-                        </a>
-                    </div>
-
-                    <div class="navbar-end">
-                        <a class="navbar-item" href="https://github.com/Hentioe/policr" target="_blank">
-                            <span class="icon" style="color: #333;">
-                                <i class="fab fa-lg fa-github-alt"></i>
-                            </span>
-                        </a>
-                        <div class="navbar-item">
-                            <div class="field is-grouped is-grouped-multiline">
-                                <p class="control">
-                                    <a class="button" target="_blank" style="background:#FF5733;color:white;"
-                                        href="https://t.me/policr_bot">
-                                        <span>
-                                            <i class="fas fa-robot"></i>&nbsp;
-                                            领取机器人
-                                        </span>
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <section class="hero is-medium is-info is-bold">
-            <div class="hero-body">
-                <div class="container">
-                    <h1 class="title">
-                        开源的机器人应用程序
-                    </h1>
-                    <h2 class="subtitle">
-                        Policr 是服务于 Telegram 平台的，致力于成为最强大的审核机器人
-                    </h2>
-                </div>
-            </div>
-        </section>
+      <nav
+        class="navbar has-shadow is-fixed-top"
+        role="navigation"
+        aria-label="main navigation"
+      >
         <div class="container">
-            <section class="section pol-describe">
-                <h1 class="title">基础审核功能</h1>
-                <hr>
-                <section class="section">
-                    <h2 class="subtitle">审核入群成员，使用内联键盘便捷的完成验证。支持倒计时。管理员可直接对新成员进行操作</h2>
-                    <p>
-                        <img src="/images/0.png">
-                    </p>
-                </section>
-                <section class="section">
-                    <h2 class="subtitle">你当然可以随意定制验证问题，例如要求新成员会念诗</h2>
-                    <p>
-                        <img src="/images/1.png">
-                    </p>
-                </section>
-                <section class="section">
-                    <h2 class="subtitle">对最大的 SPAM 势力之一的清真毫不留情。面对误封，管理员也能便捷的解除封禁</h2>
-                    <p>
-                        <img src="/images/2.png">
-                    </p>
-                </section>
-                <section class="section">
-                    <h2 class="subtitle">考虑到你的愧疚心，特意添加了解封后的私聊入口</h2>
-                    <p>
-                        <img src="/images/2.1.png">
-                    </p>
-                </section>
-                <section class="section">
-                    <h2 class="subtitle">各种搞怪的买萌反馈</h2>
-                    <p>
-                        <img src="/images/3.png">
-                    </p>
-                    <p>
-                        <img src="/images/3.1.png">
-                    </p>
-                </section>
-                <section class="section">
-                    <h2 class="subtitle">面对奇怪的人捣乱，也并不会产生任何副作用</h2>
-                    <p>
-                        <img src="/images/4.png">
-                    </p>
-                    <p>
-                        <img src="/images/4.1.png">
-                    </p>
-                </section>
-                <section class="section">
-                    <h2 class="subtitle">并且还深刻的照顾了手残或网络不好的用户的感受</h2>
-                    <p>
-                        <img src="/images/5.png">
-                    </p>
-                    <p>
-                        <img src="/images/6.png">
-                    </p>
-                </section>
-            </section>
+          <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+              <strong>Policr</strong>
+            </a>
 
-            <section class="section pol-describe">
-                <h1 class="title">来源调查功能</h1>
-                <hr>
-                <section class="section">
-                    <h2 class="subtitle">通过指令为当前群组设置来源列表</h2>
-                    <p>
-                        <img src="/images/7.png">
-                    </p>
-                    <p>
-                        <img src="/images/8.png">
-                    </p>
-                </section>
-                <section class="section">
-                    <h2 class="subtitle">让新成员方便的告诉大家来来自何处</h2>
-                    <p>
-                        <img src="/images/9.png">
-                    </p>
-                    <p>
-                        <img src="/images/10.png">
-                    </p>
-                </section>
-            </section>
-        </div>
-        <footer class="footer">
-            <div class="content has-text-centered">
-                <p>
-                    <strong>Policr</strong> by <a href="https://github.com/Hentioe">Hentioe</a>. The source code is
-                    licensed
-                    <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
-                    is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
-                </p>
+            <a
+              role="button"
+              class="navbar-burger burger"
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarBasicExample"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+              <a class="navbar-item" href="/guide">
+                <span class="icon has-text-primary">
+                  <i class="fas fa-book-reader"></i>
+                </span>
+                <span>
+                  指南
+                </span>
+              </a>
+
+              <a
+                class="navbar-item"
+                target="_blank"
+                href="https://t.me/policr_community"
+              >
+                <span class="icon">
+                  <i class="fab fa-telegram" style="color:#2994C5"></i>
+                </span>
+                <span>
+                  频道
+                </span>
+              </a>
+
+              <a
+                class="navbar-item"
+                target="_blank"
+                href="https://github.com/Hentioe/policr/issues"
+              >
+                <span class="icon">
+                  <i class="fas fa-info-circle" style="color:#1C9B5C;"></i>
+                </span>
+                <span>
+                  帮助
+                </span>
+              </a>
+
+              <a class="navbar-item" href="/admin">
+                <span class="icon">
+                  <i class="fas fa-cannabis" style="color:#1C619B;"></i>
+                </span>
+                <span>
+                  后台
+                </span>
+              </a>
+              <a class="navbar-item" href="/api">
+                <span class="icon">
+                  <i class="fas fa-rss-square" style="color:#719B1C;"></i>
+                </span>
+                <span>
+                  接口
+                </span>
+              </a>
             </div>
-        </footer>
-    </div>
-</body>
 
+            <div class="navbar-end">
+              <a
+                class="navbar-item"
+                href="https://github.com/Hentioe/policr"
+                target="_blank"
+              >
+                <span class="icon" style="color: #333;">
+                  <i class="fab fa-lg fa-github-alt"></i>
+                </span>
+              </a>
+              <div class="navbar-item">
+                <div class="field is-grouped is-grouped-multiline">
+                  <p class="control">
+                    <a
+                      class="button"
+                      target="_blank"
+                      style="background:#FF5733;color:white;"
+                      href="https://t.me/policr_bot"
+                    >
+                      <span>
+                        <i class="fas fa-robot"></i>&nbsp; 领取机器人
+                      </span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <section class="hero is-medium is-info is-bold">
+        <div class="hero-body">
+          <div class="container">
+            <h1 class="title">
+              开源的机器人应用程序
+            </h1>
+            <h2 class="subtitle">
+              Policr 是服务于 Telegram 平台的，致力于成为最强大的审核机器人
+            </h2>
+          </div>
+        </div>
+      </section>
+      <div class="container">
+        <section class="section pol-describe">
+          <h1 class="title">基础审核功能</h1>
+          <hr />
+          <section class="section">
+            <h2 class="subtitle">
+              审核入群成员，使用内联键盘便捷的完成验证。支持倒计时。管理员可直接对新成员进行操作
+            </h2>
+            <p>
+              <img src="/images/0.png" />
+            </p>
+          </section>
+          <section class="section">
+            <h2 class="subtitle">
+              你当然可以随意定制验证问题，例如要求新成员会念诗
+            </h2>
+            <p>
+              <img src="/images/1.png" />
+            </p>
+          </section>
+          <section class="section">
+            <h2 class="subtitle">
+              对最大的 SPAM
+              势力之一的清真毫不留情。面对误封，管理员也能便捷的解除封禁
+            </h2>
+            <p>
+              <img src="/images/2.png" />
+            </p>
+          </section>
+          <section class="section">
+            <h2 class="subtitle">
+              考虑到你的愧疚心，特意添加了解封后的私聊入口
+            </h2>
+            <p>
+              <img src="/images/2.1.png" />
+            </p>
+          </section>
+          <section class="section">
+            <h2 class="subtitle">各种搞怪的买萌反馈</h2>
+            <p>
+              <img src="/images/3.png" />
+            </p>
+            <p>
+              <img src="/images/3.1.png" />
+            </p>
+          </section>
+          <section class="section">
+            <h2 class="subtitle">面对奇怪的人捣乱，也并不会产生任何副作用</h2>
+            <p>
+              <img src="/images/4.png" />
+            </p>
+            <p>
+              <img src="/images/4.1.png" />
+            </p>
+          </section>
+          <section class="section">
+            <h2 class="subtitle">
+              并且还深刻的照顾了手残或网络不好的用户的感受
+            </h2>
+            <p>
+              <img src="/images/5.png" />
+            </p>
+            <p>
+              <img src="/images/6.png" />
+            </p>
+          </section>
+        </section>
+
+        <section class="section pol-describe">
+          <h1 class="title">来源调查功能</h1>
+          <hr />
+          <section class="section">
+            <h2 class="subtitle">通过指令为当前群组设置来源列表</h2>
+            <p>
+              <img src="/images/7.png" />
+            </p>
+            <p>
+              <img src="/images/8.png" />
+            </p>
+          </section>
+          <section class="section">
+            <h2 class="subtitle">让新成员方便的告诉大家来来自何处</h2>
+            <p>
+              <img src="/images/9.png" />
+            </p>
+            <p>
+              <img src="/images/10.png" />
+            </p>
+          </section>
+        </section>
+      </div>
+      <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+            <strong>Policr</strong> by
+            <a href="https://github.com/Hentioe">Hentioe</a>. The source code is
+            licensed
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+            The website content is licensed
+            <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
+              >CC BY NC SA 4.0</a
+            >.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
 </html>
