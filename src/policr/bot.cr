@@ -1,6 +1,10 @@
 require "telegram_bot"
 require "schedule"
 
+macro t(key, options = nil)
+  I18n.translate({{key}}, {{options}})
+end
+
 module Policr
   DEFAULT_TORTURE_SEC = 45 # 默认验证等待时长（秒）
 

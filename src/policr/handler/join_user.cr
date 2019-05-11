@@ -27,18 +27,21 @@ module Policr
         bot.log "Halal '#{name}' in whitelist, ignored"
         return
       end
-      sended_msg = bot.reply msg, "d(`･∀･)b 诶发现一名清真，看我干掉它……"
+      text = t("halal.found")
+      sended_msg = bot.reply msg, text
 
       if sended_msg
         begin
           bot.kick_chat_member(msg.chat.id, member.id)
           member_id = member.id
+          text = t("halal.ban")
           bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！", reply_markup: add_banned_menu(member_id, member.username, true))
+            text: text, reply_markup: add_banned_menu(member_id, member.username, true))
           bot.log "Halal '#{name}' has been banned"
         rescue ex : TelegramBot::APIException
+          text = t("halal.ban_failure")
           bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: "╰(〒皿〒)╯ 啥情况，这枚清真移除失败了。")
+            text: text)
           _, reason = bot.get_error_code_with_reason(ex)
           bot.log "Halal '#{name}' banned failure, reason: #{reason}"
         end
@@ -47,8 +50,8 @@ module Policr
 
     def add_banned_menu(user_id, username, is_halal = false)
       markup = Markup.new
-      markup << Button.new(text: "解除封禁", callback_data: "BanedMenu:#{user_id}:#{username}:unban")
-      markup << Button.new(text: "加入白名单", callback_data: "BanedMenu:#{user_id}:#{username}:whitelist") if is_halal
+      markup << Button.new(text: t("baned_menu.unban"), callback_data: "BanedMenu:#{user_id}:#{username}:unban")
+      markup << Button.new(text: t("baned_menu.whitelist"), callback_data: "BanedMenu:#{user_id}:#{username}:whitelist") if is_halal
       markup
     end
 
@@ -73,7 +76,7 @@ module Policr
       torture_sec = DB.get_torture_sec(msg.chat.id, DEFAULT_TORTURE_SEC)
       name = bot.get_fullname(member)
       bot.log "Start to torture '#{name}'"
-      question = "请在 #{torture_sec} 秒内确认「#{title}」以通过验证"
+      question = t("torture.start", {torture_sec: torture_sec, title: title})
       reply_id = msg.message_id
       member_id = member.id.to_s
       member_username = member.username
@@ -83,7 +86,9 @@ module Policr
       }
       markup = Markup.new
       answers.each_with_index { |answer, i| markup << [btn.call(answer, i + 1)] }
-      markup << [btn.call("人工通过", 0), btn.call("人工封禁", -1)]
+      pass_text = t("admin_ope_menu.pass")
+      ban_text = t("admin_ope_menu.ban")
+      markup << [btn.call(pass_text, 0), btn.call(ban_text, -1)]
       sended_msg = bot.send_message(msg.chat.id, question, reply_to_message_id: reply_id, reply_markup: markup)
 
       ban_task = ->(message_id : Int32) {
@@ -106,12 +111,12 @@ module Policr
       begin
         bot.kick_chat_member(chat_id, user_id)
       rescue ex : TelegramBot::APIException
-        text = "踢不掉他诶（自己想想什么原因？）……"
+        text = t "verify_result.error"
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
           text: text)
       else
-        text = "(〒︿〒) 他没能挺过这一关，永久的离开了我们。"
-        text = "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了他。" if admin
+        text = t "verify_result.failure"
+        text = t("verify_result.admin_ban") if admin
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
           text: text, reply_markup: add_banned_menu(user_id, username))
       end

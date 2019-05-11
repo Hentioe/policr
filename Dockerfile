@@ -10,6 +10,7 @@ RUN ln -s "$APP_HOME/policr" /usr/local/bin/policr && \
 
 COPY bin $APP_HOME
 COPY public "$APP_HOME/public"
+COPY locales "$APP_HOME/locales"
 
 
 WORKDIR $APP_HOME
