@@ -21,8 +21,8 @@ shards:
     version: 0.1.2
 
   i18n:
-    github: vladfaust/i18n.cr
-    version: 0.1.1
+    github: TechMagister/i18n.cr
+    version: 0.2.0
 
   kemal:
     github: kemalcr/kemal
