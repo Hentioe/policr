@@ -1,5 +1,6 @@
 require "./policr/**"
 require "dotenv"
+require "i18n"
 
 module Policr
   extend self
