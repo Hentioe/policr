@@ -30,6 +30,9 @@ dependencies:
     github: kemalcr/kemal
   ksuid:
     github: Sija/ksuid.cr
+  i18n:
+    github: vladfaust/i18n.cr
+    version: ~> 0.1.1
 
 development_dependencies:
   ameba:

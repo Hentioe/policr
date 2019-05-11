@@ -20,6 +20,10 @@ shards:
     github: crystal-loot/exception_page
     version: 0.1.2
 
+  i18n:
+    github: vladfaust/i18n.cr
+    version: 0.1.1
+
   kemal:
     github: kemalcr/kemal
     version: 0.25.2

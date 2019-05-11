@@ -1,5 +1,7 @@
 require "./policr/**"
 require "dotenv"
+require "i18n"
+require "i18n/backends/yaml"
 
 module Policr
   extend self
@@ -27,6 +29,14 @@ module Policr
 
     @@token = load_cfg_item("POLICR_BOT_TOKEN")
     @@username = load_cfg_item("POLICR_BOT_USERNAME")
+
+    I18n.backend = I18n::Backends::YAML.new.tap do |backend|
+      backend.load_paths << Dir.current + "/locales"
+      backend.load
+    end
+    I18n.locale = "zh_hans"
+
+		puts I18n.t("message.torture.start", {"torture_sec" => "1", "title" => "你好"})
 
     DB.connect config.dpath
     puts "Start Policr..."

@@ -1,0 +1,18 @@
+zh_hans:
+  message:
+    torture:
+      start: "请在 %{torture_sec} 秒内确认「%{title}」以通过验证"
+    admin_ope_menu:
+      pass: "人工通过"
+      ban: "人工封禁"
+    baned_menu:
+      unban: "解除封禁"
+      whitelist: "加入白名单"
+    halal:
+      found: "d(`･∀･)b 诶发现一名清真，看我干掉它……"
+      ban: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！"
+      ban_failure: "╰(〒皿〒)╯ 啥情况，这枚清真移除失败了。"
+    verify_result:
+      error: "踢不掉他诶（自己想想什么原因？）……"
+      failure: "(〒︿〒) 他没能挺过这一关，永久的离开了我们。"
+      admin_ban: "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了他。"
