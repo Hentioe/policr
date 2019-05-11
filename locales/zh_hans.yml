@@ -1,3 +1,8 @@
+setting_complete: "已完成设置。"
+questions:
+  title: "你认为自己能不能进来？"
+  answer_1: "是的，我觉得可以"
+  answer_2: "不能，请踢掉我吧"
 torture:
   start: "请在 %{torture_sec} 秒内确认「%{title}」以通过验证"
 admin_ope_menu:
@@ -14,3 +19,11 @@ verify_result:
   error: "踢不掉他诶（自己想想什么原因？）……"
   failure: "(〒︿〒) 他没能挺过这一关，永久的离开了我们。"
   admin_ban: "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了他。"
+custom:
+  wrong_format: "不合法的格式。注意至少需要存在一个正确（即前缀+的行）答案。"
+restrict_bot_menu:
+  derestrict: "解除限制"
+  remove: "直接移除"
+restrict_bot: "抓到一个新加入的机器人，安全考虑已对其进行限制。如有需要可自行解除，否则请移除。"
+clean_mode:
+  reply: "已启用干净模式，默认级别1：清理通过验证的痕迹。"

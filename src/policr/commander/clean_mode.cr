@@ -7,7 +7,7 @@ module Policr
     def handle(msg)
       role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
-        text = "已启用干净模式，默认级别1：清理通过验证的痕迹。"
+        text = t "clean_mode.reply"
         DB.clean_mode(msg.chat.id)
         bot.reply msg, text
       else

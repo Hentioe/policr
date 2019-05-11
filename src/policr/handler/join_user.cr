@@ -60,10 +60,10 @@ module Policr
       default =
         {
           1,
-          "你认为自己能不能进来？",
+          t("questions.title"),
           [
-            "是的，我觉得可以",
-            "不能，请踢掉我吧",
+            t("questions.answer_1"),
+            t("questions.answer_2"),
           ],
         }
       custom = DB.custom(msg.chat.id)

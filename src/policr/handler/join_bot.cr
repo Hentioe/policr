@@ -24,8 +24,8 @@ module Policr
         Button.new(text: text, callback_data: "BotJoin:#{bot_member.id}:[none]:#{chooese_id}")
       }
       markup = Markup.new
-      markup << [btn.call("解除限制", 0), btn.call("直接移除", -1)]
-      bot.send_message(msg.chat.id, "抓到一个新加入的机器人，安全考虑已对其进行限制。如有需要可自行解除，否则请移除。", reply_to_message_id: msg.message_id, reply_markup: markup)
+      markup << [btn.call(t("restrict_bot_menu.derestrict"), 0), btn.call(t("restrict_bot_menu.remove"), -1)]
+      bot.send_message(msg.chat.id, t("restrict_bot"), reply_to_message_id: msg.message_id, reply_markup: markup)
       bot.log "Bot '#{bot_member.id}' has been restricted"
     end
   end

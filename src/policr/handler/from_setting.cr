@@ -15,7 +15,7 @@ module Policr
     def handle(msg)
       bot.log "Enable From Investigate for ChatID '#{msg.chat.id}'"
       DB.put_chat_from(msg.chat.id, msg.text)
-      bot.reply msg, "已完成设置。"
+      bot.reply msg, t("setting_complete")
     end
   end
 end

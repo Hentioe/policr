@@ -30,7 +30,7 @@ module Policr
                 (60 * (text.to_f)).to_i
               end
         DB.set_torture_sec(msg.chat.id, sec)
-        bot.reply msg, "已完成设置。"
+        bot.reply msg, t("setting_complete")
       end
     end
   end

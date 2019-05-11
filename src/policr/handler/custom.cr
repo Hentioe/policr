@@ -16,11 +16,11 @@ module Policr
     def handle(msg)
       bot.log "Custom verification for chat_id '#{msg.chat.id}'"
       if (text = msg.text) && !valid?(text) # 内容不合法？
-        bot.reply msg, "不合法的格式。注意至少需要存在一个正确（即前缀+的行）答案。"
+        bot.reply msg, t("custom.wrong_format")
         return
       end
       DB.custom_text(msg.chat.id, msg.text)
-      bot.reply msg, "已完成设置。"
+      bot.reply msg, t("setting_complete")
     end
 
     # 校验设置的合法性
