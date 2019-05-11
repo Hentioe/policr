@@ -49,4 +49,3 @@ module Policr
 end
 
 Policr.start unless (ENV["POLICR_ENV"]? && (ENV["POLICR_ENV"] == "test"))
-1
