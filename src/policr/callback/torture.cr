@@ -30,12 +30,12 @@ module Policr
             unverified_with_receipt(chat_id, message_id, target_user_id, target_username, admin: true)
           end
         else
-          bot.answer_callback_query(query.id, text: "你怕不是他的同伙吧？不听你的", show_alert: true)
+          bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         end
       else
         if target_user_id != from_user_id # 无关人士
           bot.log "Irrelevant User ID '#{from_user_id}' clicked on the verification inline keyboard button"
-          bot.answer_callback_query(query.id, text: "(#`Д´)ﾉ 请无关人员不要来搞事", show_alert: true)
+          bot.answer_callback_query(query.id, text: t("unrelated_warning"), show_alert: true)
           return
         end
 
@@ -45,7 +45,7 @@ module Policr
           slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
         else # 未通过验证
           bot.log "Username '#{target_username}' did not pass verification"
-          bot.answer_callback_query(query.id, text: "✖ 未通过验证", show_alert: true)
+          bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)
           unverified_with_receipt(chat_id, message_id, target_user_id, target_username)
         end
       end
@@ -55,9 +55,9 @@ module Policr
       Cache.verify_passed(target_user_id)
       bot.log "Username '#{target_username}' passed verification"
 
-      bot.answer_callback_query(query.id, text: "✔ 验证通过", show_alert: true) unless admin
-      text = "(*´∀`)~♥ 恭喜您通过了验证，逃过一劫。"
-      text = "Σ(*ﾟдﾟﾉ)ﾉ 这家伙走后门进来的，大家快喷他。" if admin
+      bot.answer_callback_query(query.id, text: "pass_alert", show_alert: true) unless admin
+      text = t("pass_by_self")
+      text = t("pass_by_admin") if admin
 
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil)
@@ -84,16 +84,16 @@ module Policr
           markup << btn_text_list.map { |text| btn.call(text) }
         end
         reply_to_message_id = Cache.find_join_msg_id(user_id, chat_id)
-        bot.send_message(chat_id, "欢迎加入本群，告诉大家你从哪个渠道进来的吧？小手轻轻一点就行了~", reply_to_message_id: reply_to_message_id, reply_markup: markup)
+        bot.send_message(chat_id, t("from_question"), reply_to_message_id: reply_to_message_id, reply_markup: markup)
       end
     end
 
     private def slow_with_receipt(query, chat_id, target_user_id, target_username, message_id)
       bot.log "Username '#{target_username}' verification is a bit slower"
 
-      bot.answer_callback_query(query.id, text: "验证通过，但是晚了一点点，再去试试？", show_alert: true)
+      bot.answer_callback_query(query.id, text: t("pass_slow_alert"), show_alert: true)
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: "(´ﾟдﾟ`) 他通过了验证，但是手慢了那么一点点，再给他一次机会……", reply_markup: nil)
+        text: t("pass_slow_receipt"), reply_markup: nil)
       bot.unban_chat_member(chat_id, target_user_id)
     end
 

@@ -15,7 +15,7 @@ module Policr
 
       unless from_user_id == target_user_id
         bot.log "Unrelated User ID '#{from_user_id}' click to From Investigate button"
-        bot.answer_callback_query(query.id, text: "又不是问你，自作多情", show_alert: true)
+        bot.answer_callback_query(query.id, text: t("unrelated_click"), show_alert: true)
         return
       end
 
@@ -28,7 +28,7 @@ module Policr
         end
       end
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: "原来是从「#{all_from[chooese_id]?}」过来的，大家心里已经有数了。")
+        text: t("from", {from: all_from[chooese_id]?}))
     end
   end
 end
