@@ -38,7 +38,7 @@ Policr 源自于单词 Polic(e)r，意为监察者。去 e 后结尾的 cr 对�
 | `/distrust_admin`  | 不信任管理员         | 开关 |  略  |
 | `/clean_mode`      | 干净模式             | 开关 |  略  |
 | `/record_mode`     | 记录模式             | 开关 |  略  |
-| `/custom`          | 定制验证             | 设置 |  略  |
+| `/custom`          | 定制验证问题         | 设置 |  略  |
 
 ### 快速入门
 
@@ -60,7 +60,7 @@ Policr 源自于单词 Polic(e)r，意为监察者。去 e 后结尾的 cr 对�
 /torture_sec@policr_bot
 ```
 
-群组正在四处宣传，很需要知晓如群成员来自何处
+群组正在四处宣传，很需要知晓入群成员来自何处
 
 ```
 /from@policr_bot
