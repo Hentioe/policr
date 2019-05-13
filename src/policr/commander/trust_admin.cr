@@ -7,7 +7,7 @@ module Policr
     def handle(msg)
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, :creator)
         DB.trust_admin msg.chat.id
-        bot.reply msg, "已赋予管理员使用指令调整大部分设置的权力。"
+        bot.reply msg, t("admin.trust")
       else
         bot.delete_message(msg.chat.id, msg.message_id)
       end

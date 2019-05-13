@@ -7,11 +7,11 @@ module Policr
     def handle(msg)
       role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
-        text = "已启动审核。包含: 新入群成员的主动验证、Bot 帐号限制、清真移除等功能被开启。"
+        text = t "examine.enable"
         if bot.is_admin(msg.chat.id, bot.self_id.to_i32)
           DB.enable_examine(msg.chat.id)
         else
-          text = "不给权限还想让人家干活，做梦。"
+          text = t "examine.enable_need_permission"
         end
         bot.reply msg, text
       else

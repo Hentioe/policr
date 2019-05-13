@@ -7,7 +7,7 @@ module Policr
     def handle(msg)
       role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
-        text = "已启用记录模式，将保留所有中间步骤消息。"
+        text = t "mode.record"
         DB.record_mode(msg.chat.id)
         bot.reply msg, text
       else
