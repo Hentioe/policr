@@ -1,4 +1,5 @@
 start: "欢迎使用 ε٩(๑> ₃ <)۶з 我是强大的审核机器人 PolicrBot。我的主要功能不会主动开启，需要通过指令手动启用或设置。推荐在 Github 上查看我的指令用法 ~"
+invalid_callback: "( ×ω× ) 这副内联键盘已经失效了哦"
 setting_complete: "已完成设置。"
 questions:
   title: "你认为自己能不能进来？"

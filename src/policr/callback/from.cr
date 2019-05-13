@@ -15,7 +15,7 @@ module Policr
 
       unless from_user_id == target_user_id
         bot.log "Unrelated User ID '#{from_user_id}' click to From Investigate button"
-        bot.answer_callback_query(query.id, text: t("unrelated_click"), show_alert: true)
+        bot.answer_callback_query(query.id, text: t("unrelated_click"))
         return
       end
 

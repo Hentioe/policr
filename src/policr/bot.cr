@@ -88,7 +88,7 @@ module Policr
         report = data.split(":")
         if report.size < 4
           logger.info "'#{get_fullname(query.from)}' clicked on the invalid inline keyboard button"
-          answer_callback_query(query.id, text: "( ×ω× ) 这副内联键盘已经失效了哦", show_alert: true)
+          answer_callback_query(query.id, text: t("invalid_callback"))
           return
         end
 

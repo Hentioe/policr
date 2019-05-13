@@ -16,7 +16,7 @@ module Policr
 
       unless bot.has_permission? chat_id, from_user_id, role
         bot.log "User ID '#{from_user_id}' without permission click to unbanned button"
-        bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
+        bot.answer_callback_query(query.id, text: t("callback.no_permission"))
         return
       end
 
@@ -47,7 +47,7 @@ module Policr
         DB.add_to_whitelist(target_user_id) if ope_count == 1
       rescue ex : TelegramBot::APIException
         _, reason = bot.get_error_code_with_reason(ex)
-        bot.answer_callback_query(query.id, text: "#{t("unban_error")}#{reason}", show_alert: true)
+        bot.answer_callback_query(query.id, text: "#{t("unban_error")}#{reason}")
         bot.log "Username '#{target_username}' unsealing failed, reason: #{reason}"
       end
     end
