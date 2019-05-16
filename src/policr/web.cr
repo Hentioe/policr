@@ -9,7 +9,7 @@ module Policr::Web
     public_folder "public"
 
     get "/" do
-      render "src/views/index.html.ecr"
+      render "src/views/index.html.ecr", "src/views/layout.html.ecr"
     end
 
     error 404 do
