@@ -12,6 +12,10 @@ module Policr::Web
       render "src/views/index.html.ecr", "src/views/layout.html.ecr"
     end
 
+    get "/admin" do
+      render "src/views/admin.html.ecr", "src/views/layout.html.ecr"
+    end
+
     error 404 do
       "建设中……"
     end
