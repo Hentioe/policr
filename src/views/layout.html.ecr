@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"
     />
-    <title>Policr - 专注于审核的 Telegram 机器人</title>
+    <title>Policr - <%= title %></title>
     <link rel="stylesheet" href="/lib/bulma-0.7.4/bulma.min.css" />
     <link rel="stylesheet" href="/css/index.css" />
     <script defer src="/js/index.js"></script>
@@ -23,7 +23,7 @@
         <div class="container">
           <div class="navbar-brand">
             <a class="navbar-item" href="/">
-              <strong>Policr</strong>
+              <img src="/policr.png" />
             </a>
 
             <a
@@ -41,9 +41,17 @@
 
           <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-              <a class="navbar-item" href="/guide">
+              <a class="navbar-item" href="/admin">
                 <span class="icon has-text-primary">
-                  <i class="fas fa-book-reader"></i>
+                  <i class="fas fa-cannabis"></i>
+                </span>
+                <span>
+                  后台
+                </span>
+              </a>
+              <a class="navbar-item" href="/guide">
+                <span class="icon">
+                  <i class="fas fa-book-reader" style="color:#1C619B;"></i>
                 </span>
                 <span>
                   指南
@@ -73,15 +81,6 @@
                 </span>
                 <span>
                   帮助
-                </span>
-              </a>
-
-              <a class="navbar-item" href="/admin">
-                <span class="icon">
-                  <i class="fas fa-cannabis" style="color:#1C619B;"></i>
-                </span>
-                <span>
-                  后台
                 </span>
               </a>
               <a class="navbar-item" href="/api">

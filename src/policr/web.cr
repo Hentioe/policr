@@ -9,10 +9,12 @@ module Policr::Web
     public_folder "public"
 
     get "/" do
+      title = "专注于审核的 Telegram 机器人"
       render "src/views/index.html.ecr", "src/views/layout.html.ecr"
     end
 
     get "/admin" do
+      title = "后台管理"
       render "src/views/admin.html.ecr", "src/views/layout.html.ecr"
     end
 
