@@ -63,7 +63,8 @@ module Policr
       register :torture_min, TortureMinCommander
       register :trust_admin, TrustAdminCommander
       register :distrust_admin, DistrustAdminCommander
-      register :token, TokenCommander
+      register :manageable, ManageableCommander
+      register :unmanageable, UnmanageableCommander
       register :clean_mode, EnableCleanModeCommander
       register :record_mode, EnableRecordModeCommander
       register :custom, CustomCommander
@@ -76,11 +77,11 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
+      super
+
       handlers.each do |_, handler|
         handler.registry(msg)
       end
-
-      super
     end
 
     def handle(query : TelegramBot::CallbackQuery)

@@ -27,6 +27,11 @@ clean_mode:
   reply: "已启用干净模式，默认级别1：清理通过验证的痕迹。"
 callback:
   no_permission: "你怕不是他的同伙吧？不听你的"
+manageable:
+  success: "已允许通过后台管理本群组。"
+unmanageable:
+  success: "已禁止通过后台管理本群组。"
+only_group: "此指令仅在群组中可用"
 call_him_back: "叫 TA 回来"
 unban_message: "(,,・ω・,,) 已经被解封了，让他注意。"
 add_to_whitelist: "(,,・ω・,,) 已被解封并加入到白名单，下次不会再干他了。"
