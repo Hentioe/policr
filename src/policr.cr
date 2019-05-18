@@ -45,7 +45,7 @@ module Policr
   end
 
   def load_cfg_item(evar_name)
-    ENV[evar_name]? || raise Exception.new("Missing configuration variable: '#{evar_name}'")
+    ENV[evar_name]? || raise Exception.new("missing configuration variable: '#{evar_name}'")
   end
 end
 

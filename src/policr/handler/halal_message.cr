@@ -14,8 +14,36 @@ module Policr
     end
 
     def handle(msg)
-      if (user = msg.from) && (join_user_handler = bot.handlers[:join_user]?) && join_user_handler.is_a?(JoinUserHandler)
-        join_user_handler.kick_halal_with_receipt(msg, user)
+      if (user = msg.from)
+        kick_halal_with_receipt(msg, user)
+      end
+    end
+
+    def kick_halal_with_receipt(msg, member)
+      name = bot.get_fullname(member)
+      bot.log "Found a halal '#{name}'"
+      if DB.halal_white? member.id
+        bot.log "Halal '#{name}' in whitelist, ignored"
+        return
+      end
+      text = t("halal.found")
+      sended_msg = bot.reply msg, text
+
+      if sended_msg && (join_user_handler = bot.handlers[:join_user]?) && join_user_handler.is_a?(JoinUserHandler)
+        begin
+          bot.kick_chat_member(msg.chat.id, member.id)
+          member_id = member.id
+          text = t("halal.ban")
+          bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
+            text: text, reply_markup: join_user_handler.add_banned_menu(member_id, member.username, true))
+          bot.log "Halal '#{name}' has been banned"
+        rescue ex : TelegramBot::APIException
+          text = t("halal.ban_failure")
+          bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
+            text: text)
+          _, reason = bot.get_error_code_with_reason(ex)
+          bot.log "Halal '#{name}' banned failure, reason: #{reason}"
+        end
       end
     end
   end

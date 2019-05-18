@@ -10,40 +10,12 @@ module Policr
     end
 
     def handle(msg)
-      if members = msg.new_chat_members
+      if (members = msg.new_chat_members) && (halal_message_handler = bot.handlers[:halal_message]?) && halal_message_handler.is_a?(HalalMessageHandler)
         members.select { |m| m.is_bot == false }.each do |member|
           # 关联并缓存入群消息
           Cache.associate_join_msg(member.id, msg.chat.id, msg.message_id)
           name = bot.get_fullname(member)
-          name =~ HalalMessageHandler::ARABIC_CHARACTERS ? kick_halal_with_receipt(msg, member) : torture_action(msg, member)
-        end
-      end
-    end
-
-    def kick_halal_with_receipt(msg, member)
-      name = bot.get_fullname(member)
-      bot.log "Found a halal '#{name}'"
-      if DB.halal_white? member.id
-        bot.log "Halal '#{name}' in whitelist, ignored"
-        return
-      end
-      text = t("halal.found")
-      sended_msg = bot.reply msg, text
-
-      if sended_msg
-        begin
-          bot.kick_chat_member(msg.chat.id, member.id)
-          member_id = member.id
-          text = t("halal.ban")
-          bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: text, reply_markup: add_banned_menu(member_id, member.username, true))
-          bot.log "Halal '#{name}' has been banned"
-        rescue ex : TelegramBot::APIException
-          text = t("halal.ban_failure")
-          bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-            text: text)
-          _, reason = bot.get_error_code_with_reason(ex)
-          bot.log "Halal '#{name}' banned failure, reason: #{reason}"
+          name =~ HalalMessageHandler::ARABIC_CHARACTERS ? halal_message_handler.kick_halal_with_receipt(msg, member) : torture_action(msg, member)
         end
       end
     end
