@@ -15,7 +15,7 @@ module Policr
           # 关联并缓存入群消息
           Cache.associate_join_msg(member.id, msg.chat.id, msg.message_id)
           name = bot.get_fullname(member)
-          name =~ HalalMessageHandler::ARABIC_CHARACTERS ? halal_message_handler.kick_halal_with_receipt(msg, member) : torture_action(msg, member)
+          halal_message_handler.is_halal(name) ? halal_message_handler.kick_halal_with_receipt(msg, member) : torture_action(msg, member)
         end
       end
     end

@@ -42,10 +42,10 @@ module Policr
       register :join_user, JoinUserHandler
       register :join_bot, JoinBotHandler
       register :unverified_message, UnverifiedMessageHandler
-      register :halal_message, HalalMessageHandler
       register :from_setting, FromSettingHandler
       register :verify_time_setting, VerifyTimeSettingHandler
       register :custom, CustomHandler
+      register :halal_message, HalalMessageHandler
 
       register :torture, TortureCallback
       register :baned_menu, BanedMenuCallback
