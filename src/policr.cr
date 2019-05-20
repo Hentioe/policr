@@ -5,7 +5,8 @@ require "i18n"
 module Policr
   extend self
 
-  VERSION = "0.1.0-dev"
+  COMMIT  = {{ `git rev-parse --short HEAD`.stringify.strip }}
+  VERSION = "0.1.0-dev (#{COMMIT})"
 
   UNDEFINED = "undefined"
 

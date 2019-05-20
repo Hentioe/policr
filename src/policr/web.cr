@@ -23,6 +23,10 @@ module Policr::Web
       render "src/views/admin.html.ecr", "src/views/layout.html.ecr"
     end
 
+		get "/version" do
+			VERSION
+		end
+
     error 404 do
       "建设中……"
     end
