@@ -1,4 +1,5 @@
 require "rocksdb"
+require "ksuid"
 
 module Policr::DB
   extend self
@@ -154,21 +155,45 @@ module Policr::DB
 
   def push_managed_group(user_id, chat_id)
     if (db = @@db) && (groups = managed_groups(user_id) || Array(String).new)
-      groups << chat_id.to_s unless groups.includes?(chat_id)
-      db.put "#{MANGA_GROUPS}_#{user_id}", groups.join("+")
+      groups << chat_id.to_s unless groups.includes?(chat_id.to_s)
+      db.put "#{MANGA_GROUPS}_#{user_id}", groups.join(",")
     end
   end
 
   def delete_managed_group(user_id, chat_id)
     if (db = @@db) && (groups = managed_groups(user_id))
-      removed_groups = groups.select { |g| g != chat_id.to_s }.join("+")
+      removed_groups = groups.select { |g| g != chat_id.to_s }.join(",")
       db.put "#{MANGA_GROUPS}_#{user_id}", removed_groups
     end
   end
 
   def managed_groups(user_id)
     if (db = @@db) && (groups_s = db.get?("#{MANGA_GROUPS}_#{user_id}"))
-      groups_s.split("+").select { |g| g.strip != "" }
+      groups_s.split(",").select { |g| g.strip != "" }
+    end
+  end
+
+  FIND_TOKEN_BY_USER = "find_token_by_user"
+  FIND_USER_BY_TOKEN = "find_user_by_token"
+
+  def gen_token(user_id)
+    if db = @@db
+      # 删除已存在的 Token
+      if token = db.get?("#{FIND_TOKEN_BY_USER}_#{user_id}")
+        db.delete("#{FIND_USER_BY_TOKEN}_#{token}")
+      end
+      token = KSUID.new.to_s
+      # 关联用户和新 Token
+      db.put("#{FIND_TOKEN_BY_USER}_#{user_id}", token)
+      db.put("#{FIND_USER_BY_TOKEN}_#{token}", user_id)
+      # 返回 Token
+      token
+    end
+  end
+
+  def find_user_by_token(token)
+    if db = @@db
+      db.get?("#{FIND_USER_BY_TOKEN}_#{token}")
     end
   end
 end

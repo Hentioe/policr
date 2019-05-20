@@ -31,7 +31,9 @@ manageable:
   success: "已允许通过后台管理本群组。"
 unmanageable:
   success: "已禁止通过后台管理本群组。"
-only_group: "此指令仅在群组中可用"
+only_group: "此指令仅在群组中可用。"
+only_private: "此指令仅在私聊中可用。"
+no_managed_groups: "无受管群组，无法申请后台令牌。"
 call_him_back: "叫 TA 回来"
 unban_message: "(,,・ω・,,) 已经被解封了，让他注意。"
 add_to_whitelist: "(,,・ω・,,) 已被解封并加入到白名单，下次不会再干他了。"

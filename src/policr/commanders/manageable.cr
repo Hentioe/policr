@@ -7,6 +7,7 @@ module Policr
     def handle(msg)
       if msg.chat.type != "supergroup" && msg.chat.type != "group"
         bot.reply msg, t("only_group")
+        return
       end
 
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, :creator)

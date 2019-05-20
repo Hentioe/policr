@@ -68,6 +68,7 @@ module Policr
       register :clean_mode, EnableCleanModeCommander
       register :record_mode, EnableRecordModeCommander
       register :custom, CustomCommander
+      register :token, TokenCommander
 
       commanders.each do |_, command|
         cmd command.name do |msg|
