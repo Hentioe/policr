@@ -18,9 +18,21 @@ module Policr::Web
       render "src/views/guide.html.ecr", "src/views/layout.html.ecr"
     end
 
-    get "/admin" do
+    get "/login" do
+      title = "登录后台"
+      error_msg = nil
+      render "src/views/login.html.ecr", "src/views/layout.html.ecr"
+    end
+
+    post "/admin" do |env|
       title = "后台管理"
-      render "src/views/admin.html.ecr", "src/views/layout.html.ecr"
+      if (token = env.params.body["token"]?) && (user_id = DB.find_user_by_token(token.strip))
+        groups = DB.managed_groups(user_id) || Array(String).new
+        render "src/views/admin.html.ecr", "src/views/layout.html.ecr"
+      else
+        error_msg = "Login failed"
+        render "src/views/login.html.ecr", "src/views/layout.html.ecr"
+      end
     end
 
 		get "/version" do
