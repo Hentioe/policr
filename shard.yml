@@ -28,6 +28,8 @@ dependencies:
     version: 0.5.1
   kemal:
     github: kemalcr/kemal
+  kemal-session:
+    github: kemalcr/kemal-session
   ksuid:
     github: Sija/ksuid.cr
   i18n:

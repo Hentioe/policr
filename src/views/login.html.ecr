@@ -7,7 +7,7 @@
             <h1 class="title has-text-primary">
               POLICR ADMIN
             </h1>
-            <form action="/admin" method="POST">
+            <form action="/login" method="POST">
               <div class="field">
                 <p class="control has-icons-left">
                   <input class="input" type="password" name="token" placeholder="Token" />
@@ -23,7 +23,7 @@
                     Remember me
                   </label>
                   <% if error_msg %>
-                  <span><%= error_msg %></span>
+                  <span class="has-text-danger"><%= error_msg %></span>
                   <% end %>
                 </p>
               </div>
