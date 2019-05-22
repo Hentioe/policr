@@ -34,7 +34,7 @@ module Policr
     getter commanders = Hash(Symbol, Commander).new
 
     def initialize
-      super(Policr.username, Policr.token)
+      super(Policr.username, Policr.token, Policr.logger)
 
       me = get_me || raise Exception.new("Failed to get bot data")
       @self_id = me["id"].as_i64

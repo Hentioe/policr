@@ -12,6 +12,7 @@ module Policr
 
   @@username = UNDEFINED
   @@token = UNDEFINED
+  @@logger : Logger?
 
   def token
     @@token
@@ -19,6 +20,10 @@ module Policr
 
   def username
     @@username
+  end
+
+  def logger
+    @@logger
   end
 
   def start
@@ -36,12 +41,16 @@ module Policr
     I18n.init
     I18n.default_locale = "zh_hans"
 
-    puts "Start Policr..."
+    logger = Logger.new(STDOUT)
+    logger.level = Logger::DEBUG
+    @@logger = logger
+
+    logger.info "ready to start"
     spawn do
-      puts "Start Web..."
+      logger.info "start web"
       Web.start
     end
-    puts "Start Bot..."
+    logger.info "start bot"
     Bot.new.polling
   end
 
