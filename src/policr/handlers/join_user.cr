@@ -57,7 +57,8 @@ module Policr
         Button.new(text: text, callback_data: "Torture:#{member_id}:#{member_username}:#{chooese_id}")
       }
       markup = Markup.new
-      answers.each_with_index { |answer, i| markup << [btn.call(answer, i + 1)] }
+      answer_list = answers.map_with_index { |answer, i| [btn.call(answer, i + 1)] }
+      answer_list.shuffle.each { |answer_btn| markup << answer_btn } # 乱序答案列表
       pass_text = t("admin_ope_menu.pass")
       ban_text = t("admin_ope_menu.ban")
       markup << [btn.call(pass_text, 0), btn.call(ban_text, -1)]
