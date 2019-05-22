@@ -54,5 +54,5 @@ shards:
 
   telegram_bot:
     github: Hentioe/telegram_bot
-    commit: e1e7cc713f530857f918586754e082e9ca0595ad
+    commit: 7320b982a5f15f01f13664d1a82309256c63da5e
 
