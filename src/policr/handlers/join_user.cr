@@ -31,25 +31,29 @@ module Policr
 
     def start_torture(msg, member)
       if (Time.utc.to_unix - msg.date) > AFTER_EVENT_SEC
-        # 事后不即时审核，采取人工处理
-
+        # 事后审核不立即验证，采取人工处理
+        # 禁言用户
+        bot.restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
         markup = Markup.new
         btn = ->(text : String, item : String) {
-          Button.new(text: text, callback_data: "AfterEvent:#{member.id}:#{member.username}:#{item}")
+          Button.new(text: text, callback_data: "AfterEvent:#{member.id}:#{member.username}:#{item}:#{msg.message_id}")
         }
 
-        markup << btn.call("立即审核", "promptly_torture")
-        markup << btn.call("解除禁言", "unban")
-        markup << btn.call("直接移除", "kick")
+        markup << [btn.call(t("after_event.torture"), "torture")]
+        markup << [btn.call(t("after_event.unban"), "unban"), btn.call(t("after_event.kick"), "kick")]
 
-        bot.send_message(msg.chat.id, t("after_event"), reply_to_message_id: msg.message_id, reply_markup: markup)
+        bot.send_message(msg.chat.id, t("after_event.tip"), reply_to_message_id: msg.message_id, reply_markup: markup)
       else
-        promptly_torture(msg, member)
+        chat_id = msg.chat.id
+        msg_id = msg.message_id
+        member_id = member.id
+        username = member.username
+        promptly_torture(chat_id, msg_id, member_id, username)
       end
     end
 
-    def promptly_torture(msg, member)
-      Cache.verify_init(member.id)
+    def promptly_torture(chat_id, msg_id, member_id, username)
+      Cache.verify_init(member_id)
       default =
         {
           1,
@@ -59,23 +63,19 @@ module Policr
             t("questions.answer_2"),
           ],
         }
-      custom = DB.custom(msg.chat.id)
+      custom = DB.custom(chat_id)
 
       _, title, answers = custom ? custom : default
 
       # 禁言用户
-      bot.restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
+      bot.restrict_chat_member(chat_id, member_id, can_send_messages: false)
 
-      torture_sec = DB.get_torture_sec(msg.chat.id, DEFAULT_TORTURE_SEC)
-      name = bot.get_fullname(member)
-      bot.log "Start to torture '#{name}'"
+      torture_sec = DB.get_torture_sec(chat_id, DEFAULT_TORTURE_SEC)
       question = t("torture.start", {torture_sec: torture_sec, title: title})
-      reply_id = msg.message_id
-      member_id = member.id.to_s
-      member_username = member.username
+      reply_id = msg_id
 
       btn = ->(text : String, chooese_id : Int32) {
-        Button.new(text: text, callback_data: "Torture:#{member_id}:#{member_username}:#{chooese_id}")
+        Button.new(text: text, callback_data: "Torture:#{member_id}:#{username}:#{chooese_id}")
       }
       markup = Markup.new
       answer_list = answers.map_with_index { |answer, i| [btn.call(answer, i + 1)] }
@@ -83,13 +83,13 @@ module Policr
       pass_text = t("admin_ope_menu.pass")
       ban_text = t("admin_ope_menu.ban")
       markup << [btn.call(pass_text, 0), btn.call(ban_text, -1)]
-      sended_msg = bot.send_message(msg.chat.id, question, reply_to_message_id: reply_id, reply_markup: markup)
+      sended_msg = bot.send_message(chat_id, question, reply_to_message_id: reply_id, reply_markup: markup)
 
       ban_task = ->(message_id : Int32) {
-        if Cache.verify?(member.id) == VerifyStatus::Init
-          bot.log "User '#{name}' torture time expired and has been banned"
-          Cache.verify_slowed(member.id)
-          unverified_with_receipt(msg.chat.id, message_id, member.id, member.username)
+        if Cache.verify?(member_id) == VerifyStatus::Init
+          bot.log "User '#{username}' torture time expired and has been banned"
+          Cache.verify_slowed(member_id)
+          unverified_with_receipt(chat_id, message_id, member_id, username)
         end
       }
 

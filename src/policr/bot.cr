@@ -51,6 +51,7 @@ module Policr
       register :baned_menu, BanedMenuCallback
       register :bot_join, BotJoinCallback
       register :from, FromCallback
+      register :after_event, AfterEventCallback
 
       register :start, StartCommander
       register :ping, PingCommander
@@ -105,7 +106,7 @@ module Policr
       end
     end
 
-    def is_admin(chat_id, user_id)
+    def is_admin?(chat_id, user_id)
       has_permission?(chat_id, user_id, :admin)
     end
 
