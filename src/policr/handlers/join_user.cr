@@ -15,7 +15,7 @@ module Policr
           # 关联并缓存入群消息
           Cache.associate_join_msg(member.id, msg.chat.id, msg.message_id)
           name = bot.get_fullname(member)
-          halal_message_handler.is_halal(name) ? halal_message_handler.kick_halal_with_receipt(msg, member) : torture_action(msg, member)
+          halal_message_handler.is_halal(name) ? halal_message_handler.kick_halal_with_receipt(msg, member) : start_torture(msg, member)
         end
       end
     end
@@ -27,7 +27,28 @@ module Policr
       markup
     end
 
-    def torture_action(msg, member)
+    AFTER_EVENT_SEC = 60 * 15
+
+    def start_torture(msg, member)
+      if (Time.utc.to_unix - msg.date) > AFTER_EVENT_SEC
+        # 事后不即时审核，采取人工处理
+
+        markup = Markup.new
+        btn = ->(text : String, item : String) {
+          Button.new(text: text, callback_data: "AfterEvent:#{member.id}:#{member.username}:#{item}")
+        }
+
+        markup << btn.call("立即审核", "promptly_torture")
+        markup << btn.call("解除禁言", "unban")
+        markup << btn.call("直接移除", "kick")
+
+        bot.send_message(msg.chat.id, t("after_event"), reply_to_message_id: msg.message_id, reply_markup: markup)
+      else
+        promptly_torture(msg, member)
+      end
+    end
+
+    def promptly_torture(msg, member)
       Cache.verify_init(member.id)
       default =
         {

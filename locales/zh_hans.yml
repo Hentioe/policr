@@ -49,6 +49,7 @@ pass_by_self: "(*´∀`)~♥ 恭喜您通过了验证，逃过一劫。"
 pass_by_admin: "Σ(*ﾟдﾟﾉ)ﾉ 这家伙走后门进来的，大家快喷他。"
 pass_slow_alert: "验证通过，但是晚了一点点，再去试试？"
 pass_slow_receipt: "(´ﾟдﾟ`) 他通过了验证，但是手慢了那么一点点，再给他一次机会……"
+after_event: "事后审核，请主动开始验证，否则将一直被限制。"
 examine:
   enable: "已启动审核。包含: 新入群成员的主动验证、Bot 帐号限制、清真移除等功能被开启。"
   enable_need_permission: "不给权限还想让人家干活，做梦。"
