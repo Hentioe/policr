@@ -21,7 +21,7 @@ module Policr
         end
       when "unban" # 解封
         # 检测权限
-        unless bot.is_admin?(chat_id, from_user_id)
+        unless bot.is_admin? chat_id, from_user_id
           bot.answer_callback_query(query.id, text: t("callback.no_permission"))
           return
         end
@@ -30,7 +30,7 @@ module Policr
         bot.delete_message(msg.chat.id, msg.message_id)
       when "kick" # 移除
         # 检测权限
-        unless bot.is_admin?(chat_id, from_user_id)
+        unless bot.is_admin? chat_id, from_user_id
           bot.answer_callback_query(query.id, text: t("callback.no_permission"))
           return
         end

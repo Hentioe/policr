@@ -19,9 +19,8 @@ module Policr
       true_index = custom ? custom.[0] : 1
 
       if chooese_i <= 0 # 管理员菜单
-        role = DB.trust_admin?(chat_id) ? :admin : :creator
 
-        if bot.has_permission? chat_id, from_user_id, role
+        if bot.is_admin? chat_id, from_user_id
           bot.log "The administrator ended the torture by: #{chooese_i}"
           case chooese_i
           when 0

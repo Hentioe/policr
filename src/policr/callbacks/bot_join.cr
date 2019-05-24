@@ -13,9 +13,7 @@ module Policr
       bot_id = target_id.to_i
       message_id = msg.message_id
 
-      role = DB.trust_admin?(chat_id) ? :admin : :creator
-
-      unless bot.has_permission? chat_id, from_user_id, role
+      unless bot.is_admin? chat_id, from_user_id
         bot.log "User ID '#{from_user_id}' without permission click to unrestrict button"
         bot.answer_callback_query(query.id, text: t("callback.no_permission"))
         return
