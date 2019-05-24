@@ -86,6 +86,12 @@ module Policr
       end
     end
 
+    # def handle_edited(msg : TelegramBot::Message)
+    #   handlers.each do |_, handler|
+    #     handler.registry(msg)
+    #   end
+    # end
+
     def handle(query : TelegramBot::CallbackQuery)
       _handle = ->(data : String, message : TelegramBot::Message) {
         report = data.split(":")
