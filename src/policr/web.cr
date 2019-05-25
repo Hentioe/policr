@@ -8,6 +8,7 @@ module Policr::Web
     config = CLI::Config.instance
     serve_static({"gzip" => false})
     public_folder "public"
+    Kemal.config.logger = LoggerHandler.new
 
     Kemal::Session.config do |config|
       config.secret = "demo_sec"
