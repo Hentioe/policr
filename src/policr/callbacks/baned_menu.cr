@@ -35,12 +35,10 @@ module Policr
       begin
         bot.log "Username '#{target_username}' has been unbanned by the administrator"
         unban_r = bot.unban_chat_member(chat_id, target_user_id)
-        markup = Markup.new
-        markup << Button.new(text: t("call_him_back"), url: "t.me/#{target_username}")
-        msg = t "unban_message"
+        msg = t "unban_message", {user_id: target_user_id}
         msg = t("add_to_whitelist") if ope_count == 1
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: msg, reply_markup: markup) if unban_r
+          text: msg, parse_mode: "markdown") if unban_r
         # 加入白名单
         DB.add_to_whitelist(target_user_id) if ope_count == 1
       rescue ex : TelegramBot::APIException
