@@ -1,17 +1,17 @@
 module Policr::Web
   class LoggerHandler < Kemal::BaseLogHandler
-    def initialize(@io : IO = STDOUT)
+    def initialize(@logger : Logger)
     end
 
     def call(context : HTTP::Server::Context)
       elapsed_time = Time.measure { call_next(context) }
       elapsed_text = elapsed_text(elapsed_time)
-      @io << Time.now << ' ' << context.response.status_code << ' ' << context.request.method << ' ' << context.request.resource << ' ' << elapsed_text << '\n'
+      @logger.info "#{context.response.status_code} #{context.request.method} #{context.request.resource} #{elapsed_text}"
       context
     end
 
     def write(message : String)
-      @io << message
+      @logger.debug message.strip
     end
 
     private def elapsed_text(elapsed)

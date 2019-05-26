@@ -48,7 +48,7 @@ module Policr
     logger.info "ready to start"
     spawn do
       logger.info "start web"
-      Web.start
+      Web.start logger
     end
     logger.info "start bot"
     Bot.new.polling

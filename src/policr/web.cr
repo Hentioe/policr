@@ -4,11 +4,11 @@ require "kemal-session"
 module Policr::Web
   extend self
 
-  def start
+  def start(logger)
     config = CLI::Config.instance
     serve_static({"gzip" => false})
     public_folder "public"
-    Kemal.config.logger = LoggerHandler.new
+    Kemal.config.logger = LoggerHandler.new(logger)
 
     Kemal::Session.config do |config|
       config.secret = "demo_sec"
