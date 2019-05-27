@@ -10,8 +10,17 @@ module Policr
     end
 
     def handle(msg)
+      chat_id = msg.chat.id
+
       if (members = msg.new_chat_members) && (halal_message_handler = bot.handlers[:halal_message]?) && halal_message_handler.is_a?(HalalMessageHandler)
         members.select { |m| m.is_bot == false }.each do |member|
+          # 管理员拉入，放行
+          if (user = msg.from) && (user.id != member.id) && bot.is_admin?(msg.chat.id, user.id)
+            if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
+              Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless DB.record_mode?(chat_id)
+            end
+            return
+          end
           # 关联并缓存入群消息
           Cache.associate_join_msg(member.id, msg.chat.id, msg.message_id)
           # 判断清真
