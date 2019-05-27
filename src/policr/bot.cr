@@ -79,7 +79,7 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
-      if from_group? msg
+      if from_supergroup? msg
         log "Message from t.me/#{msg.chat.username}"
       end
       super
@@ -139,6 +139,10 @@ module Policr
       else
         false
       end
+    end
+
+    def from_supergroup?(msg)
+      msg.chat.type == "supergroup"
     end
 
     def display_name(user)
