@@ -5,7 +5,7 @@ module Policr
     end
 
     def handle(msg)
-      if msg.chat.type != "supergroup" && msg.chat.type != "group"
+      unless bot.from_group?(msg)
         bot.reply msg, t("only_group")
         return
       end

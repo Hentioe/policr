@@ -79,6 +79,9 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
+      if from_group? msg
+        log "Message from t.me/#{msg.chat.username}"
+      end
       super
 
       handlers.each do |_, handler|
@@ -122,6 +125,17 @@ module Policr
         is_creator
       when :admin
         is_creator || user.status == "administrator"
+      else
+        false
+      end
+    end
+
+    def from_group?(msg)
+      case msg.chat.type
+      when "supergroup"
+        true
+      when "group"
+        true
       else
         false
       end
