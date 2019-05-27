@@ -35,7 +35,7 @@ module Policr
     end
 
     def kick_halal_with_receipt(msg, member)
-      name = bot.get_fullname(member)
+      name = bot.display_name(member)
       bot.log "Found a halal '#{name}'"
       if DB.halal_white? member.id
         bot.log "Halal '#{name}' in whitelist, ignored"

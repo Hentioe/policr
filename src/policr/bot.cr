@@ -86,17 +86,15 @@ module Policr
       end
     end
 
-    # def handle_edited(msg : TelegramBot::Message)
-    #   handlers.each do |_, handler|
-    #     handler.registry(msg)
-    #   end
-    # end
+    def handle_edited(msg : TelegramBot::Message)
+      # Empty implement
+    end
 
     def handle(query : TelegramBot::CallbackQuery)
       _handle = ->(data : String, message : TelegramBot::Message) {
         report = data.split(":")
         if report.size < 4
-          logger.info "'#{get_fullname(query.from)}' clicked on the invalid inline keyboard button"
+          logger.info "'#{display_name(query.from)}' clicked on the invalid inline keyboard button"
           answer_callback_query(query.id, text: t("invalid_callback"))
           return
         end
@@ -129,10 +127,11 @@ module Policr
       end
     end
 
-    def get_fullname(member)
-      first_name = member.first_name
-      last_name = member.last_name ? " #{member.last_name}" : ""
-      "#{first_name}#{last_name}"
+    def display_name(user)
+      name = user.first_name
+      last_name = user.last_name
+      name = last_name ? "#{name} #{last_name}" : name
+      name
     end
 
     def log(text)

@@ -14,7 +14,7 @@ module Policr
         members.select { |m| m.is_bot == false }.each do |member|
           # 关联并缓存入群消息
           Cache.associate_join_msg(member.id, msg.chat.id, msg.message_id)
-          name = bot.get_fullname(member)
+          name = bot.display_name(member)
           halal_message_handler.is_halal(name) ? halal_message_handler.kick_halal_with_receipt(msg, member) : start_torture(msg, member)
         end
       end
