@@ -61,8 +61,8 @@ module Policr
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil)
 
-      # 干净模式删除消息
-      Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } if DB.clean_mode?(chat_id)
+      # 非记录模式删除消息
+      Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless DB.record_mode?(chat_id)
 
       # 初始化用户权限
       bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)

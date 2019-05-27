@@ -24,7 +24,7 @@ restrict_bot_menu:
   remove: "直接移除"
 restrict_bot: "抓到一个新加入的机器人，安全考虑已对其进行限制。如有需要可自行解除，否则请移除。"
 clean_mode:
-  reply: "已启用干净模式，默认级别1：清理通过验证的痕迹。"
+  reply: "已启用干净模式，将自动清理通过验证的痕迹。"
 callback:
   no_permission: "你无权无势，凭啥听你的"
 manageable:
