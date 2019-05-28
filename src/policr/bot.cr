@@ -70,6 +70,7 @@ module Policr
       register :record_mode, EnableRecordModeCommander
       register :custom, CustomCommander
       register :token, TokenCommander
+      register :report, ReportCommander
 
       commanders.each do |_, command|
         cmd command.name do |msg|
