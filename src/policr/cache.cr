@@ -14,6 +14,8 @@ module Policr::Cache
   @@verify_status = Hash(Int32, VerifyStatus).new
   @@custom_msg = Set(Int32).new
   @@new_join_user_msg = Hash(String, Int32).new
+  # 运行周期内服务的群组列表
+  @@group_list = Hash(Int64, String).new
 
   def carving_torture_time_msg_sec(message_id)
     @@torture_time_msg[message_id] = TortureTimeType::Sec
@@ -69,5 +71,17 @@ module Policr::Cache
 
   def find_join_msg_id(user_id, chat_id)
     @@new_join_user_msg["#{user_id}_#{chat_id}"]?
+  end
+
+  def put_serve_group(chat, bot)
+    unless @@group_list[chat.id]?
+      username = chat.username
+      link = username ? "t.me/#{username}" : bot.export_chat_invite_link(chat.id).to_s
+      @@group_list[chat.id] = link
+    end
+  end
+
+  def serving_groups
+    @@group_list
   end
 end

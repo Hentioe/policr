@@ -80,9 +80,8 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
-      if from_supergroup? msg
-        log "Message from t.me/#{msg.chat.username}"
-      end
+      Cache.put_serve_group(msg.chat, self) if from_group?(msg)
+
       super
 
       handlers.each do |_, handler|

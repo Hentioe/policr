@@ -64,6 +64,16 @@ module Policr::Web
       render "src/views/about.html.ecr", "src/views/layout.html.ecr"
     end
 
+    get "/serving" do
+      groups = Cache.serving_groups
+      groups.each_with_index do |group, i|
+        _, link = group
+        i += 1
+        logger.info "Serving group[#{i}]: #{link}"
+      end
+      "done!+#{groups.size}"
+    end
+
     error 404 do
       "建设中……"
     end
