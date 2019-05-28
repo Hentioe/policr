@@ -59,6 +59,11 @@ module Policr::Web
       VERSION
     end
 
+    get "/about" do
+      title = "关于"
+      render "src/views/about.html.ecr", "src/views/layout.html.ecr"
+    end
+
     error 404 do
       "建设中……"
     end
