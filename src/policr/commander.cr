@@ -9,6 +9,5 @@ module Policr
     end
 
     abstract def handle(msg)
-
   end
 end
