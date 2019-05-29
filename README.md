@@ -4,7 +4,7 @@
 
 ## 介绍
 
-Policr 源自于单词 Polic(e)r，意为监察者。去 e 后结尾的 cr 对应了开发语言 Crystal 的缩写。
+Policr 源自于单词 Polic(e)r，意为监察者，目标是打击垃圾帐号。而 e 后结尾的 cr 则对应了开发语言 Crystal 的缩写。
 
 ## 使用
 
