@@ -127,12 +127,12 @@ module Policr
       rescue ex : TelegramBot::APIException
         text = t "verify_result.error"
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: text)
+          text: text, parse_mode: "markdown")
       else
-        text = t "verify_result.failure"
-        text = t("verify_result.admin_ban") if admin
+        text = t "verify_result.failure", {user_id: user_id}
+        text = t("verify_result.admin_ban", {user_id: user_id}) if admin
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: text, reply_markup: add_banned_menu(user_id, username))
+          text: text, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
       end
     end
   end
