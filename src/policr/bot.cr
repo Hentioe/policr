@@ -6,7 +6,7 @@ macro t(key, options = nil)
 end
 
 module Policr
-  DEFAULT_TORTURE_SEC = 45 # 默认验证等待时长（秒）
+  DEFAULT_TORTURE_SEC = 55 # 默认验证等待时长（秒）
 
   alias Button = TelegramBot::InlineKeyboardButton
   alias Markup = TelegramBot::InlineKeyboardMarkup
