@@ -84,8 +84,13 @@ module Policr
       # 禁言用户
       bot.restrict_chat_member(chat_id, member_id, can_send_messages: false)
 
-      torture_sec = DB.get_torture_sec(chat_id, DEFAULT_TORTURE_SEC)
-      question = t("torture.start", {torture_sec: torture_sec, title: title})
+      torture_sec = DB.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
+      question =
+        if torture_sec > 0
+          t("torture.default_reply", {torture_sec: torture_sec, title: title})
+        else
+          t("torture.no_time_reply", {title: title})
+        end
       reply_id = msg_id
 
       btn = ->(text : String, chooese_id : Int32) {
@@ -109,7 +114,8 @@ module Policr
 
       ban_timer = ->(message_id : Int32) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id) } }
       if sended_msg && (message_id = sended_msg.message_id)
-        ban_timer.call(message_id)
+        # 存在验证时间，定时任务调用
+        ban_timer.call(message_id) if torture_sec > 0
       end
     end
 
