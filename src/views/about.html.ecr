@@ -19,7 +19,7 @@
           <h1 class="title is-1">POLICR PROJECT</h1>
           <article class="message">
             <div class="message-body">
-              我厌恶广告，并恨透了四处乱入广泛加群的垃圾帐号们。
+              我厌烦广告，并痛恨四处乱入、广泛加群的垃圾帐号们。
               <br />
               我需要一个开放透明的审核制度，定制性强的验证机制。
             </div>
@@ -53,17 +53,18 @@
         <div>
           <h2 class="title is-2">使用说明</h2>
           <hr />
-          <article class="message is-warning">
+          <h3 class="subtitle is-3">权限</h3>
+          <article class="message is-danger">
             <div class="message-body">
-              在这之前需要一些前提，这些前提是保证机器人各功能运作的基础
+              使用之前需要一些前提，这些前提是保证机器人各功能运作的基础
             </div>
           </article>
           <div class="content">
             <ul>
-              <li>访问群消息</li>
-              <li>删除群消息</li>
-              <li>限制群成员</li>
-              <li>封禁群成员</li>
+              <li>访问群消息（未关闭隐私模式）</li>
+              <li>发送群消息（Send messages）</li>
+              <li>删除群消息（Delete messages）</li>
+              <li>封禁群成员（Ban users）</li>
             </ul>
           </div>
           <p>
@@ -72,6 +73,165 @@
               <code>admin</code> 即可。</strong
             >
           </p>
+          <article class="message is-warning" style="margin-top:1.5rem;">
+            <div class="message-body">
+              如果能给予以下权限，将更为方便机器人进行后台管理
+            </div>
+          </article>
+          <div class="content">
+            <ul>
+              <li>通过链接邀请用户（Invite users via link）</li>
+            </ul>
+          </div>
+          <article class="message is-success">
+            <div class="message-body">
+              满足以上权限，机器人便可以全功能服务和工作
+            </div>
+          </article>
+          <h3 class="subtitle is-3">指令总览</h3>
+          <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th align="left">名称</th>
+                <th align="left">描述</th>
+                <th align="center">类型</th>
+                <th align="center">详情</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left"><code>/ping</code></td>
+                <td align="left">存活测试</td>
+                <td align="center">状态</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/from</code></td>
+                <td align="left">设置来源调查</td>
+                <td align="center">设置</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/enable_examine</code></td>
+                <td align="left">启用审核</td>
+                <td align="center">开关</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/disable_examine</code></td>
+                <td align="left">禁用审核</td>
+                <td align="center">开关</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/enable_from</code></td>
+                <td align="left">启用来源调查</td>
+                <td align="center">开关</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/disable_from</code></td>
+                <td align="left">禁用来源调查</td>
+                <td align="center">开关</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/torture_sec</code></td>
+                <td align="left">更新验证时间（秒）</td>
+                <td align="center">设置</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/torture_min</code></td>
+                <td align="left">更新验证时间（分钟）</td>
+                <td align="center">设置</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/trust_admin</code></td>
+                <td align="left">信任管理员</td>
+                <td align="center">开关</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/distrust_admin</code></td>
+                <td align="left">不信任管理员</td>
+                <td align="center">开关</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/clean_mode</code></td>
+                <td align="left">干净模式</td>
+                <td align="center">开关</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/record_mode</code></td>
+                <td align="left">记录模式</td>
+                <td align="center">开关</td>
+                <td align="center">略</td>
+              </tr>
+              <tr>
+                <td align="left"><code>/custom</code></td>
+                <td align="left">定制验证问题</td>
+                <td align="center">设置</td>
+                <td align="center">略</td>
+              </tr>
+            </tbody>
+          </table>
+          <article class="message is-danger">
+            <div class="message-body">
+              注意：不要在回复指令后编辑消息，这是不会生效的，请重新回复。
+            </div>
+          </article>
+          <h3 class="subtitle is-3">快速入门</h3>
+          <p class="subtitle is-6">
+            作为群组创建者，在信任群管理的前提下，建议让管理员们帮忙干活
+          </p>
+          <figure class="highlight">
+            <pre><code class="language-bash" data-lang="bash">/trust_admin@policr_bot</code></pre>
+          </figure>
+          <article class="message is-danger">
+            <div class="message-body">
+              如果不信任管理员，则管理员没有权限使用指令调整任何设置。
+            </div>
+          </article>
+          <p class="subtitle is-6">
+            为避免被垃圾帐号打扰，直接启用全部审核功能
+          </p>
+          <figure class="highlight">
+            <pre><code class="language-bash" data-lang="bash">/enable_examine@policr_bot</code></pre>
+          </figure>
+          <p class="subtitle is-6">
+            有些人反应很迟钝，默认验证时间 55 秒可能有点短
+          </p>
+          <figure class="highlight">
+            <pre><code class="language-bash" data-lang="bash">/torture_sec@policr_bot</code></pre>
+          </figure>
+          <p class="subtitle is-6">
+            群组正在四处宣传，很需要知晓入群成员来自何处
+          </p>
+          <figure class="highlight">
+            <pre><code class="language-bash" data-lang="bash">/from@policr_bot</code></pre>
+          </figure>
+          <p class="subtitle is-6">
+            怎么回事？机器人不干活嘞，检测它是否还活着
+          </p>
+          <figure class="highlight">
+            <pre><code class="language-bash" data-lang="bash">/ping@policr_bot</code></pre>
+          </figure>
+          <p class="subtitle is-6">
+            加群的人太多了，验证后的步骤消息能不能自动清理？
+          </p>
+          <figure class="highlight">
+            <pre><code class="language-bash" data-lang="bash">/clean_mode@policr_bot</code></pre>
+          </figure>
+          <p class="subtitle is-6">
+            默认的验证方式太简单了，我想调整一下
+          </p>
+          <figure class="highlight">
+            <pre><code class="language-bash" data-lang="bash">/custom@policr_bot</code></pre>
+          </figure>
         </div>
       </div>
     </div>
