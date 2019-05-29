@@ -56,7 +56,7 @@ module Policr
           text = t("halal.ban_failure")
           bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
             text: text)
-          _, reason = bot.get_error_code_with_reason(ex)
+          _, reason = bot.parse_error(ex)
           bot.log "Halal '#{name}' banned failure, reason: #{reason}"
         end
       end

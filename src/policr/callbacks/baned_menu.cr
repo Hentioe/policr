@@ -42,7 +42,7 @@ module Policr
         # 加入白名单
         DB.add_to_whitelist(target_user_id) if ope_count == 1
       rescue ex : TelegramBot::APIException
-        _, reason = bot.get_error_code_with_reason(ex)
+        _, reason = bot.parse_error(ex)
         bot.answer_callback_query(query.id, text: "#{t("unban_error")}#{reason}")
         bot.log "Username '#{target_username}' unsealing failed, reason: #{reason}"
       end

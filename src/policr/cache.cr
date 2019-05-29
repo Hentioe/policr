@@ -79,7 +79,7 @@ module Policr::Cache
       link = begin
         username ? "t.me/#{username}" : bot.export_chat_invite_link(chat.id).to_s
       rescue e : TelegramBot::APIException
-        _, reason = bot.get_error_code_with_reason(e)
+        _, reason = bot.parse_error(e)
         reason.to_s
       end
       @@group_list[chat.id] = link

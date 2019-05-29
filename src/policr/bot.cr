@@ -156,7 +156,7 @@ module Policr
       logger.info text
     end
 
-    def get_error_code_with_reason(ex : TelegramBot::APIException)
+    def parse_error(ex : TelegramBot::APIException)
       code = -1
       reason = "Unknown"
 
