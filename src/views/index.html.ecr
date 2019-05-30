@@ -28,7 +28,14 @@
                 <li><a>快速入门</a></li>
               </ul>
             </li>
-            <li><a>常见问题</a></li>
+            <li>
+              <a>常见问题</a>
+              <ul>
+                <li><a>功能详情</a></li>
+                <li><a>高级教程</a></li>
+                <li><a>未来计划</a></li>
+              </ul>
+            </li>
             <li><a>隐私政策</a></li>
           </ul>
         </aside>
@@ -251,6 +258,102 @@
           <figure class="highlight">
             <pre><code class="language-bash" data-lang="bash">/custom@policr_bot</code></pre>
           </figure>
+        </div>
+        <hr />
+        <div>
+          <h2 class="title is-2">常见问题</h2>
+          <hr />
+          <h3 class="subtitle is-3">功能详情</h3>
+          <div class="content">
+            <ul>
+              <li>
+                <p>为什么要验证？</p>
+                <blockquote>
+                  绝大部分垃圾帐号都是由程序运营的，它们虽然是普通用户类型但实质是机器人。这些广告机器人通过广泛加群以达到批量散播广告的目的。由于它们无法像人类一样回答验证问题，所以在入群发言之前就将其限制，验证超时或错误则将其移除，便达到了屏蔽的效果。
+                </blockquote>
+              </li>
+              <li>
+                <p>验证失败的一定是机器人吗？</p>
+                <blockquote>
+                  验证失败主要分两种情况。其一是最常见的验证超时，超时验证的帐号绝大多数是机器人，基本上不用去揣测是否误杀。其二则是错误验证，即回答错了问题。这种情况稍微复杂，取决于群组设定的问题的复杂度。默认验证是傻瓜式的，所以误杀可能性很小很小。
+                </blockquote>
+              </li>
+              <li>
+                <p>验证失败有什么后果？</p>
+                <blockquote>
+                  当前的版本<code><%= VERSION %></code
+                  >会对用户实施封禁，相当于管理员从成员列表中<code>×</code>掉了用户。不手动解封便无法再次加入。<strong>唯独有一种情况是例外：</strong>在接近超时时通过了验证，但网络原因导致超触发而验证正确的请求还未到来，这种情况下他们仍然可以继续尝试加入。
+                </blockquote>
+              </li>
+              <li>
+                <p>不限时验证有什么危害吗？</p>
+                <blockquote>
+                  为了满足零误杀的需求，提供了免去<code
+                    ><%= DEFAULT_TORTURE_SEC %></code
+                  >秒验证倒计时机制。它的特点是不移除用户，但限制用户，除非他们主动验证才能解除限制。但被限制发言的潜在机器人可以邀请新用户，如果不移除它们就会导致更多的广告机器人被邀请进来，并越来越严重。所以一定要使用这种模式的话，请关闭邀请功能。
+                </blockquote>
+              </li>
+              <li>
+                <p>不被信任为什么管理员还能「人工封禁」和「人工通过」？</p>
+                <blockquote>
+                  封禁和解封权限对于<code>PolicrBot</code>而言和管理员是同级的。他们即便不使用这些按钮也能自行做到封禁和解封，只是不那么便捷罢了。所以信任管理员与否和消息内联键盘的许多按钮使用权限是无关的，主要和指令使用权相关。
+                </blockquote>
+              </li>
+            </ul>
+          </div>
+          <h3 class="subtitle is-3">高级教程</h3>
+          <div class="content">
+            <ul>
+              <li>
+                <p>如何设置不可能验证错误的效果？</p>
+                <blockquote>
+                  很简单。定制验证问题时只设置一个正确的答案即可。例如问题为：<code>点击点我按钮</code>，答案为<code>点我！</code>。
+                  因为除了点击「点我！」按钮以外没有可能错误的答案，所以就变相的成为了一个纯主动验证，而非选择题。只要该用户是能交互的，便能通过验证。虽然这样做已经可以排除绝大部分垃圾帐号，但不排除未来出现能自动触发第一个按钮的机器人程序，所以默认验证仍然保留一个错误答案。
+                </blockquote>
+              </li>
+            </ul>
+          </div>
+          <h3 class="subtitle is-3">未来计划</h3>
+          <div class="content">
+            <ul>
+              <li>
+                <p>目前有什么正在实现但还未开放的功能？</p>
+                <blockquote>
+                  <ul>
+                    <li>
+                      <a
+                        target="_blank"
+                        href="https://github.com/Hentioe/policr/issues/21"
+                        >平滑重启（恢复挂起任务）</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        target="_blank"
+                        href="https://github.com/Hentioe/policr/issues/19"
+                        >定制审核子功能</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        target="_blank"
+                        href="https://github.com/Hentioe/policr/issues/10"
+                        >后台管理</a
+                      >
+                    </li>
+                  </ul>
+                </blockquote>
+              </li>
+              <li>
+                <p>是否考虑添加全网黑名单功能？</p>
+                <blockquote>
+                  有考虑。并且这种功能非常简单便能实现。目前没有提供相关功能是因为有一个叫做<code>CNBlacklistR</code>的项目作为前车之鉴，他们由于黑箱操作失掉了公信力。虽然我们一开始的构想就是避免集权化的，打算设计一套公投机制。但做到这一步，其构思和实现的力度都可能远大于实际效果，毕竟现在的广告机器人发了就自删帐号，黑名单什么的意义已经不那么大了。
+                  <br />
+                  <strong>但，这仍然会是一个摆放在台面上的值得持续思考的计划。</strong>
+                </blockquote>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
