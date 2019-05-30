@@ -36,7 +36,19 @@
                 <li><a>未来计划</a></li>
               </ul>
             </li>
-            <li><a>隐私政策</a></li>
+            <li>
+              <a>私有部署</a>
+              <ul>
+                <li><a>需知</a></li>
+              </ul>
+            </li>
+            <li>
+              <a>隐私政策</a>
+              <ul>
+                <li><a>消息访问</a></li>
+                <li><a>数据存储</a></li>
+              </ul>
+            </li>
           </ul>
         </aside>
       </div>
@@ -349,11 +361,78 @@
                 <blockquote>
                   有考虑。并且这种功能非常简单便能实现。目前没有提供相关功能是因为有一个叫做<code>CNBlacklistR</code>的项目作为前车之鉴，他们由于黑箱操作失掉了公信力。虽然我们一开始的构想就是避免集权化的，打算设计一套公投机制。但做到这一步，其构思和实现的力度都可能远大于实际效果，毕竟现在的广告机器人发了就自删帐号，黑名单什么的意义已经不那么大了。
                   <br />
-                  <strong>但，这仍然会是一个摆放在台面上的值得持续思考的计划。</strong>
+                  <strong
+                    >但，这仍然会是一个摆放在台面上的值得持续思考的计划。</strong
+                  >
                 </blockquote>
               </li>
             </ul>
           </div>
+        </div>
+        <hr />
+        <div>
+          <h2 class="title is-2">私有部署</h2>
+          <hr />
+          <h3 class="subtitle is-3">需知</h3>
+          <article class="message is-warning" style="margin-top:1.5rem;">
+            <div class="message-body">
+              本项目主要由<code>Crystal</code>语言编写，利用嵌入式数据库<code
+                >RocksDB</code
+              >
+              储存数据。能非常方便的进行部署。但在本项目<code>1.0</code> Release
+              之前并不准备发布预编译安装包或者容器镜像。
+              <br />
+              <br />
+              这主要是因为目前项目处在快速功能迭代的阶段，不适合规划具体版本。所以，这个阶段都使用官方实例才能满足快速的版本更替。并且会促进项目的进步和稳定。
+              <br />
+              <br />
+              当然，你可以自主编译和部署项目。但仍需强调的是不建议这么做。目前的源代码没有彻底分离官方实例和第三方构建，可能会存在功能异常，例如引用的各种链接。
+              <br />
+              <br />
+              <strong
+                >并且在此阶段部署的公开服务的
+                <code>PolicrBot</code> 实例将不被本项目承认。</strong
+              >
+            </div>
+          </article>
+        </div>
+        <hr />
+        <div>
+          <h2 class="title is-2">隐私政策</h2>
+          <hr />
+          <h3 class="subtitle is-3">消息访问</h3>
+          <div class="content">
+            <blockquote>
+              任何将本项目实例提升为<code>admin</code>的群组产生的任何消息都会被实例机器人接收。
+            </blockquote>
+          </div>
+          <h3 class="subtitle is-3">数据储存</h3>
+          <div class="content">
+            <blockquote>
+              将持久化保存的数据包括有：
+              <ul>
+                <li>机器人相关设置，例如来源和定制验证涉及到的群组信息</li>
+                <li>白名单清真用户ID</li>
+                <li>受管群组ID和群主ID（此功能暂未开放）</li>
+              </ul>
+              在机器人程序运行周期内缓存的数据包括有：
+              <ul>
+                <li>服务中的群组ID、链接和名称</li>
+                <li>新加入用户系统消息</li>
+              </ul>
+            </blockquote>
+          </div>
+          <article class="message is-success">
+            <div class="message-body">
+              本项目当前版本<code><%= VERSION %></code
+              >没有持久化储存任何用户消息，请安心。
+            </div>
+          </article>
+          <article class="message is-danger">
+            <div class="message-body">
+              以上内容由源代码保证，接受任何组织或个人的监督。
+            </div>
+          </article>
         </div>
       </div>
     </div>
