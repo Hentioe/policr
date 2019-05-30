@@ -55,11 +55,11 @@ module Policr
       bot.log "Username '#{target_username}' passed verification"
 
       bot.answer_callback_query(query.id, text: t("pass_alert")) unless admin
-      text = t("pass_by_self")
-      text = t("pass_by_admin") if admin
+      text = t("pass_by_self", {user_id: target_user_id})
+      text = t("pass_by_admin", {user_id: target_user_id}) if admin
 
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: text, reply_markup: nil)
+        text: text, reply_markup: nil, parse_mode: "markdown")
 
       # 非记录模式删除消息
       Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless DB.record_mode?(chat_id)
