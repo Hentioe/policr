@@ -19,9 +19,9 @@ module Policr::Web
       render "src/views/index.html.ecr", "src/views/layout.html.ecr"
     end
 
-    get "/guide" do
+    get "/demo" do
       title = "使用指南"
-      render "src/views/guide.html.ecr", "src/views/layout.html.ecr"
+      render "src/views/demo.html.ecr", "src/views/layout.html.ecr"
     end
 
     get "/login" do |env|

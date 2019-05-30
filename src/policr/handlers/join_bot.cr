@@ -10,8 +10,18 @@ module Policr
     end
 
     def handle(msg)
+      chat_id = msg.chat.id
+
       if members = msg.new_chat_members
         members.select { |m| m.is_bot }.each do |member|
+          # 管理员拉入，放行
+          if (user = msg.from) && (user.id != member.id) && bot.is_admin?(msg.chat.id, user.id)
+            if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
+              Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless DB.record_mode?(chat_id)
+            end
+            return
+          end
+          # 限制机器人
           restrict_bot(msg, member)
         end
       end
