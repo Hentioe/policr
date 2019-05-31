@@ -241,7 +241,8 @@
             <pre><code class="language-bash" data-lang="bash">/enable_examine@policr_bot</code></pre>
           </figure>
           <p class="subtitle is-6">
-            有些人反应很迟钝，默认验证时间 55 秒可能有点短
+            有些人反应很迟钝，默认验证时间<code><%= DEFAULT_TORTURE_SEC %></code
+            >秒可能有点短
           </p>
           <figure class="highlight">
             <pre><code class="language-bash" data-lang="bash">/torture_sec@policr_bot</code></pre>
@@ -257,12 +258,6 @@
           </p>
           <figure class="highlight">
             <pre><code class="language-bash" data-lang="bash">/ping@policr_bot</code></pre>
-          </figure>
-          <p class="subtitle is-6">
-            加群的人太多了，验证后的步骤消息能不能自动清理？
-          </p>
-          <figure class="highlight">
-            <pre><code class="language-bash" data-lang="bash">/clean_mode@policr_bot</code></pre>
           </figure>
           <p class="subtitle is-6">
             默认的验证方式太简单了，我想调整一下
@@ -306,6 +301,52 @@
                 </blockquote>
               </li>
               <li>
+                <p>「干净模式」和「记录模式」分别是什么意思？</p>
+                <blockquote>
+                  这是两个互斥模式，即开启其中一个便会关闭另一个。目前<code
+                    ><%= VERSION %></code
+                  >版本机器人的默认行为和干净模式一致。所以干净模式已是一种无实际意义的东西，仅作为恢复默认行为而存在。干净模式原本是指的机器人会自动清理消息这一工作行为（例如验证通过消息）。而记录模式则是关闭这种行为，不对任何类型的消息进行删除操作。最初机器人会保留所有中间消息，后来经过投票添加了自动清理消息的行为，所以产生了干净/记录两种工作模式。目前来讲，由于干净模式是默认的，所以你想保留所有消息的话，反而要启用记录模式。
+                  <br />
+                  <strong
+                    >注意：干净模式不会清理任何附带「解封封禁」之类按钮的消息，因为要保证每一个被处理的帐号都被注意到，并始终认为存在误杀的可能，进而提供的人工解除途径。</strong
+                  >
+                </blockquote>
+              </li>
+              <li>
+                <p>定制验证的最佳实践是什么？</p>
+                <blockquote>
+                  以下例子分了三种情形，其附加目的都不同。无论验证方式如何，第一目的当然是屏蔽非正常用户，所以定制验证被称作附加目的。第一种是群组主题，第二种是入群前提，第三种则是无错误答案的纯主动验证。其强调的点各不相同，但都是指的推荐的设置方式。
+                  <ol>
+                    <li>
+                      <span
+                        >你知道本群讨论的是哪种编程语言吗？（Java
+                        中文交流）</span
+                      >
+                      <ul>
+                        <li>C#</li>
+                        <li>C++</li>
+                        <li>Java</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <span
+                        >你能保证不乱发广告并仔细阅读群规吗？（任意群组）</span
+                      >
+                      <ul>
+                        <li>保证</li>
+                        <li>不保证</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <span>点击点我按钮（任意群组）</span>
+                      <ul>
+                        <li>点我！</li>
+                      </ul>
+                    </li>
+                  </ol>
+                </blockquote>
+              </li>
+              <li>
                 <p>不被信任为什么管理员还能「人工封禁」和「人工通过」？</p>
                 <blockquote>
                   封禁和解封权限对于<code>PolicrBot</code>而言和管理员是同级的。他们即便不使用这些按钮也能自行做到封禁和解封，只是不那么便捷罢了。所以信任管理员与否和消息内联键盘的许多按钮使用权限是无关的，主要和指令使用权相关。
@@ -317,6 +358,7 @@
           <div class="content">
             <ul>
               <li>
+                <a class="anchor" name="advance_no_failure"></a>
                 <p>如何设置不可能验证错误的效果？</p>
                 <blockquote>
                   很简单。定制验证问题时只设置一个正确的答案即可。例如问题为：<code>点击点我按钮</code>，答案为<code>点我！</code>。
@@ -366,11 +408,20 @@
                   >
                 </blockquote>
               </li>
+              <li>
+                <p>会支持图片验证码吗？</p>
+                <blockquote>
+                  众所周知，验证码在网页上曾经非常流行，但是现在则逐渐被例如
+                  Google
+                  一键验证、滑动滑块等方式的淘汰掉了。原因是验证码是一种不人道的验证方式，体验极差。如果生成的图片质量过低，会让人觉得无比痛苦。我个人认为即便是随机生成简单计算公式都比验证码高明很多。所以基本永不考虑。值得重复一提的是，屏蔽广告等行为机器人只需要一个主动验证就行了，甚至简单到要求点击一个按钮即可。即验证码目前也是大材小用了。
+                </blockquote>
+              </li>
             </ul>
           </div>
         </div>
         <hr />
         <div>
+          <a class="anchor" name="deploy"></a>
           <h2 class="title is-2">私有部署</h2>
           <hr />
           <h3 class="subtitle is-3">需知</h3>
@@ -398,6 +449,7 @@
         </div>
         <hr />
         <div>
+          <a class="anchor" name="privacy"></a>
           <h2 class="title is-2">隐私政策</h2>
           <hr />
           <h3 class="subtitle is-3">消息访问</h3>
