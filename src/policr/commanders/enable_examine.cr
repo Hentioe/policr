@@ -13,7 +13,7 @@ module Policr
         else
           text = t "examine.enable_need_permission"
         end
-        bot.reply msg, text
+        bot.send_message msg.chat.id, text, reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown"
       else
         bot.delete_message(msg.chat.id, msg.message_id)
       end

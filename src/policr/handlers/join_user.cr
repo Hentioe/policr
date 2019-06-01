@@ -56,7 +56,7 @@ module Policr
         markup << [btn.call(t("after_event.torture"), "torture")]
         markup << [btn.call(t("after_event.unban"), "unban"), btn.call(t("after_event.kick"), "kick")]
 
-        bot.send_message(msg.chat.id, t("after_event.tip"), reply_to_message_id: msg.message_id, reply_markup: markup)
+        bot.send_message(msg.chat.id, t("after_event.tip"), reply_to_message_id: msg.message_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
       else
         chat_id = msg.chat.id
         msg_id = msg.message_id
@@ -102,7 +102,7 @@ module Policr
       pass_text = t("admin_ope_menu.pass")
       ban_text = t("admin_ope_menu.ban")
       markup << [btn.call(pass_text, 0), btn.call(ban_text, -1)]
-      sended_msg = bot.send_message(chat_id, question, reply_to_message_id: reply_id, reply_markup: markup)
+      sended_msg = bot.send_message(chat_id, question, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
 
       ban_task = ->(message_id : Int32) {
         if Cache.verify?(member_id) == VerifyStatus::Init
@@ -132,7 +132,7 @@ module Policr
         text = t "verify_result.failure", {user_id: user_id}
         text = t("verify_result.admin_ban", {user_id: user_id}) if admin
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: text, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
+          text: text, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
       end
     end
   end

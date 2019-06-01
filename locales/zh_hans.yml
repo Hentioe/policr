@@ -1,4 +1,4 @@
-start: "ε٩(๑> ₃ <)۶з 欢迎使用，我是强大的审核机器人 PolicrBot。我的功能不会主动开启，需要通过指令手动启用或设置。推荐在 [GitHub](https://github.com/Hentioe/policr) 上查看我的基本用法 ~"
+start: "ε٩(๑> ₃ <)۶з 我这么复杂，您为什么不来我的[官网](https://policr.bluerain.io)看看呢 ~"
 invalid_callback: "( ×ω× ) 这副内联键盘已经失效了哦"
 setting_complete: "已完成设置。"
 questions:
@@ -13,20 +13,20 @@ baned_menu:
   whitelist: "加入白名单"
 halal:
   found: "d(`･∀･)b 诶发现一名清真，看我干掉它……"
-  ban: "(ﾉ>ω<)ﾉ 已成功丢出去一只清真，真棒！"
-  ban_failure: "╰(〒皿〒)╯ 啥情况，这枚清真移除失败了。"
+  ban: "(ﾉ>ω<)ﾉ 已成功丢出去一只[清真](http://policr.bluerain.io#halal)，真棒！"
+  ban_failure: "╰(〒皿〒)╯ 啥情况，这枚[清真](http://policr.bluerain.io#halal)移除失败了。"
 verify_result:
   error: "踢不掉他诶（自己想想什么原因？）……"
-  failure: "(〒︿〒) [他](tg://user?id=%{user_id})没能通过验证，永久的离开了我们。"
+  failure: "(〒︿〒) [他](tg://user?id=%{user_id})没能通过验证（[为什么？](https://policr.bluerain.io#verify_failure)），永久的离开了我们。"
   admin_ban: "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了[他](tg://user?id=%{user_id})。"
 restrict_bot_menu:
   derestrict: "解除限制"
   remove: "直接移除"
 restrict_bot: "抓到一个新加入的机器人，安全考虑已对其进行限制。如有需要可自行解除，否则请移除。"
 clean_mode:
-  reply: "已启用干净模式，将自动清理通过验证的痕迹。"
+  reply: "已启用[干净模式](https://policr.bluerain.io#work_mode)，将自动清理通过验证的痕迹。"
 callback:
-  no_permission: "你无权无势，凭啥听你的"
+  no_permission: "你无权无势，凭啥听你的！"
 manageable:
   success: "已允许通过后台管理本群组。"
 unmanageable:
@@ -36,12 +36,12 @@ only_group: "此指令仅在群组中可用。"
 only_private: "此指令仅在私聊中可用。"
 no_managed_groups: "无受管群组，无法申请后台令牌。"
 unban_message: "(,,・ω・,,) 已被解封，快通知[他](tg://user?id=%{user_id})回来吧。"
-add_to_whitelist: "(,,・ω・,,) 已被解封并加入到白名单，下次不会再干他了。"
+add_to_whitelist: "(,,・ω・,,) 已被解封并加入到[白名单](https://policr.bluerain.io#whitelist)，下次不会再干他了。"
 unban_error: "解封失败，"
 unban_bot: "已解除限制，希望是个有用的机器人。"
-remove_bot: "已经被移除啦~安全危机解除！"
-obsolete_btn: "此消息的内联键盘功能已经过时了，没有进行任何操作~"
-unrelated_click: "又不是问你，自作多情"
+remove_bot: "已经被移除啦~ 安全危机解除！"
+obsolete_btn: "此消息的[内联键盘功能已经过时了](https://policr.bluerain.io#inline_keyboard)，没有进行任何操作~"
+unrelated_click: "又不是问你，自作多情！"
 unrelated_warning: "(#`Д´)ﾉ 请无关人员不要来搞事"
 pass_alert: "✔ 验证通过"
 no_pass_alert: "✖ 未通过验证"
@@ -54,21 +54,21 @@ report:
   mass_ad: "恶意群发广告"
   unident_halal: "未识别的清真"
 after_event:
-  tip: "由于您在入群时没有进行过审核，现在对您进行事后处理。在您通过验证之前将会一直处于受限（禁言以及更多）状态，请主动完成验证。\n说明：这种情况一般是本机器人存在一定时长的运行中断导致的（停止运行期间不能即时处理消息），因为历史入群成员可能已离线，所以不会立即要求验证。"
+  tip: "[事后审核](https://policr.bluerain.io#afterwards)，请主动完成验证以解除限制。"
   torture: "开始验证"
   unban: "解除禁言"
   kick: "直接移除"
 examine:
-  enable: "已启动审核。包含: 新入群成员的主动验证、Bot 帐号限制、清真移除等功能被开启。"
+  enable: "已启用审核。[点我查看详情](https://policr.bluerain.io#examine)。"
   enable_need_permission: "不给权限还想让人家干活，做梦。"
-  disable: "已禁用审核。包含: 新入群成员的主动验证、Bot 帐号限制、清真移除等功能被关闭。"
+  disable: "已禁用审核。[点我查看详情](https://policr.bluerain.io#examine)。"
 torture:
-  default_reply: "请在 %{torture_sec} 秒内确认「%{title}」以通过验证"
+  default_reply: "请在 %{torture_sec} 秒内确认「%{title}」以通过[验证](https://policr.bluerain.io#verification)"
   no_time_reply: "请主动确认「%{title}」以解除限制"
   default_set: "此群组当前使用 Bot 默认的时长（%{seconds} 秒）"
   exists_set: "此群组当前已设置时长（%{time_len}）"
-  min_reply: "欢迎设置入群验证的等待时间，%{current_state}。请使用有效的数字作为分钟回复此消息以设置或更新独立的验证时间，支持小数。回复 0 或负数将表示无限（无验证倒计时）。\n注意：此消息可能因为机器人的重启而失效，请即时回复。"
-  sec_reply: "欢迎设置入群验证的等待时间，%{current_state}。请使用有效的整数作为秒回复此消息以设置或更新独立的验证时间。回复 0 或负数将表示无限（无验证倒计时）。\n注意：此消息可能因为机器人的重启而失效，请即时回复。"
+  min_reply: "欢迎设置入群验证的等待时间，%{current_state}。请使用有效的数字作为分钟回复此消息以设置或更新独立的验证时间，支持小数。回复 0 或负数将[表示无限](https://policr.bluerain.io#no_time_limit)（无验证倒计时）。\n注意：此消息可能因为机器人的重启而失效，请即时回复。"
+  sec_reply: "欢迎设置入群验证的等待时间，%{current_state}。请使用有效的整数作为秒回复此消息以设置或更新独立的验证时间。回复 0 或负数将[表示无限](https://policr.bluerain.io#no_time_limit)（无验证倒计时）。\n注意：此消息可能因为机器人的重启而失效，请即时回复。"
 
 from:
   question: "ε(*´･∀･｀)з 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
@@ -78,7 +78,7 @@ from:
   disable: "已禁用来源调查功能，启用请使用 `/from` 指令完成设置。"
   disable_with_retain: "已禁用来源调查功能，相关设置将会在下次启用时继续沿用。"
   reply_tip: |
-    您正在设置来源调查，一个具体的例子：
+    您正在[设置来源调查](https://policr.bluerain.io#from)，一个具体的例子：
 
     ```
     -短来源1 -短来源2
@@ -88,14 +88,14 @@ from:
     如上，每一个来源需要前缀「-」，当多个来源位于同一行时将并列显示，否则独占一行。
     消息不要使用 `Markdown` 格式，在 PC 客户端可能需要 `<Ctrl>+<Enter>` 组合键才能换行。请注意，**只有回复本消息才会被认为是设置来源调查**，并且本消息很可能因为机器人的重启而存在回复有效期。
 mode:
-  record: "已启用记录模式，将保留所有中间步骤消息。"
+  record: "已启用记录模式。[点我看详情](https://policr.bluerain.io#work_mode)。"
 admin:
-  distrust: "已回收其它管理员使用指令调整设置的权力。"
-  trust: "已赋予管理员使用指令调整大部分设置的权力。"
+  distrust: "已回收其它管理员使用指令调整设置的权力。[点我看详情](https://policr.bluerain.io#trust_admin)。"
+  trust: "已赋予管理员使用指令调整大部分设置的权力。[点我看详情](https://policr.bluerain.io#trust_admin)。"
 custom:
   wrong_format: "不合法的格式。注意至少需要存在一个正确（即前缀+的行）答案。"
   reply_tip: |
-    开始定制验证问题，一个具体的提问验证例子：
+    开始[定制验证问题](https://policr.bluerain.io#custom)，一个具体的提问验证例子：
 
     ```
     两个黄鹂鸣翠柳的下一句

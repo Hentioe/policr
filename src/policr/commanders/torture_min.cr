@@ -14,7 +14,7 @@ module Policr
         end
 
         text = t "torture.min_reply", {current_state: current}
-        if send_message = bot.reply msg, text
+        if send_message = bot.send_message msg.chat.id, text, reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown"
           Cache.carving_torture_time_msg_min(send_message.message_id)
         end
       else
