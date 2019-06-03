@@ -6,7 +6,7 @@ module Policr
 
     def handle(msg)
       text = t "start"
-      bot.send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown")
+      bot.send_message(msg.chat.id, text, disable_web_page_preview: true, parse_mode: "markdown")
     end
   end
 end

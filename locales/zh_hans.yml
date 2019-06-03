@@ -1,4 +1,4 @@
-start: "ε٩(๑> ₃ <)۶з 我这么复杂，您为什么不来我的[官网](https://policr.bluerain.io)看看呢 ~"
+start: "ε٩(๑> ₃ <)۶з 我那么复杂，你为什么不来我的[官网](https://policr.bluerain.io)看看呢 ~"
 invalid_callback: "( ×ω× ) 这副内联键盘已经失效了哦"
 setting_complete: "已完成设置。"
 questions:
@@ -60,7 +60,7 @@ after_event:
   kick: "直接移除"
 examine:
   enable: "已启用审核。[点我查看详情](https://policr.bluerain.io#examine)。"
-  enable_need_permission: "不给权限还想让人家干活，做梦。"
+  enable_need_permission: "(／‵Д′)／ 不给权限（[需要哪些？](https://policr.bluerain.io#permissions)）还想让人家干活，做梦。"
   disable: "已禁用审核。[点我查看详情](https://policr.bluerain.io#examine)。"
 torture:
   default_reply: "请在 %{torture_sec} 秒内确认「%{title}」以通过[验证](https://policr.bluerain.io#verification)"
