@@ -17,8 +17,9 @@ halal:
   ban_failure: "╰(〒皿〒)╯ 啥情况，这枚[清真](http://policr.bluerain.io#halal)移除失败了。"
 verify_result:
   error: "踢不掉他诶（自己想想什么原因？）……"
-  failure: "(〒︿〒) [他](tg://user?id=%{user_id})没能通过验证（[为什么？](https://policr.bluerain.io#verify_failure)），永久的离开了我们。"
   admin_ban: "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了[他](tg://user?id=%{user_id})。"
+  timeout: "(〒︿〒) [他](tg://user?id=%{user_id})验证超时（[为什么？](https://policr.bluerain.io#verify_failure)），永久的离开了我们。"
+  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误（[为什么？](https://policr.bluerain.io#verify_failure)），永久的离开了我们。"
 restrict_bot_menu:
   derestrict: "解除限制"
   remove: "直接移除"

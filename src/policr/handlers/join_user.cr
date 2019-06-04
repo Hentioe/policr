@@ -108,7 +108,7 @@ module Policr
         if Cache.verify?(member_id) == VerifyStatus::Init
           bot.log "User '#{username}' torture time expired and has been banned"
           Cache.verify_slowed(member_id)
-          unverified_with_receipt(chat_id, message_id, member_id, username)
+          unverified_with_receipt(chat_id, message_id, member_id, username, timeout: true)
         end
       }
 
@@ -119,7 +119,7 @@ module Policr
       end
     end
 
-    def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
+    def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false, timeout = false)
       Cache.verify_status_clear user_id
       bot.log "Username '#{username}' has not been verified and has been banned"
       begin
@@ -129,8 +129,13 @@ module Policr
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
           text: text, parse_mode: "markdown")
       else
-        text = t "verify_result.failure", {user_id: user_id}
-        text = t("verify_result.admin_ban", {user_id: user_id}) if admin
+        text =
+          unless admin
+            timeout ? t("verify_result.timeout", {user_id: user_id}) : t("verify_result.wrong", {user_id: user_id})
+          else
+            t("verify_result.admin_ban", {user_id: user_id}) if admin
+          end
+
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
           text: text, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
       end

@@ -96,9 +96,9 @@ module Policr
       bot.unban_chat_member(chat_id, target_user_id)
     end
 
-    def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false)
+    def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false, timeout = false)
       if (handler = bot.handlers[:join_user]?) && handler.is_a?(JoinUserHandler)
-        handler.unverified_with_receipt(chat_id, message_id, user_id, username, admin)
+        handler.unverified_with_receipt(chat_id, message_id, user_id, username, admin: admin, timeout: timeout)
       end
     end
   end
