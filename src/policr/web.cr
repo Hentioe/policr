@@ -89,9 +89,10 @@ module Policr::Web
     get "/serving" do
       groups = Cache.serving_groups
       groups.each_with_index do |group, i|
-        _, link = group
+        _, data = group
+        link, name = data
         i += 1
-        logger.info "Serving group[#{i}]: #{link}"
+        logger.info "Serving group[#{i}][#{name}]: #{link}"
       end
       "done!+#{groups.size}"
     end

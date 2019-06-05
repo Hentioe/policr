@@ -15,7 +15,7 @@ module Policr::Cache
   @@custom_msg = Set(Int32).new
   @@new_join_user_msg = Hash(String, Int32).new
   # 运行周期内服务的群组列表
-  @@group_list = Hash(Int64, String).new
+  @@group_list = Hash(Int64, Tuple(String, String)).new
 
   def carving_torture_time_msg_sec(message_id)
     @@torture_time_msg[message_id] = TortureTimeType::Sec
@@ -82,7 +82,7 @@ module Policr::Cache
         _, reason = bot.parse_error(e)
         reason.to_s
       end
-      @@group_list[chat.id] = link
+      @@group_list[chat.id] = {link, "#{chat.title}"}
     end
   end
 
