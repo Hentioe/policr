@@ -4,7 +4,7 @@ require "kemal-session"
 module Policr::Web
   extend self
 
-  def start(logger)
+  def start(logger, bot)
     config = CLI::Config.instance
     serve_static({"gzip" => false})
     public_folder "public"
@@ -20,7 +20,7 @@ module Policr::Web
     end
 
     get "/demo" do
-      title = "使用指南"
+      title = "演示"
       render "src/views/demo.html.ecr", "src/views/layout.html.ecr"
     end
 
@@ -36,20 +36,47 @@ module Policr::Web
     end
 
     post "/login" do |env|
-      title = "后台管理"
-      if (token = env.params.body["token"]?) && (user_id = DB.find_user_by_token(token.strip)) && DB.managed_groups(user_id)
-        env.session.string("token", token)
-        env.redirect "/admin"
+      if token = env.params.body["token"]?
+          if ((user_id = DB.find_user_by_token(token.strip)) && DB.managed_groups(user_id)) || token == bot.token
+          remember = env.params.body["remember"]?
+          env.session.string("token", token) unless remember
+          if remember
+            token_c = HTTP::Cookie.new(
+              name: "token",
+              value: token,
+              http_only: true,
+              secure: true,
+              expires: Time.new + Time::Span.new(24*30, 0, 0)
+            )
+            puts token.inspect
+            env.response.cookies << token_c
+          end
+          env.redirect "/admin"
+        else
+          title = "登录失败，无效的令牌"
+          error_msg = "Invalid token"
+          render "src/views/login.html.ecr", "src/views/layout.html.ecr"
+        end
       else
-        error_msg = "Login failed"
+        title = "登录失败，请提供令牌"
+        error_msg = "Missing token"
         render "src/views/login.html.ecr", "src/views/layout.html.ecr"
       end
     end
 
     get "/admin" do |env|
-      if (token = find_token(env)) && (user_id = DB.find_user_by_token(token.strip)) && (groups = DB.managed_groups(user_id))
-        title = "后台管理"
-        render "src/views/admin.html.ecr", "src/views/layout.html.ecr"
+      if token = find_token(env)
+        if (user_id = DB.find_user_by_token(token.strip)) && (groups = DB.managed_groups(user_id))
+          title = "后台管理"
+          render "src/views/admin.html.ecr", "src/views/layout.html.ecr"
+        else
+          if token == bot.token
+            title = "超级管理后台"
+            render "src/views/superadmin.html.ecr"
+          else
+            env.redirect "/login"
+          end
+        end
       else
         env.redirect "/login"
       end

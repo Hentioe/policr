@@ -20,17 +20,19 @@ module Policr
 
     logger = Logger.new(STDOUT)
     logger.level = Logger::DEBUG
-
     logger.info "ready to start"
-    spawn do
-      logger.info "start web"
-      Web.start logger
-    end
-    logger.info "start bot"
 
     username = ENV["#{ENV_PREFIX}_USERNAME"]
     token = ENV["#{ENV_PREFIX}_TOKEN"]
-    Bot.new(username, token, logger).polling
+
+    bot = Bot.new(username, token, logger)
+    spawn do
+      logger.info "start web"
+      Web.start logger, bot
+    end
+    logger.info "start bot"
+
+    bot.polling
   end
 end
 

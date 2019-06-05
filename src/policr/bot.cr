@@ -156,6 +156,10 @@ module Policr
       logger.info text
     end
 
+    def token
+      @token
+    end
+
     def parse_error(ex : TelegramBot::APIException)
       code = -1
       reason = "Unknown"
