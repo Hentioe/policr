@@ -87,9 +87,9 @@ module Policr
       torture_sec = DB.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
       question =
         if torture_sec > 0
-          t("torture.default_reply", {torture_sec: torture_sec, title: title})
+          t("torture.default_reply", {user_id: member_id, torture_sec: torture_sec, title: title})
         else
-          t("torture.no_time_reply", {title: title})
+          t("torture.no_time_reply", {user_id: member_id, title: title})
         end
       reply_id = msg_id
 
