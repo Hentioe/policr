@@ -125,15 +125,15 @@ module Policr
       begin
         bot.kick_chat_member(chat_id, user_id)
       rescue ex : TelegramBot::APIException
-        text = t "verify_result.error"
+        text = t "captcha_result.error"
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
           text: text, parse_mode: "markdown")
       else
         text =
           unless admin
-            timeout ? t("verify_result.timeout", {user_id: user_id}) : t("verify_result.wrong", {user_id: user_id})
+            timeout ? t("captcha_result.timeout", {user_id: user_id}) : t("verify_result.wrong", {user_id: user_id})
           else
-            t("verify_result.admin_ban", {user_id: user_id}) if admin
+            t("captcha_result.admin_ban", {user_id: user_id}) if admin
           end
 
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
