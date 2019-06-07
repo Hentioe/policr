@@ -48,7 +48,7 @@ module Policr
         begin
           bot.kick_chat_member(msg.chat.id, member.id)
           member_id = member.id
-          text = t("halal.ban")
+          text = t "halal.ban", {user_id: member_id}
           markup = join_user_handler.add_banned_menu(member_id, member.username, true)
           bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
             text: text, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
