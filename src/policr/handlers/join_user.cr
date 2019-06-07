@@ -108,7 +108,7 @@ module Policr
         if Cache.verify?(member_id) == VerifyStatus::Init
           bot.log "User '#{username}' torture time expired and has been banned"
           Cache.verify_slowed(member_id)
-          unverified_with_receipt(chat_id, message_id, member_id, username, timeout: true)
+          failed(chat_id, message_id, member_id, username, timeout: true)
         end
       }
 
@@ -119,7 +119,7 @@ module Policr
       end
     end
 
-    def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false, timeout = false)
+    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false)
       Cache.verify_status_clear user_id
       bot.log "Username '#{username}' has not been verified and has been banned"
       begin

@@ -26,7 +26,7 @@ module Policr
           when 0
             verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin: true)
           when -1
-            unverified_with_receipt(chat_id, message_id, target_user_id, target_username, admin: true)
+            failed(chat_id, message_id, target_user_id, target_username, admin: true)
           end
         else
           bot.answer_callback_query(query.id, text: t("callback.no_permission"))
@@ -45,12 +45,12 @@ module Policr
         else # 未通过验证
           bot.log "Username '#{target_username}' did not pass verification"
           bot.answer_callback_query(query.id, text: t("no_pass_alert"))
-          unverified_with_receipt(chat_id, message_id, target_user_id, target_username)
+          failed(chat_id, message_id, target_user_id, target_username)
         end
       end
     end
 
-    def verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin = false)
+    def passed(query, chat_id, target_user_id, target_username, message_id, admin = false)
       Cache.verify_passed(target_user_id)
       bot.log "Username '#{target_username}' passed verification"
 
@@ -96,9 +96,9 @@ module Policr
       bot.unban_chat_member(chat_id, target_user_id)
     end
 
-    def unverified_with_receipt(chat_id, message_id, user_id, username, admin = false, timeout = false)
+    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false)
       if (handler = bot.handlers[:join_user]?) && handler.is_a?(JoinUserHandler)
-        handler.unverified_with_receipt(chat_id, message_id, user_id, username, admin: admin, timeout: timeout)
+        handler.failed(chat_id, message_id, user_id, username, admin: admin, timeout: timeout)
       end
     end
   end
