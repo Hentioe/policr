@@ -24,7 +24,7 @@ module Policr
           bot.log "The administrator ended the torture by: #{chooese_i}"
           case chooese_i
           when 0
-            verified_with_receipt(query, chat_id, target_user_id, target_username, message_id, admin: true)
+            passed(query, chat_id, target_user_id, target_username, message_id, admin: true)
           when -1
             failed(chat_id, message_id, target_user_id, target_username, admin: true)
           end
@@ -40,7 +40,7 @@ module Policr
 
         if chooese_i == true_index # 通过验证
           status = Cache.verify?(target_user_id)
-          verified_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Init
+          passed(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Init
           slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
         else # 未通过验证
           bot.log "Username '#{target_username}' did not pass verification"
