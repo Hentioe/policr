@@ -1,5 +1,5 @@
 module Policr
-  class LeaveGroupHandler < Handler
+  class LeftGroupHandler < Handler
     def match(msg)
       all_pass? [
         DB.enable_examine?(msg.chat.id),

@@ -41,10 +41,10 @@ module Policr
 
       register :join_user, JoinUserHandler
       register :join_bot, JoinBotHandler
-      register :leave_group, LeaveGroupHandler
+      register :left_group, LeftGroupHandler
       register :unverified_message, UnverifiedMessageHandler
       register :from_setting, FromSettingHandler
-      register :verify_time_setting, VerifyTimeSettingHandler
+      register :torture_time_setting, TortureTimeSettingHandler
       register :custom, CustomHandler
       register :halal_message, HalalMessageHandler
 

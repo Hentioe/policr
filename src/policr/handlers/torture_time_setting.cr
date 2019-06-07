@@ -1,5 +1,5 @@
 module Policr
-  class VerifyTimeSettingHandler < Handler
+  class TortureTimeSettingHandler < Handler
     alias TortureTimeType = Cache::TortureTimeType
 
     @time_type : TortureTimeType?
@@ -13,7 +13,7 @@ module Policr
            (text = msg.text),
            (reply_msg = msg.reply_to_message),
            (reply_msg_id = reply_msg.message_id),
-           (time_type = Cache.torture_time_msg?(reply_msg_id)),
+           (time_type = Cache.torture_time_msg?(reply_msg_id)), # 验证时间？
            bot.has_permission?(msg.chat.id, user.id, role),
          ]
         @time_type = time_type
