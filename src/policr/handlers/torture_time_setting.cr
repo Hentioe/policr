@@ -1,7 +1,5 @@
 module Policr
   class TortureTimeSettingHandler < Handler
-    alias TortureTimeType = Cache::TortureTimeType
-
     @time_type : TortureTimeType?
     @text : String?
 

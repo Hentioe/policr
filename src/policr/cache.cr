@@ -1,10 +1,6 @@
 module Policr::Cache
   extend self
 
-  enum TortureTimeType
-    Sec; Min
-  end
-
   enum VerifyStatus
     Init; Pass; Slow
   end

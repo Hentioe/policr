@@ -35,14 +35,6 @@ module Policr
     end
 
     def text(chat_id)
-      if sec = DB.get_torture_sec chat_id
-        time_len = sec > 0 ? "#{sec} 秒" : "无限"
-        current = t("torture.exists_set", {time_len: time_len})
-      end
-      t "torture.time_setting", {current_state: current}
-    end
-
-    def text(chat_id)
       if (commander = bot.commanders[:torture_time]?) && (commander.is_a?(TortureTimeCommander))
         commander.text(chat_id)
       else

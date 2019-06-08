@@ -37,7 +37,7 @@ module Policr::Web
 
     post "/login" do |env|
       if token = env.params.body["token"]?
-          if ((user_id = DB.find_user_by_token(token.strip)) && DB.managed_groups(user_id)) || token == bot.token
+        if ((user_id = DB.find_user_by_token(token.strip)) && DB.managed_groups(user_id)) || token == bot.token
           remember = env.params.body["remember"]?
           env.session.string("token", token) unless remember
           if remember

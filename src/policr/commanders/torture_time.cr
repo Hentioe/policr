@@ -20,19 +20,31 @@ module Policr
       btn = ->(text : String, sec : Int32 | String) {
         Button.new(text: text, callback_data: "TortureTime:#{sec}")
       }
-      markup << [btn.call("30秒", 30), btn.call("55秒", 55), btn.call("80秒", 80)]
-      markup << [btn.call("2分钟", 120), btn.call("3分钟", 180), btn.call("5分钟", 300)]
-      markup << [btn.call("无验证倒计时（不推荐）", 0)]
+      markup << def_time_list(btn, [30, 55, 80], TortureTimeType::Sec)
+      markup << def_time_list(btn, [2, 3, 5], TortureTimeType::Min)
+      markup << [btn.call(t("torture.inf_time"), 0)]
       markup
     end
 
     def text(chat_id)
       current = t "torture.default_set", {seconds: DEFAULT_TORTURE_SEC}
       if sec = DB.get_torture_sec chat_id
-        time_len = sec > 0 ? "#{sec} 秒" : "无限"
+        time_len = sec > 0 ? t("units.sec", {n: sec}) : t("units.inf")
         current = t("torture.exists_set", {time_len: time_len})
       end
       t "torture.time_setting", {current_state: current}
+    end
+
+    macro def_time_list(btn_proc, list, unit)
+      [
+      {% for t in list %}
+        {% if unit.resolve == TortureTimeType::Sec %}
+          {{btn_proc}}.call(t("units.sec", {n: {{t}}}), {{t}}),
+        {% elsif unit.resolve == TortureTimeType::Min %}
+          {{btn_proc}}.call(t("units.min", {n: {{t}}}), {{t*60}}),
+        {% end %}
+      {% end %}
+      ]
     end
   end
 end

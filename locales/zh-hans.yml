@@ -1,4 +1,8 @@
 start: "ε٩(๑> ₃ <)۶з 我那么复杂，你为什么不来我的[官网](https://policr.bluerain.io)看看呢 ~"
+units:
+  sec: "%{n}秒"
+  min: "%{n}分钟"
+  inf: "无限"
 invalid_callback: "( ×ω× ) 这副内联键盘已经失效了哦"
 setting_complete: "已完成设置。"
 questions:
@@ -68,7 +72,8 @@ torture:
   no_time_reply: "请[您](tg://user?id=%{user_id})主动确认「%{title}」以解除限制"
   default_set: "此群组当前使用 Bot 默认的时长（%{seconds} 秒）"
   exists_set: "此群组当前已设置时长（%{time_len}）"
-  time_setting: "欢迎设置入群验证的等待时间，%{current_state}。请选择按钮或手动回复数字（秒）设置时间。\n如果您决定通过回复自定义时间，请即时回复，避免机器人重启让本消息失效。\n\n附加阅读：[不限时验证的危害](https://policr.bluerain.io#no_time_limit)"
+  time_setting: "开始更新入群验证的等待时间，%{current_state}。请选择按钮或手动回复数字（秒）设置时间。\n如果您决定通过回复自定义时间，请即时回复，避免机器人重启让本消息失效。\n\n附加阅读：[不限时验证的危害](https://policr.bluerain.io#no_time_limit)"
+  inf_time: "无验证倒计时（不推荐）"
 
 from:
   question: "ε(*´･∀･｀)з 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
