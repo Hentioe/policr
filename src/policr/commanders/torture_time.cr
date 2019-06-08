@@ -20,9 +20,9 @@ module Policr
       btn = ->(text : String, sec : Int32 | String) {
         Button.new(text: text, callback_data: "TortureTime:#{sec}")
       }
-      markup << [btn.call("30秒", 30), btn.call("55秒", 55), btn.call("80秒", 80), btn.call("100秒", 100)]
-      markup << [btn.call("2分钟", 120), btn.call("3分钟", 180), btn.call("5分钟", 300), btn.call("7分钟", 420)]
-      markup << [btn.call("无验证倒计时（不推荐）", 0), btn.call("刷新", "refresh")]
+      markup << [btn.call("30秒", 30), btn.call("55秒", 55), btn.call("80秒", 80)]
+      markup << [btn.call("2分钟", 120), btn.call("3分钟", 180), btn.call("5分钟", 300)]
+      markup << [btn.call("无验证倒计时（不推荐）", 0)]
       markup
     end
 

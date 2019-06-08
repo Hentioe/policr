@@ -13,7 +13,7 @@ baned_menu:
   whitelist: "加入白名单"
 halal:
   found: "d(`･∀･)b 诶发现一名清真，看我干掉它……"
-  kicked: "(ﾉ>ω<)ﾉ 已成功丢出去[这](tg://user?id=%{user_id})只[清真](http://policr.bluerain.io#halal)，真棒！"
+  kicked: "(ﾉ>ω<)ﾉ 已成功丢出[这](tg://user?id=%{user_id})只[清真](http://policr.bluerain.io#halal)，真棒！"
   kick_failed: "╰(〒皿〒)╯ 啥情况，这枚[清真](http://policr.bluerain.io#halal)移除失败了。"
 captcha_result:
   error: "踢不掉他诶（自己想想什么原因？）……"

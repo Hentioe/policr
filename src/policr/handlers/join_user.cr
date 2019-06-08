@@ -131,7 +131,7 @@ module Policr
       else
         text =
           unless admin
-            timeout ? t("captcha_result.timeout", {user_id: user_id}) : t("verify_result.wrong", {user_id: user_id})
+            timeout ? t("captcha_result.timeout", {user_id: user_id}) : t("captcha_result.wrong", {user_id: user_id})
           else
             t("captcha_result.admin_ban", {user_id: user_id}) if admin
           end
