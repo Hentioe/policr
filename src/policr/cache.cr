@@ -21,10 +21,6 @@ module Policr::Cache
     @@torture_time_msg[message_id] = TortureTimeType::Sec
   end
 
-  def carving_torture_time_msg_min(message_id)
-    @@torture_time_msg[message_id] = TortureTimeType::Min
-  end
-
   def torture_time_msg?(message_id)
     @@torture_time_msg[message_id]?
   end

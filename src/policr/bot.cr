@@ -53,6 +53,7 @@ module Policr
       register :bot_join, BotJoinCallback
       register :from, FromCallback
       register :after_event, AfterEventCallback
+      register :torture_time, TortureTimeCallback
 
       register :start, StartCommander
       register :ping, PingCommander
@@ -61,8 +62,7 @@ module Policr
       register :disable_examine, DisableExamineCommander
       register :enable_from, EnableFromCommander
       register :disable_from, DisableFromCommander
-      register :torture_sec, TortureSecCommander
-      register :torture_min, TortureMinCommander
+      register :torture_time, TortureTimeCommander
       register :trust_admin, TrustAdminCommander
       register :distrust_admin, DistrustAdminCommander
       register :manageable, ManageableCommander
@@ -99,13 +99,13 @@ module Policr
     def handle(query : TelegramBot::CallbackQuery)
       _handle = ->(data : String, message : TelegramBot::Message) {
         report = data.split(":")
-        if report.size < 4
+        if report.size < 2
           logger.info "'#{display_name(query.from)}' clicked on the invalid inline keyboard button"
           answer_callback_query(query.id, text: t("invalid_callback"))
           return
         end
 
-        call_name, _, _, _ = report
+        call_name = report[0]
 
         callbacks.each do |_, callback|
           callback.handle(query, message, report[1..]) if callback.match?(call_name)
@@ -171,7 +171,7 @@ module Policr
         reason = data["description"] || reason
         code = data["error_code"]? || code
       end
-      {code, reason}
+      {code, reason.to_s}
     end
   end
 end

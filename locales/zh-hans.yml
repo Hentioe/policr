@@ -27,7 +27,7 @@ restrict_bot: "抓到一个新加入的机器人，安全考虑已对其进行�
 clean_mode:
   reply: "已启用[干净模式](https://policr.bluerain.io#work_mode)，将自动清理通过验证的痕迹。"
 callback:
-  no_permission: "你无权无势，怕不是恐怖分子！"
+  no_permission: "再瞎点我报警了啊！"
 manageable:
   success: "已允许通过后台管理本群组。"
 unmanageable:
@@ -68,8 +68,7 @@ torture:
   no_time_reply: "请[您](tg://user?id=%{user_id})主动确认「%{title}」以解除限制"
   default_set: "此群组当前使用 Bot 默认的时长（%{seconds} 秒）"
   exists_set: "此群组当前已设置时长（%{time_len}）"
-  min_reply: "欢迎设置入群验证的等待时间，%{current_state}。请使用有效的数字作为分钟回复此消息以设置或更新独立的验证时间，支持小数。回复 0 或负数将[表示无限](https://policr.bluerain.io#no_time_limit)（无验证倒计时）。\n注意：此消息可能因为机器人的重启而失效，请即时回复。"
-  sec_reply: "欢迎设置入群验证的等待时间，%{current_state}。请使用有效的整数作为秒回复此消息以设置或更新独立的验证时间。回复 0 或负数将[表示无限](https://policr.bluerain.io#no_time_limit)（无验证倒计时）。\n注意：此消息可能因为机器人的重启而失效，请即时回复。"
+  time_setting: "欢迎设置入群验证的等待时间，%{current_state}。请选择按钮或手动回复数字（秒）设置时间。\n如果您决定通过回复自定义时间，请即时回复，避免机器人重启让本消息失效。\n\n附加阅读：[不限时验证的危害](https://policr.bluerain.io#no_time_limit)"
 
 from:
   question: "ε(*´･∀･｀)з 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
