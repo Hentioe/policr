@@ -91,7 +91,9 @@ module Policr
     end
 
     def handle_edited(msg : TelegramBot::Message)
-      # Empty implement
+      handlers.each do |_, handler|
+        handler.registry(msg, from_edit: true)
+      end
     end
 
     def handle(query : TelegramBot::CallbackQuery)

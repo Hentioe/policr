@@ -6,14 +6,26 @@ module Policr
       {% end %}
     end
 
-    getter bot : Bot
+    macro allow_edit
+      def initialize(@bot)
+        super
 
-    def initialize(bot_instance)
-      @bot = bot_instance
+        @allow_edit = true
+      end
     end
 
-    def registry(msg)
-      preprocess msg
+    getter allow_edit = false
+    getter bot : Bot
+
+    def initialize(@bot)
+    end
+
+    def registry(msg, from_edit = false)
+      unless from_edit
+        preprocess msg
+      else
+        preprocess(msg) if @allow_edit
+      end
     end
 
     private def preprocess(msg)

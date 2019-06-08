@@ -5,6 +5,8 @@ module Policr
 
     ARABIC_CHARACTER = /[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{10E60}-\x{10E7F}\x{1EC70}-\x{1ECBF}\x{1ED00}-\x{1ED4F}\x{1EE00}-\x{1EEFF}]/
 
+    allow_edit # 处理编辑消息
+
     def match(msg)
       all_pass? [
         DB.enable_examine?(msg.chat.id),
