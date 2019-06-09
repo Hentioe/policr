@@ -13,8 +13,8 @@ module Policr
       end
     end
 
-    CHECKED   = "◉"
-    UNCHECKED = "◎"
+    CHECKED   = "●"
+    UNCHECKED = "○"
 
     def create_markup(chat_id)
       checked_status = ->(way : Symbol) {
