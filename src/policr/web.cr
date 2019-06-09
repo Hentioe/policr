@@ -48,7 +48,6 @@ module Policr::Web
               secure: true,
               expires: Time.new + Time::Span.new(24*30, 0, 0)
             )
-            puts token.inspect
             env.response.cookies << token_c
           end
           env.redirect "/admin"

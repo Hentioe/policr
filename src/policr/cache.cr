@@ -12,6 +12,8 @@ module Policr::Cache
   @@new_join_user_msg = Hash(String, Int32).new
   # 运行周期内服务的群组列表
   @@group_list = Hash(Int64, Tuple(String, String)).new
+  # 动态问题缓存，正确答案与消息关联
+  @@dynamic_list = Hash(Int32, Int32).new
 
   def carving_torture_time_msg_sec(message_id)
     @@torture_time_msg[message_id] = TortureTimeType::Sec
@@ -80,5 +82,13 @@ module Policr::Cache
 
   def serving_groups
     @@group_list
+  end
+
+  def put_dynamic_result(message_id, answer)
+    @@dynamic_list[message_id] = answer
+  end
+
+  def dynamic_result(message_id)
+    @@dynamic_list[message_id]?
   end
 end

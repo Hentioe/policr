@@ -68,6 +68,7 @@ module Policr
 
     def promptly_torture(chat_id, msg_id, member_id, username)
       Cache.verify_init(member_id)
+
       default =
         {
           1,
@@ -78,6 +79,25 @@ module Policr
           ],
         }
       custom = DB.custom(chat_id)
+      if !custom && DB.dynamic?(chat_id)
+        ln = Random.rand(9) + 1
+        rn = Random.rand(9) + 1
+        custom = {
+          3,
+          "#{ln} + #{rn} = ?",
+          [
+            # 注意！避免错误答案随机数重复
+            # 错误答案 19 - 28
+            # 错误答案 29 - 38
+            # 正确答案 1 - 18
+            Random.rand(19..28).to_s,
+            Random.rand(29..38).to_s,
+            (ln + rn).to_s,
+          ],
+        }
+        # 将正确答案以及消息关联列入缓存
+        Cache.put_dynamic_result msg_id, 3
+      end
 
       _, title, answers = custom ? custom : default
 

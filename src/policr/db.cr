@@ -141,14 +141,18 @@ module Policr::DB
     end
   end
 
+  CUSTOM_TEXT = "custom_text"
+
   def custom_text(chat_id, text)
     if db = @@db
-      db.put("custom_text_#{chat_id}", text)
+      db.put("#{CUSTOM_TEXT}_#{chat_id}", text)
     end
   end
 
   def custom(chat_id)
-    if (db = @@db) && (text = db.get?("custom_text_#{chat_id}"))
+    if (db = @@db) && (text = db.get?("#{CUSTOM_TEXT}_#{chat_id}"))
+      # 删除动态验证
+      db.delete("#{DYNAMIC_CAPTCHA}_#{chat_id}")
       lines = text.split("\n").map { |line| line.strip }.select { |line| line != "" }
       true_index = -1
       answers = lines[1..].map_with_index do |line, index|
@@ -156,6 +160,29 @@ module Policr::DB
         line[1..]
       end
       {true_index, lines[0], answers}
+    end
+  end
+
+  DYNAMIC_CAPTCHA = "dynamic"
+
+  def dynamic(chat_id)
+    if db = @@db
+      # 删除自定义验证
+      db.delete("#{CUSTOM_TEXT}_#{chat_id}")
+      db.put("#{DYNAMIC_CAPTCHA}_#{chat_id}", 1)
+    end
+  end
+
+  def dynamic?(chat_id)
+    if (db = @@db) && (status = db.get?("#{DYNAMIC_CAPTCHA}_#{chat_id}"))
+      status.to_i == 1
+    end
+  end
+
+  def default(chat_id)
+    if db = @@db
+      db.delete("#{CUSTOM_TEXT}_#{chat_id}")
+      db.delete("#{DYNAMIC_CAPTCHA}_#{chat_id}")
     end
   end
 

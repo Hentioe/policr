@@ -54,6 +54,7 @@ module Policr
       register :from, FromCallback
       register :after_event, AfterEventCallback
       register :torture_time, TortureTimeCallback
+      register :custom, CustomCallback
 
       register :start, StartCommander
       register :ping, PingCommander
