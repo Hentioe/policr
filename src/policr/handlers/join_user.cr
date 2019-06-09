@@ -96,7 +96,7 @@ module Policr
           ],
         }
         # 将正确答案以及消息关联列入缓存
-        Cache.put_dynamic_result msg_id, 3
+        Cache.put_dynamic_result chat_id, msg_id, 3
       end
 
       _, title, answers = custom ? custom : default

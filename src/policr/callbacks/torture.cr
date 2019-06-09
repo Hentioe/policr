@@ -18,7 +18,7 @@ module Policr
       true_index =
         if custom = DB.custom(msg.chat.id)
           custom.[0]
-        elsif (reply_msg = msg.reply_to_message) && (dynamic_result = Cache.dynamic_result(reply_msg.message_id))
+        elsif (reply_msg = msg.reply_to_message) && (dynamic_result = Cache.dynamic_result(msg.chat.id, reply_msg.message_id))
           dynamic_result
         else
           1
