@@ -12,7 +12,7 @@ module Policr
       # 检测权限
       role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
       unless (user = msg.from) && bot.has_permission?(msg.chat.id, from_user_id, role)
-        bot.answer_callback_query(query.id, text: t("callback.no_permission"))
+        bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         return
       end
 

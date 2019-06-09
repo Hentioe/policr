@@ -12,7 +12,7 @@ module Policr
       case item
       when "torture"                      # 开始验证
         if from_user_id != member_id.to_i # 无关人士
-          bot.answer_callback_query(query.id, text: t("unrelated_warning"))
+          bot.answer_callback_query(query.id, text: t("unrelated_warning"), show_alert: true)
           return
         end
         if (join_user_handler = bot.handlers[:join_user]) && join_user_handler.is_a?(JoinUserHandler)
@@ -22,7 +22,7 @@ module Policr
       when "unban" # 解封
         # 检测权限
         unless bot.is_admin? chat_id, from_user_id
-          bot.answer_callback_query(query.id, text: t("callback.no_permission"))
+          bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
           return
         end
         # 初始化用户权限
@@ -31,7 +31,7 @@ module Policr
       when "kick" # 移除
         # 检测权限
         unless bot.is_admin? chat_id, from_user_id
-          bot.answer_callback_query(query.id, text: t("callback.no_permission"))
+          bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
           return
         end
         bot.kick_chat_member(msg.chat.id, member_id.to_i)

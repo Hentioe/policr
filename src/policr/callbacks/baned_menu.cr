@@ -14,7 +14,7 @@ module Policr
 
       unless bot.is_admin? chat_id, from_user_id
         bot.log "User ID '#{from_user_id}' without permission click to unbanned button"
-        bot.answer_callback_query(query.id, text: t("callback.no_permission"))
+        bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         return
       end
 

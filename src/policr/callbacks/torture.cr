@@ -29,12 +29,12 @@ module Policr
             failed(chat_id, message_id, target_user_id, target_username, admin: true)
           end
         else
-          bot.answer_callback_query(query.id, text: t("callback.no_permission"))
+          bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         end
       else
         if target_user_id != from_user_id # 无关人士
           bot.log "Irrelevant User ID '#{from_user_id}' clicked on the verification inline keyboard button"
-          bot.answer_callback_query(query.id, text: t("unrelated_warning"))
+          bot.answer_callback_query(query.id, text: t("unrelated_warning"), show_alert: true)
           return
         end
 
@@ -44,7 +44,7 @@ module Policr
           slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
         else # 未通过验证
           bot.log "Username '#{target_username}' did not pass verification"
-          bot.answer_callback_query(query.id, text: t("no_pass_alert"))
+          bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)
           failed(chat_id, message_id, target_user_id, target_username)
         end
       end
