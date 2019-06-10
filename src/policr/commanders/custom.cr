@@ -7,7 +7,7 @@ module Policr
     def handle(msg)
       role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
-        bot.send_message msg.chat.id, t("custom.desc"), reply_to_message_id: msg.message_id, reply_markup: create_markup(msg.chat.id), parse_mode: "markdown"
+        bot.send_message msg.chat.id, t("captcha.desc"), reply_to_message_id: msg.message_id, reply_markup: create_markup(msg.chat.id), parse_mode: "markdown"
       else
         bot.delete_message(msg.chat.id, msg.message_id)
       end
@@ -34,9 +34,17 @@ module Policr
       btn = ->(text : String, item : String) {
         Button.new(text: text, callback_data: "Custom:#{item}")
       }
-      markup << [btn.call("#{checked_status.call(:default)} 默认验证", "default")]
-      markup << [btn.call("#{checked_status.call(:custom)} 定制验证", "custom")]
-      markup << [btn.call("#{checked_status.call(:dynamic)} 动态验证", "dynamic")]
+
+      make_text = ->(name : Symbol) {
+        "#{checked_status.call(name)} #{t("captcha.names.#{name.to_s}")}"
+      }
+      default_text = make_text.call :default
+      custom_text = make_text.call :custom
+      dynamic_text = make_text.call :dynamic
+
+      markup << [btn.call(default_text, "default")]
+      markup << [btn.call(custom_text, "custom")]
+      markup << [btn.call(dynamic_text, "dynamic")]
       markup
     end
   end

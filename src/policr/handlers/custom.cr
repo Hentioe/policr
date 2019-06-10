@@ -23,7 +23,7 @@ module Policr
       bot.reply msg, t("setting_complete")
       # 更新回复消息内联键盘
       if reply_msg = msg.reply_to_message
-        text = t("custom.custom")
+        text = t("custom.desc")
         bot.edit_message_text chat_id: msg.chat.id, message_id: reply_msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(msg.chat.id)
       end
     end
