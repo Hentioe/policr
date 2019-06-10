@@ -146,6 +146,11 @@
             </thead>
             <tbody>
               <tr>
+                <td align="left"><code>/settings</code></td>
+                <td align="left">主要设置项</td>
+                <td align="center">综合开关</td>
+                <td align="center">略</td>
+              </tr>
                 <td align="left"><code>/ping</code></td>
                 <td align="left">存活测试</td>
                 <td align="center">状态</td>
@@ -155,18 +160,6 @@
                 <td align="left"><code>/from</code></td>
                 <td align="left">设置来源调查</td>
                 <td align="center">设置</td>
-                <td align="center">略</td>
-              </tr>
-              <tr>
-                <td align="left"><code>/enable_examine</code></td>
-                <td align="left">启用审核</td>
-                <td align="center">开关</td>
-                <td align="center">略</td>
-              </tr>
-              <tr>
-                <td align="left"><code>/disable_examine</code></td>
-                <td align="left">禁用审核</td>
-                <td align="center">开关</td>
                 <td align="center">略</td>
               </tr>
               <tr>
@@ -188,30 +181,6 @@
                 <td align="center">略</td>
               </tr>
               <tr>
-                <td align="left"><code>/trust_admin</code></td>
-                <td align="left">信任管理员</td>
-                <td align="center">开关</td>
-                <td align="center">略</td>
-              </tr>
-              <tr>
-                <td align="left"><code>/distrust_admin</code></td>
-                <td align="left">不信任管理员</td>
-                <td align="center">开关</td>
-                <td align="center">略</td>
-              </tr>
-              <tr>
-                <td align="left"><code>/clean_mode</code></td>
-                <td align="left">干净模式</td>
-                <td align="center">开关</td>
-                <td align="center">略</td>
-              </tr>
-              <tr>
-                <td align="left"><code>/record_mode</code></td>
-                <td align="left">记录模式</td>
-                <td align="center">开关</td>
-                <td align="center">略</td>
-              </tr>
-              <tr>
                 <td align="left"><code>/custom</code></td>
                 <td align="left">定制验证方式</td>
                 <td align="center">设置</td>
@@ -226,19 +195,29 @@
           </article>
           <h3 class="subtitle is-3">快速入门</h3>
           <p class="subtitle is-6">
-            作为群主，在信任群管理的前提下，建议让管理员们帮忙干活
+            首先进行一些基本设置，比较建议按照推荐来做，当然你也可以随心所欲。但我强烈建议你明白每一个设置项的含义。
           </p>
           <figure class="highlight">
-            <pre><code class="language-bash" data-lang="bash">/trust_admin@policr_bot</code></pre>
+            <pre><code class="language-bash" data-lang="bash">/settings@policr_bot</code></pre>
           </figure>
+          <div class="content">
+            <ul>
+              <li>
+                推荐：选中「信任管理」，让管理员们帮忙干活
+              </li>
+              <li>
+                推荐：选中「启用审核」，以避免被垃圾帐号和内容干扰
+              </li>
+              <li>
+                「记录模式」会保留所有中间消息，不推荐
+              </li>
+            </ul>
+          </div>
           <article class="message is-danger">
             <div class="message-body">
               如果不信任管理员，则管理员没有权限使用指令调整任何设置。
             </div>
           </article>
-          <p class="subtitle is-6">
-            为避免被垃圾帐号打扰，直接启用全部审核功能
-          </p>
           <figure class="highlight">
             <pre><code class="language-bash" data-lang="bash">/enable_examine@policr_bot</code></pre>
           </figure>
@@ -302,7 +281,7 @@
                 <a class="anchor" name="verification"></a>
                 <p>为什么要验证？</p>
                 <blockquote>
-                  绝大部分垃圾发布者都是由程序运营的，它们虽然是普通用户类型但实质是机器人。这些广告机器人通过广泛加群以达到批量散播广告的目的。由于它们无法像人类一样回答验证问题，所以在入群发言之前就将其限制，验证超时或错误则将其移除，便达到了屏蔽的效果。
+                  绝大部分垃圾内容发布者都是由程序运营的，它们虽然是普通用户类型但实质是机器人。这些广告机器人通过广泛加群以达到批量散播广告的目的。由于它们无法像人类一样回答验证问题，所以在入群发言之前就将其限制，验证超时或错误则将其移除，便达到了屏蔽的效果。
                 </blockquote>
               </li>
               <li>
@@ -310,9 +289,7 @@
                 <p>为什么要消灭清真？</p>
                 <blockquote>
                   <strong>清真并非指穆斯林，也没有直接关系。</strong
-                  >清真指的是利用阿拉伯语系文字发布广告的用户，这些用户的背后是黑客们批量注册并利用程序控制的小号。清真们数量巨大，广泛加群，已是
-                  Telegram
-                  平台最大的危害之一。至于他们究竟来自何处尚不清楚，也不重要。你只需要知道中文圈内出现阿拉伯语用户基本不用有多顾虑，他们就是最典型的垃圾内容发布者。<strong
+                  >清真指的是利用阿拉伯语系文字发布广告的用户，这些用户的背后是黑客们批量注册并利用程序控制的小号。清真们数量巨大，广泛加群，已是电报平台最大的危害之一。至于他们究竟来自何处尚不清楚，也不重要。你只需要知道中文圈内出现阿拉伯语用户基本不用有多顾虑，他们就是机器人。<strong
                     >清真二字是中文圈普遍认同的称呼，并非本项目原创。</strong
                   >
                 </blockquote>
