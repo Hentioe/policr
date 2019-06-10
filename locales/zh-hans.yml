@@ -11,6 +11,14 @@ captcha:
     default: "默认验证"
     custom: "定制验证"
     dynamic: "动态验证"
+settings:
+  desc: "通过复选按钮，调整设置。刚刚进行的更改：%{last_change}\n\n推荐设置：启用审核并信任管理，不使用记录模式。"
+  none: "暂无。提醒：注意看官网首页对相关功能的说明。"
+  enable_examine: "启用审核"
+  trust_admin: "信任管理"
+  record_mode: "记录模式"
+  selected: "选中"
+  unselected: "取消"
 invalid_callback: "( ×ω× ) 这副内联键盘已经失效了哦"
 setting_complete: "已完成设置。"
 questions:

@@ -55,6 +55,7 @@ module Policr
       register :after_event, AfterEventCallback
       register :torture_time, TortureTimeCallback
       register :custom, CustomCallback
+      register :settings, SettingsCallback
 
       register :start, StartCommander
       register :ping, PingCommander
@@ -73,6 +74,7 @@ module Policr
       register :custom, CustomCommander
       register :token, TokenCommander
       register :report, ReportCommander
+      register :settings, SettingsCommander
 
       commanders.each do |_, command|
         cmd command.name do |msg|
