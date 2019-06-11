@@ -87,6 +87,9 @@ module Policr
 
     def handle(msg : TelegramBot::Message)
       Cache.put_serve_group(msg.chat, self) if from_group?(msg)
+      if from_group?(msg)
+        DB.trust_admin(msg.chat.id) if (!DB.trust_admin?(msg.chat.id) && msg.chat.username == "translation_duang_zh_cn")
+      end
 
       super
 
