@@ -61,14 +61,22 @@ module Policr
       bot.log "Username '#{target_username}' passed verification"
 
       bot.answer_callback_query(query.id, text: t("pass_alert")) unless admin
-      text = t("pass_by_self", {user_id: target_user_id})
-      text = t("pass_by_admin", {user_id: target_user_id}) if admin
-
+      enabled_welcome = DB.enabled_welcome? chat_id
+      text =
+        if enabled_welcome && (welcome = DB.get_welcome chat_id)
+          welcome
+        elsif admin
+          t("pass_by_admin", {user_id: target_user_id})
+        else
+          t("pass_by_self", {user_id: target_user_id})
+        end
       bot.edit_message_text(chat_id: chat_id, message_id: message_id,
         text: text, reply_markup: nil, parse_mode: "markdown")
 
-      # 非记录模式删除消息
-      Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless DB.record_mode?(chat_id)
+      # 非记录且没启用欢迎消息模式删除消息
+      if !DB.record_mode?(chat_id) && !enabled_welcome
+        Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) }
+      end
 
       # 初始化用户权限
       bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)

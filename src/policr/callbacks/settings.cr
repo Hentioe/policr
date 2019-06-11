@@ -47,6 +47,16 @@ module Policr
         text = t "settings.desc", {last_change: def_change}
         bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
         bot.answer_callback_query(query.id)
+      when "welcome"
+        unless DB.get_welcome(chat_id)
+          bot.answer_callback_query(query.id, text: t("settings.not_welcome"))
+          return
+        end
+        selected = DB.enabled_welcome?(chat_id)
+        selected ? DB.disable_welcome(chat_id) : DB.enable_welcome(chat_id)
+        text = t "settings.desc", {last_change: def_change}
+        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.answer_callback_query(query.id)
       end
     end
 

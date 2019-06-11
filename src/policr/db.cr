@@ -230,4 +230,38 @@ module Policr::DB
       db.get?("#{FIND_USER_BY_TOKEN}_#{token}")
     end
   end
+
+  ENABLE_WELCOME = "enabled_welcome"
+
+  def enable_welcome(chat_id)
+    if db = @@db
+      db.put "#{ENABLE_WELCOME}_#{chat_id}", 1
+    end
+  end
+
+  def enabled_welcome?(chat_id)
+    if (db = @@db) && (status = db.get?("#{ENABLE_WELCOME}_#{chat_id}"))
+      status.to_i == 1
+    end
+  end
+
+  def disable_welcome(chat_id)
+    if db = @@db
+      db.delete "#{ENABLE_WELCOME}_#{chat_id}"
+    end
+  end
+
+  WELCOME = "welcome"
+
+  def set_welcome(chat_id, content)
+    if db = @@db
+      db.put "#{WELCOME}_#{chat_id}", content
+    end
+  end
+
+  def get_welcome(chat_id)
+    if db = @@db
+      db.get "#{WELCOME}_#{chat_id}"
+    end
+  end
 end

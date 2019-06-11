@@ -18,9 +18,11 @@ settings:
   trust_admin: "信任管理"
   record_mode: "记录模式"
   enable_from: "来源调查"
+  welcome: "欢迎消息"
   selected: "选中"
   unselected: "取消"
   not_from: "请先使用 /from 指令进行设置。"
+  not_from: "请先使用 /welcome 指令进行设置。"
 invalid_callback: "( ×ω× ) 这副内联键盘已经失效了哦"
 setting_complete: "已完成设置。"
 questions:
@@ -92,7 +94,8 @@ torture:
   exists_set: "此群组当前已设置时长（%{time_len}）"
   time_setting: "开始更新入群验证的等待时间，%{current_state}。请选择按钮或手动回复数字（秒）设置时间。\n如果您决定通过回复自定义时间，请即时回复，避免机器人重启让本消息失效。\n\n附加阅读：[不限时验证的危害](https://policr.bluerain.io#no_time_limit)"
   inf_time: "无验证倒计时（不推荐）"
-
+welcome:
+  hint: "您正在设置欢迎消息，请回复欢迎内容。设置完成需手动使用 /settings 指令启用，并且本消息很可能因为机器人的重启而存在回复有效期。"
 from:
   question: "ε(*´･∀･｀)з 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
   message: "\\_( ﾟДﾟ)ﾉ [这货](tg://user?id=%{user_id})居然是从「%{from}」过来的，大家赶快孤立他。"

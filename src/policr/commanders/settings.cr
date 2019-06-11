@@ -30,6 +30,8 @@ module Policr
           DB.record_mode?(chat_id) ? SELECTED : UNSELECTED
         when "enable_from"
           DB.enabled_from?(chat_id) ? SELECTED : UNSELECTED
+        when "welcome"
+          DB.enabled_welcome?(chat_id) ? SELECTED : UNSELECTED
         else
           UNSELECTED
         end
@@ -40,6 +42,7 @@ module Policr
       markup << def_toggle "trust_admin"
       markup << def_toggle "record_mode"
       markup << def_toggle "enable_from"
+      markup << def_toggle "welcome"
 
       markup
     end

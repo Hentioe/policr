@@ -14,6 +14,8 @@ module Policr::Cache
   @@group_list = Hash(Int64, Tuple(String, String)).new
   # 动态问题缓存，正确答案与消息关联
   @@dynamic_list = Hash(String, Int32).new
+  # 欢迎消息设置缓存
+  @@welcome_setting_msg = Set(Int32).new
 
   def carving_torture_time_msg_sec(message_id)
     @@torture_time_msg[message_id] = TortureTimeType::Sec
@@ -23,12 +25,22 @@ module Policr::Cache
     @@torture_time_msg[message_id]?
   end
 
+  # 此类方法日后使用宏生成
+
   def carying_from_setting_msg(message_id)
     @@from_setting_msg << message_id
   end
 
   def from_setting_msg?(message_id)
     @@from_setting_msg.includes? message_id
+  end
+
+  def carying_welcome_setting_msg(message_id)
+    @@welcome_setting_msg << message_id
+  end
+
+  def welcome_setting_msg?(message_id)
+    @@welcome_setting_msg.includes? message_id
   end
 
   def carying_custom_msg(message_id)

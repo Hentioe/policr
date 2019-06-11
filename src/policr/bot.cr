@@ -44,6 +44,7 @@ module Policr
       register :left_group, LeftGroupHandler
       register :unverified_message, UnverifiedMessageHandler
       register :from_setting, FromSettingHandler
+      register :welcome_setting, WelcomeSettingHandler
       register :torture_time_setting, TortureTimeSettingHandler
       register :custom, CustomHandler
       register :halal_message, HalalMessageHandler
@@ -60,6 +61,7 @@ module Policr
       register :start, StartCommander
       register :ping, PingCommander
       register :from, FromCommander
+      register :welcome, WelcomeCommander
       register :enable_examine, EnableExamineCommander
       register :disable_examine, DisableExamineCommander
       register :enable_from, EnableFromCommander
