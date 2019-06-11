@@ -261,7 +261,7 @@ module Policr::DB
 
   def get_welcome(chat_id)
     if db = @@db
-      db.get "#{WELCOME}_#{chat_id}"
+      db.get? "#{WELCOME}_#{chat_id}"
     end
   end
 end
