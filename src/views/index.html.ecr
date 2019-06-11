@@ -151,6 +151,7 @@
                 <td align="center">综合开关</td>
                 <td align="center">略</td>
               </tr>
+              <tr>
                 <td align="left"><code>/ping</code></td>
                 <td align="left">存活测试</td>
                 <td align="center">状态</td>
@@ -160,18 +161,6 @@
                 <td align="left"><code>/from</code></td>
                 <td align="left">设置来源调查</td>
                 <td align="center">设置</td>
-                <td align="center">略</td>
-              </tr>
-              <tr>
-                <td align="left"><code>/enable_from</code></td>
-                <td align="left">启用来源调查</td>
-                <td align="center">开关</td>
-                <td align="center">略</td>
-              </tr>
-              <tr>
-                <td align="left"><code>/disable_from</code></td>
-                <td align="left">禁用来源调查</td>
-                <td align="center">开关</td>
                 <td align="center">略</td>
               </tr>
               <tr>
@@ -195,7 +184,7 @@
           </article>
           <h3 class="subtitle is-3">快速入门</h3>
           <p class="subtitle is-6">
-            首先进行一些基本设置，比较建议按照推荐来做，当然你也可以随心所欲。但我强烈建议你明白每一个设置项的含义。
+            首先进行一些基本设置，比较建议按照推荐来做，当然你也可以随心所欲。但我强烈建议你明白每一个设置项的含义
           </p>
           <figure class="highlight">
             <pre><code class="language-bash" data-lang="bash">/settings@policr_bot</code></pre>
@@ -209,7 +198,13 @@
                 推荐：选中「启用审核」，以避免被垃圾帐号和内容干扰
               </li>
               <li>
-                「记录模式」会保留所有中间消息，不推荐
+                不推荐：「记录模式」会保留所有中间消息，默认行为会自动清理
+              </li>
+              <li>
+                视需求：「来源调查」询问通过验证用户来自何处，通常用于统计热门宣传渠道
+              </li>
+              <li>
+                视需求：「欢迎消息」给通过验证用户显示欢迎消息
               </li>
             </ul>
           </div>
@@ -285,6 +280,29 @@
                 </blockquote>
               </li>
               <li>
+                <a class="anchor" name="verification"></a>
+                <p>各种验证方式分别是什么意思？那种更好？</p>
+                <blockquote>
+                  目前的版本<code><%= VERSION %></code
+                  >支持以下几种不同机制的验证方式：
+
+                  <ol>
+                    <li>
+                      默认验证：存在两个答案，一个正确，一个错误的傻瓜式验证
+                    </li>
+                    <li>
+                      定制验证：自定义问题和答案列表，让验证特立独行，可难可易
+                    </li>
+                    <li>
+                      动态验证：通过随机生成计算公式和答案，或类似的纯动态验证
+                    </li>
+                  </ol>
+                  <p class="is-6 subtitle">
+                    每一种验证方式偏重点各不相同，那一种更好我无法给出答案。以后还可能会推出新的图片验证（并非验证码）方式。而之所以提供不同的验证方式，就是为了让群主可以自己选择自认为更好的，或者更适合的。
+                  </p>
+                </blockquote>
+              </li>
+              <li>
                 <a class="anchor" name="halal"></a>
                 <p>为什么要消灭清真？</p>
                 <blockquote>
@@ -319,11 +337,11 @@
               </li>
               <li>
                 <a class="anchor" name="work_mode"></a>
-                <p>「干净模式」和「记录模式」分别是什么意思？</p>
+                <p>「记录模式」是什么意思？</p>
                 <blockquote>
-                  这是两个互斥模式，即开启其中一个便会关闭另一个。目前<code
+                  目前<code
                     ><%= VERSION %></code
-                  >版本机器人的默认行为和干净模式一致。所以干净模式已是一种无实际意义的东西，仅作为恢复默认行为而存在。干净模式原本是指的机器人会自动清理消息这一工作行为（例如验证通过消息）。而记录模式则是关闭这种行为，不对任何类型的消息进行删除操作。最初机器人会保留所有中间消息，后来经过投票添加了自动清理消息的行为，所以产生了干净/记录两种工作模式。目前来讲，由于干净模式是默认的，所以你想保留所有消息的话，反而要启用记录模式。
+                  >版本机器人的默认有处于一种自动清理消息的工作行为，在早期被称作「干净模式」，它会延迟清理例如验证通过，自动放行，解除限制等消息。而记录模式则是关闭这种行为，不对任何类型的消息进行删除操作。最初机器人会保留所有中间消息，后来经过投票添加了自动清理消息的行为，所以产生了干净/记录两种工作模式。目前来讲，由于干净模式是默认的，所以你想保留所有消息的话，反而要启用记录模式。
                   <br />
                   <strong
                     >注意：干净模式不会清理任何附带「解除封禁」之类按钮的消息，因为要保证每一个被处理的帐号都被注意到，并始终认为存在误杀的可能，进而提供的人工解除途径。</strong
