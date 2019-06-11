@@ -18,18 +18,17 @@ module Policr::DB
 
   def put_chat_from(chat_id, text)
     if db = @@db
-      enable_chat_from(chat_id)
       db.put("from_#{chat_id.to_s}", text)
     end
   end
 
-  def enable_chat_from(chat_id)
+  def enable_from(chat_id)
     if db = @@db
       db.put("enabled_from_#{chat_id.to_s}", 1)
     end
   end
 
-  def disable_chat_from(chat_id)
+  def disable_from(chat_id)
     if db = @@db
       db.delete("enabled_from_#{chat_id.to_s}")
     end
@@ -41,7 +40,7 @@ module Policr::DB
     end
   end
 
-  def get_chat_from(chat_id)
+  def get_from(chat_id)
     if (db = @@db) && (text = db.get?("from_#{chat_id.to_s}"))
       list = Array(Array(String)).new
       text.split("\n") do |line|

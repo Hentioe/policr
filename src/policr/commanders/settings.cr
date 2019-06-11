@@ -28,15 +28,18 @@ module Policr
           DB.trust_admin?(chat_id) ? SELECTED : UNSELECTED
         when "record_mode"
           DB.record_mode?(chat_id) ? SELECTED : UNSELECTED
+        when "enable_from"
+          DB.enabled_from?(chat_id) ? SELECTED : UNSELECTED
         else
           UNSELECTED
         end
       }
 
       markup = Markup.new
-      markup << def_toggle("enable_examine")
-      markup << def_toggle("trust_admin")
-      markup << def_toggle("record_mode")
+      markup << def_toggle "enable_examine"
+      markup << def_toggle "trust_admin"
+      markup << def_toggle "record_mode"
+      markup << def_toggle "enable_from"
 
       markup
     end

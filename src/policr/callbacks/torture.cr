@@ -79,7 +79,7 @@ module Policr
 
     def from_investigate(chat_id, message_id, username, user_id)
       bot.log "From investigation of '#{username}'"
-      if from_list = DB.get_chat_from(chat_id)
+      if from_list = DB.get_from(chat_id)
         index = -1
         btn = ->(text : String) {
           Button.new(text: text, callback_data: "From:#{user_id}:#{username}:#{index += 1}")
