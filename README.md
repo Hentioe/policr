@@ -1,6 +1,6 @@
 # Policr Bot [![Build Status](https://github-ci.bluerain.io/api/badges/Hentioe/policr/status.svg)](https://github-ci.bluerain.io/Hentioe/policr)
 
-即将成为 Telegram 平台最强大的审核机器人
+大概是 Telegram 平台最强大的审核机器人
 
 ## 介绍
 
@@ -8,7 +8,7 @@
 
 不同于很多使用 Python 编写的将处理逻辑都集中于一个文件的简单机器人，此项目源码有清晰的文件结构和良好的消息处理单元抽象，具备很高的扩展性和可维护性。能在不侵入已有代码功能的情况下进行扩展和定制。
 
-如果你对 Crystal 编程语言感兴趣，不妨加入我们的交流群：[Crystal China](https://t.me/crystal_cn)。如果你对机器人开发有兴趣则加入下面需知中提到的交流群。
+如果你对 Crystal 编程语言感兴趣，不妨加入我们的交流群：[Crystal China](https://t.me/crystal_cn)。如果你对机器人开发有兴趣则加入下面**需知**中提到的交流群。
 
 ## 使用&部署
 
