@@ -1,7 +1,7 @@
 module Policr
   class ImageCaptcha < Captcha
     make ->{
-      temp_images = Cache.get_images
+      temp_images = Cache.get_images.clone
       true_image_index = Random.rand(0...temp_images.size)
       true_image = temp_images.delete_at true_image_index
 

@@ -17,12 +17,7 @@ module Policr
       message_id = msg.message_id
 
       reply_msg = msg.reply_to_message || raise Exception.new "Did not get the reply message"
-      true_index =
-        if index = DB.get_true_index(chat_id, reply_msg.message_id)
-          index
-        else
-          raise Exception.new "Did not get the true index"
-        end
+      join_msg_id = reply_msg.message_id
 
       if chooese_i <= 0 # 管理员菜单
 
@@ -30,9 +25,9 @@ module Policr
           bot.log "The administrator ended the torture by: #{chooese_i}"
           case chooese_i
           when 0
-            passed(query, chat_id, target_user_id, target_username, message_id, admin: true, photo: is_photo)
+            passed(query, chat_id, target_user_id, target_username, message_id, admin: true, photo: is_photo, reply_id: join_msg_id)
           when -1
-            failed(chat_id, message_id, target_user_id, target_username, admin: true)
+            failed(chat_id, message_id, target_user_id, target_username, admin: true, photo: is_photo, reply_id: reply_msg.message_id)
           end
         else
           bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
@@ -44,6 +39,13 @@ module Policr
           return
         end
 
+        true_index =
+          if index = DB.get_true_index(chat_id, reply_msg.message_id)
+            index
+          else
+            raise Exception.new "Did not get the true index"
+          end
+
         if chooese_i == true_index # 通过验证
           status = Cache.verify?(target_user_id)
           unless status
@@ -53,17 +55,17 @@ module Policr
               return
             end
           end
-          passed(query, chat_id, target_user_id, target_username, message_id, photo: is_photo) if status == VerifyStatus::Init
+          passed(query, chat_id, target_user_id, target_username, message_id, photo: is_photo, reply_id: join_msg_id) if status == VerifyStatus::Init
           slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
         else # 未通过验证
           bot.log "Username '#{target_username}' did not pass verification"
           bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)
-          failed(chat_id, message_id, target_user_id, target_username)
+          failed(chat_id, message_id, target_user_id, target_username, photo: is_photo, reply_id: reply_msg.message_id)
         end
       end
     end
 
-    def passed(query, chat_id, target_user_id, target_username, message_id, admin = false, photo = false)
+    def passed(query, chat_id, target_user_id, target_username, message_id, admin = false, photo = false, reply_id : Int32? = nil)
       Cache.verify_passed(target_user_id)
       bot.log "Username '#{target_username}' passed verification"
       # 异步调用
@@ -81,7 +83,7 @@ module Policr
       if photo
         spawn bot.delete_message chat_id, message_id
         spawn {
-          sended_msg = bot.send_message(chat_id: chat_id, text: text, reply_markup: nil, parse_mode: "markdown")
+          sended_msg = bot.send_message(chat_id: chat_id, text: text, reply_to_message_id: reply_id, reply_markup: nil, parse_mode: "markdown")
 
           if (temp_msg = sended_msg) && !DB.record_mode?(chat_id) && !enabled_welcome
             msg = temp_msg
@@ -131,9 +133,9 @@ module Policr
       bot.unban_chat_member(chat_id, target_user_id)
     end
 
-    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false)
+    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false, photo = false, reply_id : Int32? = nil)
       if (handler = bot.handlers[:join_user]?) && handler.is_a?(JoinUserHandler)
-        handler.failed(chat_id, message_id, user_id, username, admin: admin, timeout: timeout)
+        handler.failed(chat_id, message_id, user_id, username, admin: admin, timeout: timeout, photo: photo, reply_id: reply_id)
       end
     end
   end

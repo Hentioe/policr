@@ -11,12 +11,15 @@ module Policr
       i = Random.rand(0...@files.size)
       @files[i]
     end
+
+    def_clone
   end
 
   IGNORES = [".", ".."]
 
   def self.scan(path)
     root = "#{path}/captcha#images"
+    return unless File.exists? root
     dir = Dir.new root
     dirs = dir.select { |f| !IGNORES.includes?(f) && File.directory?("#{root}/#{f}") }.map { |f| "#{root}/#{f}" }
     gen_cache dirs

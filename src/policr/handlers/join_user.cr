@@ -79,7 +79,7 @@ module Policr
         elsif DB.dynamic? chat_id
           # 动态验证
           DynamicCaptcha.new(**params).make
-        elsif DB.enabled_image? chat_id
+        elsif Cache.get_images.size >= 3 && DB.enabled_image?(chat_id)
           send_image = true
           # 图片验证
           ImageCaptcha.new(**params).make
@@ -125,37 +125,37 @@ module Policr
       pass_text = t("admin_ope_menu.pass")
       ban_text = t("admin_ope_menu.ban")
       markup << [btn.call(pass_text, 0), btn.call(ban_text, -1)]
-      if img = image
-        sended_msg = bot.send_photo(chat_id, File.new(img), caption: question, reply_to_message_id: reply_id, reply_markup: markup)
-      else
-        sended_msg = bot.send_message(chat_id, question, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
-      end
-      ban_task = ->(message_id : Int32, send_img : Bool) {
+      sended_msg =
+        if img = image
+          bot.send_photo(chat_id, File.new(img), caption: question, reply_to_message_id: reply_id, reply_markup: markup)
+        else
+          bot.send_message(chat_id, question, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
+        end
+      ban_task = ->(message_id : Int32) {
         if Cache.verify?(member_id) == VerifyStatus::Init
           bot.log "User '#{username}' torture time expired and has been banned"
           Cache.verify_slowed(member_id)
-          failed(chat_id, message_id, member_id, username, timeout: true, photo: send_img)
+          failed(chat_id, message_id, member_id, username, timeout: true, photo: send_image, reply_id: msg_id)
         end
       }
 
-      ban_timer = ->(message_id : Int32, send_img : Bool) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id, send_img) } }
+      ban_timer = ->(message_id : Int32) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id) } }
       if sended_msg && (message_id = sended_msg.message_id)
         # 存在验证时间，定时任务调用
-        ban_timer.call(message_id, send_image) if torture_sec > 0
+        ban_timer.call(message_id) if torture_sec > 0
       end
     end
 
-    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false, photo = false)
+    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false, photo = false, reply_id : Int32? = nil)
       Cache.verify_status_clear user_id
       bot.log "Username '#{username}' has not been verified and has been banned"
       begin
         bot.kick_chat_member(chat_id, user_id)
       rescue ex : TelegramBot::APIException
-        text = t "captcha_result.error"
+        text = t "captcha_result.error", {user_id: user_id}
         if photo
           spawn bot.delete_message chat_id, message_id
-
-          bot.send_message(chat_id: chat_id, text: text, parse_mode: "markdown")
+          bot.send_message(chat_id: chat_id, text: text, reply_to_message_id: reply_id, parse_mode: "markdown")
         else
           bot.edit_message_text(chat_id: chat_id, message_id: message_id,
             text: text, parse_mode: "markdown")
@@ -165,11 +165,16 @@ module Policr
           unless admin
             timeout ? t("captcha_result.timeout", {user_id: user_id}) : t("captcha_result.wrong", {user_id: user_id})
           else
-            t("captcha_result.admin_ban", {user_id: user_id}) if admin
+            t("captcha_result.admin_ban", {user_id: user_id})
           end
 
-        bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: text, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
+        if photo
+          spawn bot.delete_message chat_id, message_id
+          bot.send_message(chat_id: chat_id, text: text, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
+        else
+          bot.edit_message_text(chat_id: chat_id, message_id: message_id,
+            text: text, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
+        end
       end
     end
   end
