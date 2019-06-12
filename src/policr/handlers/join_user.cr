@@ -46,8 +46,8 @@ module Policr
     def start_torture(msg, member)
       if (Time.utc.to_unix - msg.date) > AFTER_EVENT_SEC
         # 事后审核不立即验证，采取人工处理
-        # 禁言用户
-        bot.restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
+        # 禁言用户/异步调用
+        spawn bot.restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
         markup = Markup.new
         btn = ->(text : String, item : String) {
           Button.new(text: text, callback_data: "AfterEvent:#{member.id}:#{member.username}:#{item}:#{msg.message_id}")
@@ -101,8 +101,8 @@ module Policr
 
       _, title, answers = custom ? custom : default
 
-      # 禁言用户
-      bot.restrict_chat_member(chat_id, member_id, can_send_messages: false)
+      # 禁言用户/异步调用
+      spawn bot.restrict_chat_member(chat_id, member_id, can_send_messages: false)
 
       torture_sec = DB.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
       question =
