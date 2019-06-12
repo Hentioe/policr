@@ -71,6 +71,7 @@ module Policr
 
       params = {chat_id: chat_id, msg_id: msg_id}
 
+      send_image = false
       catpcha_data =
         if DB.custom chat_id
           # 自定义验证
@@ -78,6 +79,10 @@ module Policr
         elsif DB.dynamic? chat_id
           # 动态验证
           DynamicCaptcha.new(**params).make
+        elsif DB.enabled_image? chat_id
+          send_image = true
+          # 图片验证
+          ImageCaptcha.new(**params).make
         else
           # 默认验证
           DefaultCaptcha.new(**params).make
@@ -85,21 +90,34 @@ module Policr
 
       _, title, answers = catpcha_data
 
+      image =
+        if send_image
+          answers.delete_at (answers.size - 1)
+        end
+
       # 禁言用户/异步调用
       spawn bot.restrict_chat_member(chat_id, member_id, can_send_messages: false)
 
       torture_sec = DB.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
       question =
-        if torture_sec > 0
-          hint = t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title})
+        if send_image
+          if torture_sec > 0
+            hint = t("torture.caption", {torture_sec: torture_sec, title: title})
+          else
+            t("torture.caption_no_time")
+          end
         else
-          t("torture.no_time_reply", {user_id: member_id, title: title})
+          if torture_sec > 0
+            hint = t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title})
+          else
+            t("torture.no_time_reply", {user_id: member_id, title: title})
+          end
         end
       question = (t("torture.re") + question) if re
       reply_id = msg_id
 
       btn = ->(text : String, chooese_id : Int32) {
-        Button.new(text: text, callback_data: "Torture:#{member_id}:#{username}:#{chooese_id}")
+        Button.new(text: text, callback_data: "Torture:#{member_id}:#{username}:#{chooese_id}:#{send_image ? 1 : 0}")
       }
       markup = Markup.new
       answer_list = answers.map_with_index { |answer, i| [btn.call(answer, i + 1)] }
@@ -107,32 +125,41 @@ module Policr
       pass_text = t("admin_ope_menu.pass")
       ban_text = t("admin_ope_menu.ban")
       markup << [btn.call(pass_text, 0), btn.call(ban_text, -1)]
-      sended_msg = bot.send_message(chat_id, question, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
-
-      ban_task = ->(message_id : Int32) {
+      if img = image
+        sended_msg = bot.send_photo(chat_id, File.new(img), caption: question, reply_to_message_id: reply_id, reply_markup: markup)
+      else
+        sended_msg = bot.send_message(chat_id, question, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
+      end
+      ban_task = ->(message_id : Int32, send_img : Bool) {
         if Cache.verify?(member_id) == VerifyStatus::Init
           bot.log "User '#{username}' torture time expired and has been banned"
           Cache.verify_slowed(member_id)
-          failed(chat_id, message_id, member_id, username, timeout: true)
+          failed(chat_id, message_id, member_id, username, timeout: true, photo: send_img)
         end
       }
 
-      ban_timer = ->(message_id : Int32) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id) } }
+      ban_timer = ->(message_id : Int32, send_img : Bool) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id, send_img) } }
       if sended_msg && (message_id = sended_msg.message_id)
         # 存在验证时间，定时任务调用
-        ban_timer.call(message_id) if torture_sec > 0
+        ban_timer.call(message_id, send_image) if torture_sec > 0
       end
     end
 
-    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false)
+    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false, photo = false)
       Cache.verify_status_clear user_id
       bot.log "Username '#{username}' has not been verified and has been banned"
       begin
         bot.kick_chat_member(chat_id, user_id)
       rescue ex : TelegramBot::APIException
         text = t "captcha_result.error"
-        bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: text, parse_mode: "markdown")
+        if photo
+          spawn bot.delete_message chat_id, message_id
+
+          bot.send_message(chat_id: chat_id, text: text, parse_mode: "markdown")
+        else
+          bot.edit_message_text(chat_id: chat_id, message_id: message_id,
+            text: text, parse_mode: "markdown")
+        end
       else
         text =
           unless admin

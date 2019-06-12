@@ -23,8 +23,10 @@ module Policr
           DB.custom(chat_id) ? CHECKED : UNCHECKED
         when :dynamic
           DB.dynamic?(chat_id) ? CHECKED : UNCHECKED
+        when :image
+          DB.enabled_image?(chat_id) ? CHECKED : UNCHECKED
         when :default
-          (!DB.custom(chat_id) && !DB.dynamic?(chat_id)) ? CHECKED : UNCHECKED
+          (!DB.custom(chat_id) && !DB.dynamic?(chat_id) && !DB.enabled_image?(chat_id)) ? CHECKED : UNCHECKED
         else
           UNCHECKED
         end
@@ -41,10 +43,12 @@ module Policr
       default_text = make_text.call :default
       custom_text = make_text.call :custom
       dynamic_text = make_text.call :dynamic
+      image_text = make_text.call :image
 
       markup << [btn.call(default_text, "default")]
       markup << [btn.call(custom_text, "custom")]
       markup << [btn.call(dynamic_text, "dynamic")]
+      markup << [btn.call(image_text, "image")]
       markup
     end
   end

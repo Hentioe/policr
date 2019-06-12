@@ -16,6 +16,8 @@ module Policr::Cache
   @@dynamic_list = Hash(String, Int32).new
   # 欢迎消息设置缓存
   @@welcome_setting_msg = Set(Int32).new
+  # 图片（验证）集列表
+  @@image_list = Array(Image).new
 
   def carving_torture_time_msg_sec(message_id)
     @@torture_time_msg[message_id] = TortureTimeType::Sec
@@ -102,5 +104,13 @@ module Policr::Cache
 
   def dynamic_result(chat_id, message_id)
     @@dynamic_list["#{chat_id}_#{message_id}"]?
+  end
+
+  def set_images(images)
+    @@image_list = images
+  end
+
+  def get_images
+    @@image_list
   end
 end

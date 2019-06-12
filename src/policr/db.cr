@@ -162,13 +162,25 @@ module Policr::DB
     end
   end
 
+  def disable_custom(chat_id)
+    if db = @@db
+      db.delete "#{CUSTOM_TEXT}_#{chat_id}"
+    end
+  end
+
   DYNAMIC_CAPTCHA = "dynamic"
 
   def dynamic(chat_id)
     if db = @@db
-      # 删除自定义验证
-      db.delete("#{CUSTOM_TEXT}_#{chat_id}")
+      disable_custom chat_id
+      disable_image chat_id
       db.put("#{DYNAMIC_CAPTCHA}_#{chat_id}", 1)
+    end
+  end
+
+  def disable_dynamic(chat_id)
+    if db = @@db
+      db.delete "#{DYNAMIC_CAPTCHA}_#{chat_id}"
     end
   end
 
@@ -180,8 +192,31 @@ module Policr::DB
 
   def default(chat_id)
     if db = @@db
-      db.delete("#{CUSTOM_TEXT}_#{chat_id}")
-      db.delete("#{DYNAMIC_CAPTCHA}_#{chat_id}")
+      disable_custom chat_id
+      disable_dynamic chat_id
+      disable_image chat_id
+    end
+  end
+
+  IMAGE_CAPTCHA = "image_captcha"
+
+  def enable_image(chat_id)
+    if db = @@db
+      disable_custom chat_id
+      disable_dynamic chat_id
+      db.put "#{IMAGE_CAPTCHA}_#{chat_id}", 1
+    end
+  end
+
+  def disable_image(chat_id)
+    if db = @@db
+      db.delete "#{IMAGE_CAPTCHA}_#{chat_id}"
+    end
+  end
+
+  def enabled_image?(chat_id)
+    if (db = @@db) && (status = db.get?("#{IMAGE_CAPTCHA}_#{chat_id}"))
+      status.to_i == 1
     end
   end
 

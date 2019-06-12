@@ -21,4 +21,9 @@ describe Policr do
     end
     12.should eq i
   end
+  
+  it "scan" do
+    Policr.scan "."
+  end
+
 end

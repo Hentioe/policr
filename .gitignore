@@ -11,3 +11,4 @@
 *.secret.env
 
 /rocks#data#policr
+/captcha#images

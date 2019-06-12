@@ -9,8 +9,9 @@ module Policr
     def handle(query, msg, report)
       chat_id = msg.chat.id
       from_user_id = query.from.id
-      target_id, target_username, chooese = report
+      target_id, target_username, chooese, photo = report
 
+      is_photo = photo.to_i == 1
       chooese_i = chooese.to_i
       target_user_id = target_id.to_i
       message_id = msg.message_id
@@ -29,7 +30,7 @@ module Policr
           bot.log "The administrator ended the torture by: #{chooese_i}"
           case chooese_i
           when 0
-            passed(query, chat_id, target_user_id, target_username, message_id, admin: true)
+            passed(query, chat_id, target_user_id, target_username, message_id, admin: true, photo: is_photo)
           when -1
             failed(chat_id, message_id, target_user_id, target_username, admin: true)
           end
@@ -52,7 +53,7 @@ module Policr
               return
             end
           end
-          passed(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Init
+          passed(query, chat_id, target_user_id, target_username, message_id, photo: is_photo) if status == VerifyStatus::Init
           slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
         else # 未通过验证
           bot.log "Username '#{target_username}' did not pass verification"
@@ -62,7 +63,7 @@ module Policr
       end
     end
 
-    def passed(query, chat_id, target_user_id, target_username, message_id, admin = false)
+    def passed(query, chat_id, target_user_id, target_username, message_id, admin = false, photo = false)
       Cache.verify_passed(target_user_id)
       bot.log "Username '#{target_username}' passed verification"
       # 异步调用
@@ -77,11 +78,23 @@ module Policr
           t("pass_by_self", {user_id: target_user_id})
         end
       # 异步调用
-      spawn { bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: text, reply_markup: nil, parse_mode: "markdown") }
+      if photo
+        spawn bot.delete_message chat_id, message_id
+        spawn {
+          sended_msg = bot.send_message(chat_id: chat_id, text: text, reply_markup: nil, parse_mode: "markdown")
+
+          if (temp_msg = sended_msg) && !DB.record_mode?(chat_id) && !enabled_welcome
+            msg = temp_msg
+            Schedule.after(5.seconds) { bot.delete_message(chat_id, msg.message_id) }
+          end
+        }
+      else
+        spawn { bot.edit_message_text(chat_id: chat_id, message_id: message_id,
+          text: text, reply_markup: nil, parse_mode: "markdown") }
+      end
 
       # 非记录且没启用欢迎消息模式删除消息
-      if !DB.record_mode?(chat_id) && !enabled_welcome
+      if !DB.record_mode?(chat_id) && !enabled_welcome && !photo
         Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) }
       end
 

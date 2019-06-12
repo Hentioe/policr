@@ -12,12 +12,15 @@ module Policr
     CLI::Parser.run
     config = CLI::Config.instance
 
+    # 扫描图片集
+    scan config.dpath
+
     Dotenv.load! "configs/dev.secret.env" unless config.prod
     DB.connect config.dpath
 
     I18n.load_path += ["locales"]
     I18n.init
-    I18n.default_locale = "zh-hans"
+    I18n.default_locale = "zh_hans"
 
     logger = Logger.new(STDOUT)
     logger.level = Logger::DEBUG
