@@ -66,40 +66,24 @@ module Policr
       end
     end
 
-    def promptly_torture(chat_id, msg_id, member_id, username)
+    def promptly_torture(chat_id, msg_id, member_id, username, re = false)
       Cache.verify_init(member_id)
 
-      default =
-        {
-          1,
-          t("questions.title"),
-          [
-            t("questions.answer_1"),
-            t("questions.answer_2"),
-          ],
-        }
-      custom = DB.custom(chat_id)
-      if !custom && DB.dynamic?(chat_id)
-        ln = Random.rand(9) + 1
-        rn = Random.rand(9) + 1
-        custom = {
-          3,
-          "#{ln} + #{rn} = ?",
-          [
-            # 注意！避免错误答案随机数重复
-            # 错误答案 19 - 28
-            # 错误答案 29 - 38
-            # 正确答案 1 - 18
-            Random.rand(19..28).to_s,
-            Random.rand(29..38).to_s,
-            (ln + rn).to_s,
-          ],
-        }
-        # 将正确答案以及消息关联列入缓存
-        Cache.put_dynamic_result chat_id, msg_id, 3
-      end
+      params = {chat_id: chat_id, msg_id: msg_id}
 
-      _, title, answers = custom ? custom : default
+      catpcha_data =
+        if DB.custom chat_id
+          # 自定义验证
+          CustomCaptcha.new(**params).make
+        elsif DB.dynamic? chat_id
+          # 动态验证
+          DynamicCaptcha.new(**params).make
+        else
+          # 默认验证
+          DefaultCaptcha.new(**params).make
+        end
+
+      _, title, answers = catpcha_data
 
       # 禁言用户/异步调用
       spawn bot.restrict_chat_member(chat_id, member_id, can_send_messages: false)
@@ -107,10 +91,11 @@ module Policr
       torture_sec = DB.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
       question =
         if torture_sec > 0
-          t("torture.default_reply", {user_id: member_id, torture_sec: torture_sec, title: title})
+          hint = t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title})
         else
           t("torture.no_time_reply", {user_id: member_id, title: title})
         end
+      question = (t("torture.re") + question) if re
       reply_id = msg_id
 
       btn = ->(text : String, chooese_id : Int32) {

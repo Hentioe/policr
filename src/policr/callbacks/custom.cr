@@ -35,7 +35,7 @@ module Policr
         text = t "custom.desc"
         begin
           bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
-        bot.answer_callback_query(query.id)
+          bot.answer_callback_query(query.id)
         rescue e : TelegramBot::APIException
           _, reason = bot.parse_error e
           bot.answer_callback_query(query.id, text: t("custom.reply_hint")) if reason == NOT_MODIFIED

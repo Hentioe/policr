@@ -264,4 +264,20 @@ module Policr::DB
       db.get? "#{WELCOME}_#{chat_id}"
     end
   end
+
+  TRUE_INDEX = "true_index"
+
+  def storage_true_index(chat_id, msg_id, index)
+    if db = @@db
+      db.put "#{TRUE_INDEX}_#{chat_id}_#{msg_id}", index
+    end
+  end
+
+  def get_true_index(chat_id, msg_id)
+    if (db = @@db) && (index = db.get? "#{TRUE_INDEX}_#{chat_id}_#{msg_id}")
+      # 清理验证索引
+      db.delete "#{TRUE_INDEX}_#{chat_id}_#{msg_id}"
+      index.to_i
+    end
+  end
 end

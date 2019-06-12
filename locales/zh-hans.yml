@@ -88,7 +88,8 @@ examine:
   enable_need_permission: "(／‵Д′)／ 不给权限（[需要哪些？](https://policr.bluerain.io#permissions)）还想让人家干活，做梦。"
   disable: "已禁用审核。[点我查看详情](https://policr.bluerain.io#examine)。"
 torture:
-  default_reply: "请[您](tg://user?id=%{user_id})在 %{torture_sec} 秒内确认「%{title}」以通过[验证](https://policr.bluerain.io#verification)"
+  hint: "请[您](tg://user?id=%{user_id})在 %{torture_sec} 秒内确认「%{title}」以通过[验证](https://policr.bluerain.io#verification)"
+  re: "重新来过，"
   no_time_reply: "请[您](tg://user?id=%{user_id})主动确认「%{title}」以解除限制"
   default_set: "此群组当前使用 Bot 默认的时长（%{seconds} 秒）"
   exists_set: "此群组当前已设置时长（%{time_len}）"

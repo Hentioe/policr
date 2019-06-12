@@ -15,13 +15,12 @@ module Policr
       target_user_id = target_id.to_i
       message_id = msg.message_id
 
+      reply_msg = msg.reply_to_message || raise Exception.new "Did not get the reply message"
       true_index =
-        if custom = DB.custom(msg.chat.id)
-          custom.[0]
-        elsif (reply_msg = msg.reply_to_message) && (dynamic_result = Cache.dynamic_result(msg.chat.id, reply_msg.message_id))
-          dynamic_result
+        if index = DB.get_true_index(chat_id, reply_msg.message_id)
+          index
         else
-          1
+          raise Exception.new "Did not get the true index"
         end
 
       if chooese_i <= 0 # 管理员菜单
@@ -46,6 +45,13 @@ module Policr
 
         if chooese_i == true_index # 通过验证
           status = Cache.verify?(target_user_id)
+          unless status
+            if (handler = bot.handlers[:join_user]) && (handler.is_a?(JoinUserHandler))
+              spawn bot.delete_message chat_id, message_id
+              handler.promptly_torture chat_id, reply_msg.message_id, target_user_id, target_username, re: true
+              return
+            end
+          end
           passed(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Init
           slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
         else # 未通过验证

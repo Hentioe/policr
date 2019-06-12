@@ -1,6 +1,7 @@
 require "./policr/**"
 require "dotenv"
 require "i18n"
+require "benchmark"
 
 module Policr
   COMMIT     = {{ `git rev-parse --short HEAD`.stringify.strip }}
