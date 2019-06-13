@@ -102,9 +102,9 @@ module Policr
       question =
         if send_image
           if torture_sec > 0
-            hint = t("torture.caption", {torture_sec: torture_sec, title: title})
+            hint = t("torture.caption", {torture_sec: torture_sec, title: title, user_id: member_id})
           else
-            t("torture.caption_no_time")
+            t("torture.caption_no_time", {user_id: member_id})
           end
         else
           if torture_sec > 0
@@ -127,7 +127,7 @@ module Policr
       markup << [btn.call(pass_text, 0), btn.call(ban_text, -1)]
       sended_msg =
         if img = image
-          bot.send_photo(chat_id, File.new(img), caption: question, reply_to_message_id: reply_id, reply_markup: markup)
+          bot.send_photo(chat_id, File.new(img), caption: question, reply_to_message_id: reply_id, reply_markup: markup, parse_mode: "markdown")
         else
           bot.send_message(chat_id, question, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
         end

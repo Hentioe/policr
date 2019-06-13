@@ -92,8 +92,8 @@ examine:
   disable: "已禁用审核。[点我查看详情](https://policr.bluerain.io#examine)。"
 torture:
   hint: "请[您](tg://user?id=%{user_id})在 %{torture_sec} 秒内确认「%{title}」以通过[验证](https://policr.bluerain.io#verification)"
-  caption: "请在 %{torture_sec} 秒内告诉我，你看到了什么？"
-  caption_no_time: "请主动确认图中的内容以解除限制"
+  caption: "请[您](tg://user?id=%{user_id})在 %{torture_sec} 秒内告诉我，看到了什么（单选）？"
+  caption_no_time: "请[您](tg://user?id=%{user_id})主动确认图中的内容以解除限制（单选）"
   re: "重新来过，"
   no_time_reply: "请[您](tg://user?id=%{user_id})主动确认「%{title}」以解除限制"
   default_set: "此群组当前使用 Bot 默认的时长（%{seconds} 秒）"
