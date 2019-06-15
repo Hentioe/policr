@@ -49,7 +49,7 @@ module Policr
         if chooese_i == true_index # 通过验证
           status = Cache.verify?(target_user_id)
           unless status
-            if (handler = bot.handlers[:user_join]) && (handler.is_a?(UserJoinHandler))
+            midcall UserJoinHandler do
               spawn bot.delete_message chat_id, message_id
               handler.promptly_torture chat_id, reply_msg.message_id, target_user_id, target_username, re: true
               return
@@ -134,7 +134,7 @@ module Policr
     end
 
     def failed(chat_id, message_id, user_id, username, admin = false, timeout = false, photo = false, reply_id : Int32? = nil)
-      if (handler = bot.handlers[:user_join]?) && handler.is_a?(UserJoinHandler)
+      midcall UserJoinHandler do
         handler.failed(chat_id, message_id, user_id, username, admin: admin, timeout: timeout, photo: photo, reply_id: reply_id)
       end
     end

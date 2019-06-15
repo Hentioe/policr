@@ -35,18 +35,14 @@ module Policr
     end
 
     def text(chat_id)
-      if (commander = bot.commanders[:torture_time]?) && (commander.is_a?(TortureTimeCommander))
+      midcall TortureTimeCommander do
         commander.text(chat_id)
-      else
-        raise Exception.new "TortureTimeCommander instance not created"
       end
     end
 
     def markup
-      if (commander = bot.commanders[:torture_time]?) && (commander.is_a?(TortureTimeCommander))
+      midcall TortureTimeCommander do
         commander.create_markup
-      else
-        Markup.new
       end
     end
   end

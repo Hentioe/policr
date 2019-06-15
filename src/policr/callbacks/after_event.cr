@@ -15,8 +15,8 @@ module Policr
           bot.answer_callback_query(query.id, text: t("unrelated_warning"), show_alert: true)
           return
         end
-        if (join_user_handler = bot.handlers[:user_join]) && join_user_handler.is_a?(UserJoinHandler)
-          join_user_handler.promptly_torture(msg.chat.id, msg_id.to_i, member_id.to_i, username)
+        midcall UserJoinHandler do
+          handler.promptly_torture(msg.chat.id, msg_id.to_i, member_id.to_i, username)
           bot.delete_message(msg.chat.id, msg.message_id)
         end
       when "unban" # 解封

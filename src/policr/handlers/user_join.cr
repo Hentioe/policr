@@ -26,10 +26,8 @@ module Policr
           # 判断清真
           name = bot.display_name(member)
 
-          if (halal_message_handler = bot.handlers[:halal_message]?) && halal_message_handler.is_a?(HalalMessageHandler) && halal_message_handler.is_halal(name)
-            halal_message_handler.kick_halal_with_receipt(msg, member)
-          else
-            start_torture(msg, member)
+          midcall HalalMessageHandler do
+            handler.is_halal(name) ? handler.kick_halal_with_receipt(msg, member) : start_torture(msg, member)
           end
         end
       end

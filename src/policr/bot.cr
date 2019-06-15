@@ -12,26 +12,35 @@ module Policr
   alias Markup = TelegramBot::InlineKeyboardMarkup
 
   class Bot < TelegramBot::Bot
-    private def register(name : Symbol, filter_type)
-      filter = filter_type.new self
-      case filter
-      when Handler
-        handlers[name] = filter
-      when Callback
-        callbacks[name] = filter
-      when Commander
-        commanders[name] = filter
-      else
-        raise "type '#{filter}' that does not support registration"
-      end
+    private macro midreg(cls)
+      %k = ""
+      {% for c, index in cls.stringify.chars %}
+        {% if index != 0 && c.stringify =~ /[A-Z]/ %}
+          %k += "_" + {{c}}
+        {% else %}
+          %k += {{c}}
+        {% end %}
+      {% end %}
+      %k = %k.downcase.gsub(/(_handler|_commander|_callback)/, "")
+      {{ cls_name = cls.stringify }}
+      %m =
+      {% if cls_name.ends_with?("Handler") %}
+        handlers
+      {% elsif cls_name.ends_with?("Commander") %}
+        commanders
+      {% elsif cls_name.ends_with?("Callback") %}
+        callbacks
+      {% end %}
+
+      %m[%k] = {{cls}}.new self
     end
 
     include TelegramBot::CmdHandler
 
     getter self_id : Int64
-    getter handlers = Hash(Symbol, Handler).new
-    getter callbacks = Hash(Symbol, Callback).new
-    getter commanders = Hash(Symbol, Commander).new
+    getter handlers = Hash(String, Handler).new
+    getter callbacks = Hash(String, Callback).new
+    getter commanders = Hash(String, Commander).new
 
     def initialize(username, token, logger)
       super(username, token, logger: logger)
@@ -39,46 +48,46 @@ module Policr
       me = get_me || raise Exception.new("Failed to get bot data")
       @self_id = me["id"].as_i64
 
-      register :user_join, UserJoinHandler
-      register :bot_join, BotJoinHandler
-      register :self_join, SelfJoinHandler
-      register :left_group, LeftGroupHandler
-      register :unverified_message, UnverifiedMessageHandler
-      register :from_setting, FromSettingHandler
-      register :welcome_setting, WelcomeSettingHandler
-      register :torture_time_setting, TortureTimeSettingHandler
-      register :custom, CustomHandler
-      register :halal_message, HalalMessageHandler
+      midreg UserJoinHandler
+      midreg BotJoinHandler
+      midreg SelfJoinHandler
+      midreg LeftGroupHandler
+      midreg UnverifiedMessageHandler
+      midreg FromSettingHandler
+      midreg WelcomeSettingHandler
+      midreg TortureTimeSettingHandler
+      midreg CustomHandler
+      midreg HalalMessageHandler
 
-      register :torture, TortureCallback
-      register :baned_menu, BanedMenuCallback
-      register :bot_join, BotJoinCallback
-      register :self_join, SelfJoinCallback
-      register :from, FromCallback
-      register :after_event, AfterEventCallback
-      register :torture_time, TortureTimeCallback
-      register :custom, CustomCallback
-      register :settings, SettingsCallback
+      midreg TortureCallback
+      midreg BanedMenuCallback
+      midreg BotJoinCallback
+      midreg SelfJoinCallback
+      midreg FromCallback
+      midreg AfterEventCallback
+      midreg TortureTimeCallback
+      midreg CustomCallback
+      midreg SettingsCallback
 
-      register :start, StartCommander
-      register :ping, PingCommander
-      register :from, FromCommander
-      register :welcome, WelcomeCommander
-      register :enable_examine, EnableExamineCommander
-      register :disable_examine, DisableExamineCommander
-      register :enable_from, EnableFromCommander
-      register :disable_from, DisableFromCommander
-      register :torture_time, TortureTimeCommander
-      register :trust_admin, TrustAdminCommander
-      register :distrust_admin, DistrustAdminCommander
-      register :manageable, ManageableCommander
-      register :unmanageable, UnmanageableCommander
-      register :clean_mode, EnableCleanModeCommander
-      register :record_mode, EnableRecordModeCommander
-      register :custom, CustomCommander
-      register :token, TokenCommander
-      register :report, ReportCommander
-      register :settings, SettingsCommander
+      midreg StartCommander
+      midreg PingCommander
+      midreg FromCommander
+      midreg WelcomeCommander
+      midreg EnableExamineCommander
+      midreg DisableExamineCommander
+      midreg EnableFromCommander
+      midreg DisableFromCommander
+      midreg TortureTimeCommander
+      midreg TrustAdminCommander
+      midreg DistrustAdminCommander
+      midreg ManageableCommander
+      midreg UnmanageableCommander
+      midreg EnableCleanModeCommander
+      midreg EnableRecordModeCommander
+      midreg CustomCommander
+      midreg TokenCommander
+      midreg ReportCommander
+      midreg SettingsCommander
 
       commanders.each do |_, command|
         cmd command.name do |msg|

@@ -65,10 +65,8 @@ module Policr
     end
 
     def create_markup(chat_id)
-      if (commander = bot.commanders[:settings]?) && (commander.is_a?(SettingsCommander))
+      midcall SettingsCommander do
         commander.create_markup(chat_id)
-      else
-        Markup.new
       end
     end
   end
