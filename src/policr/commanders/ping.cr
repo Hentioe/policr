@@ -5,7 +5,8 @@ module Policr
     end
 
     def handle(msg)
-      bot.reply msg, "pong"
+      spawn bot.delete_message msg.chat.id, msg.message_id
+      bot.send_message msg.chat.id, "pong"
     end
   end
 end
