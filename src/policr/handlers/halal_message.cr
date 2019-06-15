@@ -46,7 +46,7 @@ module Policr
       text = t("halal.found")
       sended_msg = bot.reply msg, text
 
-      if sended_msg && (join_user_handler = bot.handlers[:join_user]?) && join_user_handler.is_a?(JoinUserHandler)
+      if sended_msg && (join_user_handler = bot.handlers[:user_join]?) && join_user_handler.is_a?(UserJoinHandler)
         begin
           bot.kick_chat_member(msg.chat.id, member.id)
           member_id = member.id

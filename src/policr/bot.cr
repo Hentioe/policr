@@ -39,8 +39,8 @@ module Policr
       me = get_me || raise Exception.new("Failed to get bot data")
       @self_id = me["id"].as_i64
 
-      register :join_user, JoinUserHandler
-      register :join_bot, JoinBotHandler
+      register :user_join, UserJoinHandler
+      register :bot_join, BotJoinHandler
       register :left_group, LeftGroupHandler
       register :unverified_message, UnverifiedMessageHandler
       register :from_setting, FromSettingHandler

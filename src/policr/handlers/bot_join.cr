@@ -1,5 +1,5 @@
 module Policr
-  class JoinBotHandler < Handler
+  class BotJoinHandler < Handler
     alias VerifyStatus = Cache::VerifyStatus
 
     def match(msg)
