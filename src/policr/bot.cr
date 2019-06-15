@@ -41,6 +41,7 @@ module Policr
 
       register :user_join, UserJoinHandler
       register :bot_join, BotJoinHandler
+      register :self_join, SelfJoinHandler
       register :left_group, LeftGroupHandler
       register :unverified_message, UnverifiedMessageHandler
       register :from_setting, FromSettingHandler
@@ -52,6 +53,7 @@ module Policr
       register :torture, TortureCallback
       register :baned_menu, BanedMenuCallback
       register :bot_join, BotJoinCallback
+      register :self_join, SelfJoinCallback
       register :from, FromCallback
       register :after_event, AfterEventCallback
       register :torture_time, TortureTimeCallback

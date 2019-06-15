@@ -12,7 +12,7 @@ module Policr
     def handle(msg)
       chat_id = msg.chat.id
 
-      if (members = msg.new_chat_members) && (halal_message_handler = bot.handlers[:halal_message]?) && halal_message_handler.is_a?(HalalMessageHandler)
+      if members = msg.new_chat_members
         members.select { |m| m.is_bot == false }.each do |member|
           # 管理员拉入，放行
           if (user = msg.from) && (user.id != member.id) && bot.is_admin?(msg.chat.id, user.id)
@@ -25,7 +25,8 @@ module Policr
           Cache.associate_join_msg(member.id, msg.chat.id, msg.message_id)
           # 判断清真
           name = bot.display_name(member)
-          if halal_message_handler.is_halal(name)
+
+          if (halal_message_handler = bot.handlers[:halal_message]?) && halal_message_handler.is_a?(HalalMessageHandler) && halal_message_handler.is_halal(name)
             halal_message_handler.kick_halal_with_receipt(msg, member)
           else
             start_torture(msg, member)
