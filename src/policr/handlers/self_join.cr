@@ -28,11 +28,11 @@ module Policr
                 t "add_to_group.from_user", user_data
               end
             sended_msg = bot.send_message chat_id, text, reply_markup: markup, parse_mode: "markdown", disable_web_page_preview: true
-            if tmp_msg = send_message
+            if tmp_msg = sended_msg
               message_id = tmp_msg.message_id
               # 自动离开定时任务
               Schedule.after((60*30).seconds) {
-                unless bot.is_admin?(chat_id, bot.self_id) # 仍然没有管理员权限
+                unless bot.is_admin?(chat_id, bot.self_id.to_i32) # 仍然没有管理员权限
                   bot.delete_message chat_id, message_id
                   bot.leave_chat chat_id
                 end
