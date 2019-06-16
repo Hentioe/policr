@@ -1,5 +1,5 @@
 module Policr
-  abstract class Captcha
+  abstract class Verification
     getter chat_id : Int64
     getter msg_id : Int32
 
@@ -9,9 +9,9 @@ module Policr
     # 生成问题/答案
     abstract def make
 
-    macro make(proc)
+    macro make
       def make
-        data = {{proc}}.call
+        data = {{yield}}
         storage
         data
       end

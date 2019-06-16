@@ -1,6 +1,6 @@
 module Policr
-  class DefaultCaptcha < Captcha
-    make ->{
+  class DefaultVerification < Verification
+    make do
       {
         1,
         t("questions.title"),
@@ -9,7 +9,7 @@ module Policr
           t("questions.answer_2"),
         ],
       }
-    }
+    end
 
     def true_index
       1

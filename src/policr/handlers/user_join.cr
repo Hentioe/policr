@@ -74,17 +74,17 @@ module Policr
       catpcha_data =
         if DB.custom chat_id
           # 自定义验证
-          CustomCaptcha.new(**params).make
+          CustomVerification.new(**params).make
         elsif DB.dynamic? chat_id
           # 动态验证
-          DynamicCaptcha.new(**params).make
+          DynamicVerification.new(**params).make
         elsif Cache.get_images.size >= 3 && DB.enabled_image?(chat_id)
           send_image = true
           # 图片验证
-          ImageCaptcha.new(**params).make
+          ImageVerification.new(**params).make
         else
           # 默认验证
-          DefaultCaptcha.new(**params).make
+          DefaultVerification.new(**params).make
         end
 
       _, title, answers = catpcha_data

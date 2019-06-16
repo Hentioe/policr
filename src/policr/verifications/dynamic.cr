@@ -1,6 +1,6 @@
 module Policr
-  class DynamicCaptcha < Captcha
-    make ->{
+  class DynamicVerification < Verification
+    make do
       ln = Random.rand(9) + 1
       rn = Random.rand(9) + 1
       {
@@ -16,7 +16,7 @@ module Policr
           (ln + rn).to_s,
         ],
       }
-    }
+    end
 
     def true_index
       3

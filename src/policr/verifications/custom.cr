@@ -1,11 +1,11 @@
 module Policr
-  class CustomCaptcha < Captcha
+  class CustomVerification < Verification
     @content : Tuple(Int32, String, Array(String))?
 
-    make ->{
+    make do
       @content = DB.custom(@chat_id)
       @content || raise not_conent
-    }
+    end
 
     def true_index
       content = @content || raise not_conent

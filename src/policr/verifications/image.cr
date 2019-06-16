@@ -1,6 +1,6 @@
 module Policr
-  class ImageCaptcha < Captcha
-    make ->{
+  class ImageVerification < Verification
+    make do
       temp_images = Cache.get_images.clone
       true_image_index = Random.rand(0...temp_images.size)
       true_image = temp_images.delete_at true_image_index
@@ -18,7 +18,7 @@ module Policr
           true_image.random_file,
         ],
       }
-    }
+    end
 
     def true_index
       3
