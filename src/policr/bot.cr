@@ -13,17 +13,9 @@ module Policr
 
   class Bot < TelegramBot::Bot
     private macro midreg(cls)
-      %k = ""
-      {% for c, index in cls.stringify.chars %}
-        {% if index != 0 && c.stringify =~ /[A-Z]/ %}
-          %k += "_" + {{c}}
-        {% else %}
-          %k += {{c}}
-        {% end %}
-      {% end %}
-      %k = %k.downcase.gsub(/(_handler|_commander|_callback)/, "")
       {{ cls_name = cls.stringify }}
-      %m =
+      {{ key = cls_name.underscore.gsub(/(_handler|_commander|_callback)/, "") }}
+      %mid =
       {% if cls_name.ends_with?("Handler") %}
         handlers
       {% elsif cls_name.ends_with?("Commander") %}
@@ -31,8 +23,7 @@ module Policr
       {% elsif cls_name.ends_with?("Callback") %}
         callbacks
       {% end %}
-
-      %m[%k] = {{cls}}.new self
+      %mid[{{key}}] = {{cls}}.new self
     end
 
     include TelegramBot::CmdHandler
