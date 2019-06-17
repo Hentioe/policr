@@ -6,7 +6,11 @@ module Policr
 
     def handle(msg)
       spawn bot.delete_message msg.chat.id, msg.message_id
-      bot.send_message msg.chat.id, "pong"
+      sended_msg = bot.send_message msg.chat.id, "pong"
+      if sended_msg
+        tmp_msg = sended_msg
+        Schedule.after(15.seconds) { bot.delete_message msg.chat.id, tmp_msg.message_id }
+      end
     end
   end
 end
