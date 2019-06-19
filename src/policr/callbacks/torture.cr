@@ -16,8 +16,12 @@ module Policr
       target_user_id = target_id.to_i
       message_id = msg.message_id
 
-      reply_msg = msg.reply_to_message || raise Exception.new "Did not get the reply message"
-      join_msg_id = reply_msg.message_id
+      join_msg_id =
+        if reply_msg = msg.reply_to_message
+          reply_msg.message_id
+        else
+          nil
+        end
 
       if chooese_i <= 0 # 管理员菜单
 
@@ -27,7 +31,7 @@ module Policr
           when 0
             passed(query, chat_id, target_user_id, target_username, message_id, admin: true, photo: is_photo, reply_id: join_msg_id)
           when -1
-            failed(chat_id, message_id, target_user_id, target_username, admin: true, photo: is_photo, reply_id: reply_msg.message_id)
+            failed(chat_id, message_id, target_user_id, target_username, admin: true, photo: is_photo, reply_id: join_msg_id)
           end
         else
           bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
@@ -40,7 +44,7 @@ module Policr
         end
 
         true_index =
-          if index = DB.get_true_index(chat_id, reply_msg.message_id)
+          if index = DB.get_true_index(chat_id, join_msg_id)
             index
           else
             raise Exception.new "Did not get the true index"
@@ -51,7 +55,7 @@ module Policr
           unless status
             midcall UserJoinHandler do
               spawn bot.delete_message chat_id, message_id
-              handler.promptly_torture chat_id, reply_msg.message_id, target_user_id, target_username, re: true
+              handler.promptly_torture chat_id, join_msg_id, target_user_id, target_username, re: true
               return
             end
           end
@@ -60,7 +64,7 @@ module Policr
         else # 未通过验证
           bot.log "Username '#{target_username}' did not pass verification"
           bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)
-          failed(chat_id, message_id, target_user_id, target_username, photo: is_photo, reply_id: reply_msg.message_id)
+          failed(chat_id, message_id, target_user_id, target_username, photo: is_photo, reply_id: join_msg_id)
         end
       end
     end

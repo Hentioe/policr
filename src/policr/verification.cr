@@ -1,7 +1,7 @@
 module Policr
   abstract class Verification
     getter chat_id : Int64
-    getter msg_id : Int32
+    getter msg_id : Int32?
 
     def initialize(@chat_id, @msg_id)
     end

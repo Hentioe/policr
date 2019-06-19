@@ -26,6 +26,12 @@ module Policr
       %mid[{{key}}] = {{cls}}.new self
     end
 
+    private macro regall(cls_list)
+      {% for cls in cls_list %}
+        midreg {{cls}}
+      {% end %}
+    end
+
     include TelegramBot::CmdHandler
 
     getter self_id : Int64
@@ -39,46 +45,55 @@ module Policr
       me = get_me || raise Exception.new("Failed to get bot data")
       @self_id = me["id"].as_i64
 
-      midreg UserJoinHandler
-      midreg BotJoinHandler
-      midreg SelfJoinHandler
-      midreg LeftGroupHandler
-      midreg UnverifiedMessageHandler
-      midreg FromSettingHandler
-      midreg WelcomeSettingHandler
-      midreg TortureTimeSettingHandler
-      midreg CustomHandler
-      midreg HalalMessageHandler
+      # 注册消息处理模块
+      regall [
+        UserJoinHandler,
+        BotJoinHandler,
+        SelfJoinHandler,
+        LeftGroupHandler,
+        UnverifiedMessageHandler,
+        FromSettingHandler,
+        WelcomeSettingHandler,
+        TortureTimeSettingHandler,
+        CustomHandler,
+        HalalMessageHandler,
+      ]
 
-      midreg TortureCallback
-      midreg BanedMenuCallback
-      midreg BotJoinCallback
-      midreg SelfJoinCallback
-      midreg FromCallback
-      midreg AfterEventCallback
-      midreg TortureTimeCallback
-      midreg CustomCallback
-      midreg SettingsCallback
+      # 注册回调模块
+      regall [
+        TortureCallback,
+        BanedMenuCallback,
+        BotJoinCallback,
+        SelfJoinCallback,
+        FromCallback,
+        AfterEventCallback,
+        TortureTimeCallback,
+        CustomCallback,
+        SettingsCallback,
+      ]
 
-      midreg StartCommander
-      midreg PingCommander
-      midreg FromCommander
-      midreg WelcomeCommander
-      midreg EnableExamineCommander
-      midreg DisableExamineCommander
-      midreg EnableFromCommander
-      midreg DisableFromCommander
-      midreg TortureTimeCommander
-      midreg TrustAdminCommander
-      midreg DistrustAdminCommander
-      midreg ManageableCommander
-      midreg UnmanageableCommander
-      midreg EnableCleanModeCommander
-      midreg EnableRecordModeCommander
-      midreg CustomCommander
-      midreg TokenCommander
-      midreg ReportCommander
-      midreg SettingsCommander
+      # 注册指令模块
+      regall [
+        StartCommander,
+        PingCommander,
+        FromCommander,
+        WelcomeCommander,
+        EnableExamineCommander,
+        DisableExamineCommander,
+        EnableFromCommander,
+        DisableFromCommander,
+        TortureTimeCommander,
+        TrustAdminCommander,
+        DistrustAdminCommander,
+        ManageableCommander,
+        UnmanageableCommander,
+        EnableCleanModeCommander,
+        EnableRecordModeCommander,
+        CustomCommander,
+        TokenCommander,
+        ReportCommander,
+        SettingsCommander,
+      ]
 
       commanders.each do |_, command|
         cmd command.name do |msg|
