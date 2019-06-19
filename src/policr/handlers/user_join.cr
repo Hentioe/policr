@@ -68,24 +68,26 @@ module Policr
     def promptly_torture(chat_id, msg_id, member_id, username, re = false)
       Cache.verify_init(member_id)
 
-      params = {chat_id: chat_id, msg_id: msg_id}
+      params = {chat_id: chat_id}
 
       send_image = false
-      catpcha_data =
+      verification =
         if DB.custom chat_id
           # 自定义验证
-          CustomVerification.new(**params).make
+          CustomVerification.new(**params)
         elsif DB.dynamic? chat_id
           # 动态验证
-          DynamicVerification.new(**params).make
+          DynamicVerification.new(**params)
         elsif Cache.get_images.size >= 3 && DB.enabled_image?(chat_id)
           send_image = true
           # 图片验证
-          ImageVerification.new(**params).make
+          ImageVerification.new(**params)
         else
           # 默认验证
-          DefaultVerification.new(**params).make
+          DefaultVerification.new(**params)
         end
+
+      catpcha_data = verification.make
 
       _, title, answers = catpcha_data
 
@@ -130,6 +132,9 @@ module Policr
         else
           bot.send_message(chat_id, question, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
         end
+      if sended_msg
+        verification.storage(sended_msg.message_id)
+      end
       ban_task = ->(message_id : Int32) {
         if Cache.verify?(member_id) == VerifyStatus::Init
           bot.log "User '#{username}' torture time expired and has been banned"
