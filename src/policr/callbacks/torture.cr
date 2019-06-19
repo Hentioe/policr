@@ -47,7 +47,8 @@ module Policr
           if index = DB.get_true_index(chat_id, join_msg_id)
             index
           else
-            raise Exception.new "Did not get the true index"
+            bot.log "Did not get the true index"
+            chooese_i
           end
 
         if chooese_i == true_index # 通过验证
