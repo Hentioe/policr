@@ -93,6 +93,7 @@ module Policr
         TokenCommander,
         ReportCommander,
         SettingsCommander,
+        StepCommander
       ]
 
       commanders.each do |_, command|
