@@ -66,7 +66,7 @@ module Policr
     end
 
     def promptly_torture(chat_id, msg_id, member_id, username, re = false)
-      Cache.verify_init(member_id)
+      Cache.verify_init(chat_id, member_id) unless re
 
       params = {chat_id: chat_id}
 
@@ -136,9 +136,9 @@ module Policr
         verification.storage(sended_msg.message_id)
       end
       ban_task = ->(message_id : Int32) {
-        if Cache.verify?(member_id) == VerifyStatus::Init
+        if Cache.verify?(chat_id, member_id) == VerifyStatus::Init
           bot.log "User '#{username}' torture time expired and has been banned"
-          Cache.verify_slowed(member_id)
+          Cache.verify_slowed(chat_id, member_id)
           failed(chat_id, message_id, member_id, username, timeout: true, photo: send_image, reply_id: msg_id)
         end
       }
@@ -151,7 +151,7 @@ module Policr
     end
 
     def failed(chat_id, message_id, user_id, username, admin = false, timeout = false, photo = false, reply_id : Int32? = nil)
-      Cache.verify_status_clear user_id
+      Cache.verify_status_clear chat_id, user_id
       bot.log "Username '#{username}' has not been verified and has been banned"
       begin
         bot.kick_chat_member(chat_id, user_id)

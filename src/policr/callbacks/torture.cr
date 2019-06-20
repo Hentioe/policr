@@ -52,23 +52,25 @@ module Policr
           end
 
         if chooese_i == true_index # 通过验证
-          status = Cache.verify?(target_user_id)
+          status = Cache.verify?(chat_id, target_user_id)
           unless status
+            Cache.verify_init chat_id, target_user_id
             midcall UserJoinHandler do
               spawn bot.delete_message chat_id, message_id
               handler.promptly_torture chat_id, join_msg_id, target_user_id, target_username, re: true
               return
             end
           end
+          passed = ->{
+            passed(query, chat_id, target_user_id,
+              target_username, message_id,
+              photo: is_photo, reply_id: join_msg_id)
+          }
           case status
           when VerifyStatus::Init
-            passed = ->{
-              passed(query, chat_id, target_user_id,
-                target_username, message_id,
-                photo: is_photo, reply_id: join_msg_id)
-            }
             if DB.fault_tolerance?(chat_id) && !DB.custom(chat_id) # 容错模式处理
               if DB.error_count(chat_id, target_user_id) > 0       # 继续验证
+                Cache.verify_next chat_id, target_user_id          # 更新验证状态避免超时
                 DB.destory_error chat_id, target_user_id           # 销毁错误记录
                 midcall UserJoinHandler do
                   spawn bot.delete_message chat_id, message_id
@@ -77,6 +79,18 @@ module Policr
                 end
               else
                 passed.call
+              end
+            else
+              passed.call
+            end
+          when VerifyStatus::Next
+            if DB.error_count(chat_id, target_user_id) > 0 # 继续验证
+              Cache.verify_next chat_id, target_user_id    # 更新验证状态避免超时
+              DB.destory_error chat_id, target_user_id     # 销毁错误记录
+              midcall UserJoinHandler do
+                spawn bot.delete_message chat_id, message_id
+                handler.promptly_torture chat_id, join_msg_id, target_user_id, target_username, re: true
+                return
               end
             else
               passed.call
@@ -98,8 +112,9 @@ module Policr
 
     def fault_tolerance(chat_id, user_id, message_id, query_id, username, join_msg_id, is_photo)
       count = DB.error_count chat_id, user_id
-      if count == 0               # 继续验证
-        DB.error chat_id, user_id # 错误次数加一
+      if count == 0                        # 继续验证
+        Cache.verify_next chat_id, user_id # 更新验证状态避免超时
+        DB.error chat_id, user_id          # 错误次数加一
         midcall UserJoinHandler do
           spawn bot.delete_message chat_id, message_id
           handler.promptly_torture chat_id, join_msg_id, user_id, username, re: true
@@ -113,8 +128,8 @@ module Policr
     end
 
     def passed(query, chat_id, target_user_id, target_username, message_id, admin = false, photo = false, reply_id : Int32? = nil)
-      Cache.verify_passed target_user_id       # 更新验证状态
-      DB.destory_error chat_id, target_user_id # 销毁错误记录
+      Cache.verify_passed chat_id, target_user_id # 更新验证状态
+      DB.destory_error chat_id, target_user_id    # 销毁错误记录
       bot.log "Username '#{target_username}' passed verification"
       # 异步调用
       spawn bot.answer_callback_query(query.id, text: t("pass_alert")) unless admin
