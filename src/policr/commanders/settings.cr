@@ -32,6 +32,8 @@ module Policr
           DB.enabled_from?(chat_id) ? SELECTED : UNSELECTED
         when "welcome"
           DB.enabled_welcome?(chat_id) ? SELECTED : UNSELECTED
+        when "fault_tolerance"
+          DB.fault_tolerance?(chat_id) ? SELECTED : UNSELECTED
         else
           UNSELECTED
         end
@@ -43,6 +45,7 @@ module Policr
       markup << def_toggle "record_mode"
       markup << def_toggle "enable_from"
       markup << def_toggle "welcome"
+      markup << def_toggle "fault_tolerance"
 
       markup
     end

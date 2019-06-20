@@ -315,4 +315,24 @@ module Policr::DB
       index.to_i
     end
   end
+
+  FAULT_TOLERANCE = "fault_tolerance"
+
+  def fault_tolerance(chat_id)
+    if db = @@db
+      db.put "#{FAULT_TOLERANCE}_#{chat_id}", 1
+    end
+  end
+
+  def disable_fault_tolerance(chat_id)
+    if db = @@db
+      db.delete "#{FAULT_TOLERANCE}_#{chat_id}"
+    end
+  end
+
+  def fault_tolerance?(chat_id)
+    if (db = @@db) && (status = db.get?("#{FAULT_TOLERANCE}_#{chat_id}"))
+      status.to_i
+    end
+  end
 end

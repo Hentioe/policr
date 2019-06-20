@@ -27,6 +27,7 @@ settings:
   record_mode: "记录模式"
   enable_from: "来源调查"
   welcome: "欢迎消息"
+  fault_tolerance: "容错模式"
   selected: "选中"
   unselected: "取消"
   not_from: "请先使用 /from 指令进行设置。"

@@ -44,12 +44,12 @@ module Policr
         end
 
         true_index =
-        if index = DB.get_true_index(chat_id, msg.message_id)
-          index
-        else
-          bot.log "Did not get the true index"
-          chooese_i
-        end
+          if index = DB.get_true_index(chat_id, msg.message_id)
+            index
+          else
+            bot.log "Did not get the true index"
+            chooese_i
+          end
 
         if chooese_i == true_index # 通过验证
           status = Cache.verify?(target_user_id)
