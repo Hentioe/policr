@@ -60,18 +60,61 @@ module Policr
               return
             end
           end
-          passed(query, chat_id, target_user_id, target_username, message_id, photo: is_photo, reply_id: join_msg_id) if status == VerifyStatus::Init
-          slow_with_receipt(query, chat_id, target_user_id, target_username, message_id) if status == VerifyStatus::Slow
-        else # 未通过验证
-          bot.log "Username '#{target_username}' did not pass verification"
-          bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)
-          failed(chat_id, message_id, target_user_id, target_username, photo: is_photo, reply_id: join_msg_id)
+          case status
+          when VerifyStatus::Init
+            passed = ->{
+              passed(query, chat_id, target_user_id,
+                target_username, message_id,
+                photo: is_photo, reply_id: join_msg_id)
+            }
+            if DB.fault_tolerance?(chat_id) && !DB.custom(chat_id) # 容错模式处理
+              if DB.error_count(chat_id, target_user_id) > 0       # 继续验证
+                DB.destory_error chat_id, target_user_id           # 销毁错误记录
+                midcall UserJoinHandler do
+                  spawn bot.delete_message chat_id, message_id
+                  handler.promptly_torture chat_id, join_msg_id, target_user_id, target_username, re: true
+                  return
+                end
+              else
+                passed.call
+              end
+            else
+              passed.call
+            end
+          when VerifyStatus::Slow
+            slow_with_receipt(query, chat_id, target_user_id, target_username, message_id)
+          end
+        else                                                     # 未通过验证
+          if DB.fault_tolerance?(chat_id) && !DB.custom(chat_id) # 容错模式处理
+            fault_tolerance chat_id, target_user_id, message_id, query.id, target_username, join_msg_id, is_photo
+          else
+            bot.log "Username '#{target_username}' did not pass verification"
+            bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)
+            failed(chat_id, message_id, target_user_id, target_username, photo: is_photo, reply_id: join_msg_id)
+          end
         end
       end
     end
 
+    def fault_tolerance(chat_id, user_id, message_id, query_id, username, join_msg_id, is_photo)
+      count = DB.error_count chat_id, user_id
+      if count == 0               # 继续验证
+        DB.error chat_id, user_id # 错误次数加一
+        midcall UserJoinHandler do
+          spawn bot.delete_message chat_id, message_id
+          handler.promptly_torture chat_id, join_msg_id, user_id, username, re: true
+          return
+        end
+      else # 验证失败
+        bot.log "User '#{user_id}' did not pass verification"
+        bot.answer_callback_query(query_id, text: t("no_pass_alert"), show_alert: true)
+        failed(chat_id, message_id, user_id, username, photo: is_photo, reply_id: join_msg_id)
+      end
+    end
+
     def passed(query, chat_id, target_user_id, target_username, message_id, admin = false, photo = false, reply_id : Int32? = nil)
-      Cache.verify_passed(target_user_id)
+      Cache.verify_passed target_user_id       # 更新验证状态
+      DB.destory_error chat_id, target_user_id # 销毁错误记录
       bot.log "Username '#{target_username}' passed verification"
       # 异步调用
       spawn bot.answer_callback_query(query.id, text: t("pass_alert")) unless admin
@@ -139,6 +182,7 @@ module Policr
     end
 
     def failed(chat_id, message_id, user_id, username, admin = false, timeout = false, photo = false, reply_id : Int32? = nil)
+      DB.destory_error chat_id, user_id # 销毁错误记录
       midcall UserJoinHandler do
         handler.failed(chat_id, message_id, user_id, username, admin: admin, timeout: timeout, photo: photo, reply_id: reply_id)
       end

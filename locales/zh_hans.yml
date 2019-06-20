@@ -32,6 +32,7 @@ settings:
   unselected: "取消"
   not_from: "请先使用 /from 指令进行设置。"
   not_welcome: "请先使用 /welcome 指令进行设置。"
+  fault_tolerance_not_supported: "容错模式暂时仅支持图片验证和动态验证。"
 invalid_callback: "( ×ω× ) 这副内联键盘已经失效了哦"
 setting_complete: "已完成设置。"
 questions:

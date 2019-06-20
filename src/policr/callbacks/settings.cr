@@ -49,7 +49,7 @@ module Policr
         bot.answer_callback_query(query.id)
       when "welcome"
         unless DB.get_welcome(chat_id)
-          bot.answer_callback_query(query.id, text: t("settings.not_welcome"))
+          bot.answer_callback_query(query.id, text: t("settings.not_welcome"), show_alert: true)
           return
         end
         selected = DB.enabled_welcome?(chat_id)
@@ -58,6 +58,10 @@ module Policr
         bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
         bot.answer_callback_query(query.id)
       when "fault_tolerance"
+        unless DB.dynamic?(chat_id) || DB.enabled_image?(chat_id)
+          bot.answer_callback_query(query.id, text: t("settings.fault_tolerance_not_supported"), show_alert: true)
+          return
+        end
         selected = DB.fault_tolerance?(chat_id)
         selected ? DB.disable_fault_tolerance(chat_id) : DB.fault_tolerance(chat_id)
         text = t "settings.desc", {last_change: def_change}
