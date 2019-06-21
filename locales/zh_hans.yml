@@ -34,7 +34,10 @@ settings:
   not_welcome: "请先使用 /welcome 指令进行设置。"
   fault_tolerance_not_supported: "容错模式暂时仅支持图片验证和动态验证。"
 step:
-  desc: "验证步骤实现中……"
+  desc: "此命令用以进一步定制容错模式。在这里您可以强制多次验证（哪怕第一次的验证结果已是正确）。还可以自定义通过验证的门槛，即调整正确率和验证次数。\n通过定制此功能，配合（多套）定制验证，可以达到形如入群考试，按合格成绩来决定是否通过的验证效果。"
+  force_multiple: "强制多次验证"
+  more_count_settings: "验证次数"
+  more_accuracy_settings: "正确率"
 invalid_callback: "( ×ω× ) 这副内联键盘已经失效了哦"
 setting_complete: "已完成设置。"
 questions:

@@ -13,8 +13,23 @@ module Policr
       end
     end
 
+    MORE_SYMBOL = "»"
+    SELECTED    = "■"
+    UNSELECTED  = "□"
+
     def create_markup(chat_id)
-      nil
+      btn = ->(text : String, name : String) {
+        Button.new(text: text, callback_data: "Step:#{name}")
+      }
+      force_multiple_symbol = ->{
+        DB.force_multiple?(chat_id) ? SELECTED : UNSELECTED
+      }
+      markup = Markup.new
+      markup << [btn.call("#{force_multiple_symbol.call} #{t("step.force_multiple")}", "force_multiple")]
+      markup << [btn.call("#{t("step.more_count_settings")} #{MORE_SYMBOL}", "more_count_settings"),
+                 btn.call("#{t("step.more_accuracy_settings")} #{MORE_SYMBOL}", "more_accuracy_settings")]
+
+      markup
     end
   end
 end

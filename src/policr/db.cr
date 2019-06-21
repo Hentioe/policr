@@ -359,4 +359,12 @@ module Policr::DB
       db.delete "#{ERROR_COUNT}_#{chat_id}_#{user_id}"
     end
   end
+
+  FORECE_MULTIPLE = "force_multiple"
+
+  def force_multiple?(chat_id)
+    if (db = @@db) && (status = db.get?("#{FORECE_MULTIPLE}_#{chat_id}"))
+      status.to_i == 1
+    end
+  end
 end
