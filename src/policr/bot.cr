@@ -143,16 +143,29 @@ module Policr
       has_permission?(chat_id, user_id, :admin)
     end
 
-    def has_permission?(chat_id, user_id, role)
-      user = get_chat_member(chat_id, user_id)
-      is_creator = user.status == "creator"
-      case role
-      when :creator
-        is_creator
-      when :admin
-        is_creator || user.status == "administrator"
-      else
-        false
+    def has_permission?(chat_id, user_id, role, dirty = true)
+      if admins = Cache.get_admins chat_id # 从缓存中获取管理员列表
+        tmp_filter_users = admins.select { |m| m.user.id == user_id }
+        noperm = tmp_filter_users.size == 0
+        status = noperm ? nil : tmp_filter_users[0].status
+
+        is_creator = status == "creator"
+        result = !noperm &&
+                 case role
+                 when :creator
+                   is_creator
+                 when :admin
+                   is_creator || status == "administrator"
+                 else
+                   false
+                 end
+
+        # 异步更新缓存
+        spawn { Cache.set_admins chat_id, get_chat_administrators(chat_id) } if dirty
+        result
+      else # 没有获得管理员列表，缓存并递归
+        Cache.set_admins chat_id, get_chat_administrators(chat_id)
+        has_permission?(chat_id, user_id, role, dirty: false)
       end
     end
 

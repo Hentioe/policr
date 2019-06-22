@@ -19,6 +19,8 @@ module Policr::Cache
   @@welcome_setting_msg = Set(Int32).new
   # 图片（验证）集列表
   @@image_list = Array(Image).new
+  # 缓存管理员列表
+  @@admins = Hash(Int64, Array(TelegramBot::ChatMember)).new
 
   def carving_torture_time_msg_sec(message_id)
     @@torture_time_msg[message_id] = TortureTimeType::Sec
@@ -117,5 +119,13 @@ module Policr::Cache
 
   def get_images
     @@image_list
+  end
+
+  def get_admins(chat_id)
+    @@admins[chat_id]?
+  end
+
+  def set_admins(chat_id, admins)
+    @@admins[chat_id] = admins
   end
 end
