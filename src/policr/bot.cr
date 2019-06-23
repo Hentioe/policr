@@ -78,17 +78,7 @@ module Policr
         PingCommander,
         FromCommander,
         WelcomeCommander,
-        EnableExamineCommander,
-        DisableExamineCommander,
-        EnableFromCommander,
-        DisableFromCommander,
         TortureTimeCommander,
-        TrustAdminCommander,
-        DistrustAdminCommander,
-        ManageableCommander,
-        UnmanageableCommander,
-        EnableCleanModeCommander,
-        EnableRecordModeCommander,
         CustomCommander,
         TokenCommander,
         ReportCommander,
@@ -150,15 +140,16 @@ module Policr
         status = noperm ? nil : tmp_filter_users[0].status
 
         is_creator = status == "creator"
-        result = !noperm &&
-                 case role
-                 when :creator
-                   is_creator
-                 when :admin
-                   is_creator || status == "administrator"
-                 else
-                   false
-                 end
+        result =
+          !noperm &&
+            case role
+            when :creator
+              is_creator
+            when :admin
+              is_creator || status == "administrator"
+            else
+              false
+            end
 
         # 异步更新缓存
         spawn { Cache.set_admins chat_id, get_chat_administrators(chat_id) } if dirty
