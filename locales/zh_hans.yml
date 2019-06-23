@@ -39,7 +39,7 @@ step:
   more_count_settings: "验证次数"
   more_accuracy_settings: "正确率"
 invalid_callback: "( ×ω× ) 这副内联键盘已经失效了哦"
-setting_complete: "已完成设置。"
+setting_complete: "已完成设置"
 questions:
   title: "你认为自己能不能进来？"
   answer_1: "是的，我觉得可以"
@@ -93,6 +93,7 @@ after_event:
   unban: "解除禁言"
   kick: "直接移除"
 torture:
+  time_too_short: "时间必须大于 %{min_sec} 秒"
   hint: "请[您](tg://user?id=%{user_id})在 %{torture_sec} 秒内确认「%{title}」以通过[验证](https://policr.bluerain.io#verification)"
   caption: "请[您](tg://user?id=%{user_id})在 %{torture_sec} 秒内告诉我，看到了什么（单选）？"
   caption_no_time: "请[您](tg://user?id=%{user_id})主动确认图中的内容以解除限制（单选）"

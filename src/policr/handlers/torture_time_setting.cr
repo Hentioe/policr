@@ -1,4 +1,6 @@
 module Policr
+  MIN_TORTURE_SEC = 30
+
   class TortureTimeSettingHandler < Handler
     @time_type : TortureTimeType?
     @text : String?
@@ -26,9 +28,15 @@ module Policr
                 text.to_i
               when TortureTimeType::Min
                 (60 * (text.to_f)).to_i
+              else
+                DEFAULT_TORTURE_SEC
               end
-        DB.set_torture_sec(msg.chat.id, sec)
-        bot.reply msg, t("setting_complete")
+        if sec > 0 && sec < MIN_TORTURE_SEC # 时间不合法
+          bot.reply msg, t("torture.time_too_short", {min_sec: MIN_TORTURE_SEC})
+        else
+          DB.set_torture_sec(msg.chat.id, sec)
+          bot.reply msg, t("setting_complete")
+        end
       end
     end
   end
