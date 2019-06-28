@@ -6,7 +6,7 @@ shards:
 
   ameba:
     github: veelenga/ameba
-    version: 0.9.2
+    version: 0.10.0
 
   base62:
     github: Sija/base62.cr
