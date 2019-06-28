@@ -1,7 +1,6 @@
 require "./policr/**"
 require "dotenv"
 require "i18n"
-require "benchmark"
 
 module Policr
   COMMIT     = {{ `git rev-parse --short HEAD`.stringify.strip }}
@@ -15,7 +14,7 @@ module Policr
     # 扫描图片集
     scan config.dpath
 
-    Dotenv.load! "configs/dev.secret.env" unless config.prod
+    Dotenv.load! "config/dev.secret.env" unless config.prod
     DB.connect config.dpath
 
     I18n.load_path += ["locales"]

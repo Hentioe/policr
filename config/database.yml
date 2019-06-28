@@ -1,0 +1,16 @@
+default: &default
+  host: .
+  adapter: sqlite3
+  local_time_zone_name: UTC
+
+dev:
+  <<: *default
+  db: policr.dev.data
+
+test:
+  <<: *default
+  db: policr.test.data
+
+prod:
+  <<: *default
+  db: policr.prod.data

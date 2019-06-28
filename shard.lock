@@ -12,6 +12,10 @@ shards:
     github: Sija/base62.cr
     version: 0.1.1
 
+  db:
+    github: crystal-lang/crystal-db
+    version: 0.5.1
+
   dotenv:
     github: gdotdesign/cr-dotenv
     version: 0.2.0
@@ -23,6 +27,22 @@ shards:
   i18n:
     github: TechMagister/i18n.cr
     version: 0.2.0
+
+  ifrit:
+    github: imdrasil/ifrit
+    version: 0.1.2
+
+  inflector:
+    github: phoffer/inflector.cr
+    version: 0.1.8
+
+  jennifer:
+    github: imdrasil/jennifer.cr
+    version: 0.7.1
+
+  jennifer_sqlite3_adapter:
+    github: imdrasil/jennifer_sqlite3_adapter
+    version: 0.1.0
 
   kemal:
     github: kemalcr/kemal
@@ -48,9 +68,17 @@ shards:
     github: maiha/rocksdb.cr
     version: 0.5.1
 
+  sam:
+    github: imdrasil/sam.cr
+    version: 0.3.0
+
   schedule:
     github: hugoabonizio/schedule.cr
     version: 0.2.1
+
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+    version: 0.12.0
 
   telegram_bot:
     github: Hentioe/telegram_bot

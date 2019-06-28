@@ -1,5 +1,5 @@
 name: policr
-version: 0.1.0-dev
+version: 0.1.1-dev
 
 authors:
   - Hentioe <me@bluerain.io>
@@ -8,7 +8,7 @@ targets:
   policr:
     main: src/policr.cr
 
-crystal: 0.28.0
+crystal: 0.29.0
 
 license: MIT
 
@@ -34,6 +34,13 @@ dependencies:
     github: Sija/ksuid.cr
   i18n:
     github: TechMagister/i18n.cr
+  jennifer:
+    github: imdrasil/jennifer.cr
+    version: "0.7.1"
+  sam:
+    github: imdrasil/sam.cr
+  jennifer_sqlite3_adapter:
+    github: imdrasil/jennifer_sqlite3_adapter
 
 development_dependencies:
   ameba:
