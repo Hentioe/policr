@@ -7,7 +7,7 @@ module Policr::DB
   @@db : RocksDB::DB?
 
   def connect(path)
-    @@db = RocksDB::DB.new("#{path}/rocks#data#policr")
+    @@db = RocksDB::DB.new("#{path}/rocksdb")
   end
 
   private def put(key, value)

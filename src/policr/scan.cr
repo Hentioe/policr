@@ -18,7 +18,7 @@ module Policr
   IGNORES = [".", ".."]
 
   def self.scan(path)
-    root = "#{path}/captcha#images"
+    root = "#{path}/images"
     return unless File.exists? root
     dir = Dir.new root
     dirs = dir.select { |f| !IGNORES.includes?(f) && File.directory?("#{root}/#{f}") }.map { |f| "#{root}/#{f}" }

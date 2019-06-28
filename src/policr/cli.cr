@@ -1,7 +1,7 @@
 require "admiral"
 
 module Policr::CLI
-  DEFAULT_DPATH = "."
+  DEFAULT_DPATH = "data"
   DEFAULT_PROD  = false
   DEFAULT_PORT  = 8080
 

@@ -8,7 +8,6 @@
 /sentry
 /policr
 /dev
-*.secret.env
+/config/*.secret.env
 
-/rocks#data#policr
-/captcha#images
+/data
