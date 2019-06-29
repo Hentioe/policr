@@ -22,4 +22,7 @@ VOLUME ["/data"]
 EXPOSE 8080
 
 
+ENV POLICR_ENV=prod
+
+
 ENTRYPOINT policr --prod --dpath /data -p 8080

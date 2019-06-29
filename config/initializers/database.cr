@@ -8,8 +8,9 @@ Jennifer::Config.configure do |conf|
   conf.local_time_zone_name = "UTC"
 
   env = ENV["POLICR_ENV"]? || "dev"
-
-  conf.db = "#{Policr::CLI::Config.instance.dpath}/#{env}.db"
+  db_path = "#{Policr::CLI::Config.instance.dpath}/#{env}.db"
+  puts db_path
+  conf.db = db_path
 
   conf.logger.level = Logger::DEBUG
 end

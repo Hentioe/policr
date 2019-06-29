@@ -26,12 +26,13 @@ describe Policr do
   end
 
   it "crud" do
-    author_id = 123456789.to_i64
-    post_id = 33
-    target_id = 987654321.to_i64
+    author_id = 340396281.to_i64
+    post_id = 29
+    target_id = 871769395.to_i64
     reason = Reason::Spam.value
     status = ReportStatus::Begin.value
     role = UserRole::Creator.value
+    from_chat = -1001301664514.to_i64
 
     r1 = Model::Report.create({
       author_id: author_id,
@@ -40,6 +41,7 @@ describe Policr do
       reason:    reason,
       status:    status,
       role:      role,
+      from_chat: from_chat,
     })
     r1.should be_truthy
 
