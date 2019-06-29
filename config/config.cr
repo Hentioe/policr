@@ -1,2 +1,2 @@
 require "./initializers/**"
-require "../src/policr/models/*"
+require "../src/models/*"

@@ -1,4 +1,5 @@
 require "./policr/**"
+require "../config/*"
 require "dotenv"
 require "i18n"
 

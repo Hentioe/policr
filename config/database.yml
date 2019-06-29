@@ -5,12 +5,12 @@ default: &default
 
 dev:
   <<: *default
-  db: policr.dev.data
+  db: data/dev.db
 
 test:
   <<: *default
-  db: policr.test.data
+  db: data/test.db
 
 prod:
   <<: *default
-  db: policr.prod.data
+  db: data/prod.db
