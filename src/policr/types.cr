@@ -4,11 +4,14 @@ module Policr
   end
 
   enum ReportReason
-    Spam
-    Halal
+    Unknown; Spam; Halal
   end
 
   enum ReportStatus
-    Begin; Reject; Accept
+    Unknown; Begin; Reject; Accept; Unban
+  end
+
+  enum ReportUserRole
+    Unknown; Creator; Admin; TrustedAdmin; Member
   end
 end

@@ -84,8 +84,8 @@ pass_by_admin: "Σ(\\*ﾟдﾟﾉ)ﾉ [这家伙](tg://user?id=%{user_id})走后
 pass_slow_alert: "验证通过，但是晚了一点点，再去试试？"
 pass_slow_receipt: "(´ﾟдﾟ`) TA通过了验证，但是手慢了那么一点点，再给TA一次机会……"
 report:
-  reply_message: "已封禁[此人](tg://user?id=%{user_id})，请继续选择举报原因入库黑名单"
-  mass_ad: "恶意群发广告"
+  admin_reply: "举报开始，请选择具体原因。举报将在完成选择以后被创建，并进入[黑名单公投频道](https://t.me/policr_blacklist_voting)进行投票。如果您决定放弃举报，则不需要做任何选择。\n\n注意：在完成举报前请不要删除被举报消息。"
+  mass_ad: "恶意散播广告"
   unident_halal: "未识别的清真"
 after_event:
   tip: "[事后审核](https://policr.bluerain.io#afterwards)，请主动完成验证以解除限制。"

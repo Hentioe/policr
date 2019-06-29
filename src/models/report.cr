@@ -9,6 +9,8 @@ module Policr::Model
       target_id: Int64,
       reason: Int32,
       status: Int32,
+      role: Int32,
+      from_chat: Int32?,
       created_at: Time?,
       updated_at: Time?
     )

@@ -3,6 +3,7 @@ require "./spec_helper"
 alias Model = Policr::Model
 alias Reason = Policr::ReportReason
 alias ReportStatus = Policr::ReportStatus
+alias UserRole = Policr::ReportUserRole
 
 describe Policr do
   it "arabic characters match" do
@@ -30,8 +31,16 @@ describe Policr do
     target_id = 987654321.to_i64
     reason = Reason::Spam.value
     status = ReportStatus::Begin.value
+    role = UserRole::Creator.value
 
-    r1 = Model::Report.create({author_id: author_id, post_id: post_id, target_id: target_id, reason: reason, status: status})
+    r1 = Model::Report.create({
+      author_id: author_id,
+      post_id:   post_id,
+      target_id: target_id,
+      reason:    reason,
+      status:    status,
+      role:      role,
+    })
     r1.should be_truthy
 
     r2 = Model::Report.delete(r1.id)
