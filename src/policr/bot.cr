@@ -39,8 +39,13 @@ module Policr
     getter callbacks = Hash(String, Callback).new
     getter commanders = Hash(String, Commander).new
 
-    def initialize(username, token, logger)
+    getter snapshot_channel : String
+    getter voting_channel : String
+
+    def initialize(username, token, logger, snapshot_channel, voting_channel)
       super(username, token, logger: logger)
+      @snapshot_channel = snapshot_channel
+      @voting_channel = voting_channel
 
       me = get_me || raise Exception.new("Failed to get bot data")
       @self_id = me["id"].as_i64
@@ -70,6 +75,7 @@ module Policr
         TortureTimeCallback,
         CustomCallback,
         SettingsCallback,
+        ReportCallback,
       ]
 
       # 注册指令模块

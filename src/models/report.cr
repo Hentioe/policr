@@ -10,7 +10,7 @@ module Policr::Model
       reason: Int32,
       status: Int32,
       role: Int32,
-      from_chat: Int32?,
+      from_chat: Int64?,
       created_at: Time?,
       updated_at: Time?
     )

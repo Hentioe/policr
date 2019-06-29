@@ -28,8 +28,16 @@ module Policr
 
     username = ENV["#{ENV_PREFIX}_USERNAME"]
     token = ENV["#{ENV_PREFIX}_TOKEN"]
+    snapshot_channel = ENV["#{ENV_PREFIX}_SNAPSHOT_CHANNEL"]
+    voting_channel = ENV["#{ENV_PREFIX}_VOTING_CHANNEL"]
 
-    bot = Bot.new(username, token, logger)
+    bot = Bot.new(
+      username,
+      token,
+      logger,
+      snapshot_channel,
+      voting_channel
+    )
     spawn do
       logger.info "start web"
       Web.start logger, bot
