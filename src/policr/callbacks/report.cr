@@ -31,7 +31,8 @@ module Policr
           message_id: target_msg_id
         )
       rescue e : TelegramBot::APIException
-        bot.answer_callback_query(query.id, text: "举报发起失败，这可能是因为你举报了不支持的消息类型。如果您认为这是一个功能故障，请进入交流群反馈。")
+        _, reason = bot.parse_error(e)
+        bot.answer_callback_query(query.id, text: "举报发起失败，原因：#{reason}")
         return
       end
 
@@ -55,17 +56,21 @@ module Policr
 
       # 生成举报并入库
       if snapshot_message
-        r = Model::Report.create(
-          {
-            author_id: from_user_id.to_i64,
-            post_id:   snapshot_message.message_id,
-            target_id: target_user_id.to_i64,
-            reason:    reason_value,
-            status:    Status::Begin.value,
-            role:      role.value,
-            from_chat: chat_id.to_i64,
-          }
-        )
+        begin
+          r = Model::Report.create!(
+            {
+              author_id: from_user_id.to_i64,
+              post_id:   snapshot_message.message_id,
+              target_id: target_user_id.to_i64,
+              reason:    reason_value,
+              status:    Status::Begin.value,
+              role:      role.value,
+              from_chat: chat_id.to_i64,
+            }
+          )
+        rescue e : Exception
+          bot.answer_callback_query(query.id, text: "举报发起失败，原因：#{e.message}")
+        end
       end
       # 生成投票
       if r
