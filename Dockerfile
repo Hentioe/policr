@@ -1,4 +1,4 @@
-FROM bluerain/policr:runtime
+FROM bluerain/policr:build
 
 
 ARG APP_HOME=/home/policr
