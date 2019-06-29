@@ -67,9 +67,9 @@ module Policr
               role:      role.value,
               from_chat: chat_id.to_i64,
             }
-          r = Model::Report.create!(data)
-        rescue e : Jennifer::RecordInvalid
           puts data.inspect
+          r = Model::Report.create!(data)
+        rescue e : Exception
           puts e.inspect
           bot.answer_callback_query(query.id, text: "举报入库失败，原因：#{e.message}")
         end
