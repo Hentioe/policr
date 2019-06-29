@@ -33,6 +33,8 @@ module Policr
     snapshot_channel = ENV["#{ENV_PREFIX}_SNAPSHOT_CHANNEL"]
     voting_channel = ENV["#{ENV_PREFIX}_VOTING_CHANNEL"]
 
+    test_db
+
     bot = Bot.new(
       username,
       token,
@@ -47,6 +49,28 @@ module Policr
     logger.info "start bot"
 
     bot.polling
+  end
+
+  def self.test_db
+    
+    author_id = 340396281.to_i64
+    post_id = 29
+    target_id = 871769395.to_i64
+    reason = 1
+    status = 1
+    role = 1
+    from_chat = -1001301664514.to_i64
+
+    r1 = Model::Report.create({
+      author_id: author_id,
+      post_id:   post_id,
+      target_id: target_id,
+      reason:    reason,
+      status:    status,
+      role:      role,
+      from_chat: from_chat,
+    })
+    puts "Created result: #{r1.inspect}"
   end
 end
 
