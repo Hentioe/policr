@@ -1,4 +1,7 @@
 require "./policr/**"
+
+Policr::CLI::Parser.run
+
 require "../config/*"
 require "dotenv"
 require "i18n"
@@ -9,7 +12,6 @@ module Policr
   ENV_PREFIX = "POLICR_BOT"
 
   def self.start
-    CLI::Parser.run
     config = CLI::Config.instance
 
     # 扫描图片集
