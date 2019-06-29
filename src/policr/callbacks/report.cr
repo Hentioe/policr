@@ -57,7 +57,7 @@ module Policr
       # 生成举报并入库
       if snapshot_message
         begin
-          r = Model::Report.create!(
+          data =
             {
               author_id: from_user_id.to_i64,
               post_id:   snapshot_message.message_id,
@@ -67,8 +67,9 @@ module Policr
               role:      role.value,
               from_chat: chat_id.to_i64,
             }
-          )
-        rescue e : Exception
+          r = Model::Report.create!(data)
+        rescue e : Jennifer::RecordInvalid
+          puts data.inspect
           puts e.inspect
           bot.answer_callback_query(query.id, text: "举报入库失败，原因：#{e.message}")
         end
