@@ -33,7 +33,7 @@ module Policr
     snapshot_channel = ENV["#{ENV_PREFIX}_SNAPSHOT_CHANNEL"]
     voting_channel = ENV["#{ENV_PREFIX}_VOTING_CHANNEL"]
 
-    test_db
+    # test_db
 
     bot = Bot.new(
       username,
