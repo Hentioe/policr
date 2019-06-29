@@ -69,7 +69,8 @@ module Policr
             }
           )
         rescue e : Exception
-          bot.answer_callback_query(query.id, text: "举报发起失败，原因：#{e.message}")
+          puts e.inspect
+          bot.answer_callback_query(query.id, text: "举报入库失败，原因：#{e.message}")
         end
       end
       # 生成投票
