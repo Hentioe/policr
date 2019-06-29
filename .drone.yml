@@ -8,6 +8,8 @@ pipeline:
     image: bluerain/policr:build
     commands:
       - shards --production
+      - mkdir data
+      - POLICR_ENV=test crystal sam.cr -- db:setup
       - POLICR_ENV=test crystal spec
 
   build:
