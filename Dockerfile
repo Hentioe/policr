@@ -4,7 +4,8 @@ FROM bluerain/policr:runtime
 ARG APP_HOME=/home/policr
 
 
-RUN ln -s "$APP_HOME/policr" /usr/local/bin/policr && \
+RUN mkdir "$APP_HOME" && \
+    ln -s "$APP_HOME/policr" /usr/local/bin/policr && \
     mkdir /data && \
     ln -s /data "$APP_HOME/data"
 
