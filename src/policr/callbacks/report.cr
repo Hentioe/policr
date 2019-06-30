@@ -74,16 +74,7 @@ module Policr
       end
       # 生成投票
       if r
-        inject_data = {
-          author_id:        r.author_id,
-          role:             make_role(r.role),
-          post_id:          r.post_id,
-          snapshot_channel: bot.snapshot_channel,
-          target_id:        target_user_id,
-          reason:           make_reason(r.reason),
-          status:           make_status(r.status),
-        }
-        text = t "report.voting_message", inject_data
+        text = make_text(r.author_id, r.role, r.post_id, bot.snapshot_channel, target_user_id, r.reason, r.status)
 
         report_id = r.id
         markup = Markup.new
@@ -119,6 +110,19 @@ module Policr
           parse_mode: "markdown"
         )
       end
+    end
+
+    def make_text(authod_id, role_value, post_id, snapshot_channel, target_id, reason_value, status_value)
+      inject_data = {
+        author_id:        authod_id,
+        role:             make_role(role_value),
+        post_id:          post_id,
+        snapshot_channel: snapshot_channel,
+        target_id:        target_id,
+        reason:           make_reason(reason_value),
+        status:           make_status(status_value),
+      }
+      t "report.voting_message", inject_data
     end
 
     def make_role(role_value)

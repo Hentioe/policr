@@ -114,6 +114,14 @@ report:
     reject: "不受理"
     accept: "被处理"
     unban: "通过申诉"
+voting:
+  no_permissions: "抱歉，您暂时没有权限投票。"
+  report_invalid: "此举报已经失效了，不可投票。"
+  report_ended: "此举报已经被处理了，不可投票。"
+  update_error: "此票导致状态发生了变化，但最终更新失败了。请向社区反馈。"
+  vote_failure: "投票失败，原因：%{reason}"
+  success: "感谢你宝贵的一票！"
+  notify_msg: "好消息，之前来自本群组的一个举报就在刚刚受理完成。相关人士已被列入全网黑名单，感谢你们的贡献。[点我](%{voting_url})查看相关举报。"
 after_event:
   tip: "[事后审核](https://policr.bluerain.io#afterwards)，请主动完成验证以解除限制。"
   torture: "开始验证"

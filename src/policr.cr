@@ -18,7 +18,7 @@ module Policr
     scan config.dpath
 
     Dotenv.load! "config/dev.secret.env" unless config.prod
-    DB.connect config.dpath
+    KVStore.connect config.dpath
 
     I18n.load_path += ["locales"]
     I18n.init

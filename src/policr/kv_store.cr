@@ -7,7 +7,7 @@ module Policr::KVStore
   @@db : RocksDB::DB?
 
   def connect(path)
-    @@db = RocksDB::DB.new("#{path}/RocksDB.")
+    @@db = RocksDB::DB.new("#{path}/rocksdb")
   end
 
   private def put(key, value)

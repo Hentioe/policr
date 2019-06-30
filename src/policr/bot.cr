@@ -78,6 +78,7 @@ module Policr
         CustomCallback,
         SettingsCallback,
         ReportCallback,
+        VotingCallback,
       ]
 
       # 注册指令模块
