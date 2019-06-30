@@ -14,6 +14,7 @@ class CreateVotes < Jennifer::Migration::Base
   end
 
   def down
+    drop_foreign_key :votes, :reports
     drop_table :votes if table_exists? :votes
   end
 end
