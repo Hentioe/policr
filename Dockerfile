@@ -1,11 +1,12 @@
-FROM bluerain/policr:build
+FROM bluerain/policr:runtime
 
 
 ARG APP_HOME=/home/policr
 
 
 RUN ln -s "$APP_HOME/policr" /usr/local/bin/policr && \
-    mkdir /data
+    mkdir /data \
+    ln -s /data "$APP_HOME/data"
 
 
 COPY bin $APP_HOME
