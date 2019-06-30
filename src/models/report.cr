@@ -14,5 +14,7 @@ module Policr::Model
       created_at: Time?,
       updated_at: Time?
     )
+
+    has_many :votes, Vote
   end
 end
