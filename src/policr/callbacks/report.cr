@@ -99,7 +99,7 @@ module Policr
 
       # 响应举报生成结果
       if voting_msg
-        text = "举报已经生成（[在这里](https://t.me/#{bot.voting_channel}/#{voting_msg.message_id})），具有投票权的用户会对举报内容进行表决。注意了，[您](tg://user?id=#{from_user_id})作为投票发起人即便有公投权也不能进行投票。另外举报受理成功也会在本群通知。"
+        text = "举报已经生成（[在这里](https://t.me/#{bot.voting_channel}/#{voting_msg.message_id})），具有投票权的用户会对举报内容进行表决。注意了，[您](tg://user?id=#{from_user_id})作为发起人不能进行投票。举报受理成功将会在本群通知。"
         bot.edit_message_text(
           chat_id: chat_id,
           message_id: msg.message_id,
