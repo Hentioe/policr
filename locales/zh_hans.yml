@@ -8,6 +8,7 @@ add_to_group:
   from_user: "噔噔噔噔！史上最强大的群审核机器人入场了！诶？你都没权限瞎邀啥啊！不管了，既然如此那就请把我弄过来的变态（[%{name}](tg://user?id=%{user_id})）负起责任，尽快联系群主进行设置以让我工作起来，不然我过 30分钟 就会自己溜掉哦！\n\n附加阅读：[如何使用我？](https://policr.bluerain.io)"
   from_admin: "请把我弄过来的变态（[%{name}](tg://user?id=%{user_id})）负起责任，进行基本设置以让我工作起来。注意了，如果你不是群主，你需要先通过群主启用信任管理员，不然你也是无法控制我的哟～\n如果你们决定不使用我，请点击下方的按钮让我自己离开，做机器人呐也得有尊严！\n\n附加阅读：[如何使用我？](https://policr.bluerain.io)"
   no_permission: "请联系管理员使用此按钮！"
+  subscription_update: "订阅更新"
 captcha:
   desc: "你知道吗？本机器人同时支持多种验证方式。下面分别为您简短介绍：\n\n1. 默认验证，傻瓜式的存在一个正确和一个错误答案\n2. 定制验证，通过此方式可以定制属于群组自己的验证问题，您需要点击下方的按钮，再按照变化后的说明文本进行回复\n3. 动态验证，会随机生成例如简单计算公式一类的纯动态问题，目前处于测试阶段\n4. 图片验证，让入群用户识别图片内容。与 Google 图片验证类似，但与之相反。它提供一张图片而附带多个候选词汇\n\n注意：以上四种只可选其一，定制验证需要得到回复以后才会刷新下方单选状态。"
   default: "已恢复默认验证。注意，默认验证并不是永久固定的，它会随着机器人的不断更新而改进。"
@@ -84,9 +85,35 @@ pass_by_admin: "Σ(\\*ﾟдﾟﾉ)ﾉ [这家伙](tg://user?id=%{user_id})走后
 pass_slow_alert: "验证通过，但是晚了一点点，再去试试？"
 pass_slow_receipt: "(´ﾟдﾟ`) TA通过了验证，但是手慢了那么一点点，再给TA一次机会……"
 report:
-  admin_reply: "举报开始，请选择具体原因。举报将在完成选择以后被创建，并进入[黑名单公投频道](https://t.me/policr_blacklist_voting)进行投票。如果您决定放弃举报，则不需要做任何选择。\n\n注意：在完成举报前请不要删除被举报消息。"
+  admin_reply: "举报开始，请选择具体原因。举报将在完成选择以后被创建，并进入[黑名单公投频道](https://t.me/%{voting_channel})进行投票。如果您决定放弃举报，则不需要做任何选择。\n\n注意：在完成举报前请不要删除被举报消息。"
   mass_ad: "恶意散播广告"
   unident_halal: "未识别的清真"
+  forward_error: "举报发起失败，原因：%{reason}"
+  storage_error: "举报生成失败，原因：%{reason}"
+  voting_message: |
+    举报发起人：[%{author_id}](tg://user?id=%{author_id})
+    举报人身份：%{role}
+    举报目标快照：[%{post_id}](https://t.me/%{snapshot_channel}/%{post_id})
+    被执行用户：[%{target_id}](tg://user?id=%{target_id})
+    举报原因：%{reason}
+    当前状态：%{status}
+  generated: "举报已经生成（[在这里](https://t.me/%{voting_channel}/%{voting_message_id})），具有投票权的用户会对举报内容进行表决。注意了，[您](tg://user?id=%{user_id})作为发起人不能进行投票。如果举报受理成功将会在本群通知。"
+  role:
+    unknown: "未知"
+    creator: "群主"
+    trusted_admin: "受信管理员"
+    admin: "管理员"
+    member: "群成员"
+  reason:
+    unknown: "未记录"
+    spam: "恶意散播广告"
+    halal: "未识别的清真"
+  status:
+    unknown: "不明"
+    begin: "#表决中"
+    reject: "不受理"
+    accept: "被处理"
+    unban: "通过申诉"
 after_event:
   tip: "[事后审核](https://policr.bluerain.io#afterwards)，请主动完成验证以解除限制。"
   torture: "开始验证"

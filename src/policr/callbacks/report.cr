@@ -32,7 +32,7 @@ module Policr
         )
       rescue e : TelegramBot::APIException
         _, reason = bot.parse_error(e)
-        bot.answer_callback_query(query.id, text: "举报发起失败，原因：#{reason}")
+        bot.answer_callback_query(query.id, text: t("report.forward_error", {reason: reason}))
         return
       end
 
@@ -67,16 +67,23 @@ module Policr
               role:      role.value,
               from_chat: chat_id.to_i64,
             }
-          puts data.inspect
           r = Model::Report.create!(data)
         rescue e : Exception
-          puts e.inspect
-          bot.answer_callback_query(query.id, text: "举报入库失败，原因：#{e.message}")
+          bot.answer_callback_query(query.id, text: t("report.storage_error", {reason: e.message}))
         end
       end
       # 生成投票
       if r
-        text = "举报发起人：[#{r.author_id}](tg://user?id=#{r.author_id})\n举报人身份：#{make_role(r.role)}\n举报目标快照：[#{r.post_id}](https://t.me/#{bot.snapshot_channel}/#{r.post_id})\n被执行用户：[#{r.target_id}](tg://user?id=#{r.target_id})\n举报原因：#{make_reason(r.reason)}\n当前状态：#{make_status(r.status)}"
+        inject_data = {
+          author_id:        r.author_id,
+          role:             make_role(r.role),
+          post_id:          r.post_id,
+          snapshot_channel: bot.snapshot_channel,
+          target_id:        target_user_id,
+          reason:           make_reason(r.reason),
+          status:           make_status(r.status),
+        }
+        text = t "report.voting_message", inject_data
 
         report_id = r.id
         markup = Markup.new
@@ -99,7 +106,11 @@ module Policr
 
       # 响应举报生成结果
       if voting_msg
-        text = "举报已经生成（[在这里](https://t.me/#{bot.voting_channel}/#{voting_msg.message_id})），具有投票权的用户会对举报内容进行表决。注意了，[您](tg://user?id=#{from_user_id})作为发起人不能进行投票。举报受理成功将会在本群通知。"
+        text = t "report.generated", {
+          voting_channel:    bot.voting_channel,
+          voting_message_id: voting_msg.message_id,
+          user_id:           from_user_id,
+        }
         bot.edit_message_text(
           chat_id: chat_id,
           message_id: msg.message_id,
@@ -113,41 +124,41 @@ module Policr
     def make_role(role_value)
       case UserRole.new(role_value)
       when UserRole::Unknown
-        "未知"
+        t("report.role.unknown")
       when UserRole::Creator
-        "群主"
+        t("report.role.creator")
       when UserRole::TrustedAdmin
-        "受信管理员"
+        t("report.role.trusted_admin")
       when UserRole::Admin
-        "管理员"
+        t("report.role.admin")
       when UserRole::Member
-        "群成员"
+        t("report.role.member")
       end
     end
 
     def make_reason(reason_value)
       case Reason.new(reason_value)
       when Reason::Unknown
-        "未记录"
+        t("report.reason.unknown")
       when Reason::Spam
-        "恶意散播广告"
+        t("report.reason.spam")
       when Reason::Halal
-        "未识别的清真"
+        t("report.reason.halal")
       end
     end
 
     def make_status(status_value)
       case Status.new(status_value)
       when Status::Unknown
-        "不明"
+        t("report.status.unknown")
       when Status::Begin
-        "表决中"
+        t("report.status.begin")
       when Status::Reject
-        "不受理"
+        t("report.status.reject")
       when Status::Accept
-        "被处理"
+        t("report.status.accept")
       when Status::Unban
-        "通过申诉"
+        t("report.status.unban")
       end
     end
   end

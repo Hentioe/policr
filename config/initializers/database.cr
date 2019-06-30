@@ -9,7 +9,6 @@ Jennifer::Config.configure do |conf|
 
   env = ENV["POLICR_ENV"]? || "dev"
   db_path = "#{Policr::CLI::Config.instance.dpath}/#{env}.db"
-  puts db_path
   conf.db = db_path
 
   conf.logger.level = Logger::DEBUG

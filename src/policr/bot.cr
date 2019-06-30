@@ -41,11 +41,13 @@ module Policr
 
     getter snapshot_channel : String
     getter voting_channel : String
+    getter username : String
 
     def initialize(username, token, logger, snapshot_channel, voting_channel)
       super(username, token, logger: logger)
       @snapshot_channel = snapshot_channel
       @voting_channel = voting_channel
+      @username = username
 
       me = get_me || raise Exception.new("Failed to get bot data")
       @self_id = me["id"].as_i64

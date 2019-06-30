@@ -19,7 +19,7 @@ module Policr
 
         markup << [btn.call(t("report.mass_ad"), ReportReason::Spam)]
         markup << [btn.call(t("report.unident_halal"), ReportReason::Halal)]
-        text = t "report.admin_reply", {user_id: target_user_id}
+        text = t "report.admin_reply", {user_id: target_user_id, voting_channel: bot.voting_channel}
         bot.send_message(
           msg.chat.id, text: text,
           reply_to_message_id: msg.message_id,

@@ -181,6 +181,12 @@
                 <td align="center">设置</td>
                 <td align="center">略</td>
               </tr>
+              <tr>
+                <td align="left"><code>/report</code></td>
+                <td align="left">举报垃圾内容</td>
+                <td align="center">功能</td>
+                <td align="center">略</td>
+              </tr>
             </tbody>
           </table>
           <article class="message is-danger">
@@ -193,7 +199,7 @@
             首先需要进行一些基本设置，建议按照推荐来做。当然你在明白这些设置项的含义的情况也可以随心所欲
           </p>
           <figure class="highlight">
-            <pre><code class="language-bash" data-lang="bash">/settings@policr_bot</code></pre>
+            <pre><code class="language-bash" data-lang="bash">/settings@<%= bot.username %></code></pre>
           </figure>
           <div class="content">
             <ul>
@@ -247,7 +253,7 @@
             >秒可能有点短
           </p>
           <figure class="highlight">
-            <pre><code class="language-bash" data-lang="bash">/torture_time@policr_bot</code></pre>
+            <pre><code class="language-bash" data-lang="bash">/torture_time@<%= bot.username %></code></pre>
           </figure>
           <article class="message is-danger">
             <div class="message-body">
@@ -258,7 +264,7 @@
             向新成员发送欢迎消息，带上你群规或帮助～
           </p>
           <figure class="highlight">
-            <pre><code class="language-bash" data-lang="bash">/welcome@policr_bot</code></pre>
+            <pre><code class="language-bash" data-lang="bash">/welcome@<%= bot.username %></code></pre>
           </figure>
           <article class="message is-warning">
             <div class="message-body">
@@ -269,20 +275,31 @@
             群组正在四处宣传，很需要知晓入群成员来自何处
           </p>
           <figure class="highlight">
-            <pre><code class="language-bash" data-lang="bash">/from@policr_bot</code></pre>
+            <pre><code class="language-bash" data-lang="bash">/from@<%= bot.username %></code></pre>
           </figure>
           <p class="subtitle is-6">
             怎么回事？机器人不干活嘞，检测它是否还活着
           </p>
           <figure class="highlight">
-            <pre><code class="language-bash" data-lang="bash">/ping@policr_bot</code></pre>
+            <pre><code class="language-bash" data-lang="bash">/ping@<%= bot.username %></code></pre>
           </figure>
           <p class="subtitle is-6">
             默认的验证方式太简单了，我想调整一下
           </p>
           <figure class="highlight">
-            <pre><code class="language-bash" data-lang="bash">/custom@policr_bot</code></pre>
+            <pre><code class="language-bash" data-lang="bash">/custom@<%= bot.username %></code></pre>
           </figure>
+          <p class="subtitle is-6">
+            有人发广告？看我举报它，让它进入黑名单！
+          </p>
+          <figure class="highlight">
+            <pre><code class="language-bash" data-lang="bash">/report@<%= bot.username %></code></pre>
+          </figure>
+          <article class="message is-danger">
+            <div class="message-body">
+              注意了，举报指令需要回复在被举报的消息上。
+            </div>
+          </article>
         </div>
         <hr />
         <div>
@@ -350,6 +367,14 @@
                   >清真指的是利用阿拉伯语系文字发布广告的用户，这些用户的背后是黑客们批量注册并利用程序控制的小号。清真们数量巨大，广泛加群，已是电报平台最大的危害之一。至于他们究竟来自何处尚不清楚，也不重要。你只需要知道中文圈内出现阿拉伯语用户基本不用有多顾虑，他们就是机器人。<strong
                     >清真二字是中文圈普遍认同的称呼，并非本项目原创。</strong
                   >
+                </blockquote>
+              </li>
+              <li>
+                <a class="anchor" name="halal"></a>
+                <p>举报有什么好处？会产生什么后果？</p>
+                <blockquote>
+                  举报是将广告和清真用户入库黑名单的最主要途径，是完全自助使用的功能。如果举报人是管理员（包括群主），完成举报以后将自动删除被举报消息并封禁被举报人，这比手动删除和封禁更加便捷（所以管理员们应该经常使用举报而不是手动干活清理垃圾内容和用户）。如果是普通群成员举报，不会对被举报对象做任何限制。
+                  <br>举报产生以后，将会在<a href="https://t.me/<%= bot.voting_channel %>">黑名单公投频道</a>进行投票。如果举报被受理，被执行用户（即被举报人）将会入库黑名单。如果举报是普通群成员产生的，在受理通过以后被举报对象也会在举报来源群组遭到封禁。所以举报是非常值得推荐的功能。
                 </blockquote>
               </li>
               <li>
@@ -516,6 +541,13 @@
                     <li>
                       <a
                         target="_blank"
+                        href="https://github.com/Hentioe/policr/issues/20"
+                        >初版黑名单系统</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        target="_blank"
                         href="https://github.com/Hentioe/policr/issues/48"
                         >多套自定义验证</a
                       >
@@ -540,11 +572,7 @@
               <li>
                 <p>是否考虑添加全网黑名单功能？</p>
                 <blockquote>
-                  有考虑。并且这种功能非常简单便能实现。目前没有提供相关功能是因为有一个叫做<code>CNBlacklistR</code>的项目作为前车之鉴，他们由于黑箱操作失掉了公信力。虽然我们一开始的构想就是避免集权化的，打算设计一套公投机制。但做到这一步，其构思和实现的力度都可能远大于实际效果，毕竟现在的广告机器人发了就自删帐号，黑名单什么的意义已经不那么大了。
-                  <br />
-                  <strong
-                    >但，这仍然会是一个摆放在台面上的值得持续思考的计划。</strong
-                  >
+                  已经在实施中，当前版本<code><%= VERSION %></code>提供的举报功能便是黑名单的一部分。与其它黑名单机器人例如<code>CNBlacklistR</code>不同的是，本项目的黑名单是透明化的，自助运营的。每一个黑名单用户都是公投确认的，并且任何人只要通过了申请便可具有投票权。<br>由于还未完全开放黑名单系统的所有功能，所以当前投票权仅在于少数人身上，不过投票过程仍然是透明的。待黑名单系统真正应用时将开放所有功能权限，包括举报和投票。</code>
                 </blockquote>
               </li>
               <li>
@@ -575,10 +603,8 @@
           <h3 class="subtitle is-3">需知</h3>
           <article class="message is-warning" style="margin-top:1.5rem;">
             <div class="message-body">
-              本项目主要由<code>Crystal</code>语言编写，利用嵌入式数据库<code
-                >RocksDB</code
-              >
-              储存数据。能非常方便的进行部署。但在本项目<code>1.0</code>
+              本项目主要使用<code>Crystal</code>语言编写，利用嵌入式数据库<code>RocksDB</code>和<code>Sqlite3</code>
+              储存数据。所以它能非常方便的进行部署。但在本项目<code>1.0</code>
               版本释出之前并不准备发布预编译安装包或者容器镜像。
               <br />
               <br />
@@ -603,7 +629,7 @@
           <h3 class="subtitle is-3">消息访问</h3>
           <div class="content">
             <blockquote>
-              任何将本项目实例提升为<code>admin</code>的群组产生的任何消息都会被实例机器人接收。
+              所有将本项目实例提升为<code>admin</code>的群组产生的任何消息都会被实例机器人接收。
             </blockquote>
           </div>
           <h3 class="subtitle is-3">数据储存</h3>
@@ -611,9 +637,10 @@
             <blockquote>
               将持久化保存的数据包括有：
               <ul>
-                <li>机器人相关设置，例如来源和定制验证涉及到的群组信息</li>
+                <li>机器人相关设置，例如来源调查和定制验证涉及到的群组信息</li>
                 <li>白名单清真用户ID</li>
                 <li>受管群组ID和群主ID（此功能暂未开放）</li>
+                <li>举报人ID、所属群组ID、被举报消息ID和被举报用户ID</li>
               </ul>
               在机器人程序运行周期内缓存的数据包括有：
               <ul>
@@ -625,7 +652,7 @@
           <article class="message is-success">
             <div class="message-body">
               本项目当前版本<code><%= VERSION %></code
-              >没有持久化储存任何用户消息，请安心。
+              >没有持久化储存任何用户普通消息，请安心。
             </div>
           </article>
           <article class="message is-danger">

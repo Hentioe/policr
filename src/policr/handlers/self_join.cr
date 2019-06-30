@@ -18,7 +18,7 @@ module Policr
             Button.new(text: text, callback_data: "SelfJoin:#{item}")
           }
           markup << [make_btn.call t("add_to_group.leave"), "leave"]
-          markup << [Button.new(text: "订阅更新", url: "https://t.me/policr_changelog")]
+          markup << [Button.new(text: t("add_to_group.subscription_update"), url: "https://t.me/policr_changelog")]
           if (user = msg.from)
             user_data = {name: bot.display_name(user), user_id: user.id}
             is_admin = bot.is_admin?(chat_id, user.id)
