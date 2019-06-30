@@ -10,7 +10,7 @@ module Policr
       sec = report[0]
 
       # 检测权限
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
       unless (user = msg.from) && bot.has_permission?(msg.chat.id, from_user_id, role)
         bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         return
@@ -26,7 +26,7 @@ module Policr
         end
       else
         # 储存设置
-        DB.set_torture_sec(msg.chat.id, sec.to_i)
+        KVStore.set_torture_sec(msg.chat.id, sec.to_i)
         # 更新设置时间消息文本
         bot.edit_message_text chat_id: msg.chat.id, message_id: msg.message_id, text: text(msg.chat.id), disable_web_page_preview: true, parse_mode: "markdown", reply_markup: markup
         # 响应成功

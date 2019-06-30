@@ -10,8 +10,8 @@ module Policr
         return
       end
 
-      if (user = msg.from) && (groups = DB.managed_groups(user.id))
-        token = DB.gen_token(user.id)
+      if (user = msg.from) && (groups = KVStore.managed_groups(user.id))
+        token = KVStore.gen_token(user.id)
 
         bot.send_message(msg.chat.id, "`#{token}`", parse_mode: "markdown")
       else

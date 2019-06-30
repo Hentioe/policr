@@ -19,7 +19,7 @@ module Policr
     abstract def true_index
 
     def storage(msg_id)
-      DB.storage_true_index(@chat_id, msg_id, true_index)
+      KVStore.storage_true_index(@chat_id, msg_id, true_index)
     end
   end
 end

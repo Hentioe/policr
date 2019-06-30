@@ -1,7 +1,7 @@
 module Policr
   class WelcomeSettingHandler < Handler
     def match(msg)
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
 
       all_pass? [
         (user = msg.from),
@@ -14,7 +14,7 @@ module Policr
 
     def handle(msg)
       bot.log "Setting Welcome for group '#{msg.chat.id}'"
-      DB.set_welcome(msg.chat.id, msg.text)
+      KVStore.set_welcome(msg.chat.id, msg.text)
       bot.reply msg, t("setting_complete")
     end
   end

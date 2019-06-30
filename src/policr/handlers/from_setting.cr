@@ -1,7 +1,7 @@
 module Policr
   class FromSettingHandler < Handler
     def match(msg)
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
 
       all_pass? [
         (user = msg.from),
@@ -14,7 +14,7 @@ module Policr
 
     def handle(msg)
       bot.log "Enable From Investigate for ChatID '#{msg.chat.id}'"
-      DB.put_chat_from(msg.chat.id, msg.text)
+      KVStore.put_chat_from(msg.chat.id, msg.text)
       bot.reply msg, t("setting_complete")
     end
   end

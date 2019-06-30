@@ -5,7 +5,7 @@ module Policr
     end
 
     def handle(msg)
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && (bot.has_permission?(msg.chat.id, user.id, role) || user.username == "Hentioe") && (reply_msg = msg.reply_to_message) && (target_user = reply_msg.from)
         author_id = user.id
         target_user_id = target_user.id

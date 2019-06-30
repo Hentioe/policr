@@ -3,7 +3,7 @@ module Policr
     @content : Tuple(Int32, String, Array(String))?
 
     make do
-      @content = DB.custom(@chat_id)
+      @content = KVStore.custom(@chat_id)
       @content || raise not_conent
     end
 

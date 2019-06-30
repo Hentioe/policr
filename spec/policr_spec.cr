@@ -4,6 +4,7 @@ alias Model = Policr::Model
 alias Reason = Policr::ReportReason
 alias ReportStatus = Policr::ReportStatus
 alias UserRole = Policr::ReportUserRole
+alias VoteType = Policr::VoteType
 
 describe Policr do
   it "arabic characters match" do
@@ -45,10 +46,25 @@ describe Policr do
     })
     r1.should be_truthy
 
-    r2 = Model::Report.delete(r1.id)
-    r2.should be_truthy
-    if r2
-      r2.rows_affected.should eq(1)
+    v1 = r1.add_votes({:author_id => author_id, :type => VoteType::Agree.value})
+    v1.should be_truthy
+    v2 = r1.add_votes({:author_id => author_id, :type => VoteType::Abstention.value})
+    v2.should be_truthy
+
+    v_list = Model::Vote.all.where { _report_id == r1.id }.to_a
+    v_list.size.should eq(2)
+    v_list.each do |v|
+      r = Model::Vote.delete(v.id)
+      r.should be_truthy
+      if r
+        r.rows_affected.should eq(1)
+      end
+    end
+
+    r = Model::Report.delete(r1.id)
+    r.should be_truthy
+    if r
+      r.rows_affected.should eq(1)
     end
   end
 end

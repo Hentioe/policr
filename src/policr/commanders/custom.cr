@@ -5,7 +5,7 @@ module Policr
     end
 
     def handle(msg)
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
         bot.send_message msg.chat.id, t("captcha.desc"), reply_to_message_id: msg.message_id, reply_markup: create_markup(msg.chat.id), parse_mode: "markdown"
       else
@@ -20,13 +20,13 @@ module Policr
       checked_status = ->(way : Symbol) {
         case way
         when :custom
-          DB.custom(chat_id) ? CHECKED : UNCHECKED
+          KVStore.custom(chat_id) ? CHECKED : UNCHECKED
         when :dynamic
-          DB.dynamic?(chat_id) ? CHECKED : UNCHECKED
+          KVStore.dynamic?(chat_id) ? CHECKED : UNCHECKED
         when :image
-          DB.enabled_image?(chat_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_image?(chat_id) ? CHECKED : UNCHECKED
         when :default
-          (!DB.custom(chat_id) && !DB.dynamic?(chat_id) && !DB.enabled_image?(chat_id)) ? CHECKED : UNCHECKED
+          (!KVStore.custom(chat_id) && !KVStore.dynamic?(chat_id) && !KVStore.enabled_image?(chat_id)) ? CHECKED : UNCHECKED
         else
           UNCHECKED
         end

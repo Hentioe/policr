@@ -5,7 +5,7 @@ module Policr
     end
 
     def handle(msg)
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
         if send_message = bot.send_message msg.chat.id, text(msg.chat.id), reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup
           Cache.carving_torture_time_msg_sec(send_message.message_id)
@@ -28,7 +28,7 @@ module Policr
 
     def text(chat_id)
       current = t "torture.default_set", {seconds: DEFAULT_TORTURE_SEC}
-      if sec = DB.get_torture_sec chat_id
+      if sec = KVStore.get_torture_sec chat_id
         time_len = sec > 0 ? t("units.sec", {n: sec}) : t("units.inf")
         current = t("torture.exists_set", {time_len: time_len})
       end

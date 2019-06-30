@@ -1,7 +1,7 @@
 module Policr
   class CustomHandler < Handler
     def match(msg)
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
 
       all_pass? [
         msg.text,
@@ -19,7 +19,7 @@ module Policr
         bot.reply msg, t("custom.wrong_format")
         return
       end
-      DB.custom_text(msg.chat.id, msg.text)
+      KVStore.custom_text(msg.chat.id, msg.text)
       bot.reply msg, t("setting_complete")
       # 更新回复消息内联键盘
       if reply_msg = msg.reply_to_message

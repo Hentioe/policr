@@ -6,7 +6,7 @@ module Policr
     @text : String?
 
     def match(msg)
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
 
       if all_pass? [
            (user = msg.from),
@@ -34,7 +34,7 @@ module Policr
         if sec > 0 && sec < MIN_TORTURE_SEC # 时间不合法
           bot.reply msg, t("torture.time_too_short", {min_sec: MIN_TORTURE_SEC})
         else
-          DB.set_torture_sec(msg.chat.id, sec)
+          KVStore.set_torture_sec(msg.chat.id, sec)
           bot.reply msg, t("setting_complete")
         end
       end

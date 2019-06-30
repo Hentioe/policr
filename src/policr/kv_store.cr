@@ -1,13 +1,13 @@
 require "rocksdb"
 require "ksuid"
 
-module Policr::DB
+module Policr::KVStore
   extend self
 
   @@db : RocksDB::DB?
 
   def connect(path)
-    @@db = RocksDB::DB.new("#{path}/rocksdb")
+    @@db = RocksDB::DB.new("#{path}/RocksDB.")
   end
 
   private def put(key, value)

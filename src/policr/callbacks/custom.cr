@@ -12,7 +12,7 @@ module Policr
       way = report[0]
 
       # 检测权限
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
       unless (user = msg.from) && bot.has_permission?(msg.chat.id, from_user_id, role)
         bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         return
@@ -20,18 +20,18 @@ module Policr
 
       case way
       when "default"
-        DB.default chat_id
+        KVStore.default chat_id
         text = t "captcha.default"
         bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
         bot.answer_callback_query(query.id)
       when "dynamic"
-        DB.dynamic chat_id
+        KVStore.dynamic chat_id
         text = t "captcha.dynamic"
         bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
         bot.answer_callback_query(query.id)
       when "image"
         back_to_default = ->{
-          DB.disable_image chat_id
+          KVStore.disable_image chat_id
           text = t "captcha.switch_image_failed"
           spawn { bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id) }
         }
@@ -43,7 +43,7 @@ module Policr
         end
         # 前提2：验证时间要大于1分半钟
         torture_sec =
-          if sec = DB.get_torture_sec chat_id
+          if sec = KVStore.get_torture_sec chat_id
             sec
           else
             DEFAULT_TORTURE_SEC
@@ -54,7 +54,7 @@ module Policr
           return
         end
 
-        DB.enable_image chat_id
+        KVStore.enable_image chat_id
         text = t "captcha.image"
         bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
         bot.answer_callback_query(query.id)

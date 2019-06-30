@@ -4,7 +4,7 @@ module Policr
 
     def match(msg)
       all_pass? [
-        DB.enable_examine?(msg.chat.id),
+        KVStore.enable_examine?(msg.chat.id),
         msg.new_chat_members,
       ]
     end
@@ -17,7 +17,7 @@ module Policr
           # 管理员拉入，放行
           if (user = msg.from) && (user.id != member.id) && bot.is_admin?(msg.chat.id, user.id)
             if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
-              Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless DB.record_mode?(chat_id)
+              Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.record_mode?(chat_id)
             end
             return
           end
@@ -72,13 +72,13 @@ module Policr
 
       send_image = false
       verification =
-        if DB.custom chat_id
+        if KVStore.custom chat_id
           # 自定义验证
           CustomVerification.new(**params)
-        elsif DB.dynamic? chat_id
+        elsif KVStore.dynamic? chat_id
           # 动态验证
           DynamicVerification.new(**params)
-        elsif Cache.get_images.size >= 3 && DB.enabled_image?(chat_id)
+        elsif Cache.get_images.size >= 3 && KVStore.enabled_image?(chat_id)
           send_image = true
           # 图片验证
           ImageVerification.new(**params)
@@ -99,7 +99,7 @@ module Policr
       # 禁言用户/异步调用
       spawn bot.restrict_chat_member(chat_id, member_id, can_send_messages: false)
 
-      torture_sec = DB.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
+      torture_sec = KVStore.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
       question =
         if send_image
           if torture_sec > 0

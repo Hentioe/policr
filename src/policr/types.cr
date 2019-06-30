@@ -14,4 +14,8 @@ module Policr
   enum ReportUserRole
     Unknown; Creator; Admin; TrustedAdmin; Member
   end
+
+  enum VoteType
+    Agree; Abstention; Oppose
+  end
 end

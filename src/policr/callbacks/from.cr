@@ -22,7 +22,7 @@ module Policr
       bot.log "Username '#{target_username}' has selected from: #{chooese_id}"
 
       all_from = Array(String).new
-      if from_list = DB.get_from(chat_id)
+      if from_list = KVStore.get_from(chat_id)
         from_list.each do |btn_list|
           btn_list.each { |btn_text| all_from << btn_text }
         end

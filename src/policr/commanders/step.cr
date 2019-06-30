@@ -5,7 +5,7 @@ module Policr
     end
 
     def handle(msg)
-      role = DB.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
         bot.send_message msg.chat.id, t("step.desc"), reply_to_message_id: msg.message_id, reply_markup: create_markup(msg.chat.id), parse_mode: "markdown"
       else
@@ -22,7 +22,7 @@ module Policr
         Button.new(text: text, callback_data: "Step:#{name}")
       }
       force_multiple_symbol = ->{
-        DB.force_multiple?(chat_id) ? SELECTED : UNSELECTED
+        KVStore.force_multiple?(chat_id) ? SELECTED : UNSELECTED
       }
       markup = Markup.new
       markup << [btn.call("#{force_multiple_symbol.call} #{t("step.force_multiple")}", "force_multiple")]

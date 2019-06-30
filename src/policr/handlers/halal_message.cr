@@ -9,7 +9,7 @@ module Policr
 
     def match(msg)
       all_pass? [
-        DB.enable_examine?(msg.chat.id),
+        KVStore.enable_examine?(msg.chat.id),
         msg.from,
       ]
     end
@@ -39,7 +39,7 @@ module Policr
     def kick_halal_with_receipt(msg, member)
       name = bot.display_name(member)
       bot.log "Found a halal '#{name}'"
-      if DB.halal_white? member.id
+      if KVStore.halal_white? member.id
         bot.log "Halal '#{name}' in whitelist, ignored"
         return
       end
