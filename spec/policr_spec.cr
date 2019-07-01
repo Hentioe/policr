@@ -5,6 +5,8 @@ alias Reason = Policr::ReportReason
 alias ReportStatus = Policr::ReportStatus
 alias UserRole = Policr::ReportUserRole
 alias VoteType = Policr::VoteType
+alias EnableStatus = Policr::EnableStatus
+alias DeleteTarget = Policr::CleanDeleteTarget
 
 describe Policr do
   it "arabic characters match" do
@@ -62,6 +64,20 @@ describe Policr do
     end
 
     r = Model::Report.delete(r1.id)
+    r.should be_truthy
+    if r
+      r.rows_affected.should eq(1)
+    end
+
+    # 干净模式
+    cm1 = Model::CleanMode.create({
+      chat_id:       from_chat,
+      delete_target: DeleteTarget::TimeoutVerified.value,
+      delay_sec:     nil,
+      status:        EnableStatus::TurnOn.value,
+    })
+    cm1.should be_truthy
+    r = Model::CleanMode.delete(cm1.id)
     r.should be_truthy
     if r
       r.rows_affected.should eq(1)

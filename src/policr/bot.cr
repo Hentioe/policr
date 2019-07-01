@@ -79,6 +79,7 @@ module Policr
         SettingsCallback,
         ReportCallback,
         VotingCallback,
+        CleanModeCallback,
       ]
 
       # 注册指令模块
@@ -93,6 +94,7 @@ module Policr
         ReportCommander,
         SettingsCommander,
         StepCommander,
+        CleanModeCommander,
       ]
 
       commanders.each do |_, command|

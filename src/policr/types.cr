@@ -18,4 +18,14 @@ module Policr
   enum VoteType
     Agree; Abstention; Oppose
   end
+
+  # 启用状态
+  enum EnableStatus
+    Unknown; TurnOn; TurnOff
+  end
+
+  # 干净模式删除目标
+  enum CleanDeleteTarget
+    Unknown; TimeoutVerified; WrongVerified
+  end
 end

@@ -1,6 +1,8 @@
 module Policr
   class UserJoinHandler < Handler
     alias VerifyStatus = Cache::VerifyStatus
+    alias DeleteTarget = Policr::CleanDeleteTarget
+    alias EnableStatus = Policr::EnableStatus
 
     def match(msg)
       all_pass? [
@@ -136,7 +138,7 @@ module Policr
         verification.storage(sended_msg.message_id)
       end
       ban_task = ->(message_id : Int32) {
-        if Cache.verify?(chat_id, member_id) == VerifyStatus::Init
+        if Cache.verify?(chat_id, member_id) == VerifyStatus::Init # 如果仍然是验证初步状态则判定超时
           bot.log "User '#{username}' torture time expired and has been banned"
           Cache.verify_slowed(chat_id, member_id)
           failed(chat_id, message_id, member_id, username, timeout: true, photo: send_image, reply_id: msg_id)
@@ -172,12 +174,26 @@ module Policr
             t("captcha_result.admin_ban", {user_id: user_id})
           end
 
-        if photo
-          spawn bot.delete_message chat_id, message_id
-          bot.send_message(chat_id: chat_id, text: text, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
-        else
-          bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-            text: text, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
+        result_msg_id =
+          if photo
+            spawn bot.delete_message chat_id, message_id
+            sended_msg = bot.send_message(chat_id: chat_id, text: text, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
+            if sended_msg
+              sended_msg.message_id
+            end
+          else
+            bot.edit_message_text(chat_id: chat_id, message_id: message_id,
+              text: text, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
+            message_id
+          end
+        if result_msg_id && !admin # 根据干净模式数据延迟清理消息
+          delete_target = timeout ? DeleteTarget::TimeoutVerified : DeleteTarget::WrongVerified
+          cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == delete_target.value) }.first
+          if cm && cm.status == EnableStatus::TurnOn.value # 如果存在本消息类型的延迟删除设置，设定定时任务
+            delay_sec = cm.delay_sec || DEFAULT_DELAY_DELETE
+            msg_id = result_msg_id
+            Schedule.after(delay_sec.seconds) { bot.delete_message(chat_id, msg_id) }
+          end
         end
       end
     end
