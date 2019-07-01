@@ -89,7 +89,9 @@ report:
   mass_ad: "恶意散播广告"
   unident_halal: "未识别的清真"
   forward_error: "举报发起失败，原因：%{reason}"
-  storage_error: "举报生成失败，原因：%{reason}"
+  storage_error: "举报储存失败，请向社区反馈。"
+  generate_voting_error: "投票生成失败，原因：%{reason}"
+  update_result_error: "举报结果更新失败，原因：%{reason}"
   voting_message: |
     举报发起人：[%{author_id}](tg://user?id=%{author_id})
     举报人身份：%{role}

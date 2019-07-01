@@ -31,20 +31,22 @@ describe Policr do
   it "crud" do
     author_id = 340396281.to_i64
     post_id = 29
-    target_id = 871769395.to_i64
+    target_user_id = 871769395.to_i64
+    target_msg_id = 234
     reason = Reason::Spam.value
     status = ReportStatus::Begin.value
     role = UserRole::Creator.value
-    from_chat = -1001301664514.to_i64
+    from_chat_id = -1001301664514.to_i64
 
     r1 = Model::Report.create({
-      author_id: author_id,
-      post_id:   post_id,
-      target_id: target_id,
-      reason:    reason,
-      status:    status,
-      role:      role,
-      from_chat: from_chat,
+      author_id:      author_id,
+      post_id:        post_id,
+      target_user_id: target_user_id,
+      target_msg_id:  target_msg_id,
+      reason:         reason,
+      status:         status,
+      role:           role,
+      from_chat_id:   from_chat_id,
     })
     r1.should be_truthy
 
@@ -71,7 +73,7 @@ describe Policr do
 
     # 干净模式
     cm1 = Model::CleanMode.create({
-      chat_id:       from_chat,
+      chat_id:       from_chat_id,
       delete_target: DeleteTarget::TimeoutVerified.value,
       delay_sec:     nil,
       status:        EnableStatus::TurnOn.value,

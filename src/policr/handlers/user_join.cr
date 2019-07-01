@@ -147,6 +147,8 @@ module Policr
 
       ban_timer = ->(message_id : Int32) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id) } }
       if sended_msg && (message_id = sended_msg.message_id)
+        # 储存被验证的加群消息
+
         # 存在验证时间，定时任务调用
         ban_timer.call(message_id) if torture_sec > 0
       end

@@ -32,7 +32,7 @@ module Policr
         spawn bot.answer_callback_query(query.id, text: t("voting.report_ended"), show_alert: true)
         midcall ReportCallback do
           if r = report
-            text = callback.make_text(r.author_id, r.role, r.post_id, bot.snapshot_channel, r.target_id, r.reason, r.status)
+            text = callback.make_text(r.author_id, r.role, r.post_id, bot.snapshot_channel, r.target_user_id, r.reason, r.status)
             bot.edit_message_text(chat_id: "@#{bot.voting_channel}", message_id: msg.message_id,
               text: text, disable_web_page_preview: true, parse_mode: "markdown")
           end
@@ -94,7 +94,7 @@ module Policr
       end
       midcall ReportCallback do
         if r = report
-          text = callback.make_text(r.author_id, r.role, r.post_id, bot.snapshot_channel, r.target_id, r.reason, status.value)
+          text = callback.make_text(r.author_id, r.role, r.post_id, bot.snapshot_channel, r.target_user_id, r.reason, status.value)
           spawn { bot.edit_message_text(
             chat_id: "@#{bot.voting_channel}",
             message_id: msg.message_id,
@@ -104,13 +104,14 @@ module Policr
         end
       end
 
-      # 如果受理，根据举报发起人身份决定是否进行来源封禁
-      if status == Status::Accept && report && report.role == UserRole::Member.value && (chat_id = report.from_chat)
-        spawn bot.kick_chat_member(chat_id, report.target_id)
+      # 如果受理，根据举报发起人身份决定是否进行来源封禁和垃圾消息删除
+      if status == Status::Accept && report && report.role == UserRole::Member.value && (chat_id = report.from_chat_id)
+        spawn bot.kick_chat_member(chat_id, report.target_user_id)
+        spawn bot.delete_message(chat_id, report.target_msg_id)
       end
 
       # 如果受理，向来源群组通知举报被受理的消息
-      if status == Status::Accept && (chat_id = report.from_chat)
+      if status == Status::Accept && (chat_id = report.from_chat_id)
         bot.send_message(
           chat_id: chat_id,
           text: t("voting.notify_msg", {voting_url: "https://t.me/#{bot.voting_channel}/#{msg.message_id}"}),

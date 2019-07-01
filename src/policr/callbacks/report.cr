@@ -1,3 +1,5 @@
+# 2019-07-02: 注意！！！缺乏生成环节失败导致中断时的回滚实现
+
 module Policr
   class ReportCallback < Callback
     alias Reason = ReportReason
@@ -59,17 +61,20 @@ module Policr
         begin
           data =
             {
-              author_id: from_user_id.to_i64,
-              post_id:   snapshot_message.message_id,
-              target_id: target_user_id.to_i64,
-              reason:    reason_value,
-              status:    Status::Begin.value,
-              role:      role.value,
-              from_chat: chat_id.to_i64,
+              author_id:      from_user_id.to_i64,
+              post_id:        snapshot_message.message_id,
+              target_user_id: target_user_id.to_i64,
+              target_msg_id:  target_msg_id,
+              reason:         reason_value,
+              status:         Status::Begin.value,
+              role:           role.value,
+              from_chat_id:   chat_id.to_i64,
             }
           r = Model::Report.create!(data)
         rescue e : Exception
-          bot.answer_callback_query(query.id, text: t("report.storage_error", {reason: e.message}))
+          bot.log "Save reporting data failed: #{e.message}"
+          bot.answer_callback_query(query.id, text: t("report.storage_error"))
+          return
         end
       end
       # 生成投票
@@ -86,13 +91,19 @@ module Policr
           make_btn.call("🙏", "abstention"),
           make_btn.call("👎", "oppose"),
         ]
-        voting_msg = bot.send_message(
-          chat_id: "@#{bot.voting_channel}",
-          text: text,
-          disable_web_page_preview: true,
-          parse_mode: "markdown",
-          reply_markup: markup
-        )
+        begin
+          voting_msg = bot.send_message(
+            chat_id: "@#{bot.voting_channel}",
+            text: text,
+            disable_web_page_preview: true,
+            parse_mode: "markdown",
+            reply_markup: markup
+          )
+        rescue e : TelegramBot::APIException
+          _, reason = bot.parse_error(e)
+          bot.answer_callback_query(query.id, text: t("report.generate_voting_error", {reason: reason}))
+          return
+        end
       end
 
       # 响应举报生成结果
@@ -102,13 +113,19 @@ module Policr
           voting_message_id: voting_msg.message_id,
           user_id:           from_user_id,
         }
-        bot.edit_message_text(
-          chat_id: chat_id,
-          message_id: msg.message_id,
-          text: text,
-          disable_web_page_preview: true,
-          parse_mode: "markdown"
-        )
+        begin
+          bot.edit_message_text(
+            chat_id: chat_id,
+            message_id: msg.message_id,
+            text: text,
+            disable_web_page_preview: true,
+            parse_mode: "markdown"
+          )
+        rescue e : TelegramBot::APIException
+          _, reason = bot.parse_error(e)
+          bot.answer_callback_query(query.id, text: t("report.update_result_error", {reason: reason}))
+          return
+        end
       end
     end
 
