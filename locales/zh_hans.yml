@@ -118,6 +118,7 @@ voting:
   no_permissions: "抱歉，您暂时没有权限投票。"
   report_invalid: "此举报已经失效了，不可投票。"
   report_ended: "此举报已经被处理了，不可投票。"
+  author_cant_vote: "无法对自己的举报进行投票。"
   update_error: "此票导致状态发生了变化，但最终更新失败了。请向社区反馈。"
   vote_failure: "投票失败，原因：%{reason}"
   success: "感谢你宝贵的一票！"
