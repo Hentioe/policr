@@ -49,12 +49,12 @@ module Policr
       when "timeout_delay_time"
         cm = get_cm.call DeleteTarget::TimeoutVerified
         sec = cm.delay_sec || DEFAULT_DELAY_DELETE
-        text = t "clean_mode.delay_setting", {target: t("clean_mode.timeout"), hor: (sec.to_f / 3600)}
+        text = t "clean_mode.delay_setting", {target: t("clean_mode.timeout"), hor: (sec.to_f / 3600).round(2)}
         bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_time_setting_markup(chat_id, DeleteTarget::TimeoutVerified)
       when "wrong_delay_time"
-        cm = get_cm.call DeleteTarget::TimeoutVerified
+        cm = get_cm.call DeleteTarget::WrongVerified
         sec = cm.delay_sec || DEFAULT_DELAY_DELETE
-        text = t "clean_mode.delay_setting", {target: t("clean_mode.wrong"), hor: (sec.to_f / 3600)}
+        text = t "clean_mode.delay_setting", {target: t("clean_mode.wrong"), hor: (sec.to_f / 3600).round(2)}
         bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_time_setting_markup(chat_id, DeleteTarget::WrongVerified)
       when "back"
         midcall CleanModeCommander do
@@ -81,7 +81,7 @@ module Policr
       btn = ->(text : String, sec : Int32 | String) {
         Button.new(text: text, callback_data: "DelayTime:#{delete_target.value}:#{sec}")
       }
-      markup << def_time_list(btn, [15, 30, 50], TimeUnit::Min)
+      markup << def_time_list(btn, [15, 30, 45], TimeUnit::Min)
       hors = [Button.new(text: "«", callback_data: "CleanMode:back")]
       hors += def_time_list(btn, [1, 2, 6], TimeUnit::Hour)
       markup << hors
