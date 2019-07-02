@@ -80,6 +80,7 @@ module Policr
         ReportCallback,
         VotingCallback,
         CleanModeCallback,
+        DelayTimeCallback,
       ]
 
       # 注册指令模块

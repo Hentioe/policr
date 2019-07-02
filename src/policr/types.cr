@@ -28,4 +28,8 @@ module Policr
   enum CleanDeleteTarget
     Unknown; TimeoutVerified; WrongVerified
   end
+
+  enum TimeUnit
+    Sec; Min; Hour
+  end
 end
