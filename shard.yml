@@ -36,7 +36,7 @@ dependencies:
     github: TechMagister/i18n.cr
   jennifer:
     github: imdrasil/jennifer.cr
-    version: "0.7.1"
+    version: 0.7.1
   sam:
     github: imdrasil/sam.cr
   jennifer_sqlite3_adapter:
