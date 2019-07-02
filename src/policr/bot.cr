@@ -95,6 +95,7 @@ module Policr
         SettingsCommander,
         StepCommander,
         CleanModeCommander,
+        GomokuCommander,
       ]
 
       commanders.each do |_, command|

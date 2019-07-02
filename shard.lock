@@ -24,6 +24,10 @@ shards:
     github: crystal-loot/exception_page
     version: 0.1.2
 
+  gomoku:
+    github: Hentioe/gomoku.cr
+    commit: f9208b6534b76254fb9d0822be49f4c17299534e
+
   i18n:
     github: TechMagister/i18n.cr
     version: 0.2.0

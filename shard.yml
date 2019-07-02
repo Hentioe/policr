@@ -41,7 +41,8 @@ dependencies:
     github: imdrasil/sam.cr
   jennifer_sqlite3_adapter:
     github: imdrasil/jennifer_sqlite3_adapter
-
+  gomoku:
+    github: Hentioe/gomoku.cr
 development_dependencies:
   ameba:
     github: veelenga/ameba
