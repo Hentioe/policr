@@ -26,7 +26,7 @@ shards:
 
   gomoku:
     github: Hentioe/gomoku.cr
-    commit: f9208b6534b76254fb9d0822be49f4c17299534e
+    commit: ffde53c3c897b41ab7efae284d83ff53069274bd
 
   i18n:
     github: TechMagister/i18n.cr
