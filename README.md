@@ -32,8 +32,8 @@ PolicrBot 的主要作用和目的是排除潜在的加群机器人，它通过�
 
 ## 需知
 
-- 加入我们的讨论组交流机器人开发并建设社区：[PolicrBot Community](https://t.me/policr_community)
-- 务必关注功能更新频道掌握最新的变化和通知：[PolicrBot Changelog](https://t.me/policr_changelog)
+- 加入我们的讨论组交流机器人开发并建设社区：[POLICR · 中文社区](https://t.me/policr_community)
+- 务必关注功能更新频道掌握最新的变化和通知：[POLICR · 更新通知](https://t.me/policr_changelog)
 - 最佳的贡献方式是[**反馈有价值的建议**](https://github.com/Hentioe/policr/issues)，而不是试图提交代码
 
 ## TODO
