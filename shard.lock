@@ -46,7 +46,7 @@ shards:
 
   jennifer_sqlite3_adapter:
     github: imdrasil/jennifer_sqlite3_adapter
-    version: 0.1.0
+    version: 0.2.0
 
   kemal:
     github: kemalcr/kemal
