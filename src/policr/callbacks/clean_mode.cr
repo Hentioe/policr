@@ -1,5 +1,5 @@
 module Policr
-  DEFAULT_DELAY_DELETE = 60*90
+  DEFAULT_DELAY_DELETE = 3
 
   class CleanModeCallback < Callback
     alias EnableStatus = Policr::EnableStatus
@@ -33,29 +33,21 @@ module Policr
 
       case name
       when "timeout_verified"
-        cm = get_cm.call DeleteTarget::TimeoutVerified
-        selected = cm.status == EnableStatus::TurnOn.value
-        selected ? cm.update_column(:status, EnableStatus::TurnOff.value) : cm.update_column(:status, EnableStatus::TurnOn.value)
-        text = t "clean_mode.desc"
-        spawn bot.answer_callback_query(query.id)
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        def_target "timeout_verified"
       when "wrong_verified"
-        cm = get_cm.call DeleteTarget::WrongVerified
-        selected = cm.status == EnableStatus::TurnOn.value
-        selected ? cm.update_column(:status, EnableStatus::TurnOff.value) : cm.update_column(:status, EnableStatus::TurnOn.value)
-        text = t "clean_mode.desc"
-        spawn bot.answer_callback_query(query.id)
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
-      when "timeout_delay_time"
-        cm = get_cm.call DeleteTarget::TimeoutVerified
-        sec = cm.delay_sec || DEFAULT_DELAY_DELETE
-        text = t "clean_mode.delay_setting", {target: t("clean_mode.timeout"), hor: (sec.to_f / 3600).round(2)}
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_time_setting_markup(chat_id, DeleteTarget::TimeoutVerified)
-      when "wrong_delay_time"
-        cm = get_cm.call DeleteTarget::WrongVerified
-        sec = cm.delay_sec || DEFAULT_DELAY_DELETE
-        text = t "clean_mode.delay_setting", {target: t("clean_mode.wrong"), hor: (sec.to_f / 3600).round(2)}
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_time_setting_markup(chat_id, DeleteTarget::WrongVerified)
+        def_target "wrong_verified"
+      when "welcome"
+        def_target "welcome"
+      when "from"
+        def_target "from"
+      when "timeout_verified_delay_time"
+        def_delay "timeout_verified"
+      when "wrong_verified_delay_time"
+        def_delay "wrong_verified"
+      when "welcome_delay_time"
+        def_delay "welcome"
+      when "from_delay_time"
+        def_delay "from"
       when "back"
         midcall CleanModeCommander do
           bot.edit_message_text chat_id, message_id: msg.message_id, text: t("clean_mode.desc"), reply_markup: commander.create_markup(chat_id), parse_mode: "markdown"
@@ -63,6 +55,24 @@ module Policr
       else # 失效键盘
         bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
       end
+    end
+
+    macro def_target(target_s)
+      {{ delete_target = target_s.camelcase }}
+      cm = get_cm.call DeleteTarget::{{delete_target.id}}
+      selected = cm.status == EnableStatus::TurnOn.value
+      selected ? cm.update_column(:status, EnableStatus::TurnOff.value) : cm.update_column(:status, EnableStatus::TurnOn.value)
+      text = t "clean_mode.desc"
+      spawn bot.answer_callback_query(query.id)
+      bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+    end
+
+    macro def_delay(target_s)
+      {{ delete_target = target_s.camelcase }}
+      cm = get_cm.call DeleteTarget::{{delete_target.id}}
+      sec = cm.delay_sec || DEFAULT_DELAY_DELETE
+      text = t "clean_mode.delay_setting", {target: t("clean_mode.{{target_s.id}}"), hor: (sec.to_f / 3600).round(2)}
+      bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_time_setting_markup(chat_id, DeleteTarget::{{delete_target.id}})
     end
 
     # macro def_change

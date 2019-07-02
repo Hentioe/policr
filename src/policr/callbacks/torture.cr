@@ -1,6 +1,8 @@
 module Policr
   class TortureCallback < Callback
     alias VerifyStatus = Cache::VerifyStatus
+    alias DeleteTarget = Policr::CleanDeleteTarget
+    alias EnableStatus = Policr::EnableStatus
 
     def initialize(bot)
       super(bot, "Torture")
@@ -148,9 +150,18 @@ module Policr
         spawn {
           sended_msg = bot.send_message(chat_id: chat_id, text: text, reply_to_message_id: reply_id, reply_markup: nil, parse_mode: "markdown")
 
-          if (temp_msg = sended_msg) && !KVStore.record_mode?(chat_id) && !enabled_welcome
-            msg = temp_msg
-            Schedule.after(5.seconds) { bot.delete_message(chat_id, msg.message_id) }
+          if sended_msg && !KVStore.record_mode?(chat_id) && !enabled_welcome
+            msg_id = sended_msg.message_id
+            Schedule.after(5.seconds) { bot.delete_message(chat_id, msg_id) }
+          end
+
+          if sended_msg && enabled_welcome # 根据干净模式数据延迟清理欢迎消息
+            cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == DeleteTarget::Welcome.value) }.first
+            if cm && cm.status == EnableStatus::TurnOn.value
+              delay_sec = cm.delay_sec || DEFAULT_DELAY_DELETE
+              msg_id = sended_msg.message_id
+              Schedule.after(delay_sec.seconds) { bot.delete_message(chat_id, msg_id) }
+            end
           end
         }
       else
@@ -182,7 +193,15 @@ module Policr
           markup << btn_text_list.map { |text| btn.call(text) }
         end
         reply_to_message_id = Cache.find_join_msg_id(user_id, chat_id)
-        bot.send_message(chat_id, t("from.question"), reply_to_message_id: reply_to_message_id, reply_markup: markup)
+        sended_msg = bot.send_message(chat_id, t("from.question"), reply_to_message_id: reply_to_message_id, reply_markup: markup)
+        # 根据干净模式数据延迟清理来源调查
+        if sended_msg && (cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == DeleteTarget::From.value) }.first)
+          if cm && cm.status == EnableStatus::TurnOn.value
+            delay_sec = cm.delay_sec || DEFAULT_DELAY_DELETE
+            msg_id = sended_msg.message_id
+            Schedule.after(delay_sec.seconds) { bot.delete_message(chat_id, msg_id) }
+          end
+        end
       end
     end
 

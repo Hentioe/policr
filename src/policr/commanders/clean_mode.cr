@@ -33,12 +33,19 @@ module Policr
         end
       }
       markup = Markup.new
-      markup << [btn.call("#{symbol.call(DeleteTarget::TimeoutVerified)} #{t("clean_mode.timeout")}", "timeout_verified"),
-                 btn.call("#{t("clean_mode.delay_time")} #{MORE_SYMBOL}", "timeout_delay_time")]
-      markup << [btn.call("#{symbol.call(DeleteTarget::WrongVerified)} #{t("clean_mode.wrong")}", "wrong_verified"),
-                 btn.call("#{t("clean_mode.delay_time")} #{MORE_SYMBOL}", "wrong_delay_time")]
+      def_button_list ["timeout_verified", "wrong_verified", "welcome", "from"]
 
       markup
+    end
+
+    macro def_button_list(target_list)
+      {% for target_s in target_list %}
+        {{ delete_target = target_s.camelcase }}
+        markup << [
+                    btn.call("#{symbol.call(DeleteTarget::{{delete_target.id}})} #{t("clean_mode.{{target_s.id}}")}", {{target_s}}),
+                    btn.call("#{t("clean_mode.delay_time")} #{MORE_SYMBOL}", "{{target_s.id}}_delay_time")
+                  ]
+      {% end %}
     end
   end
 end

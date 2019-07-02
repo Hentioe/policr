@@ -26,7 +26,7 @@ module Policr
 
   # 干净模式删除目标
   enum CleanDeleteTarget
-    Unknown; TimeoutVerified; WrongVerified
+    Unknown; TimeoutVerified; WrongVerified; Welcome; From
   end
 
   enum TimeUnit
