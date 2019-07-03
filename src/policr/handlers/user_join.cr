@@ -154,7 +154,7 @@ module Policr
       end
     end
 
-    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false, photo = false, reply_id : Int32? = nil)
+    def failed(chat_id, message_id, user_id, username, admin : FromUser? = nil, timeout = false, photo = false, reply_id : Int32? = nil)
       Cache.verify_status_clear chat_id, user_id
       bot.log "Username '#{username}' has not been verified and has been banned"
       begin
@@ -173,7 +173,7 @@ module Policr
           unless admin
             timeout ? t("captcha_result.timeout", {user_id: user_id}) : t("captcha_result.wrong", {user_id: user_id})
           else
-            t("captcha_result.admin_ban", {user_id: user_id})
+            t("captcha_result.admin_ban", {user_id: user_id, admin: admin.markdown_link})
           end
 
         result_msg_id =

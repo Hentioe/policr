@@ -11,6 +11,13 @@ module Policr
   alias Button = TelegramBot::InlineKeyboardButton
   alias Markup = TelegramBot::InlineKeyboardMarkup
 
+  def self.display_name(user)
+    name = user.first_name
+    last_name = user.last_name
+    name = last_name ? "#{name} #{last_name}" : name
+    name
+  end
+
   class Bot < TelegramBot::Bot
     private macro midreg(cls)
       {{ cls_name = cls.stringify }}
@@ -188,19 +195,16 @@ module Policr
       msg.chat.type == "supergroup"
     end
 
-    def display_name(user)
-      name = user.first_name
-      last_name = user.last_name
-      name = last_name ? "#{name} #{last_name}" : name
-      name
-    end
-
     def log(text)
       logger.info text
     end
 
     def token
       @token
+    end
+
+    def display_name(user)
+      Policr.display_name user
     end
 
     def parse_error(ex : TelegramBot::APIException)

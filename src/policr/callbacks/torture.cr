@@ -31,9 +31,9 @@ module Policr
           bot.log "The administrator ended the torture by: #{chooese_i}"
           case chooese_i
           when 0
-            passed(query, chat_id, target_user_id, target_username, message_id, admin: true, photo: is_photo, reply_id: join_msg_id)
+            passed(query, chat_id, target_user_id, target_username, message_id, admin: FromUser.new(query.from), photo: is_photo, reply_id: join_msg_id)
           when -1
-            failed(chat_id, message_id, target_user_id, target_username, admin: true, photo: is_photo, reply_id: join_msg_id)
+            failed(chat_id, message_id, target_user_id, target_username, admin: FromUser.new(query.from), photo: is_photo, reply_id: join_msg_id)
           end
         else
           bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
@@ -208,7 +208,7 @@ module Policr
       bot.unban_chat_member(chat_id, target_user_id)
     end
 
-    def failed(chat_id, message_id, user_id, username, admin = false, timeout = false, photo = false, reply_id : Int32? = nil)
+    def failed(chat_id, message_id, user_id, username, admin : FromUser? = nil, timeout = false, photo = false, reply_id : Int32? = nil)
       KVStore.destory_error chat_id, user_id # 销毁错误记录
       midcall UserJoinHandler do
         handler.failed(chat_id, message_id, user_id, username, admin: admin, timeout: timeout, photo: photo, reply_id: reply_id)

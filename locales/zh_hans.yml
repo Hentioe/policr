@@ -58,7 +58,7 @@ halal:
   kick_failed: "╰(〒皿〒)╯ 啥情况，[这枚](http://policr.bluerain.io#halal)清真移除失败了。"
 captcha_result:
   error: "踢不掉[TA](tg://user?id=%{user_id})诶（自己想想什么原因？）……"
-  admin_ban: "(|||ﾟдﾟ) 太残忍了，独裁者直接干掉了[TA](tg://user?id=%{user_id})。"
+  admin_ban: "(|||ﾟдﾟ) 太残忍了，[TA](tg://user?id=%{user_id})还没来得及验证就被丧心病狂的 %{admin} 直接干掉了！"
   timeout: "(〒︿〒) [TA](tg://user?id=%{user_id})验证超时（[为什么？](https://policr.bluerain.io#verify_failure)），永久的离开了我们。"
   wrong: "(〒︿〒) [TA](tg://user?id=%{user_id})验证错误（[为什么？](https://policr.bluerain.io#verify_failure)），永久的离开了我们。"
 restrict_bot_menu:
@@ -71,7 +71,7 @@ add_from_admin: "管理员拉入，自动放行。"
 only_group: "此指令仅在群组中可用。"
 only_private: "此指令仅在私聊中可用。"
 no_managed_groups: "无受管群组，无法申请后台令牌。"
-unban_message: "o(￣▽￣)ｄ [TA](tg://user?id=%{user_id})随时可以重新回来。"
+unban_message: "o(￣▽￣)ｄ [TA](tg://user?id=%{user_id})被善良的 %{admin} 解封了，随时可以重新回来。"
 add_to_whitelist: "o(￣▽￣)ｄ 已被解封并加入到[白名单](https://policr.bluerain.io#whitelist)，下次不会再干[TA](tg://user?id=%{user_id})了。"
 unban_error: "解封失败，"
 unban_bot: "已解除限制，希望是个有用的机器人。"
