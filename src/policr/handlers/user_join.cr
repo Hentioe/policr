@@ -190,12 +190,8 @@ module Policr
           end
         if result_msg_id && !admin # 根据干净模式数据延迟清理消息
           delete_target = timeout ? DeleteTarget::TimeoutVerified : DeleteTarget::WrongVerified
-          cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == delete_target.value) }.first
-          if cm && cm.status == EnableStatus::TurnOn.value # 如果存在本消息类型的延迟删除设置，设定定时任务
-            delay_sec = cm.delay_sec || DEFAULT_DELAY_DELETE
-            msg_id = result_msg_id
-            Schedule.after(delay_sec.seconds) { bot.delete_message(chat_id, msg_id) }
-          end
+          msg_id = result_msg_id
+          Model::CleanMode.working(chat_id, delete_target) { bot.delete_message(chat_id, msg_id) }
         end
       end
     end

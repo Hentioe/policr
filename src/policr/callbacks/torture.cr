@@ -156,12 +156,8 @@ module Policr
           end
 
           if sended_msg && enabled_welcome # 根据干净模式数据延迟清理欢迎消息
-            cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == DeleteTarget::Welcome.value) }.first
-            if cm && cm.status == EnableStatus::TurnOn.value
-              delay_sec = cm.delay_sec || DEFAULT_DELAY_DELETE
-              msg_id = sended_msg.message_id
-              Schedule.after(delay_sec.seconds) { bot.delete_message(chat_id, msg_id) }
-            end
+            msg_id = sended_msg.message_id
+            Model::CleanMode.working(chat_id, DeleteTarget::Welcome) { bot.delete_message(chat_id, msg_id) }
           end
         }
       else
@@ -195,12 +191,9 @@ module Policr
         reply_to_message_id = Cache.find_join_msg_id(user_id, chat_id)
         sended_msg = bot.send_message(chat_id, t("from.question"), reply_to_message_id: reply_to_message_id, reply_markup: markup)
         # 根据干净模式数据延迟清理来源调查
-        if sended_msg && (cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == DeleteTarget::From.value) }.first)
-          if cm && cm.status == EnableStatus::TurnOn.value
-            delay_sec = cm.delay_sec || DEFAULT_DELAY_DELETE
-            msg_id = sended_msg.message_id
-            Schedule.after(delay_sec.seconds) { bot.delete_message(chat_id, msg_id) }
-          end
+        if sended_msg
+          msg_id = sended_msg.message_id
+          Model::CleanMode.working(chat_id, DeleteTarget::From) { bot.delete_message(chat_id, msg_id) }
         end
       end
     end
