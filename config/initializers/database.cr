@@ -1,3 +1,4 @@
+require "json" # 下一个 Sqlite3 适配器将会移除
 require "jennifer"
 require "jennifer_sqlite3_adapter"
 require "../../src/policr/cli"
