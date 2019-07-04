@@ -25,8 +25,15 @@ module Policr
           KVStore.dynamic?(chat_id) ? CHECKED : UNCHECKED
         when :image
           KVStore.enabled_image?(chat_id) ? CHECKED : UNCHECKED
+        when :chessboard
+          KVStore.enabled_chessboard?(chat_id) ? CHECKED : UNCHECKED
         when :default
-          (!KVStore.custom(chat_id) && !KVStore.dynamic?(chat_id) && !KVStore.enabled_image?(chat_id)) ? CHECKED : UNCHECKED
+          (
+            !KVStore.custom(chat_id) &&
+            !KVStore.dynamic?(chat_id) &&
+            !KVStore.enabled_image?(chat_id) &&
+            !KVStore.enabled_chessboard?(chat_id)
+          ) ? CHECKED : UNCHECKED
         else
           UNCHECKED
         end
@@ -44,11 +51,13 @@ module Policr
       custom_text = make_text.call :custom
       dynamic_text = make_text.call :dynamic
       image_text = make_text.call :image
+      chessboard_text = make_text.call :chessboard
 
       markup << [btn.call(default_text, "default")]
       markup << [btn.call(custom_text, "custom")]
       markup << [btn.call(dynamic_text, "dynamic")]
       markup << [btn.call(image_text, "image")]
+      markup << [btn.call(chessboard_text, "chessboard")]
       markup
     end
   end

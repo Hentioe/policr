@@ -174,6 +174,7 @@ module Policr::KVStore
     if db = @@db
       disable_custom chat_id
       disable_image chat_id
+      disable_chessboard chat_id
       db.put("#{DYNAMIC_CAPTCHA}_#{chat_id}", 1)
     end
   end
@@ -195,6 +196,31 @@ module Policr::KVStore
       disable_custom chat_id
       disable_dynamic chat_id
       disable_image chat_id
+      disable_chessboard chat_id
+    end
+  end
+
+  # 棋局验证
+  CHESSBOARD_CAPTCHA = "chessboard"
+
+  def enable_chessboard(chat_id)
+    if db = @@db
+      disable_custom chat_id
+      disable_dynamic chat_id
+      disable_image chat_id
+      db.put "#{CHESSBOARD_CAPTCHA}_#{chat_id}", 1
+    end
+  end
+
+  def disable_chessboard(chat_id)
+    if db = @@db
+      db.delete "#{CHESSBOARD_CAPTCHA}_#{chat_id}"
+    end
+  end
+
+  def enabled_chessboard?(chat_id)
+    if (db = @@db) && (status = db.get?("#{CHESSBOARD_CAPTCHA}_#{chat_id}"))
+      status.to_i == 1
     end
   end
 
@@ -204,6 +230,7 @@ module Policr::KVStore
     if db = @@db
       disable_custom chat_id
       disable_dynamic chat_id
+      disable_chessboard chat_id
       db.put "#{IMAGE_CAPTCHA}_#{chat_id}", 1
     end
   end

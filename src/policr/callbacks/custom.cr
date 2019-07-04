@@ -58,6 +58,11 @@ module Policr
         text = t "captcha.image"
         bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
         bot.answer_callback_query(query.id)
+      when "chessboard"
+        KVStore.enable_chessboard chat_id
+        text = t "captcha.chessboard"
+        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.answer_callback_query(query.id)
       when "custom"
         # 缓存此消息
         Cache.carying_custom_msg msg.message_id
