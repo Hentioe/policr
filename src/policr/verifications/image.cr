@@ -17,7 +17,7 @@ module Policr
         [true_image.name],
       ]
       file_path = true_image.random_file
-      Question.image_build(@true_index, title, answers, file_path).discord
+      Question.image_build(title, answers, file_path).discord
     end
 
     def true_index

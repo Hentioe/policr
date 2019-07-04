@@ -6,7 +6,7 @@ module Policr
       title = t "questions.title"
       answers = [[t("questions.answer_1")],
                  [t("questions.answer_2")]]
-      Question.normal_build(@true_index, title, answers).discord
+      Question.normal_build(title, answers).discord
     end
 
     def true_index

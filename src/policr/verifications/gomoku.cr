@@ -8,12 +8,9 @@ module Policr
 
     make do
       gomoku = Gomoku::Builder.new(SIZE).make
-      gomoku.print
       answers = Array(Array(String)).new
       y, x = gomoku.victory_coords
-      gomoku.print
-      @true_index = (y * SIZE) + x
-      puts @true_index
+      @true_index = (y * SIZE) + x + 1
       gomoku.board.each_with_index do |row, y|
         answer_line = Array(String).new
         btn_row = row.map_with_index do |cell, x|
@@ -31,11 +28,10 @@ module Policr
         answers.push answer_line
       end
 
-      Question.normal_build(@true_index || 0, "使用五子棋规则：让 ● 子取得胜利", answers)
+      Question.normal_build("使用五子棋规则：让 ● 子取得胜利", answers)
     end
 
     def true_index
-      puts @true_index
       @true_index
     end
   end

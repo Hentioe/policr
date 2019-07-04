@@ -11,7 +11,7 @@ module Policr
       title = "#{ln} + #{rn} = ?"
       answers = [error_ans.map { |i| i.to_s }.push((ln + rn).to_s)]
 
-      Question.normal_build(@true_index, title, answers).discord
+      Question.normal_build(title, answers).discord
     end
 
     def true_index

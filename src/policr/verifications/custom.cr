@@ -6,7 +6,7 @@ module Policr
       content = KVStore.custom(@chat_id) || raise not_conent
       @true_index, title, answers = content
       answers = answers.map { |answer| [answer] }
-      Question.normal_build(content.[0], title, answers).discord
+      Question.normal_build(title, answers).discord
     end
 
     def true_index

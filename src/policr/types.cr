@@ -54,25 +54,24 @@ module Policr
 
   class Question
     getter type : QuestionType
-    getter true_index : Int32
     getter title : String
     getter answers : Array(Array(String))
     getter file_path : String?
-    getter discord : Bool = false
+    getter is_discord : Bool = false
 
-    def initialize(@type, @true_index, @title, @answers, @file_path = nil)
+    def initialize(@type, @title, @answers, @file_path = nil)
     end
 
-    def self.normal_build(true_index, title, answers)
-      Question.new(QuestionType::Normal, true_index, title, answers)
+    def self.normal_build(title, answers)
+      Question.new(QuestionType::Normal, title, answers)
     end
 
-    def self.image_build(true_index, title, answers, file_path)
-      Question.new(QuestionType::Image, true_index, title, answers, file_path)
+    def self.image_build(title, answers, file_path)
+      Question.new(QuestionType::Image, title, answers, file_path)
     end
 
     def discord
-      @discord = true
+      @is_discord = true
       self
     end
   end

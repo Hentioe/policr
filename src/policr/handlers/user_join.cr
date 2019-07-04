@@ -130,10 +130,10 @@ module Policr
           i += 1
           btn.call(answer, i)
         end
-        tmp_ans = tmp_ans.shuffle if q.discord
+        tmp_ans = tmp_ans.shuffle if q.is_discord
         tmp_ans
       end
-      answer_list = answer_list.shuffle if q.discord # 乱序答案列表
+      answer_list = answer_list.shuffle if q.is_discord # 乱序答案列表
       answer_list.each { |ans_btns| markup << ans_btns }
       pass_text = t("admin_ope_menu.pass")
       ban_text = t("admin_ope_menu.ban")
