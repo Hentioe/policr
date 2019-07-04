@@ -1,25 +1,21 @@
 module Policr
   class DynamicVerification < Verification
+    @true_index = 6
+
     make do
-      ln = Random.rand(9) + 1
-      rn = Random.rand(9) + 1
-      {
-        3,
-        "#{ln} + #{rn} = ?",
-        [
-          # 注意！避免错误答案随机数重复
-          # 错误答案 19 - 28
-          # 错误答案 29 - 38
-          # 正确答案 1 - 18
-          Random.rand(19..28).to_s,
-          Random.rand(29..38).to_s,
-          (ln + rn).to_s,
-        ],
-      }
+      ln = Random.rand(1...50)
+      rn = Random.rand(1...50)
+      true_ans = ln + rn
+      error_optional = (2..98).to_a.select { |i| i != true_ans }
+      error_ans = (0..4).map { error_optional.delete_at Random.rand(0...error_optional.size) }
+      title = "#{ln} + #{rn} = ?"
+      answers = [error_ans.map { |i| i.to_s }.push((ln + rn).to_s)]
+
+      Question.normal_build(@true_index, title, answers).discord
     end
 
     def true_index
-      3
+      @true_index
     end
   end
 end

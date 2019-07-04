@@ -89,13 +89,14 @@ module Policr
           DefaultVerification.new(**params)
         end
 
-      catpcha_data = verification.make
+      q = verification.make
 
-      _, title, answers = catpcha_data
+      title = q.title
+      answers = q.answers
 
       image =
         if send_image
-          answers.delete_at (answers.size - 1)
+          q.file_path
         end
 
       # 禁言用户/异步调用
@@ -123,8 +124,17 @@ module Policr
         Button.new(text: text, callback_data: "Torture:#{member_id}:#{username}:#{chooese_id}:#{send_image ? 1 : 0}")
       }
       markup = Markup.new
-      answer_list = answers.map_with_index { |answer, i| [btn.call(answer, i + 1)] }
-      answer_list.shuffle.each { |answer_btn| markup << answer_btn } # 乱序答案列表
+      i = 0
+      answer_list = answers.map do |answer_line|
+        tmp_ans = answer_line.map do |answer|
+          i += 1
+          btn.call(answer, i)
+        end
+        tmp_ans = tmp_ans.shuffle if q.discord
+        tmp_ans
+      end
+      answer_list = answer_list.shuffle if q.discord # 乱序答案列表
+      answer_list.each { |ans_btns| markup << ans_btns }
       pass_text = t("admin_ope_menu.pass")
       ban_text = t("admin_ope_menu.ban")
       markup << [btn.call(pass_text, 0), btn.call(ban_text, -1)]

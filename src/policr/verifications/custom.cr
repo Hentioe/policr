@@ -1,15 +1,16 @@
 module Policr
   class CustomVerification < Verification
-    @content : Tuple(Int32, String, Array(String))?
+    @true_index : Int32?
 
     make do
-      @content = KVStore.custom(@chat_id)
-      @content || raise not_conent
+      content = KVStore.custom(@chat_id) || raise not_conent
+      @true_index, title, answers = content
+      answers = answers.map { |answer| [answer] }
+      Question.normal_build(content.[0], title, answers).discord
     end
 
     def true_index
-      content = @content || raise not_conent
-      content.[0]
+      @true_index || raise not_conent
     end
 
     private def not_conent

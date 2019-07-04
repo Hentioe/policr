@@ -47,4 +47,33 @@ module Policr
       end
     end
   end
+
+  enum QuestionType
+    Normal; Image
+  end
+
+  class Question
+    getter type : QuestionType
+    getter true_index : Int32
+    getter title : String
+    getter answers : Array(Array(String))
+    getter file_path : String?
+    getter discord : Bool = false
+
+    def initialize(@type, @true_index, @title, @answers, @file_path = nil)
+    end
+
+    def self.normal_build(true_index, title, answers)
+      Question.new(QuestionType::Normal, true_index, title, answers)
+    end
+
+    def self.image_build(true_index, title, answers, file_path)
+      Question.new(QuestionType::Image, true_index, title, answers, file_path)
+    end
+
+    def discord
+      @discord = true
+      self
+    end
+  end
 end
