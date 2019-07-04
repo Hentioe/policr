@@ -73,21 +73,21 @@ module Policr
       params = {chat_id: chat_id}
 
       send_image = false
-      verification =
-        if KVStore.custom chat_id
-          # 自定义验证
-          CustomVerification.new(**params)
-        elsif KVStore.dynamic? chat_id
-          # 动态验证
-          DynamicVerification.new(**params)
-        elsif Cache.get_images.size >= 3 && KVStore.enabled_image?(chat_id)
-          send_image = true
-          # 图片验证
-          ImageVerification.new(**params)
-        else
-          # 默认验证
-          DefaultVerification.new(**params)
-        end
+      verification = GomokuVerification.new(**params)
+      # if KVStore.custom chat_id
+      #   # 自定义验证
+      #   CustomVerification.new(**params)
+      # elsif KVStore.dynamic? chat_id
+      #   # 动态验证
+      #   DynamicVerification.new(**params)
+      # elsif Cache.get_images.size >= 3 && KVStore.enabled_image?(chat_id)
+      #   send_image = true
+      #   # 图片验证
+      #   ImageVerification.new(**params)
+      # else
+      #   # 默认验证
+      #   DefaultVerification.new(**params)
+      # end
 
       q = verification.make
 
