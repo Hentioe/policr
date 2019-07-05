@@ -7,6 +7,7 @@ alias UserRole = Policr::ReportUserRole
 alias VoteType = Policr::VoteType
 alias EnableStatus = Policr::EnableStatus
 alias DeleteTarget = Policr::CleanDeleteTarget
+alias SubfunctionType = Policr::SubfunctionType
 
 describe Policr do
   it "arabic characters match" do
@@ -80,6 +81,26 @@ describe Policr do
     })
     cm1.should be_truthy
     r = Model::CleanMode.delete(cm1.id)
+    r.should be_truthy
+    if r
+      r.rows_affected.should eq(1)
+    end
+
+    # 子功能
+    sb1 = Model::Subfunction.create({
+      chat_id: from_chat_id,
+      type:    SubfunctionType::BanHalal.value,
+      status:  EnableStatus::TurnOff.value,
+    })
+
+    is_disable = Model::Subfunction.disabled?(from_chat_id, SubfunctionType::UserJoin)
+    is_disable.should eq(false)
+
+    is_disable = Model::Subfunction.disabled?(from_chat_id, SubfunctionType::BanHalal)
+    is_disable.should eq(true)
+
+    sb1.should be_truthy
+    r = Model::Subfunction.delete(sb1.id)
     r.should be_truthy
     if r
       r.rows_affected.should eq(1)

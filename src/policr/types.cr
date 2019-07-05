@@ -29,8 +29,14 @@ module Policr
     Unknown; TimeoutVerified; WrongVerified; Welcome; From
   end
 
+  # 时间单位
   enum TimeUnit
     Sec; Min; Hour
+  end
+
+  # 子功能类型
+  enum SubfunctionType
+    Unknown; UserJoin; BotJoin; BanHalal; Blacklist
   end
 
   class FromUser

@@ -8,7 +8,7 @@ require "i18n"
 
 module Policr
   COMMIT     = {{ `git rev-parse --short HEAD`.stringify.strip }}
-  VERSION    = "0.1.0-dev (#{COMMIT})"
+  VERSION    = "0.1.2-dev (#{COMMIT})"
   ENV_PREFIX = "POLICR_BOT"
 
   def self.start
