@@ -54,7 +54,11 @@ module Policr
     def detect_blacklist(msg, member)
       report = Model::Report.where { (_target_user_id == member.id) & (_status == ReportStatus::Accept.value) }.first
       if report # 处于黑名单中
-        text = "已拦截问题用户（#{FromUser.new(member).markdown_link}）加入本群。[在这里](https://t.me/#{bot.snapshot_channel}/#{report.post_id})存放有 TA 发表垃圾消息的记录。\n\n这些用户都是经过大家的举报和公投决定进入黑名单的，请安心。"
+        text = t "blacklist.was_blocked", {
+          user:             FromUser.new(member).markdown_link,
+          snapshot_channel: bot.snapshot_channel,
+          post_id:          report.post_id,
+        }
         spawn bot.kick_chat_member(msg.chat.id, member.id)
         bot.send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown")
         true

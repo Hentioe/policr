@@ -22,7 +22,7 @@ module Policr
 
     I18n.load_path += ["locales"]
     I18n.init
-    I18n.default_locale = "zh_hans"
+    I18n.default_locale = "zh-hans"
 
     logger = Logger.new(STDOUT)
     logger.level = Logger::DEBUG

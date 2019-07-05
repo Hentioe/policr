@@ -28,7 +28,7 @@ module Policr
         answers.push answer_line
       end
 
-      Question.normal_build("使用五子棋规则：让 ● 子取得胜利", answers)
+      Question.normal_build("使用五子棋规则：落一颗 ● （实心圆）子取得胜利", answers)
     end
 
     def true_index
