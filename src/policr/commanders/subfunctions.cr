@@ -1,5 +1,7 @@
 module Policr
   class SubfunctionsCommander < Commander
+    alias FunctionType = SubfunctionType
+
     def initialize(bot)
       super(bot, "subfunctions")
     end
@@ -17,8 +19,8 @@ module Policr
     UNSELECTED = "□"
 
     def create_markup(chat_id)
-      toggle_btn = ->(text : String, name : String) {
-        Button.new(text: text, callback_data: "Subfunctions:#{name}:toggle")
+      toggle_btn = ->(text : String, type : FunctionType) {
+        Button.new(text: text, callback_data: "Subfunctions:#{type.value}:toggle")
       }
 
       markup = Markup.new
@@ -31,9 +33,10 @@ module Policr
     end
 
     private macro def_toggle(type_s)
-      %symbol = Model::Subfunction.disabled?(chat_id, SubfunctionType::{{type_s.camelcase.id}}) ? UNSELECTED : SELECTED
+      {% function_type = type_s.camelcase.id %}
+      %symbol = Model::Subfunction.disabled?(chat_id, FunctionType::{{function_type.id}}) ? UNSELECTED : SELECTED
       [
-        toggle_btn.call(%symbol + " " + t("subfunctions.{{type_s.id}}"), {{type_s}})
+        toggle_btn.call(%symbol + " " + t("subfunctions.{{type_s.id}}"), FunctionType::{{function_type.id}})
       ]
     end
   end

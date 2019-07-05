@@ -88,6 +88,7 @@ module Policr
         VotingCallback,
         CleanModeCallback,
         DelayTimeCallback,
+        SubfunctionsCallback,
       ]
 
       # 注册指令模块
