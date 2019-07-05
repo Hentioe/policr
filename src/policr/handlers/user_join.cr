@@ -107,18 +107,10 @@ module Policr
 
       torture_sec = KVStore.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
       question =
-        if send_image
-          if torture_sec > 0
-            hint = t("torture.caption", {torture_sec: torture_sec, title: title, user_id: member_id})
-          else
-            t("torture.caption_no_time", {user_id: member_id})
-          end
+        if torture_sec > 0
+          hint = t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title})
         else
-          if torture_sec > 0
-            hint = t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title})
-          else
-            t("torture.no_time_reply", {user_id: member_id, title: title})
-          end
+          t("torture.no_time_reply", {user_id: member_id, title: title})
         end
       question = (t("torture.re") + question) if re
       reply_id = msg_id
