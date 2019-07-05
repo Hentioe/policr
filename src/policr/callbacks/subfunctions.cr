@@ -42,12 +42,10 @@ module Policr
     end
 
     macro def_toggle(type_s)
-      puts {{type_s}}
       {{ function_type = type_s.camelcase }}
       sf = get_sf.call FunctionType::{{function_type.id}}
       spawn bot.answer_callback_query(query.id)
       status = sf.status == EnableStatus::TurnOff.value ? EnableStatus::TurnOn : EnableStatus::TurnOff
-      puts status
       sf.update_column(:status, status.value)
       text = t "subfunctions.desc"
       midcall SubfunctionsCommander do

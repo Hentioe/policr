@@ -6,6 +6,7 @@ module Policr
       all_pass? [
         KVStore.enable_examine?(msg.chat.id),
         msg.new_chat_members,
+        !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BotJoin), # 未关闭子功能
       ]
     end
 

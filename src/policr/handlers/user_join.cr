@@ -23,13 +23,22 @@ module Policr
             end
             return
           end
+
+          # 检测黑名单
+          is_blt = detect_blacklist(msg, member) unless Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::Blacklist)
+          return if is_blt # 如果是黑名单则无需后续处理
           # 关联并缓存入群消息
           Cache.associate_join_msg(member.id, msg.chat.id, msg.message_id)
           # 判断清真
           name = bot.display_name(member)
 
           midcall HalalMessageHandler do
-            handler.is_halal(name) ? handler.kick_halal_with_receipt(msg, member) : start_torture(msg, member)
+            if !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal) && handler.is_halal(name)
+              # 未关闭封杀清真子功能
+              handler.kick_halal_with_receipt(msg, member)
+            else
+              start_torture(msg, member)
+            end
           end
         end
       end
@@ -42,9 +51,24 @@ module Policr
       markup
     end
 
+    def detect_blacklist(msg, member)
+      report = Model::Report.where { (_target_user_id == member.id) & (_status == ReportStatus::Accept.value) }.first
+      if report # 处于黑名单中
+        text = "已拦截问题用户（#{FromUser.new(member).markdown_link}）加入本群。[在这里](https://t.me/#{bot.snapshot_channel}/#{report.post_id})存放有 TA 发表垃圾消息的记录。\n\n这些用户都是经过大家的举报和公投决定进入黑名单的，请安心。"
+        spawn bot.kick_chat_member(msg.chat.id, member.id)
+        bot.send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown")
+        true
+      else
+        false
+      end
+    end
+
     AFTER_EVENT_SEC = 60 * 15
 
     def start_torture(msg, member)
+      if Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::UserJoin) # 已关闭子功能
+        return
+      end
       if (Time.utc.to_unix - msg.date) > AFTER_EVENT_SEC
         # 事后审核不立即验证，采取人工处理
         # 禁言用户/异步调用

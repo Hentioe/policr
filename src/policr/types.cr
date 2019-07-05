@@ -7,6 +7,7 @@ module Policr
     Unknown; Spam; Halal
   end
 
+  # 举报状态
   enum ReportStatus
     Unknown; Begin; Reject; Accept; Unban
   end

@@ -10,6 +10,7 @@ module Policr
     def match(msg)
       all_pass? [
         KVStore.enable_examine?(msg.chat.id),
+        !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal), # 未关闭子功能
         msg.from,
       ]
     end
