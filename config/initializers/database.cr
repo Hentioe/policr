@@ -12,7 +12,7 @@ Jennifer::Config.configure do |conf|
   conf.host = Policr::CLI::Config.instance.dpath
   conf.db = "#{env}.db"
 
-  conf.logger.level = Logger::DEBUG
+  conf.logger.level = Logger::INFO
 end
 
 Jennifer::Config.from_uri(ENV["DATABASE_URI"]) if ENV.has_key?("DATABASE_URI")
