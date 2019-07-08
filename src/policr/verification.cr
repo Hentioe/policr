@@ -16,10 +16,10 @@ module Policr
     end
 
     # 返回正确答案索引
-    abstract def true_index
+    abstract def indeces
 
     def storage(msg_id)
-      KVStore.storage_true_index(@chat_id, msg_id, true_index)
+      Model::TrueIndex.add(@chat_id, msg_id, indeces)
     end
   end
 end

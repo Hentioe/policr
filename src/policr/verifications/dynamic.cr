@@ -1,6 +1,6 @@
 module Policr
   class DynamicVerification < Verification
-    @true_index = 6
+    @indeces = [6]
 
     make do
       ln = Random.rand(1...50)
@@ -14,8 +14,8 @@ module Policr
       Question.normal_build(title, answers).discord
     end
 
-    def true_index
-      @true_index
+    def indeces
+      @indeces
     end
   end
 end

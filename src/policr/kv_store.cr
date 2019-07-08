@@ -10,6 +10,8 @@ module Policr::KVStore
     @@db = RocksDB::DB.new("#{path}/rocksdb")
   end
 
+  TRUE_INDEX = "true_index" # 已废弃，储存正确答案索引
+
   private def put(key, value)
     if db = @@db
       db.put(key, value)
@@ -153,12 +155,12 @@ module Policr::KVStore
       # 删除动态验证
       db.delete("#{DYNAMIC_CAPTCHA}_#{chat_id}")
       lines = text.split("\n").map { |line| line.strip }.select { |line| line != "" }
-      true_index = -1
+      true_indices = Array(Int32).new
       answers = lines[1..].map_with_index do |line, index|
-        true_index = index + 1 if line.starts_with?("+")
+        true_indices.push(index + 1) if line.starts_with?("+")
         line[1..]
       end
-      {true_index, lines[0], answers}
+      {true_indices, lines[0], answers}
     end
   end
 
@@ -324,22 +326,6 @@ module Policr::KVStore
   def get_welcome(chat_id)
     if db = @@db
       db.get? "#{WELCOME}_#{chat_id}"
-    end
-  end
-
-  TRUE_INDEX = "true_index"
-
-  def storage_true_index(chat_id, msg_id, index)
-    if db = @@db
-      db.put "#{TRUE_INDEX}_#{chat_id}_#{msg_id}", index
-    end
-  end
-
-  def get_true_index(chat_id, msg_id)
-    if (db = @@db) && (index = db.get? "#{TRUE_INDEX}_#{chat_id}_#{msg_id}")
-      # 清理验证索引
-      db.delete "#{TRUE_INDEX}_#{chat_id}_#{msg_id}"
-      index.to_i
     end
   end
 

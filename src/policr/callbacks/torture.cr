@@ -45,15 +45,7 @@ module Policr
           return
         end
 
-        true_index =
-          if index = KVStore.get_true_index(chat_id, msg.message_id)
-            index
-          else
-            bot.log "Did not get the true index"
-            chooese_i
-          end
-
-        if chooese_i == true_index # 通过验证
+        if Model::TrueIndex.contains?(chat_id, msg.message_id, chooese) # 通过验证
           status = Cache.verify?(chat_id, target_user_id)
           unless status
             Cache.verify_init chat_id, target_user_id

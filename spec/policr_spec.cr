@@ -105,5 +105,18 @@ describe Policr do
     if r
       r.rows_affected.should eq(1)
     end
+
+    # 正确答案索引
+    ti1 = Model::TrueIndex.create({
+      chat_id: from_chat_id,
+      msg_id:  target_msg_id,
+      indices: [1, 2, 3, 4].join(","),
+    })
+    ti1.should be_truthy
+    r = Model::TrueIndex.delete(ti1.id)
+    r.should be_truthy
+    if r
+      r.rows_affected.should eq(1)
+    end
   end
 end

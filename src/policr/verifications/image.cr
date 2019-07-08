@@ -1,6 +1,6 @@
 module Policr
   class ImageVerification < Verification
-    @true_index = 3
+    @indeces = [3]
 
     make do
       temp_images = Cache.get_images.clone
@@ -20,8 +20,8 @@ module Policr
       Question.image_build(title, answers, file_path).discord
     end
 
-    def true_index
-      @true_index
+    def indeces
+      @indeces
     end
   end
 end

@@ -1,6 +1,6 @@
 module Policr
   class DefaultVerification < Verification
-    @true_index = 1
+    @indeces = [1]
 
     make do
       title = t "questions.title"
@@ -9,8 +9,8 @@ module Policr
       Question.normal_build(title, answers).discord
     end
 
-    def true_index
-      @true_index
+    def indeces
+      @indeces
     end
   end
 end
