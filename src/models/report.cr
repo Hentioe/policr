@@ -18,5 +18,9 @@ module Policr::Model
     )
 
     has_many :votes, Vote
+
+    def self.check_blacklist(user_id)
+      Model::Report.where { (_target_user_id == user_id) & (_status == ReportStatus::Accept.value) }.first
+    end
   end
 end

@@ -52,8 +52,7 @@ module Policr
     end
 
     def detect_blacklist(msg, member)
-      report = Model::Report.where { (_target_user_id == member.id) & (_status == ReportStatus::Accept.value) }.first
-      if report # 处于黑名单中
+      if report = Model::Report.check_blacklist(member.id) # 处于黑名单中
         text = t "blacklist.was_blocked", {
           user:             FromUser.new(member).markdown_link,
           snapshot_channel: bot.snapshot_channel,
