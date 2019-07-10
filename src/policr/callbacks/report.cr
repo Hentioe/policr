@@ -38,7 +38,7 @@ module Policr
         return
       end
 
-      # 如果举报人具备权限，删除消息并封禁用户。并获得举报人角色
+      # 并获得举报人角色
       role =
         if bot.is_admin?(chat_id, from_user_id)
           if bot.has_permission?(chat_id, from_user_id, :creator, dirty: false)
@@ -51,10 +51,6 @@ module Policr
         else
           UserRole::Member
         end
-      unless role == UserRole::Member # 具备权限
-        spawn bot.delete_message(chat_id, target_msg_id)
-        spawn bot.kick_chat_member(chat_id, target_user_id)
-      end
 
       # 生成举报并入库
       if snapshot_message
@@ -62,6 +58,7 @@ module Policr
           data =
             {
               author_id:          from_user_id.to_i64,
+              post_id:            0, # 临时 post id，举报消息发布以后更新
               target_snapshot_id: snapshot_message.message_id,
               target_user_id:     target_user_id.to_i64,
               target_msg_id:      target_msg_id,
@@ -107,7 +104,8 @@ module Policr
       end
 
       # 响应举报生成结果
-      if voting_msg
+      if voting_msg && r
+        r.update_column(:post_id, voting_msg.message_id) # 更新举报消息 ID
         text = t "report.generated", {
           voting_channel:    bot.voting_channel,
           voting_message_id: voting_msg.message_id,
@@ -125,6 +123,12 @@ module Policr
           _, reason = bot.parse_error(e)
           bot.answer_callback_query(query.id, text: t("report.update_result_error", {reason: reason}))
           return
+        end
+
+        # 若举报人具备权限，删除消息并封禁用户
+        unless role == UserRole::Member
+          spawn bot.delete_message(chat_id, target_msg_id)
+          spawn bot.kick_chat_member(chat_id, target_user_id)
         end
       end
     end

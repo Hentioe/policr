@@ -31,6 +31,7 @@ describe Policr do
 
   it "crud" do
     author_id = 340396281.to_i64
+    post_id = 18
     target_snapshot_id = 29
     target_user_id = 871769395.to_i64
     target_msg_id = 234
@@ -41,6 +42,7 @@ describe Policr do
 
     r1 = Model::Report.create({
       author_id:          author_id,
+      post_id:            post_id,
       target_snapshot_id: target_snapshot_id,
       target_user_id:     target_user_id,
       target_msg_id:      target_msg_id,
