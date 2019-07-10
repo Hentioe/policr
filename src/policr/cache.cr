@@ -21,6 +21,16 @@ module Policr::Cache
   @@image_list = Array(Image).new
   # 缓存管理员列表
   @@admins = Hash(Int64, Array(TelegramBot::ChatMember)).new
+  # 回复举报详情
+  @@report_detail_msg = Set(String).new
+
+  def carving_torture_report_detail_msg(chat_id, msg_id)
+    @@report_detail_msg << "#{chat_id}_#{msg_id}"
+  end
+
+  def report_detail_msg?(chat_id, msg_id)
+    @@report_detail_msg.includes? "#{chat_id}_#{msg_id}"
+  end
 
   def carving_torture_time_msg_sec(message_id)
     @@torture_time_msg[message_id] = TortureTimeType::Sec

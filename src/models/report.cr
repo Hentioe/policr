@@ -13,6 +13,7 @@ module Policr::Model
       status: Int32,
       role: Int32,
       from_chat_id: Int64,
+      detail: String?,
       created_at: Time?,
       updated_at: Time?
     )

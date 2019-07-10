@@ -71,6 +71,8 @@ module Policr
         TortureTimeSettingHandler,
         CustomHandler,
         HalalMessageHandler,
+        PrivateForwardHandler,
+        ReportDetailHandler,
       ]
 
       # 注册回调模块
@@ -89,6 +91,8 @@ module Policr
         CleanModeCallback,
         DelayTimeCallback,
         SubfunctionsCallback,
+        PrivateForwardCallback,
+        PrivateForwardReportCallback,
       ]
 
       # 注册指令模块
