@@ -61,14 +61,14 @@ module Policr
         begin
           data =
             {
-              author_id:      from_user_id.to_i64,
-              post_id:        snapshot_message.message_id,
-              target_user_id: target_user_id.to_i64,
-              target_msg_id:  target_msg_id,
-              reason:         reason_value,
-              status:         Status::Begin.value,
-              role:           role.value,
-              from_chat_id:   chat_id.to_i64,
+              author_id:          from_user_id.to_i64,
+              target_snapshot_id: snapshot_message.message_id,
+              target_user_id:     target_user_id.to_i64,
+              target_msg_id:      target_msg_id,
+              reason:             reason_value,
+              status:             Status::Begin.value,
+              role:               role.value,
+              from_chat_id:       chat_id.to_i64,
             }
           r = Model::Report.create!(data)
         rescue e : Exception
@@ -79,7 +79,7 @@ module Policr
       end
       # 生成投票
       if r
-        text = make_text(r.author_id, r.role, r.post_id, bot.snapshot_channel, target_user_id, r.reason, r.status)
+        text = make_text(r.author_id, r.role, r.target_snapshot_id, bot.snapshot_channel, target_user_id, r.reason, r.status)
 
         report_id = r.id
         markup = Markup.new
@@ -129,11 +129,11 @@ module Policr
       end
     end
 
-    def make_text(authod_id, role_value, post_id, snapshot_channel, target_id, reason_value, status_value)
+    def make_text(authod_id, role_value, snapshot_id, snapshot_channel, target_id, reason_value, status_value)
       inject_data = {
         author_id:        authod_id,
         role:             make_role(role_value),
-        post_id:          post_id,
+        snapshot_id:      snapshot_id,
         snapshot_channel: snapshot_channel,
         target_id:        target_id,
         reason:           make_reason(reason_value),

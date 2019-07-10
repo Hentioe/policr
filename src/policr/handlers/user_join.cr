@@ -57,7 +57,7 @@ module Policr
         text = t "blacklist.was_blocked", {
           user:             FromUser.new(member).markdown_link,
           snapshot_channel: bot.snapshot_channel,
-          post_id:          report.post_id,
+          snapshot_id:      report.target_snapshot_id,
         }
         spawn bot.kick_chat_member(msg.chat.id, member.id)
         bot.send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown")
