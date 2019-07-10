@@ -22,14 +22,14 @@ module Policr::Cache
   # 缓存管理员列表
   @@admins = Hash(Int64, Array(TelegramBot::ChatMember)).new
   # 回复举报详情
-  @@report_detail_msg = Set(String).new
+  @@report_detail_msg = Hash(String, TelegramBot::User).new
 
-  def carving_torture_report_detail_msg(chat_id, msg_id)
-    @@report_detail_msg << "#{chat_id}_#{msg_id}"
+  def carving_torture_report_detail_msg(chat_id, msg_id, user)
+    @@report_detail_msg["#{chat_id}_#{msg_id}"] = user
   end
 
   def report_detail_msg?(chat_id, msg_id)
-    @@report_detail_msg.includes? "#{chat_id}_#{msg_id}"
+    @@report_detail_msg["#{chat_id}_#{msg_id}"]?
   end
 
   def carving_torture_time_msg_sec(message_id)

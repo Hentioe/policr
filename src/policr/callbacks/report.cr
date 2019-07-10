@@ -76,7 +76,7 @@ module Policr
       end
       # 生成投票
       if r
-        text = make_text(r.author_id, r.role, r.target_snapshot_id, bot.snapshot_channel, target_user_id, r.reason, r.status)
+        text = make_text(r.author_id, r.role, r.target_snapshot_id, target_user_id, r.reason, r.status)
 
         report_id = r.id
         markup = Markup.new
@@ -133,15 +133,15 @@ module Policr
       end
     end
 
-    def make_text(authod_id, role_value, snapshot_id, snapshot_channel, target_id, reason_value, status_value)
+    def make_text(authod_id, role_value, snapshot_id, target_id, reason_value, status_value, detail : String? = nil)
       inject_data = {
-        author_id:        authod_id,
-        role:             make_role(role_value),
-        snapshot_id:      snapshot_id,
-        snapshot_channel: snapshot_channel,
-        target_id:        target_id,
-        reason:           make_reason(reason_value),
-        status:           make_status(status_value),
+        author_id: authod_id,
+        role:      make_role(role_value),
+        snapshot:  make_snapshot(snapshot_id),
+        target_id: target_id,
+        reason:    make_reason(reason_value),
+        status:    make_status(status_value),
+        detail:    detail ? "\n\n#{detail}\n" : "无",
       }
       t "report.voting_message", inject_data
     end
@@ -169,6 +169,8 @@ module Policr
         t("report.reason.spam")
       when Reason::Halal
         t("report.reason.halal")
+      when Reason::Other
+        t("report.reason.other")
       end
     end
 
@@ -184,6 +186,14 @@ module Policr
         t("report.status.accept")
       when Status::Unban
         t("report.status.unban")
+      end
+    end
+
+    def make_snapshot(snapshot_id)
+      if snapshot_id != 0
+        "[#{snapshot_id}](https://t.me/#{bot.snapshot_channel}/#{snapshot_id})"
+      else
+        "无"
       end
     end
   end

@@ -21,9 +21,10 @@ private_forward_report:
     由于您选择了其它原因，请回复本消息告诉我们详情。举例：
 
     ```
-    批量拉人入群、恶意测试机器人。相关链接：
-    https://t.me/[group_username]
+    批量拉人、恶意测试机器人。相关链接：https://t.me/policr\\_changelog/94
     ```
+
+    请尽快回复，以免过有效期。
 captcha:
   desc: "你知道吗？本机器人同时支持多种验证方式。下面分别为您简短介绍：\n\n1. 默认验证，傻瓜式的存在一个正确和一个错误答案\n2. 定制验证，通过此方式可以定制属于群组自己的验证问题，您需要点击下方的按钮，再按照变化后的说明文本进行回复\n3. 动态验证，解答随机生成的 100 以内的两位数加法题目\n4. 图片验证，让入群用户识别图片内容。与 Google 图片验证类似，但与之相反。它提供一张图片而附带多个候选词汇\n4. 棋局验证，让新来的下五子棋吧，只需要一步就能获胜的那种！\n\n注意：以上四种只可选其一，定制验证需要得到回复以后才会刷新下方单选状态。"
   default: "已恢复默认验证。注意，默认验证并不是永久固定的，它会随着机器人的不断更新而改进。"
@@ -123,13 +124,14 @@ report:
   voting_message: |
     举报发起人：[%{author_id}](tg://user?id=%{author_id})
     举报人身份：%{role}
-    举报目标快照：[%{snapshot_id}](https://t.me/%{snapshot_channel}/%{snapshot_id})
+    举报目标快照：%{snapshot}
     被执行用户：[%{target_id}](tg://user?id=%{target_id})
     举报原因：%{reason}
+    详细说明：%{detail}
     当前状态：%{status}
   generated: "举报已经生成（[在这里](https://t.me/%{voting_channel}/%{voting_message_id})），具有投票权的用户会对举报内容进行表决。注意了，[您](tg://user?id=%{user_id})作为发起人不能进行投票。如果举报受理成功将会在本群通知。"
   role:
-    unknown: "未知"
+    unknown: "无"
     creator: "群主"
     trusted_admin: "受信管理员"
     admin: "管理员"
@@ -138,6 +140,7 @@ report:
     unknown: "未记录"
     spam: "恶意散播广告"
     halal: "未识别的清真"
+    other: "其它"
   status:
     unknown: "不明"
     begin: "#表决中"

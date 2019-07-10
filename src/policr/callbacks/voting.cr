@@ -32,7 +32,7 @@ module Policr
         spawn bot.answer_callback_query(query.id, text: t("voting.report_ended"), show_alert: true)
         midcall ReportCallback do
           if r = report
-            text = callback.make_text(r.author_id, r.role, r.target_snapshot_id, bot.snapshot_channel, r.target_user_id, r.reason, r.status)
+            text = callback.make_text(r.author_id, r.role, r.target_snapshot_id, r.target_user_id, r.reason, r.status, detail: r.detail)
             bot.edit_message_text(chat_id: "@#{bot.voting_channel}", message_id: msg.message_id,
               text: text, disable_web_page_preview: true, parse_mode: "markdown")
           end
@@ -94,7 +94,7 @@ module Policr
       end
       midcall ReportCallback do
         if r = report
-          text = callback.make_text(r.author_id, r.role, r.target_snapshot_id, bot.snapshot_channel, r.target_user_id, r.reason, status.value)
+          text = callback.make_text(r.author_id, r.role, r.target_snapshot_id, r.target_user_id, r.reason, status.value, detail: r.detail)
           spawn { bot.edit_message_text(
             chat_id: "@#{bot.voting_channel}",
             message_id: msg.message_id,
