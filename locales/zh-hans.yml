@@ -13,9 +13,11 @@ add_to_group:
   no_right_to_invite: "很遗憾，你（%{user}）已被取消本机器人的使用权。再见。\n\n注意：创建小号继续拉入，会导致更多的帐号被列入黑名单。"
 private_forward:
   desc: "您转发了一条消息给我，是想干嘛呢？"
-  report: "举报来源"
-  report_reason_chooese: "您正在对一条自行转发的消息进行举报，转发源头将作为举报目标。请进一步选择举报原因。"
-  other: "其它原因"
+  report: "举报来源用户"
+  report_reason_chooese: "您正在对一条自行转发的消息进行举报，转发源头将作为举报目标。请进一步选择举报原因。\n\n注意：如果您选择其它原因，会更进一步进入提供举报理由的阶段。"
+  spam: "垃圾内容/广告"
+  halal: "垃圾内容/清真"
+  other: "其它原因/补充"
 private_forward_report:
   other: |
     由于您选择了其它原因，请回复本消息告诉我们详情。举例：
@@ -121,6 +123,7 @@ report:
   storage_error: "举报储存失败，请向社区反馈。"
   generate_voting_error: "投票生成失败，原因：%{reason}"
   update_result_error: "举报结果更新失败，原因：%{reason}"
+  message_not_exists: "举报目标消息已不存在"
   voting_message: |
     举报发起人：[%{author_id}](tg://user?id=%{author_id})
     举报人身份：%{role}

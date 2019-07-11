@@ -1,5 +1,3 @@
-# 2019-07-02: 注意！！！缺乏生成环节失败导致中断时的回滚实现
-
 module Policr
   class ReportCallback < Callback
     alias Reason = ReportReason
@@ -27,6 +25,10 @@ module Policr
         return
       end
 
+      make_report chat_id, msg.message_id, target_msg_id, target_user_id, from_user_id, reason_value, query: query
+    end
+
+    def make_report(chat_id, msg_id, target_msg_id, target_user_id, from_user_id, reason_value, query : TelegramBot::CallbackQuery? = nil)
       # 转发举报消息
       begin
         snapshot_message = bot.forward_message(
@@ -39,11 +41,16 @@ module Policr
         reason =
           case reason
           when TARGET_MSG_NOT_EXISTS
-            "举报目标消息已不存在"
+            t "report.message_not_exists"
           else
             reason
           end
-        bot.answer_callback_query(query.id, text: t("report.forward_error", {reason: reason}))
+        err_msg = t("report.forward_error", {reason: reason})
+        if query
+          bot.answer_callback_query(query.id, text: err_msg)
+        else
+          bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+        end
         return
       end
 
@@ -52,7 +59,7 @@ module Policr
         if bot.is_admin?(chat_id, from_user_id)
           if bot.has_permission?(chat_id, from_user_id, :creator, dirty: false)
             UserRole::Creator
-          elsif KVStore.trust_admin?(msg.chat.id) # 受信管理员
+          elsif KVStore.trust_admin?(chat_id) # 受信管理员
             UserRole::TrustedAdmin
           else
             UserRole::Admin
@@ -79,13 +86,18 @@ module Policr
           r = Model::Report.create!(data)
         rescue e : Exception
           bot.log "Save reporting data failed: #{e.message}"
-          bot.answer_callback_query(query.id, text: t("report.storage_error"))
+          err_msg = t("report.storage_error")
+          if query
+            bot.answer_callback_query(query.id, text: err_msg)
+          else
+            bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+          end
           return
         end
       end
       # 生成投票
       if r
-        text = make_text(r.author_id, r.role, r.target_snapshot_id, target_user_id, r.reason, r.status)
+        text = make_text(r.author_id, r.role, r.target_snapshot_id, target_user_id, r.reason, r.status, nil)
 
         report_id = r.id
         markup = Markup.new
@@ -109,7 +121,12 @@ module Policr
           # 回滚已入库的举报
           Model::Report.delete(r.id)
           _, reason = bot.parse_error(e)
-          bot.answer_callback_query(query.id, text: t("report.generate_voting_error", {reason: reason}))
+          err_msg = t("report.generate_voting_error", {reason: reason})
+          if query
+            bot.answer_callback_query(query.id, text: err_msg)
+          else
+            bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+          end
           return
         end
       end
@@ -125,7 +142,7 @@ module Policr
         begin
           bot.edit_message_text(
             chat_id: chat_id,
-            message_id: msg.message_id,
+            message_id: msg_id,
             text: text,
             disable_web_page_preview: true,
             parse_mode: "markdown"
@@ -137,7 +154,12 @@ module Policr
           voting_msg_id = voting_msg.message_id
           spawn { bot.delete_message bot.voting_channel, voting_msg_id }
           _, reason = bot.parse_error(e)
-          bot.answer_callback_query(query.id, text: t("report.update_result_error", {reason: reason}))
+          err_msg = t("report.update_result_error", {reason: reason})
+          if query
+            bot.answer_callback_query(query.id, text: err_msg)
+          else
+            bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+          end
           return
         end
 
@@ -149,7 +171,7 @@ module Policr
       end
     end
 
-    def make_text(authod_id, role_value, snapshot_id, target_id, reason_value, status_value, detail : String? = nil)
+    def make_text(authod_id, role_value, snapshot_id, target_id, reason_value, status_value, detail : String?)
       inject_data = {
         author_id: authod_id,
         role:      make_role(role_value),

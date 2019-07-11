@@ -8,15 +8,26 @@ module Policr
       chat_id = msg.chat.id
       chooese = data[0]
 
-      message_id = msg.message_id
+      reason_value = chooese.to_i
+      msg_id = msg.message_id
 
-      case chooese
-      when "other"
+      case ReportReason.new(reason_value)
+      when ReportReason::Spam, ReportReason::Halal
+        midcall ReportCallback do
+          if (reply_msg = msg.reply_to_message) && (target_user = reply_msg.forward_from) && (from_user = query.from)
+            target_msg_id = reply_msg.message_id
+            target_user_id = target_user.id
+            from_user_id = from_user.id
+
+            callback.make_report chat_id, msg_id, target_msg_id, target_user_id, from_user_id, reason_value, query: query
+          end
+        end
+      when ReportReason::Other
         text = t "private_forward_report.other"
         if (reply_msg = msg.reply_to_message) && (target_user = reply_msg.forward_from)
-          Cache.carving_torture_report_detail_msg chat_id, msg.message_id, target_user
+          Cache.carving_torture_report_detail_msg chat_id, msg_id, target_user
         end
-        bot.edit_message_text(chat_id: chat_id, message_id: message_id,
+        bot.edit_message_text(chat_id: chat_id, message_id: msg_id,
           text: text, disable_web_page_preview: true, parse_mode: "markdown")
       end
     end

@@ -36,7 +36,10 @@ module Policr
         # 生成投票
         if r
           midcall ReportCallback do
-            text = callback.make_text(r.author_id, r.role, r.target_snapshot_id, target_user_id, r.reason, r.status, detail: detail)
+            text = callback.make_text(
+              r.author_id, r.role, r.target_snapshot_id,
+              target_user_id, r.reason, r.status, detail
+            )
             report_id = r.id
             markup = Markup.new
             make_btn = ->(text : String, voting_type : String) {

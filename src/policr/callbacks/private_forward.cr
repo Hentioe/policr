@@ -14,7 +14,12 @@ module Policr
       case chooese
       when "report"
         markup = Markup.new
-        markup << [Button.new(text: t("private_forward.other"), callback_data: "PrivateForwardReport:other")]
+        make_btn = ->(text : String, reason : ReportReason) {
+          Button.new(text: text, callback_data: "PrivateForwardReport:#{reason.value}")
+        }
+        markup << [make_btn.call(t("private_forward.spam"), ReportReason::Spam)]
+        markup << [make_btn.call(t("private_forward.halal"), ReportReason::Halal)]
+        markup << [make_btn.call(t("private_forward.other"), ReportReason::Other)]
 
         text = t "private_forward.report_reason_chooese"
         bot.edit_message_text(chat_id: chat_id, message_id: message_id,
