@@ -6,6 +6,8 @@ module Policr
     alias Status = ReportStatus
     alias UserRole = ReportUserRole
 
+    TARGET_MSG_NOT_EXISTS = "Bad Request: MESSAGE_ID_INVALID"
+
     def initialize(bot)
       super(bot, "Report")
     end
@@ -34,6 +36,13 @@ module Policr
         )
       rescue e : TelegramBot::APIException
         _, reason = bot.parse_error(e)
+        reason =
+          case reason
+          when TARGET_MSG_NOT_EXISTS
+            "举报目标消息已不存在"
+          else
+            reason
+          end
         bot.answer_callback_query(query.id, text: t("report.forward_error", {reason: reason}))
         return
       end
@@ -97,6 +106,8 @@ module Policr
             reply_markup: markup
           )
         rescue e : TelegramBot::APIException
+          # 回滚已入库的举报
+          Model::Report.delete(r.id)
           _, reason = bot.parse_error(e)
           bot.answer_callback_query(query.id, text: t("report.generate_voting_error", {reason: reason}))
           return
@@ -120,6 +131,11 @@ module Policr
             parse_mode: "markdown"
           )
         rescue e : TelegramBot::APIException
+          # 回滚已入库的举报
+          Model::Report.delete(r.id)
+          # 回滚已转发的快照
+          voting_msg_id = voting_msg.message_id
+          spawn { bot.delete_message bot.voting_channel, voting_msg_id }
           _, reason = bot.parse_error(e)
           bot.answer_callback_query(query.id, text: t("report.update_result_error", {reason: reason}))
           return

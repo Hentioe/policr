@@ -48,13 +48,21 @@ module Policr
               make_btn.call("👎", "oppose"),
             ]
 
-            voting_msg = bot.send_message(
-              chat_id: "@#{bot.voting_channel}",
-              text: text,
-              disable_web_page_preview: true,
-              parse_mode: "markdown",
-              reply_markup: markup
-            )
+            voting_msg =
+              begin
+                bot.send_message(
+                  chat_id: "@#{bot.voting_channel}",
+                  text: text,
+                  disable_web_page_preview: true,
+                  parse_mode: "markdown",
+                  reply_markup: markup
+                )
+              rescue e : TelegramBot::APIException
+                # 回滚已入库的举报
+                Model::Report.delete(r.id)
+                _, reason = bot.parse_error(e)
+                bot.reply msg, "举报发起失败，#{reason}"
+              end
             if voting_msg
               r.update_column(:post_id, voting_msg.message_id)
             end
