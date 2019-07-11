@@ -1,4 +1,4 @@
-class AddCleanMode < Jennifer::Migration::Base
+class CreateCleanMode < Jennifer::Migration::Base
   def up
     create_table :clean_modes do |t|
       # 群组ID

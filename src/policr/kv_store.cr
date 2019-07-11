@@ -349,30 +349,6 @@ module Policr::KVStore
     end
   end
 
-  ERROR_COUNT = "error_count"
-
-  def error_count(chat_id, user_id)
-    if (db = @@db) && (count = db.get?("#{ERROR_COUNT}_#{chat_id}_#{user_id}"))
-      count.to_i
-    else
-      0
-    end
-  end
-
-  def error(chat_id, user_id)
-    if db = @@db
-      count = error_count chat_id, user_id
-      count += 1
-      db.put "#{ERROR_COUNT}_#{chat_id}_#{user_id}", count
-    end
-  end
-
-  def destory_error(chat_id, user_id)
-    if db = @@db
-      db.delete "#{ERROR_COUNT}_#{chat_id}_#{user_id}"
-    end
-  end
-
   FORECE_MULTIPLE = "force_multiple"
 
   def force_multiple?(chat_id)

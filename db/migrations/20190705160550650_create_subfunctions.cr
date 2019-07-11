@@ -1,4 +1,4 @@
-class AddSubfunctions < Jennifer::Migration::Base
+class CreateSubfunctions < Jennifer::Migration::Base
   def up
     create_table :subfunctions do |t|
       # 群组ID

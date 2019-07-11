@@ -1,4 +1,4 @@
-class AddTrueIndex < Jennifer::Migration::Base
+class CreateTrueIndices < Jennifer::Migration::Base
   def up
     create_table :true_indices do |t|
       # 群组ID

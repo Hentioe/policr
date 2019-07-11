@@ -120,5 +120,21 @@ describe Policr do
     if r
       r.rows_affected.should eq(1)
     end
+    # 错误次数
+    ec1 = Model::ErrorCount.create({
+      chat_id: from_chat_id,
+      user_id: target_user_id,
+    })
+    ec1.should be_truthy
+    r = Model::ErrorCount.delete(ec1.id)
+    r.should be_truthy
+    if r
+      r.rows_affected.should eq(1)
+    end
+
+    Model::ErrorCount.one_time from_chat_id, target_user_id
+    1.should eq (Model::ErrorCount.counting(from_chat_id, target_user_id))
+    Model::ErrorCount.destory from_chat_id, target_user_id
+    0.should eq (Model::ErrorCount.counting(from_chat_id, target_user_id))
   end
 end
