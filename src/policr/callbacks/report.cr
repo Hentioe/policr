@@ -64,6 +64,8 @@ module Policr
           else
             UserRole::Admin
           end
+        elsif is_private_chat?(chat_id)
+          UserRole::Unknown
         else
           UserRole::Member
         end
@@ -164,7 +166,7 @@ module Policr
         end
 
         # 若举报人具备权限，删除消息并封禁用户
-        unless role == UserRole::Member
+        if role == UserRole::Creator || role == UserRole::TrustedAdmin || role == UserRole::Admin
           spawn bot.delete_message(chat_id, target_msg_id)
           spawn bot.kick_chat_member(chat_id, target_user_id)
         end

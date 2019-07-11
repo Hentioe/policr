@@ -5,6 +5,10 @@ macro t(key, options = nil)
   I18n.translate({{key}}, {{options}})
 end
 
+macro is_private_chat?(chat_id)
+  {{chat_id}} > 0
+end
+
 module Policr
   DEFAULT_TORTURE_SEC = 55 # 默认验证等待时长（秒）
 
@@ -160,8 +164,8 @@ module Policr
     end
 
     def has_permission?(chat_id, user_id, role, dirty = true)
-      return false if chat_id > 0          # 私聊无权限
-      if admins = Cache.get_admins chat_id # 从缓存中获取管理员列表
+      return false if is_private_chat?(chat_id) # 私聊无权限
+      if admins = Cache.get_admins chat_id      # 从缓存中获取管理员列表
         tmp_filter_users = admins.select { |m| m.user.id == user_id }
         noperm = tmp_filter_users.size == 0
         status = noperm ? nil : tmp_filter_users[0].status
