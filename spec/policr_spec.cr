@@ -136,5 +136,27 @@ describe Policr do
     1.should eq (Model::ErrorCount.counting(from_chat_id, target_user_id))
     Model::ErrorCount.destory from_chat_id, target_user_id
     0.should eq (Model::ErrorCount.counting(from_chat_id, target_user_id))
+
+    ml = Model::MaxLength.create({
+      chat_id: from_chat_id,
+    })
+
+    Model::MaxLength.update_total(from_chat_id, 999)
+    Model::MaxLength.update_rows(from_chat_id, 99)
+    total, rows = Model::MaxLength.values(from_chat_id)
+    total.should be_truthy
+    if total
+      999.should eq(total)
+    end
+    rows.should be_truthy
+    if total
+      99.should eq(rows)
+    end
+
+    r = Model::MaxLength.delete(ml.id)
+    r.should be_truthy
+    if r
+      r.rows_affected.should eq(1)
+    end
   end
 end
