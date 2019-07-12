@@ -34,5 +34,9 @@ module Policr::Model
         {nil, nil}
       end
     end
+
+    def self.exists?(chat_id)
+      where { _chat_id == chat_id }.first != nil
+    end
   end
 end

@@ -114,6 +114,7 @@ module Policr
         CleanModeCommander,
         GomokuCommander,
         SubfunctionsCommander,
+        StrictModeCommander,
       ]
 
       commanders.each do |_, command|
