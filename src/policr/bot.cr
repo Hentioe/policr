@@ -97,6 +97,7 @@ module Policr
         SubfunctionsCallback,
         PrivateForwardCallback,
         PrivateForwardReportCallback,
+        StrictModeCallback,
       ]
 
       # 注册指令模块

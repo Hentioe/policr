@@ -85,6 +85,8 @@ module Policr
       end
     end
 
+    BACK_SYMBOL = "«"
+
     def create_time_setting_markup(chat_id, delete_target)
       markup = Markup.new
 
@@ -92,7 +94,7 @@ module Policr
         Button.new(text: text, callback_data: "DelayTime:#{delete_target.value}:#{sec}")
       }
       markup << def_time_list(btn, [15, 30, 45], TimeUnit::Min)
-      hors = [Button.new(text: "«", callback_data: "CleanMode:back")]
+      hors = [Button.new(text: BACK_SYMBOL, callback_data: "CleanMode:back")]
       hors += def_time_list(btn, [1, 2, 6], TimeUnit::Hour)
       markup << hors
 
