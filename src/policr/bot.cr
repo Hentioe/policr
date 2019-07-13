@@ -98,6 +98,7 @@ module Policr
         PrivateForwardCallback,
         PrivateForwardReportCallback,
         StrictModeCallback,
+        MaxLengthCallback,
       ]
 
       # 注册指令模块

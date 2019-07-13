@@ -21,13 +21,17 @@ module Policr
 
       case name
       when "max_length"
-        unless Model::MaxLength.exists?(chat_id)
-          bot.answer_callback_query(query.id, text: t("strict_mode.mission_settings"))
+        if ml = Model::MaxLength.find(chat_id) # 删除长度限制
+          Model::MaxLength.delete(ml.id)
+        else
+          bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
           return
         end
+        bot.edit_message_text chat_id, message_id: msg.message_id, text: t("strict_mode.desc"), reply_markup: markup(chat_id), parse_mode: "markdown"
       when "content_blocked"
       when "max_length_setting"
-        bot.edit_message_text chat_id, message_id: msg.message_id, text: t("max_length.desc"), reply_markup: create_max_length_markup(chat_id)
+        text = create_max_length_text(chat_id)
+        bot.edit_message_text chat_id, message_id: msg.message_id, text: create_max_length_text(chat_id), reply_markup: create_max_length_markup(chat_id), parse_mode: "markdown"
       when "back"
         midcall StrictModeCommander do
           bot.edit_message_text chat_id, message_id: msg.message_id, text: t("strict_mode.desc"), reply_markup: commander.create_markup(chat_id), parse_mode: "markdown"
@@ -35,6 +39,11 @@ module Policr
       else # 失效键盘
         bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
       end
+    end
+
+    def create_max_length_text(chat_id)
+      total, rows = Model::MaxLength.values(chat_id)
+      t "max_length.desc", {total: total || t("max_length.none"), rows: rows || t("max_length.none")}
     end
 
     BACK_SYMBOL = "«"
@@ -52,6 +61,12 @@ module Policr
       markup << rows_line
 
       markup
+    end
+
+    def markup(chat_id)
+      midcall StrictModeCommander do
+        _commander.create_markup chat_id
+      end
     end
 
     macro def_length_list(make_btn, list, type_s)

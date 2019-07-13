@@ -19,6 +19,10 @@ module Policr::Model
       ml.update_column(column, val)
     end
 
+    def self.find(chat_id)
+      where { _chat_id == chat_id }.first
+    end
+
     def self.update_total(chat_id, val)
       update(chat_id, :total, val)
     end
@@ -33,10 +37,6 @@ module Policr::Model
       else
         {nil, nil}
       end
-    end
-
-    def self.exists?(chat_id)
-      where { _chat_id == chat_id }.first != nil
     end
   end
 end

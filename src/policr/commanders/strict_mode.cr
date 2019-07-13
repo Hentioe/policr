@@ -24,7 +24,7 @@ module Policr
       chk_status = ->(type : String) {
         case type
         when "max_length"
-          Model::MaxLength.exists?(chat_id) ? SELECTED : UNSELECTED
+          Model::MaxLength.find(chat_id) ? SELECTED : UNSELECTED
         when "content_blocked"
           UNSELECTED
         end
