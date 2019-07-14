@@ -29,6 +29,7 @@ module Policr
 
             user_data = {name: bot.display_name(user), user_id: user.id}
             is_admin = bot.is_admin?(chat_id, user.id)
+            spawn check_group_owner(chat_id) # 检查群主是否存在
             text =
               if is_admin
                 t "add_to_group.from_admin", user_data
@@ -48,6 +49,21 @@ module Policr
             end
           end
         end
+      end
+    end
+
+    def check_group_owner(chat_id)
+      admin_list = bot.get_chat_administrators chat_id
+      has_creator = false
+      admin_list.each do |admin|
+        has_creator = true if admin.status == "creator"
+      end
+
+      # 没有管理员，自动启用信任管理
+      unless has_creator
+        KVStore.trust_admin(chat_id)
+        text = t "add_to_group.no_creator"
+        bot.send_message chat_id, text
       end
     end
   end
