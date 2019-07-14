@@ -2,6 +2,8 @@ module Policr
   MIN_TORTURE_SEC = 30
 
   class TortureTimeSettingHandler < Handler
+    allow_edit # 处理编辑消息
+
     @reply_msg_id : Int32?
 
     def match(msg)
@@ -40,7 +42,8 @@ module Policr
             )
           }
         end
-        bot.reply msg, t("setting_complete")
+
+        setting_complete_with_delay_delete msg
       end
     end
 

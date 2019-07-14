@@ -28,7 +28,7 @@ module Policr
           )
         }
 
-        bot.reply msg, t("setting_complete")
+        setting_complete_with_delay_delete msg
       end
     end
 

@@ -1,5 +1,7 @@
 module Policr
   class WelcomeSettingHandler < Handler
+    allow_edit # 处理编辑消息
+
     @reply_msg_id : Int32?
 
     def match(msg)
@@ -27,7 +29,8 @@ module Policr
             disable_web_page_preview: true, parse_mode: "markdown"
           )
         }
-        bot.reply msg, t("setting_complete")
+
+        setting_complete_with_delay_delete msg
       end
     end
 

@@ -1,5 +1,7 @@
 module Policr
   class CustomHandler < Handler
+    allow_edit # 处理编辑消息
+
     def match(msg)
       role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
 
@@ -35,7 +37,7 @@ module Policr
         ) }
       end
 
-      bot.reply msg, t("setting_complete")
+      setting_complete_with_delay_delete msg
     end
 
     def updated_preview_settings(chat_id)
