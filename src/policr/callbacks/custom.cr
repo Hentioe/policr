@@ -66,9 +66,9 @@ module Policr
       when "custom"
         # 缓存此消息
         Cache.carving_custom_setting_msg chat_id, msg.message_id
-        text = t "custom.desc"
+
         begin
-          bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+          bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: custom_text(chat_id), disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
           bot.answer_callback_query(query.id)
         rescue e : TelegramBot::APIException
           _, reason = bot.parse_error e
@@ -80,6 +80,12 @@ module Policr
     def create_markup(chat_id)
       midcall CustomCommander do
         commander.create_markup(chat_id)
+      end
+    end
+
+    def custom_text(chat_id)
+      midcall CustomCommander do
+        _commander.custom_text chat_id
       end
     end
   end

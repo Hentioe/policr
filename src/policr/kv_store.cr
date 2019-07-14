@@ -147,6 +147,9 @@ module Policr::KVStore
   def custom_text(chat_id, text)
     if db = @@db
       db.put("#{CUSTOM_TEXT}_#{chat_id}", text)
+      disable_dynamic chat_id
+      disable_image chat_id
+      disable_chessboard chat_id
     end
   end
 

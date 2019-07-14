@@ -19,19 +19,29 @@ module Policr
         bot.reply msg, t("custom.wrong_format")
         return
       end
+
+      chat_id = msg.chat.id
+
       KVStore.custom_text(msg.chat.id, msg.text)
-      bot.reply msg, t("setting_complete")
+
       # 更新回复消息内联键盘
       if reply_msg = msg.reply_to_message
-        text = t("custom.desc")
-        bot.edit_message_text chat_id: msg.chat.id, message_id: reply_msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(msg.chat.id)
+        updated_text, updated_markup = updated_preview_settings(chat_id)
+        reply_msg_id = reply_msg.message_id
+
+        spawn { bot.edit_message_text(
+          chat_id: msg.chat.id, message_id: reply_msg_id, text: updated_text,
+          disable_web_page_preview: true, parse_mode: "markdown", reply_markup: updated_markup
+        ) }
       end
+
+      bot.reply msg, t("setting_complete")
     end
 
-    def create_markup(chat_id)
+    def updated_preview_settings(chat_id)
       midcall CustomCommander do
-        commander.create_markup(chat_id)
-      end
+        {_commander.custom_text(chat_id), _commander.create_markup(chat_id)}
+      end || {nil, nil}
     end
 
     # 校验设置的合法性

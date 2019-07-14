@@ -60,5 +60,24 @@ module Policr
       markup << [btn.call(chessboard_text, "chessboard")]
       markup
     end
+
+    def custom_text(chat_id)
+      custom_text =
+        if custom = custom_tup = KVStore.custom(chat_id)
+          true_indices, title, answers = custom_tup
+          String.build do |str|
+            str << title
+            str << "\n"
+            answers.map_with_index do |ans_line, i|
+              status_sym = true_indices.includes?(i + 1) ? "√" : "×"
+              str << "#{status_sym} #{ans_line}"
+              str << "\n" if i < (answers.size - 1)
+            end
+          end
+        else
+          t "custom.none"
+        end
+      t "custom.desc", {custom_text: custom_text}
+    end
   end
 end

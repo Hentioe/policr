@@ -25,12 +25,14 @@ module Policr
           bot.answer_callback_query(query.id)
         end
       else
+        # 标记消息
+        Cache.carving_torture_time_msg chat_id, msg.message_id
         # 储存设置
         KVStore.set_torture_sec(msg.chat.id, sec.to_i)
         # 更新设置时间消息文本
         bot.edit_message_text chat_id: msg.chat.id, message_id: msg.message_id, text: text(msg.chat.id), disable_web_page_preview: true, parse_mode: "markdown", reply_markup: markup
         # 响应成功
-        bot.answer_callback_query(query.id, text: t("setting_complete"))
+        bot.answer_callback_query(query.id)
       end
     end
 
