@@ -77,6 +77,7 @@ module Policr
         HalalMessageHandler,
         PrivateForwardHandler,
         ReportDetailHandler,
+        BlockedContentHandler,
       ]
 
       # 注册回调模块

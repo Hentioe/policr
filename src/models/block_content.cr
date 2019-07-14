@@ -15,12 +15,15 @@ module Policr::Model
       where { (_chat_id == chat_id) }.first
     end
 
-    def self.add(chat_id, version, expression)
-      create({
+    def self.update_expression(chat_id, expression)
+      bc = find(chat_id)
+      bc ||= create({
         chat_id:    chat_id.to_i64,
-        version:    version,
+        version:    "v1",
         expression: expression,
       })
+
+      bc.update_column(:expression, expression)
     end
   end
 end

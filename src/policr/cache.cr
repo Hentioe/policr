@@ -24,6 +24,23 @@ module Policr::Cache
   # 回复举报详情
   @@report_detail_msg = Hash(String, TelegramBot::User).new
 
+  macro def_carving_with_chat_id(msg_type_s)
+
+    {{msg_type_name = "#{msg_type_s.id}_msg"}}
+
+    @@{{msg_type_name.id}} = Set(String).new
+
+    def carbing_{{msg_type_name.id}}(chat_id, msg_id)
+      @@{{msg_type_name.id}} << "#{chat_id}_#{msg_id}"
+    end
+
+    def {{msg_type_name.id}}?(chat_id, msg_id)
+      @@{{msg_type_name.id}}.includes? "#{chat_id}_#{msg_id}"
+    end
+  end
+
+  def_carving_with_chat_id "blocked_content"
+
   def carving_torture_report_detail_msg(chat_id, msg_id, user)
     @@report_detail_msg["#{chat_id}_#{msg_id}"] = user
   end

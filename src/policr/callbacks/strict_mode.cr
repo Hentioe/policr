@@ -38,6 +38,8 @@ module Policr
       when "max_length_setting"
         bot.edit_message_text chat_id, message_id: msg.message_id, text: create_max_length_text(chat_id), reply_markup: create_max_length_markup(chat_id), parse_mode: "markdown"
       when "content_blocked_setting"
+        # 标记设置消息
+        Cache.carbing_blocked_content_msg chat_id, msg.message_id
         bot.edit_message_text chat_id, message_id: msg.message_id, text: create_content_blocked_text(chat_id), reply_markup: create_content_blocked_markup(chat_id), parse_mode: "markdown"
       when "back"
         midcall StrictModeCommander do
@@ -48,7 +50,8 @@ module Policr
       end
     end
 
-    BACK_SYMBOL = "«"
+    BACK_SYMBOL     = "«"
+    BIG_BACK_SYMBOL = "🔙"
 
     def create_content_blocked_text(chat_id)
       rule =
@@ -63,7 +66,7 @@ module Policr
     def create_content_blocked_markup(chat_id)
       markup = Markup.new
 
-      markup << [Button.new(text: "#{BACK_SYMBOL} #{t("content_blocked.back_hint")}", callback_data: "StrictMode:back")]
+      markup << [Button.new(text: BIG_BACK_SYMBOL, callback_data: "StrictMode:back")]
 
       markup
     end

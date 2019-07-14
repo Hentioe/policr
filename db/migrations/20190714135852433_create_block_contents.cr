@@ -6,7 +6,7 @@ class CreateBlockContents < Jennifer::Migration::Base
       # 版本
       t.string :version, {:null => false}
       # 表达式
-      t.integer :expression, {:null => false}
+      t.string :expression, {:null => false}
 
       t.timestamps
     end
