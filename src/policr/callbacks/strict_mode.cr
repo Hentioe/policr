@@ -83,9 +83,9 @@ module Policr
         Button.new(text: text, callback_data: "MaxLength:#{size}")
       }
 
-      markup << def_length_list(make_btn, [300, 350, 400, 500], "total")
+      markup << def_length_list(make_btn, [200, 250, 300, 350], "total")
       rows_line = [Button.new(text: BACK_SYMBOL, callback_data: "StrictMode:back")]
-      rows_line += def_length_list(make_btn, [15, 20, 25, 30], "rows")
+      rows_line += def_length_list(make_btn, [10, 12, 15, 20], "rows")
       markup << rows_line
 
       markup

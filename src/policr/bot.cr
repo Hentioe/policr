@@ -78,6 +78,7 @@ module Policr
         PrivateForwardHandler,
         ReportDetailHandler,
         BlockedContentHandler,
+        MaxLengthHandler,
       ]
 
       # 注册回调模块
