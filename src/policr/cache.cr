@@ -5,32 +5,28 @@ module Policr::Cache
     Init; Pass; Slow; Next
   end
 
-  @@torture_time_msg = Hash(Int32, TortureTimeType).new
-  @@from_setting_msg = Set(Int32).new
   # 用户验证状态
   @@verify_status = Hash(String, VerifyStatus).new
-  @@custom_msg = Set(Int32).new
-  @@new_join_user_msg = Hash(String, Int32).new
+
   # 运行周期内服务的群组列表
   @@group_list = Hash(Int64, Tuple(String, String)).new
+
   # 动态问题缓存，正确答案与消息关联
   @@dynamic_list = Hash(String, Int32).new
-  # 欢迎消息设置缓存
-  @@welcome_setting_msg = Set(Int32).new
+
   # 图片（验证）集列表
   @@image_list = Array(Image).new
+
   # 缓存管理员列表
   @@admins = Hash(Int64, Array(TelegramBot::ChatMember)).new
-  # 回复举报详情
-  @@report_detail_msg = Hash(String, TelegramBot::User).new
 
-  macro def_carving_with_chat_id(msg_type_s)
+  macro def_carving(msg_type_s)
 
     {{msg_type_name = "#{msg_type_s.id}_msg"}}
 
     @@{{msg_type_name.id}} = Set(String).new
 
-    def carbing_{{msg_type_name.id}}(chat_id, msg_id)
+    def carving_{{msg_type_name.id}}(chat_id, msg_id)
       @@{{msg_type_name.id}} << "#{chat_id}_#{msg_id}"
     end
 
@@ -39,49 +35,41 @@ module Policr::Cache
     end
   end
 
-  def_carving_with_chat_id "blocked_content"
+  macro def_carving_with_data(msg_type_s, data_type)
 
-  def carving_torture_report_detail_msg(chat_id, msg_id, user)
-    @@report_detail_msg["#{chat_id}_#{msg_id}"] = user
+    {{msg_type_name = "#{msg_type_s.id}_msg"}}
+
+    @@{{msg_type_name.id}} = Hash(String, {{data_type.id}}).new
+
+    def carving_{{msg_type_name.id}}(key_1, key_2, data)
+      @@{{msg_type_name.id}}["#{key_1}_#{key_2}"] = data
+    end
+
+    def {{msg_type_name.id}}?(key_1, key_2)
+      @@{{msg_type_name.id}}["#{key_1}_#{key_2}"]?
+    end
   end
 
-  def report_detail_msg?(chat_id, msg_id)
-    @@report_detail_msg["#{chat_id}_#{msg_id}"]?
-  end
+  # 标记屏蔽内容设置消息
+  def_carving "blocked_content"
 
-  def carving_torture_time_msg_sec(message_id)
-    @@torture_time_msg[message_id] = TortureTimeType::Sec
-  end
+  # 标记来源调查设置消息
+  def_carving "from_setting"
 
-  def torture_time_msg?(message_id)
-    @@torture_time_msg[message_id]?
-  end
+  # 标记欢迎消息设置消息
+  def_carving "welcome_setting"
 
-  # 此类方法日后使用宏生成
+  # 标记验证时间设置消息
+  def_carving "torture_time"
 
-  def carying_from_setting_msg(message_id)
-    @@from_setting_msg << message_id
-  end
+  # 标记自定义验证设置消息
+  def_carving "custom_setting"
 
-  def from_setting_msg?(message_id)
-    @@from_setting_msg.includes? message_id
-  end
+  # 标记举报详情消息
+  def_carving_with_data "report_detail", TelegramBot::User
 
-  def carying_welcome_setting_msg(message_id)
-    @@welcome_setting_msg << message_id
-  end
-
-  def welcome_setting_msg?(message_id)
-    @@welcome_setting_msg.includes? message_id
-  end
-
-  def carying_custom_msg(message_id)
-    @@custom_msg << message_id
-  end
-
-  def custom_msg?(message_id)
-    @@custom_msg.includes? message_id
-  end
+  # 标记新用户入群消息
+  def_carving_with_data "user_join", Int32
 
   def verify_passed(chat_id, user_id)
     @@verify_status["#{chat_id}_#{user_id}"] = VerifyStatus::Pass
@@ -105,14 +93,6 @@ module Policr::Cache
 
   def verify_status_clear(chat_id, user_id)
     @@verify_status.delete "#{chat_id}_#{user_id}"
-  end
-
-  def associate_join_msg(user_id, chat_id, msg_id)
-    @@new_join_user_msg["#{user_id}_#{chat_id}"] = msg_id
-  end
-
-  def find_join_msg_id(user_id, chat_id)
-    @@new_join_user_msg["#{user_id}_#{chat_id}"]?
   end
 
   def put_serve_group(chat, bot)

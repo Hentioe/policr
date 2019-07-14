@@ -7,7 +7,7 @@ module Policr
         (user = msg.from),
         (reply_msg = msg.reply_to_message),
         (reply_msg_id = reply_msg.message_id),
-        Cache.from_setting_msg?(reply_msg_id), # 回复目标为设置来源指令？
+        Cache.from_setting_msg?(msg.chat.id, reply_msg_id), # 回复目标为设置来源指令？
         bot.has_permission?(msg.chat.id, user.id, role),
       ]
     end

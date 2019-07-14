@@ -8,7 +8,7 @@ module Policr
         (user = msg.from),
         (reply_msg = msg.reply_to_message),
         (reply_msg_id = reply_msg.message_id),
-        Cache.custom_msg?(reply_msg_id), # 回复目标为定制问题指令？
+        Cache.custom_setting_msg?(msg.chat.id, reply_msg_id), # 回复目标为定制问题指令？
         bot.has_permission?(msg.chat.id, user.id, role),
       ]
     end

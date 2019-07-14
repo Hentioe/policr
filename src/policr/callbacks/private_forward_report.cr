@@ -19,13 +19,13 @@ module Policr
             target_user_id = target_user.id
             from_user_id = from_user.id
 
-            callback.make_report chat_id, msg_id, target_msg_id, target_user_id, from_user_id, reason_value, query: query
+            _callback.make_report chat_id, msg_id, target_msg_id, target_user_id, from_user_id, reason_value, query: query
           end
         end
       when ReportReason::Other
         text = t "private_forward_report.other"
         if (reply_msg = msg.reply_to_message) && (target_user = reply_msg.forward_from)
-          Cache.carving_torture_report_detail_msg chat_id, msg_id, target_user
+          Cache.carving_report_detail_msg chat_id, msg_id, target_user
         end
         bot.edit_message_text(chat_id: chat_id, message_id: msg_id,
           text: text, disable_web_page_preview: true, parse_mode: "markdown")

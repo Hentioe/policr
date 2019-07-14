@@ -65,7 +65,7 @@ module Policr
         bot.answer_callback_query(query.id)
       when "custom"
         # 缓存此消息
-        Cache.carying_custom_msg msg.message_id
+        Cache.carving_custom_setting_msg chat_id, msg.message_id
         text = t "custom.desc"
         begin
           bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)

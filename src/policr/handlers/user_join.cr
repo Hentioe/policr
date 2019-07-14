@@ -27,8 +27,8 @@ module Policr
           # 检测黑名单
           is_blt = detect_blacklist(msg, member) unless Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::Blacklist)
           return if is_blt # 如果是黑名单则无需后续处理
-          # 关联并缓存入群消息
-          Cache.associate_join_msg(member.id, msg.chat.id, msg.message_id)
+          # 关联并标记入群消息
+          Cache.carving_user_join_msg member.id, msg.chat.id, msg.message_id
           # 判断清真
           name = bot.display_name(member)
 

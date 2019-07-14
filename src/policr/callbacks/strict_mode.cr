@@ -39,7 +39,7 @@ module Policr
         bot.edit_message_text chat_id, message_id: msg.message_id, text: create_max_length_text(chat_id), reply_markup: create_max_length_markup(chat_id), parse_mode: "markdown"
       when "content_blocked_setting"
         # 标记设置消息
-        Cache.carbing_blocked_content_msg chat_id, msg.message_id
+        Cache.carving_blocked_content_msg chat_id, msg.message_id
         bot.edit_message_text chat_id, message_id: msg.message_id, text: create_content_blocked_text(chat_id), reply_markup: create_content_blocked_markup(chat_id), parse_mode: "markdown"
       when "back"
         midcall StrictModeCommander do

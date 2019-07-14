@@ -180,7 +180,7 @@ module Policr
         from_list.each do |btn_text_list|
           markup << btn_text_list.map { |text| btn.call(text) }
         end
-        reply_to_message_id = Cache.find_join_msg_id(user_id, chat_id)
+        reply_to_message_id = Cache.user_join_msg? user_id, chat_id
         sended_msg = bot.send_message(chat_id, t("from.question"), reply_to_message_id: reply_to_message_id, reply_markup: markup)
         # 根据干净模式数据延迟清理来源调查
         if sended_msg

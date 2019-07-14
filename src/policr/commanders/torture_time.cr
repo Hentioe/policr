@@ -7,8 +7,10 @@ module Policr
     def handle(msg)
       role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
+        chat_id = msg.chat.id
+
         if send_message = bot.send_message msg.chat.id, text(msg.chat.id), reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup
-          Cache.carving_torture_time_msg_sec(send_message.message_id)
+          Cache.carving_torture_time_msg chat_id, send_message.message_id
         end
       else
         bot.delete_message(msg.chat.id, msg.message_id)
