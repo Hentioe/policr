@@ -1,7 +1,6 @@
 module Policr
   class StrictModeCallback < Callback
-    alias EnableStatus = Policr::EnableStatus
-    alias DeleteTarget = Policr::CleanDeleteTarget
+    MAX_RULE_LENGTH = 26
 
     def initialize(bot)
       super(bot, "StrictMode")
@@ -29,6 +28,13 @@ module Policr
         end
         bot.edit_message_text chat_id, message_id: msg.message_id, text: t("strict_mode.desc"), reply_markup: markup(chat_id), parse_mode: "markdown"
       when "content_blocked"
+        if bc = Model::BlockContent.find(chat_id) # 删除内容屏蔽规则
+          Model::BlockContent.delete(bc.id)
+        else
+          bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
+          return
+        end
+        bot.edit_message_text chat_id, message_id: msg.message_id, text: t("strict_mode.desc"), reply_markup: markup(chat_id), parse_mode: "markdown"
       when "max_length_setting"
         bot.edit_message_text chat_id, message_id: msg.message_id, text: create_max_length_text(chat_id), reply_markup: create_max_length_markup(chat_id), parse_mode: "markdown"
       when "content_blocked_setting"
@@ -45,13 +51,19 @@ module Policr
     BACK_SYMBOL = "«"
 
     def create_content_blocked_text(chat_id)
-      "none"
+      rule =
+        if bc = Model::BlockContent.find(chat_id)
+          bc.expression
+        else
+          t("content_blocked.none")
+        end
+      t "content_blocked.desc", {size: MAX_RULE_LENGTH, rule: rule}
     end
 
     def create_content_blocked_markup(chat_id)
       markup = Markup.new
 
-      markup << [Button.new(text: BACK_SYMBOL, callback_data: "StrictMode:back")]
+      markup << [Button.new(text: "#{BACK_SYMBOL} #{t("content_blocked.back_hint")}", callback_data: "StrictMode:back")]
 
       markup
     end

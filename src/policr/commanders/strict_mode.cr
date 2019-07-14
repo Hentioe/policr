@@ -26,7 +26,7 @@ module Policr
         when "max_length"
           Model::MaxLength.find(chat_id) ? SELECTED : UNSELECTED
         when "content_blocked"
-          UNSELECTED
+          Model::BlockContent.find(chat_id) ? SELECTED : UNSELECTED
         end
       }
       markup = Markup.new
