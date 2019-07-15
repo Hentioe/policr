@@ -5,7 +5,8 @@ services:
     image: bluerain/policr
     stdin_open: true
     ports:
-      - 8083:8080
+      - 8090:8080
+      - 8091:8081
     environment:
       POLICR_BOT_TOKEN: <Your_Bot_Token>
       POLICR_BOT_USERNAME: <Your_Bot_Username>

@@ -22,6 +22,7 @@ VOLUME ["/data"]
 
 
 EXPOSE 8080
+EXPOSE 8081
 
 
 ENV POLICR_ENV=prod
