@@ -121,7 +121,7 @@ module Policr
       end
     end
 
-    def passed(query, chat_id, target_user_id, target_username, message_id, admin = false, photo = false, reply_id : Int32? = nil)
+    def passed(query, chat_id, target_user_id, target_username, message_id, admin : FromUser? = nil, photo = false, reply_id : Int32? = nil)
       Cache.verify_passed chat_id, target_user_id       # 更新验证状态
       Model::ErrorCount.destory chat_id, target_user_id # 销毁错误记录
       bot.log "Username '#{target_username}' passed verification"
@@ -132,7 +132,7 @@ module Policr
         if enabled_welcome && (welcome = KVStore.get_welcome chat_id)
           welcome
         elsif admin
-          t("pass_by_admin", {user_id: target_user_id})
+          t("pass_by_admin", {user_id: target_user_id, admin: admin.markdown_link})
         else
           t("pass_by_self", {user_id: target_user_id})
         end
