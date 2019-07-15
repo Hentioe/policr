@@ -1,7 +1,5 @@
 module Policr
   class SelfJoinHandler < Handler
-    alias VerifyStatus = Cache::VerifyStatus
-
     def match(msg)
       all_pass? [
         msg.new_chat_members,

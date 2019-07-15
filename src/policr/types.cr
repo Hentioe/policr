@@ -1,4 +1,8 @@
 module Policr
+  enum VerificationStatus
+    Init; Passed; Slowed; Next
+  end
+
   enum TortureTimeType
     Sec; Min
   end

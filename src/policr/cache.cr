@@ -1,21 +1,8 @@
 module Policr::Cache
   extend self
 
-  enum VerifyStatus
-    Init; Pass; Slow; Next
-  end
-
-  # 用户验证状态
-  @@verify_status = Hash(String, VerifyStatus).new
-
   # 运行周期内服务的群组列表
   @@group_list = Hash(Int64, Tuple(String, String)).new
-
-  # 动态问题缓存，正确答案与消息关联
-  @@dynamic_list = Hash(String, Int32).new
-
-  # 图片（验证）集列表
-  @@image_list = Array(Image).new
 
   # 缓存管理员列表
   @@admins = Hash(Int64, Array(TelegramBot::ChatMember)).new
@@ -71,28 +58,41 @@ module Policr::Cache
   # 标记新用户入群消息
   def_carving_with_data "user_join", Int32
 
-  def verify_passed(chat_id, user_id)
-    @@verify_status["#{chat_id}_#{user_id}"] = VerifyStatus::Pass
+  macro def_list(name, type)
+    @@{{name.id}}_list = {{type.id}}.new
+
+    def set_{{name.id}}s(data)
+      @@{{name.id}}_list = data
+    end
+
+    def get_{{name.id}}s
+      @@{{name.id}}_list
+    end
+  
   end
 
-  def verify_init(chat_id, user_id)
-    @@verify_status["#{chat_id}_#{user_id}"] = VerifyStatus::Init
+  # 图片（验证）集列表
+  def_list "image", Array(Image)
+
+  # 用户验证状态
+  @@verification_status = Hash(String, VerificationStatus).new
+
+  macro def_verification_status(status_list)
+    {% for status_s in status_list %}
+      def verification_{{status_s.id}}(chat_id, user_id)
+        @@verification_status["#{chat_id}_#{user_id}"] = VerificationStatus::{{status_s.camelcase.id}}
+      end
+    {% end %}
   end
 
-  def verify_slowed(chat_id, user_id)
-    @@verify_status["#{chat_id}_#{user_id}"] = VerifyStatus::Slow
+  def_verification_status ["passed", "init", "slowed", "next"]
+
+  def verification?(chat_id, user_id)
+    @@verification_status["#{chat_id}_#{user_id}"]?
   end
 
-  def verify_next(chat_id, user_id)
-    @@verify_status["#{chat_id}_#{user_id}"] = VerifyStatus::Next
-  end
-
-  def verify?(chat_id, user_id)
-    @@verify_status["#{chat_id}_#{user_id}"]?
-  end
-
-  def verify_status_clear(chat_id, user_id)
-    @@verify_status.delete "#{chat_id}_#{user_id}"
+  def verification_status_clear(chat_id, user_id)
+    @@verification_status.delete "#{chat_id}_#{user_id}"
   end
 
   def put_serve_group(chat, bot)
@@ -110,22 +110,6 @@ module Policr::Cache
 
   def serving_groups
     @@group_list
-  end
-
-  def put_dynamic_result(chat_id, message_id, answer)
-    @@dynamic_list["#{chat_id}_#{message_id}"] = answer
-  end
-
-  def dynamic_result(chat_id, message_id)
-    @@dynamic_list["#{chat_id}_#{message_id}"]?
-  end
-
-  def set_images(images)
-    @@image_list = images
-  end
-
-  def get_images
-    @@image_list
   end
 
   def get_admins(chat_id)

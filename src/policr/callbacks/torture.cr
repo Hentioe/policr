@@ -1,8 +1,6 @@
 module Policr
   class TortureCallback < Callback
-    alias VerifyStatus = Cache::VerifyStatus
     alias DeleteTarget = Policr::CleanDeleteTarget
-    alias EnableStatus = Policr::EnableStatus
 
     def initialize(bot)
       super(bot, "Torture")
@@ -46,9 +44,9 @@ module Policr
         end
 
         if Model::TrueIndex.contains?(chat_id, msg.message_id, chooese) # 通过验证
-          status = Cache.verify?(chat_id, target_user_id)
+          status = Cache.verification?(chat_id, target_user_id)
           unless status
-            Cache.verify_init chat_id, target_user_id
+            Cache.verification_init chat_id, target_user_id
             midcall UserJoinHandler do
               spawn bot.delete_message chat_id, message_id
               handler.promptly_torture chat_id, join_msg_id, target_user_id, target_username, re: true
@@ -61,10 +59,10 @@ module Policr
               photo: is_photo, reply_id: join_msg_id)
           }
           case status
-          when VerifyStatus::Init
+          when VerificationStatus::Init
             if KVStore.fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
               if Model::ErrorCount.counting(chat_id, target_user_id) > 0     # 继续验证
-                Cache.verify_next chat_id, target_user_id                    # 更新验证状态避免超时
+                Cache.verification_next chat_id, target_user_id              # 更新验证状态避免超时
                 Model::ErrorCount.destory chat_id, target_user_id            # 销毁错误记录
                 midcall UserJoinHandler do
                   spawn bot.delete_message chat_id, message_id
@@ -77,9 +75,9 @@ module Policr
             else
               passed.call
             end
-          when VerifyStatus::Next
+          when VerificationStatus::Next
             if Model::ErrorCount.counting(chat_id, target_user_id) > 0 # 继续验证
-              Cache.verify_next chat_id, target_user_id                # 更新验证状态避免超时
+              Cache.verification_next chat_id, target_user_id          # 更新验证状态避免超时
               Model::ErrorCount.destory chat_id, target_user_id        # 销毁错误记录
               midcall UserJoinHandler do
                 spawn bot.delete_message chat_id, message_id
@@ -89,7 +87,7 @@ module Policr
             else
               passed.call
             end
-          when VerifyStatus::Slow
+          when VerificationStatus::Slowed
             slow_with_receipt(query, chat_id, target_user_id, target_username, message_id)
           end
         else                                                               # 未通过验证
@@ -107,7 +105,7 @@ module Policr
     def fault_tolerance(chat_id, user_id, message_id, query_id, username, join_msg_id, is_photo)
       count = Model::ErrorCount.counting chat_id, user_id
       if count == 0                                 # 继续验证
-        Cache.verify_next chat_id, user_id          # 更新验证状态避免超时
+        Cache.verification_next chat_id, user_id    # 更新验证状态避免超时
         Model::ErrorCount.one_time chat_id, user_id # 错误次数加一
         midcall UserJoinHandler do
           spawn bot.delete_message chat_id, message_id
@@ -122,7 +120,7 @@ module Policr
     end
 
     def passed(query, chat_id, target_user_id, target_username, message_id, admin : FromUser? = nil, photo = false, reply_id : Int32? = nil)
-      Cache.verify_passed chat_id, target_user_id       # 更新验证状态
+      Cache.verification_passed chat_id, target_user_id # 更新验证状态
       Model::ErrorCount.destory chat_id, target_user_id # 销毁错误记录
       bot.log "Username '#{target_username}' passed verification"
       # 异步调用

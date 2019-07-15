@@ -1,7 +1,5 @@
 module Policr
   class BotJoinHandler < Handler
-    alias VerifyStatus = Cache::VerifyStatus
-
     def match(msg)
       all_pass? [
         KVStore.enable_examine?(msg.chat.id),

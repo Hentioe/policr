@@ -1,17 +1,15 @@
 module Policr
   class UnverifiedMessageHandler < Handler
-    alias VerifyStatus = Cache::VerifyStatus
-
-    @status : VerifyStatus?
+    @status : VerificationStatus?
 
     def match(msg)
       if (!msg.new_chat_members) && (user = msg.from)
-        @status = Cache.verify?(msg.chat.id, user.id)
+        @status = Cache.verification?(msg.chat.id, user.id)
       end
     end
 
     def handle(msg)
-      bot.delete_message(msg.chat.id, msg.message_id) if @status == VerifyStatus::Init
+      bot.delete_message(msg.chat.id, msg.message_id) if @status == VerificationStatus::Init
     end
   end
 end
