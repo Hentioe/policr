@@ -119,7 +119,14 @@ module Policr
       end
     end
 
-    def passed(query, chat_id, target_user_id, target_username, message_id, admin : FromUser? = nil, photo = false, reply_id : Int32? = nil)
+    def passed(query,
+               chat_id,
+               target_user_id,
+               target_username,
+               message_id,
+               admin : FromUser? = nil,
+               photo = false,
+               reply_id : Int32? = nil)
       Cache.verification_passed chat_id, target_user_id # 更新验证状态
       Model::ErrorCount.destory chat_id, target_user_id # 销毁错误记录
       bot.log "Username '#{target_username}' passed verification"
