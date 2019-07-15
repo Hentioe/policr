@@ -46,12 +46,14 @@ module Policr
     end
     logger.info "start bot"
 
-    if config.prod
-      bot.set_webhook "https://bluerain.io/#{token}/hook"
-      bot.serve "0.0.0.0", 8081
-    else
-      bot.polling
-    end
+    bot.polling
+
+    # if config.prod
+    #   bot.set_webhook "https://bluerain.io/#{token}/hook"
+    #   bot.serve "0.0.0.0", 8081
+    # else
+    #   bot.polling
+    # end
   end
 end
 
