@@ -36,8 +36,7 @@ module Policr
               r.author_id, r.role, r.target_snapshot_id,
               r.target_user_id, r.reason, r.status, r.detail
             )
-            bot.edit_message_text(chat_id: "@#{bot.voting_channel}", message_id: msg.message_id,
-              text: text, disable_web_page_preview: true, parse_mode: "markdown")
+            bot.edit_message_text "@#{bot.voting_channel}", message_id: msg.message_id, text: text
           end
         end
         return
@@ -102,12 +101,7 @@ module Policr
             r.target_user_id, r.reason, status.value, r.detail
           )
           spawn {
-            bot.edit_message_text(
-              chat_id: "@#{bot.voting_channel}",
-              message_id: msg.message_id,
-              text: result_text,
-              disable_web_page_preview: true,
-              parse_mode: "markdown")
+            bot.edit_message_text "@#{bot.voting_channel}", message_id: msg.message_id, text: result_text
           }
         end
       end
@@ -122,12 +116,7 @@ module Policr
       if status == Status::Accept && (chat_id = report.from_chat_id)
         inject_text_data = {voting_url: "https://t.me/#{bot.voting_channel}/#{msg.message_id}"}
         text = is_private_chat?(chat_id) ? t("voting.private_notify_msg", inject_text_data) : t("voting.group_notify_msg", inject_text_data)
-        bot.send_message(
-          chat_id: chat_id,
-          text: text,
-          disable_web_page_preview: true,
-          parse_mode: "markdown"
-        )
+        bot.send_message chat_id, text
       end
     end
   end

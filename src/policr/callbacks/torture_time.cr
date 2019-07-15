@@ -19,7 +19,12 @@ module Policr
       case sec
       when "refresh"
         begin
-          bot.edit_message_text chat_id: msg.chat.id, message_id: msg.message_id, text: text(msg.chat.id), disable_web_page_preview: true, parse_mode: "markdown", reply_markup: markup
+          bot.edit_message_text(
+            msg.chat.id,
+            message_id: msg.message_id,
+            text: text(msg.chat.id),
+            reply_markup: markup
+          )
           bot.answer_callback_query(query.id)
         rescue e : TelegramBot::APIException
           bot.answer_callback_query(query.id)
@@ -30,7 +35,12 @@ module Policr
         # 储存设置
         KVStore.set_torture_sec(msg.chat.id, sec.to_i)
         # 更新设置时间消息文本
-        bot.edit_message_text chat_id: msg.chat.id, message_id: msg.message_id, text: text(msg.chat.id), disable_web_page_preview: true, parse_mode: "markdown", reply_markup: markup
+        bot.edit_message_text(
+          msg.chat.id,
+          message_id: msg.message_id,
+          text: text(msg.chat.id),
+          reply_markup: markup
+        )
         # 响应成功
         bot.answer_callback_query(query.id)
       end

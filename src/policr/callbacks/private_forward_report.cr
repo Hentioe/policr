@@ -27,8 +27,7 @@ module Policr
         if (reply_msg = msg.reply_to_message) && (target_user = reply_msg.forward_from)
           Cache.carving_report_detail_msg chat_id, msg_id, target_user
         end
-        bot.edit_message_text(chat_id: chat_id, message_id: msg_id,
-          text: text, disable_web_page_preview: true, parse_mode: "markdown")
+        bot.edit_message_text chat_id, message_id: msg_id, text: text
       end
     end
   end

@@ -37,8 +37,7 @@ module Policr
         unban_r = bot.unban_chat_member(chat_id, target_user_id)
         msg = t "unban_message", {user_id: target_user_id, admin: FromUser.new(query.from).markdown_link}
         msg = t("add_to_whitelist", {user_id: target_user_id}) if ope_count == 1
-        bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: msg, disable_web_page_preview: true, parse_mode: "markdown") if unban_r
+        bot.edit_message_text(chat_id, message_id: message_id, text: msg) if unban_r
         # 加入白名单
         KVStore.add_to_whitelist(target_user_id) if ope_count == 1
       rescue ex : TelegramBot::APIException

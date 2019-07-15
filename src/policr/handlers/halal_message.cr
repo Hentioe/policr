@@ -54,13 +54,16 @@ module Policr
             member_id = member.id
             text = t "halal.kicked", {user_id: member_id}
             markup = handler.add_banned_menu(member_id, member.username, true)
-            bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-              text: text, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
+            bot.edit_message_text(
+              sended_msg.chat.id,
+              message_id: sended_msg.message_id,
+              text: text,
+              reply_markup: markup
+            )
             bot.log "Halal '#{name}' has been banned"
           rescue ex : TelegramBot::APIException
             text = t("halal.kick_failed")
-            bot.edit_message_text(chat_id: sended_msg.chat.id, message_id: sended_msg.message_id,
-              text: text, disable_web_page_preview: true, parse_mode: "markdown")
+            bot.edit_message_text sended_msg.chat.id, message_id: sended_msg.message_id, text: text
             _, reason = bot.parse_error(ex)
             bot.log "Halal '#{name}' banned failure, reason: #{reason}"
           end

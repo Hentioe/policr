@@ -11,11 +11,7 @@ module Policr
         target_msg_id = reply_msg.message_id
 
         if error_msg = check_legality(author_id, target_user_id)
-          bot.send_message(
-            msg.chat.id, text: error_msg,
-            reply_to_message_id: msg.message_id,
-            parse_mode: "markdown"
-          )
+          bot.send_message msg.chat.id, error_msg, reply_to_message_id: msg.message_id
           return
         end
 
@@ -29,11 +25,10 @@ module Policr
         markup << [btn.call(t("report.unident_halal"), ReportReason::Halal)]
         text = t "report.admin_reply", {user_id: target_user_id, voting_channel: bot.voting_channel}
         bot.send_message(
-          msg.chat.id, text: text,
+          msg.chat.id,
+          text: text,
           reply_to_message_id: msg.message_id,
-          reply_markup: markup,
-          parse_mode: "markdown",
-          disable_web_page_preview: true
+          reply_markup: markup
         )
       else
         bot.delete_message(msg.chat.id, msg.message_id)

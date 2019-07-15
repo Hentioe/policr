@@ -59,7 +59,7 @@ module Policr
           post_id:        report.post_id,
         }
         spawn bot.kick_chat_member(msg.chat.id, member.id)
-        bot.send_message(msg.chat.id, text, reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown")
+        bot.send_message msg.chat.id, text, reply_to_message_id: msg.message_id
         true
       else
         false
@@ -84,7 +84,12 @@ module Policr
         markup << [btn.call(t("after_event.torture"), "torture")]
         markup << [btn.call(t("after_event.unban"), "unban"), btn.call(t("after_event.kick"), "kick")]
 
-        bot.send_message(msg.chat.id, t("after_event.tip"), reply_to_message_id: msg.message_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
+        bot.send_message(
+          msg.chat.id,
+          text: t("after_event.tip"),
+          reply_to_message_id: msg.message_id,
+          reply_markup: markup
+        )
       else
         chat_id = msg.chat.id
         msg_id = msg.message_id
@@ -164,7 +169,12 @@ module Policr
         if img = image
           bot.send_photo(chat_id, File.new(img), caption: question, reply_to_message_id: reply_id, reply_markup: markup, parse_mode: "markdown")
         else
-          bot.send_message(chat_id, question, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
+          bot.send_message(
+            chat_id,
+            text: question,
+            reply_to_message_id: reply_id,
+            reply_markup: markup
+          )
         end
       if sended_msg
         verification.storage(sended_msg.message_id)
@@ -195,10 +205,9 @@ module Policr
         text = t "captcha_result.error", {user_id: user_id}
         if photo
           spawn bot.delete_message chat_id, message_id
-          bot.send_message(chat_id: chat_id, text: text, reply_to_message_id: reply_id, parse_mode: "markdown")
+          bot.send_message chat_id, text, reply_to_message_id: reply_id
         else
-          bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-            text: text, parse_mode: "markdown")
+          bot.edit_message_text chat_id: chat_id, message_id: message_id, text: text
         end
       else
         text =
@@ -211,13 +220,22 @@ module Policr
         result_msg_id =
           if photo
             spawn bot.delete_message chat_id, message_id
-            sended_msg = bot.send_message(chat_id: chat_id, text: text, reply_to_message_id: reply_id, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
+            sended_msg = bot.send_message(
+              chat_id,
+              text: text,
+              reply_to_message_id: reply_id,
+              reply_markup: add_banned_menu(user_id, username)
+            )
             if sended_msg
               sended_msg.message_id
             end
           else
-            bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-              text: text, disable_web_page_preview: true, reply_markup: add_banned_menu(user_id, username), parse_mode: "markdown")
+            bot.edit_message_text(
+              chat_id,
+              message_id: message_id,
+              text: text,
+              reply_markup: add_banned_menu(user_id, username)
+            )
             message_id
           end
         if result_msg_id && !admin # 根据干净模式数据延迟清理消息

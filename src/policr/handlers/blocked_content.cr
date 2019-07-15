@@ -21,12 +21,12 @@ module Policr
         Model::BlockContent.update_expression(chat_id, text)
 
         update_text, update_markup = update_preview_settings(chat_id)
-        spawn {
-          bot.edit_message_text(
-            chat_id, message_id: reply_msg_id, text: update_text,
-            reply_markup: update_markup, parse_mode: "markdown"
-          )
-        }
+        spawn { bot.edit_message_text(
+          chat_id,
+          message_id: reply_msg_id,
+          text: update_text,
+          reply_markup: update_markup
+        ) }
 
         setting_complete_with_delay_delete msg
       end

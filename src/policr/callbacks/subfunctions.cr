@@ -49,7 +49,12 @@ module Policr
       sf.update_column(:status, status.value)
       text = t "subfunctions.desc"
       midcall SubfunctionsCommander do
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: commander.create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+           message_id: msg.message_id, 
+           text: text, 
+           reply_markup: commander.create_markup(chat_id)
+        )
       end
     end
   end

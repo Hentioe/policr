@@ -32,8 +32,10 @@ module Policr
         reply_msg_id = reply_msg.message_id
 
         spawn { bot.edit_message_text(
-          chat_id: msg.chat.id, message_id: reply_msg_id, text: updated_text,
-          disable_web_page_preview: true, parse_mode: "markdown", reply_markup: updated_markup
+          msg.chat.id,
+          message_id: reply_msg_id,
+          text: updated_text,
+          reply_markup: updated_markup
         ) }
       end
 

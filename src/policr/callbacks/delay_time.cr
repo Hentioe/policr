@@ -51,7 +51,12 @@ module Policr
       cm.update_column(:delay_sec, sec)
       text = t "clean_mode.delay_setting", {target: t("clean_mode.{{target_s.id}}"), hor: (sec.to_f / 3600).round(2)}
       midcall CleanModeCallback do
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: callback.create_time_setting_markup(chat_id, DeleteTarget::{{delete_target.id}})
+        bot.edit_message_text(
+          chat_id, 
+          message_id: msg.message_id, 
+          text: text, 
+          reply_markup: callback.create_time_setting_markup(chat_id, DeleteTarget::{{delete_target.id}})
+        )
       end
     end
   end

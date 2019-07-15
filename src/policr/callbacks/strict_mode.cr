@@ -26,7 +26,12 @@ module Policr
           bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
           return
         end
-        bot.edit_message_text chat_id, message_id: msg.message_id, text: t("strict_mode.desc"), reply_markup: markup(chat_id), parse_mode: "markdown"
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: t("strict_mode.desc"),
+          reply_markup: markup(chat_id)
+        )
       when "content_blocked"
         if bc = Model::BlockContent.find(chat_id) # 删除内容屏蔽规则
           Model::BlockContent.delete(bc.id)
@@ -34,16 +39,36 @@ module Policr
           bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
           return
         end
-        bot.edit_message_text chat_id, message_id: msg.message_id, text: t("strict_mode.desc"), reply_markup: markup(chat_id), parse_mode: "markdown"
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: t("strict_mode.desc"),
+          reply_markup: markup(chat_id)
+        )
       when "max_length_setting"
-        bot.edit_message_text chat_id, message_id: msg.message_id, text: create_max_length_text(chat_id), reply_markup: create_max_length_markup(chat_id), parse_mode: "markdown"
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: create_max_length_text(chat_id),
+          reply_markup: create_max_length_markup(chat_id)
+        )
       when "content_blocked_setting"
         # 标记设置消息
         Cache.carving_blocked_content_msg chat_id, msg.message_id
-        bot.edit_message_text chat_id, message_id: msg.message_id, text: create_content_blocked_text(chat_id), reply_markup: create_content_blocked_markup(chat_id), parse_mode: "markdown"
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: create_content_blocked_text(chat_id),
+          reply_markup: create_content_blocked_markup(chat_id)
+        )
       when "back"
         midcall StrictModeCommander do
-          bot.edit_message_text chat_id, message_id: msg.message_id, text: t("strict_mode.desc"), reply_markup: commander.create_markup(chat_id), parse_mode: "markdown"
+          bot.edit_message_text(
+            chat_id,
+            message_id: msg.message_id,
+            text: t("strict_mode.desc"),
+            reply_markup: commander.create_markup(chat_id)
+          )
         end
       else # 失效键盘
         bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)

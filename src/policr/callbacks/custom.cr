@@ -22,18 +22,35 @@ module Policr
       when "default"
         KVStore.default chat_id
         text = t "captcha.default"
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       when "dynamic"
         KVStore.dynamic chat_id
         text = t "captcha.dynamic"
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       when "image"
         back_to_default = ->{
           KVStore.disable_image chat_id
           text = t "captcha.switch_image_failed"
-          spawn { bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id) }
+          spawn {
+            bot.edit_message_text(
+              chat_id,
+              message_id: msg.message_id,
+              text: text,
+              reply_markup: create_markup(chat_id)
+            )
+          }
         }
         # 前提1：数据集数量大于等于3
         if Cache.get_images.size < 3
@@ -56,19 +73,34 @@ module Policr
 
         KVStore.enable_image chat_id
         text = t "captcha.image"
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       when "chessboard"
         KVStore.enable_chessboard chat_id
         text = t "captcha.chessboard"
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       when "custom"
         # 缓存此消息
         Cache.carving_custom_setting_msg chat_id, msg.message_id
 
         begin
-          bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: custom_text(chat_id), disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+          bot.edit_message_text(
+            chat_id,
+            message_id: msg.message_id,
+            text: custom_text(chat_id),
+            reply_markup: create_markup(chat_id)
+          )
           bot.answer_callback_query(query.id)
         rescue e : TelegramBot::APIException
           _, reason = bot.parse_error e

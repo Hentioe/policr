@@ -13,9 +13,9 @@ module Policr
       if (user = msg.from) && (groups = KVStore.managed_groups(user.id))
         token = KVStore.gen_token(user.id)
 
-        bot.send_message(msg.chat.id, "`#{token}`", parse_mode: "markdown")
+        bot.send_message msg.chat.id, "`#{token}`"
       else
-        bot.send_message(msg.chat.id, t("no_managed_groups"))
+        bot.send_message msg.chat.id, t("no_managed_groups")
       end
     end
   end

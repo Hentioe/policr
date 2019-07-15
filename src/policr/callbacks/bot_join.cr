@@ -29,8 +29,12 @@ module Policr
       else
         text = t "obsolete_btn"
       end
-      bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: text, disable_web_page_preview: true, reply_markup: nil, parse_mode: "markdown")
+      bot.edit_message_text(
+        chat_id,
+        message_id: message_id,
+        text: text,
+        reply_markup: nil
+      )
       # 非记录模式自动删除消息
       Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.record_mode?(chat_id)
     end

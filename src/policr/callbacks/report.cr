@@ -112,13 +112,7 @@ module Policr
           make_btn.call("👎", "oppose"),
         ]
         begin
-          voting_msg = bot.send_message(
-            chat_id: "@#{bot.voting_channel}",
-            text: text,
-            disable_web_page_preview: true,
-            parse_mode: "markdown",
-            reply_markup: markup
-          )
+          voting_msg = bot.send_message "@#{bot.voting_channel}", text, reply_markup: markup
         rescue e : TelegramBot::APIException
           # 回滚已入库的举报
           Model::Report.delete(r.id)

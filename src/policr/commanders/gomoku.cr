@@ -12,10 +12,8 @@ module Policr
       text = t "gomoku.start"
       bot.send_message(
         msg.chat.id,
-        text,
+        text: text,
         reply_to_message_id: msg.message_id,
-        disable_web_page_preview: true,
-        parse_mode: "markdown",
         reply_markup: create_markup
       )
     end

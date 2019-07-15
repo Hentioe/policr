@@ -27,8 +27,11 @@ module Policr
           btn_list.each { |btn_text| all_from << btn_text }
         end
       end
-      bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: t("from.message", {user_id: target_user_id, from: all_from[chooese_id]?}), parse_mode: "markdown")
+      bot.edit_message_text(
+        chat_id,
+        message_id: message_id,
+        text: t("from.message", {user_id: target_user_id, from: all_from[chooese_id]?})
+      )
     end
   end
 end

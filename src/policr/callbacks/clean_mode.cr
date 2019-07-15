@@ -50,7 +50,12 @@ module Policr
         def_delay "from"
       when "back"
         midcall CleanModeCommander do
-          bot.edit_message_text chat_id, message_id: msg.message_id, text: t("clean_mode.desc"), reply_markup: commander.create_markup(chat_id), parse_mode: "markdown"
+          bot.edit_message_text(
+            chat_id,
+            message_id: msg.message_id,
+            text: t("clean_mode.desc"),
+            reply_markup: commander.create_markup(chat_id)
+          )
         end
       else # 失效键盘
         bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
@@ -64,7 +69,12 @@ module Policr
       selected ? cm.update_column(:status, EnableStatus::TurnOff.value) : cm.update_column(:status, EnableStatus::TurnOn.value)
       text = t "clean_mode.desc"
       spawn bot.answer_callback_query(query.id)
-      bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+      bot.edit_message_text(
+        chat_id, 
+        message_id: msg.message_id, 
+        text: text,
+        reply_markup: create_markup(chat_id)
+      )
     end
 
     macro def_delay(target_s)
@@ -72,7 +82,12 @@ module Policr
       cm = get_cm.call DeleteTarget::{{delete_target.id}}
       sec = cm.delay_sec || DEFAULT_DELAY_DELETE
       text = t "clean_mode.delay_setting", {target: t("clean_mode.{{target_s.id}}"), hor: (sec.to_f / 3600).round(2)}
-      bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_time_setting_markup(chat_id, DeleteTarget::{{delete_target.id}})
+      bot.edit_message_text(
+        chat_id, 
+        message_id: msg.message_id, 
+        text: text, 
+        reply_markup: create_time_setting_markup(chat_id, DeleteTarget::{{delete_target.id}})
+      )
     end
 
     # macro def_change

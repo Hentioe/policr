@@ -140,7 +140,12 @@ module Policr
       if photo
         spawn bot.delete_message chat_id, message_id
         spawn {
-          sended_msg = bot.send_message(chat_id: chat_id, text: text, reply_to_message_id: reply_id, reply_markup: nil, parse_mode: "markdown")
+          sended_msg = bot.send_message(
+            chat_id,
+            text: text,
+            reply_to_message_id: reply_id,
+            reply_markup: nil
+          )
 
           if sended_msg && !KVStore.record_mode?(chat_id) && !enabled_welcome
             msg_id = sended_msg.message_id
@@ -153,8 +158,12 @@ module Policr
           end
         }
       else
-        spawn { bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: text, reply_markup: nil, parse_mode: "markdown") }
+        spawn { bot.edit_message_text(
+          chat_id,
+          message_id: message_id,
+          text: text,
+          reply_markup: nil
+        ) }
       end
 
       # 非记录且没启用欢迎消息模式删除消息
@@ -181,7 +190,12 @@ module Policr
           markup << btn_text_list.map { |text| btn.call(text) }
         end
         reply_to_message_id = Cache.user_join_msg? user_id, chat_id
-        sended_msg = bot.send_message(chat_id, t("from.question"), reply_to_message_id: reply_to_message_id, reply_markup: markup)
+        sended_msg = bot.send_message(
+          chat_id,
+          text: t("from.question"),
+          reply_to_message_id: reply_to_message_id,
+          reply_markup: markup
+        )
         # 根据干净模式数据延迟清理来源调查
         if sended_msg
           msg_id = sended_msg.message_id
@@ -195,8 +209,12 @@ module Policr
 
       # 异步调用
       spawn bot.answer_callback_query(query.id, text: t("pass_slow_alert"))
-      spawn { bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-        text: t("pass_slow_receipt"), reply_markup: nil) }
+      spawn { bot.edit_message_text(
+        chat_id,
+        message_id: message_id,
+        text: t("pass_slow_receipt"),
+        reply_markup: nil
+      ) }
       bot.unban_chat_member(chat_id, target_user_id)
     end
 

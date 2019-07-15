@@ -23,19 +23,34 @@ module Policr
         selected = KVStore.enable_examine?(chat_id)
         selected ? KVStore.disable_examine(chat_id) : KVStore.enable_examine(chat_id)
         text = t "settings.desc", {last_change: def_change}
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       when "trust_admin"
         selected = KVStore.trust_admin?(chat_id)
         selected ? KVStore.distrust_admin(chat_id) : KVStore.trust_admin(chat_id)
         text = t "settings.desc", {last_change: def_change}
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       when "record_mode"
         selected = KVStore.record_mode?(chat_id)
         selected ? KVStore.clean_mode(chat_id) : KVStore.record_mode(chat_id)
         text = t "settings.desc", {last_change: def_change}
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       when "enable_from"
         unless KVStore.get_from(chat_id)
@@ -45,7 +60,12 @@ module Policr
         selected = KVStore.enabled_from?(chat_id)
         selected ? KVStore.disable_from(chat_id) : KVStore.enable_from(chat_id)
         text = t "settings.desc", {last_change: def_change}
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       when "welcome"
         unless KVStore.get_welcome(chat_id)
@@ -55,7 +75,12 @@ module Policr
         selected = KVStore.enabled_welcome?(chat_id)
         selected ? KVStore.disable_welcome(chat_id) : KVStore.enable_welcome(chat_id)
         text = t "settings.desc", {last_change: def_change}
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       when "fault_tolerance"
         unless KVStore.dynamic?(chat_id) || KVStore.enabled_image?(chat_id)
@@ -65,7 +90,12 @@ module Policr
         selected = KVStore.fault_tolerance?(chat_id)
         selected ? KVStore.disable_fault_tolerance(chat_id) : KVStore.fault_tolerance(chat_id)
         text = t "settings.desc", {last_change: def_change}
-        bot.edit_message_text chat_id: chat_id, message_id: msg.message_id, text: text, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup(chat_id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
         bot.answer_callback_query(query.id)
       end
     end

@@ -36,7 +36,12 @@ module Policr
       }
       markup = Markup.new
       markup << [btn.call(t("restrict_bot_menu.derestrict"), 0), btn.call(t("restrict_bot_menu.remove"), -1)]
-      bot.send_message(msg.chat.id, t("restrict_bot"), reply_to_message_id: msg.message_id, reply_markup: markup)
+      bot.send_message(
+        msg.chat.id,
+        text: t("restrict_bot"),
+        reply_to_message_id: msg.message_id,
+        reply_markup: markup
+      )
       bot.log "Bot '#{bot_member.id}' has been restricted"
     end
   end

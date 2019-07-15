@@ -17,7 +17,7 @@ module Policr
             # 不允许黑名单用户邀请和使用本机器人
             if report = Model::Report.check_blacklist(user.id)
               text = t "add_to_group.no_right_to_invite", {user: FromUser.new(user).markdown_link}
-              spawn { bot.send_message chat_id, text, parse_mode: "markdown", disable_web_page_preview: true }
+              spawn { bot.send_message chat_id, text }
               bot.leave_chat chat_id
             end
             markup = Markup.new
@@ -36,7 +36,7 @@ module Policr
               else
                 t "add_to_group.from_user", user_data
               end
-            sended_msg = bot.send_message chat_id, text, reply_markup: markup, parse_mode: "markdown", disable_web_page_preview: true
+            sended_msg = bot.send_message chat_id, text, reply_markup: markup
             if sended_msg
               message_id = sended_msg.message_id
               # 自动离开定时任务

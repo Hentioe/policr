@@ -233,5 +233,41 @@ module Policr
       end
       {code, reason.to_s}
     end
+
+    def send_message(chat_id : Int | String,
+                     text : String,
+                     parse_mode : String? = "Markdown",
+                     disable_web_page_preview : Bool? = true,
+                     disable_notification : Bool? = nil,
+                     reply_to_message_id : Int32? = nil,
+                     reply_markup : ReplyMarkup = nil) : TelegramBot::Message?
+      super(
+        chat_id: chat_id,
+        text: text,
+        parse_mode: parse_mode,
+        disable_web_page_preview: disable_web_page_preview,
+        disable_notification: disable_notification,
+        reply_to_message_id: reply_to_message_id,
+        reply_markup: reply_markup
+      )
+    end
+
+    def edit_message_text(chat_id : Int | String | Nil = nil,
+                          message_id : Int32? = nil,
+                          inline_message_id : String? = nil,
+                          text : String? = nil,
+                          parse_mode : String? = "Markdown",
+                          disable_web_page_preview : Bool? = true,
+                          reply_markup : TelegramBot::InlineKeyboardMarkup? = nil) : TelegramBot::Message | Bool | Nil
+      super(
+        chat_id: chat_id,
+        message_id: message_id,
+        inline_message_id: inline_message_id,
+        text: text,
+        parse_mode: parse_mode,
+        disable_web_page_preview: disable_web_page_preview,
+        reply_markup: reply_markup
+      )
+    end
   end
 end

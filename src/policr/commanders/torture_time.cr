@@ -9,7 +9,12 @@ module Policr
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
         chat_id = msg.chat.id
 
-        if send_message = bot.send_message msg.chat.id, text(msg.chat.id), reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown", reply_markup: create_markup
+        if send_message = bot.send_message(
+             msg.chat.id,
+             text: text(msg.chat.id),
+             reply_to_message_id: msg.message_id,
+             reply_markup: create_markup
+           )
           Cache.carving_torture_time_msg chat_id, send_message.message_id
         end
       else

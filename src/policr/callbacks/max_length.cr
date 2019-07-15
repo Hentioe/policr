@@ -28,7 +28,12 @@ module Policr
       end
 
       spawn bot.answer_callback_query(query.id)
-      bot.edit_message_text chat_id: msg.chat.id, message_id: msg.message_id, text: text(msg.chat.id), reply_markup: markup(chat_id), disable_web_page_preview: true, parse_mode: "markdown"
+      bot.edit_message_text(
+        msg.chat.id,
+        message_id: msg.message_id,
+        text: text(msg.chat.id),
+        reply_markup: markup(chat_id)
+      )
     end
 
     def text(chat_id)

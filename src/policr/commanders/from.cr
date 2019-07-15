@@ -9,7 +9,7 @@ module Policr
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
         chat_id = msg.chat.id
 
-        sended_msg = bot.send_message(msg.chat.id, text: text(chat_id), reply_to_message_id: msg.message_id, disable_web_page_preview: true, parse_mode: "markdown")
+        sended_msg = bot.send_message msg.chat.id, text(chat_id), reply_to_message_id: msg.message_id
         if sended_msg
           Cache.carving_from_setting_msg chat_id, sended_msg.message_id
         end

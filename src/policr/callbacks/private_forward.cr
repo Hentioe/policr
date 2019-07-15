@@ -34,8 +34,12 @@ module Policr
         markup << [make_btn.call(t("private_forward.other"), ReportReason::Other)]
 
         text = t "private_forward.report_reason_chooese"
-        bot.edit_message_text(chat_id: chat_id, message_id: message_id,
-          text: text, disable_web_page_preview: true, reply_markup: markup, parse_mode: "markdown")
+        bot.edit_message_text(
+          chat_id,
+          message_id: message_id,
+          text: text,
+          reply_markup: markup
+        )
       end
     end
   end

@@ -35,12 +35,12 @@ module Policr
           chat_id = msg.chat.id
 
           updated_text, updated_markup = updated_preview_settings(chat_id)
-          spawn {
-            bot.edit_message_text(
-              chat_id, message_id: reply_msg_id, text: updated_text,
-              reply_markup: updated_markup, disable_web_page_preview: true, parse_mode: "markdown"
-            )
-          }
+          spawn { bot.edit_message_text(
+            chat_id,
+            message_id: reply_msg_id,
+            text: updated_text,
+            reply_markup: updated_markup
+          ) }
         end
 
         setting_complete_with_delay_delete msg
