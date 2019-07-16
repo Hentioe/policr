@@ -1,5 +1,5 @@
 module Policr
-  class BlockedContentHandler < Handler
+  class MaxLengthSettingHandler < Handler
     @reply_msg_id : Int32?
 
     allow_edit
@@ -11,7 +11,7 @@ module Policr
         (user = msg.from),
         (reply_msg = msg.reply_to_message),
         (@reply_msg_id = reply_msg.message_id),
-        Cache.blocked_content_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置屏蔽内容？
+        Cache.max_length_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置长度限制？
         bot.has_permission?(msg.chat.id, user.id, role),
       ]
     end
@@ -20,7 +20,20 @@ module Policr
       if (text = msg.text) && (reply_msg_id = @reply_msg_id)
         chat_id = msg.chat.id
 
-        Model::BlockContent.update_expression(chat_id, text)
+        splits = text.split(" ")
+        total, rows =
+          if splits.size == 2
+            {splits[0].to_i, splits[1].to_i}
+          elsif splits.size == 1
+            size = splits[0].to_i
+            is_rows = size < 50
+            {is_rows ? nil : size, is_rows ? size : nil}
+          else
+            {nil, nil}
+          end
+
+        Model::MaxLength.update_total(chat_id, total)
+        Model::MaxLength.update_rows(chat_id, rows)
 
         update_text, update_markup = update_preview_settings(chat_id)
         spawn { bot.edit_message_text(
@@ -36,8 +49,8 @@ module Policr
 
     def update_preview_settings(chat_id)
       midcall StrictModeCallback do
-        {_callback.create_content_blocked_text(chat_id),
-         _callback.create_content_blocked_markup(chat_id)}
+        {_callback.create_max_length_text(chat_id),
+         _callback.create_max_length_markup(chat_id)}
       end || {nil, nil}
     end
   end

@@ -79,6 +79,7 @@ module Policr
         ReportDetailHandler,
         BlockedContentHandler,
         MaxLengthHandler,
+        MaxLengthSettingHandler,
       ]
 
       # 注册回调模块

@@ -50,7 +50,7 @@ module Policr
     def setting_complete_with_delay_delete(msg)
       if sended_msg = bot.reply msg, t("setting_complete")
         msg_id = sended_msg.message_id
-        Schedule.after(3.seconds) { bot.delete_message msg.chat.id, msg_id }
+        Schedule.after(4.seconds) { bot.delete_message msg.chat.id, msg_id }
       end
     end
   end
