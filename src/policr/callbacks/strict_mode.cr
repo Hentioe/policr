@@ -46,6 +46,7 @@ module Policr
           reply_markup: markup(chat_id)
         )
       when "max_length_setting"
+        Cache.carving_max_length_msg chat_id, msg.message_id
         bot.edit_message_text(
           chat_id,
           message_id: msg.message_id,

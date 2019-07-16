@@ -17,10 +17,12 @@ module Policr
           bot.delete_message chat_id, msg_id
         }
 
+        deleted = false
         if (total = length.total) && (text.size >= total)
-          delete_msg.call
+          deleted = true
+          spawn delete_msg.call
         end
-        if (rows = length.rows) && (text.split("\n").size >= rows)
+        if !deleted && (rows = length.rows) && (text.split("\n").size >= rows)
           delete_msg.call
         end
       end

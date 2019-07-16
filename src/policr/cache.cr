@@ -52,6 +52,9 @@ module Policr::Cache
   # 标记自定义验证设置消息
   def_carving "custom_setting"
 
+  # 标记长度限制设置消息
+  def_carving "max_length"
+
   # 标记举报详情消息
   def_carving_with_data "report_detail", TelegramBot::User
 
