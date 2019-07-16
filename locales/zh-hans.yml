@@ -288,7 +288,7 @@ gomoku:
 
     注意了，您是执 ● 子的一方，而 ○ 子是您的对手，它并不是用来暗示您落子的位置。
 after_event:
-  tip: "事后审核（[为什么？](https://policr.bluerain.io#afterwards)），请主动完成验证以解除限制。"
+  tip: "事后审核（[这是什么？](https://policr.bluerain.io#afterwards)），请主动完成验证以解除限制。"
   torture: "开始验证"
   unban: "解除禁言"
   kick: "直接移除"
