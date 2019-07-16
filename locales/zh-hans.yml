@@ -44,6 +44,9 @@ private_forward_report:
     ```
 
     请尽快回复，以免过有效期。
+  success_for_other: "举报成功。如果你想更新举报原因，可以编辑上述回复内容，亦可重新回复。"
+  update_success_for_other: "举报更新成功。注意了，在两天内你都可以持续更新此举报详情，过后将无法再更新。"
+  failure_for_other: "举报更新失败，原因：%{reason}"
 captcha:
   desc: |
     你知道吗？本机器人同时支持多种验证方式。下面分别为您简短介绍：
@@ -186,7 +189,7 @@ report:
   target_user_invalid: "举报目标用户无效。它可能是个频道或其它的什么东西～"
   forward_error: "举报发起失败，原因：%{reason}"
   storage_error: "举报储存失败，请向社区反馈。"
-  generate_voting_error: "投票生成失败，原因：%{reason}"
+  generate_voting_error: "举报生成失败，原因：%{reason}"
   update_result_error: "举报结果更新失败，原因：%{reason}"
   message_not_exists: "举报目标消息已不存在"
   voting_message: |

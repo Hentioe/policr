@@ -1,71 +1,87 @@
 module Policr
   class ReportDetailHandler < Handler
     @target_user : TelegramBot::User?
+    @reply_msg_id : Int32?
 
-    def match(msg)
+    allow_edit
+
+    match do
       all_pass? [
         (reply_msg = msg.reply_to_message),
-        (reply_msg_id = reply_msg.message_id),
-        (@target_user = Cache.report_detail_msg?(msg.chat.id, reply_msg_id)), # 回复目标为举报详情？
+        (@reply_msg_id = reply_msg.message_id),
+        (@target_user = Cache.report_detail_msg?(msg.chat.id, @reply_msg_id)), # 回复目标为举报详情？
       ]
     end
 
-    def handle(msg)
-      if (target_user = @target_user) && (from_user = msg.from) && (detail = msg.text)
+    handle do
+      if (target_user = @target_user) && (reply_msg_id = @reply_msg_id) && (from_user = msg.from) && (detail = msg.text)
         target_user_id = target_user.id.to_i64
-        # 入库举报
-        begin
-          data =
-            {
-              author_id:          from_user.id.to_i64,
-              post_id:            0, # 临时 post id，举报消息发布以后更新
-              target_snapshot_id: 0, # 其它原因的举报没有快照消息
-              target_user_id:     target_user_id,
-              target_msg_id:      0, # 其它原因的举报没有目标消息
-              reason:             ReportReason::Other.value,
-              status:             ReportStatus::Begin.value,
-              role:               0, # 其它原因的举报没有发起人身份
-              from_chat_id:       msg.chat.id.to_i64,
-              detail:             detail,
-            }
-          r = Model::Report.create!(data)
-        rescue e : Exception
-          bot.log "Save reporting data failed: #{e.message}"
-          return
-        end
-        # 生成投票
-        if r
-          midcall ReportCallback do
-            text = callback.make_text(
-              r.author_id, r.role, r.target_snapshot_id,
-              target_user_id, r.reason, r.status, detail
-            )
-            report_id = r.id
-            markup = Markup.new
-            make_btn = ->(text : String, voting_type : String) {
-              Button.new(text: text, callback_data: "Voting:#{report_id}:#{voting_type}")
-            }
-            markup << [
-              make_btn.call("👍", "agree"),
-              make_btn.call("🙏", "abstention"),
-              make_btn.call("👎", "oppose"),
-            ]
+        from_user_id = from_user.id.to_i64
 
-            voting_msg =
-              begin
-                bot.send_message "@#{bot.voting_channel}", text, reply_markup: markup
-              rescue e : TelegramBot::APIException
-                # 回滚已入库的举报
-                Model::Report.delete(r.id)
-                _, reason = bot.parse_error(e)
-                bot.reply msg, "举报发起失败，#{reason}"
-              end
-            if voting_msg
-              r.update_column(:post_id, voting_msg.message_id)
+        if exists_r = Model::Report.where {
+             (_target_user_id == target_user_id) & (_author_id == from_user_id) & (_target_msg_id == reply_msg_id)
+           }.first
+          # 备份现在的举报详情
+          detail_back = exists_r.detail
+          # 更新举报详情
+          exists_r.update_column(:detail, detail)
+          # 编辑举报消息
+          midcall ReportCallback do
+            report = exists_r
+            text = _callback.make_text(
+              report.author_id,
+              report.role,
+              report.target_snapshot_id,
+              report.target_user_id,
+              report.reason,
+              report.status,
+              report.detail
+            )
+            begin
+              bot.edit_message_text(
+                "@#{bot.voting_channel}",
+                message_id: exists_r.post_id,
+                text: text,
+                reply_markup: _callback.create_voting_markup(report.id)
+              )
+              bot.reply msg, t("private_forward_report.update_success_for_other")
+            rescue e : TelegramBot::APIException
+              _, reason = bot.parse_error(e)
+              # 回滚更新
+              exists_r.update_column(:detail, detail_back)
+              bot.reply msg, t("private_forward_report.failure_for_other", {reason: reason})
             end
           end
+        else
+          # 入库举报
+          begin
+            data =
+              {
+                author_id:          from_user_id,
+                post_id:            0, # 临时 post id，举报消息发布以后更新
+                target_snapshot_id: 0, # 其它原因的举报没有快照消息
+                target_user_id:     target_user_id,
+                target_msg_id:      reply_msg_id,
+                reason:             ReportReason::Other.value,
+                status:             ReportStatus::Begin.value,
+                role:               0, # 其它原因的举报没有发起人身份
+                from_chat_id:       msg.chat.id.to_i64,
+                detail:             detail,
+              }
+            r = Model::Report.create(data)
+            # 生成投票
+            if r
+              midcall ReportCallback do
+                if _callback.create_report_voting chat_id: msg.chat.id, report: r, reply_to_message_id: msg.message_id
+                  bot.reply msg, t("private_forward_report.success_for_other")
+                end
+              end
+            end
+          rescue e : Exception
+            bot.log "Save reporting data failed: #{e.message}"
+            return
+          end
         end
-        bot.reply msg, "举报完成。"
       end
     end
   end

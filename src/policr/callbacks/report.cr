@@ -99,37 +99,37 @@ module Policr
       end
       # 生成投票
       if r
-        text = make_text(r.author_id, r.role, r.target_snapshot_id, target_user_id, r.reason, r.status, nil)
+        return unless voting_msg = create_report_voting(chat_id: chat_id, report: r, answer_query_id: query.id)
+        # text = make_text(r.author_id, r.role, r.target_snapshot_id, target_user_id, r.reason, r.status, nil)
 
-        report_id = r.id
-        markup = Markup.new
-        make_btn = ->(text : String, voting_type : String) {
-          Button.new(text: text, callback_data: "Voting:#{report_id}:#{voting_type}")
-        }
-        markup << [
-          make_btn.call("👍", "agree"),
-          make_btn.call("🙏", "abstention"),
-          make_btn.call("👎", "oppose"),
-        ]
-        begin
-          voting_msg = bot.send_message "@#{bot.voting_channel}", text, reply_markup: markup
-        rescue e : TelegramBot::APIException
-          # 回滚已入库的举报
-          Model::Report.delete(r.id)
-          _, reason = bot.parse_error(e)
-          err_msg = t("report.generate_voting_error", {reason: reason})
-          if query
-            bot.answer_callback_query(query.id, text: err_msg)
-          else
-            bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
-          end
-          return
-        end
+        # report_id = r.id
+        # markup = Markup.new
+        # make_btn = ->(text : String, voting_type : String) {
+        #   Button.new(text: text, callback_data: "Voting:#{report_id}:#{voting_type}")
+        # }
+        # markup << [
+        #   make_btn.call("👍", "agree"),
+        #   make_btn.call("🙏", "abstention"),
+        #   make_btn.call("👎", "oppose"),
+        # ]
+        # begin
+        #   voting_msg = bot.send_message "@#{bot.voting_channel}", text, reply_markup: markup
+        # rescue e : TelegramBot::APIException
+        #   # 回滚已入库的举报
+        #   Model::Report.delete(r.id)
+        #   _, reason = bot.parse_error(e)
+        #   err_msg = t("report.generate_voting_error", {reason: reason})
+        #   if query
+        #     bot.answer_callback_query(query.id, text: err_msg)
+        #   else
+        #     bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+        #   end
+        #   return
+        # end
       end
 
       # 响应举报生成结果
       if voting_msg && r
-        r.update_column(:post_id, voting_msg.message_id) # 更新举报消息 ID
         text = t "report.generated", {
           voting_channel:    bot.voting_channel,
           voting_message_id: voting_msg.message_id,
@@ -165,6 +165,58 @@ module Policr
           spawn bot.kick_chat_member(chat_id, target_user_id)
         end
       end
+    end
+
+    def create_report_voting(chat_id : Int64,
+                             report : Model::Report,
+                             reply_to_message_id : Int32? = nil,
+                             answer_query_id : String? = nil) : TelegramBot::Message?
+      text = make_text(
+        report.author_id,
+        report.role,
+        report.target_snapshot_id,
+        report.target_user_id,
+        report.reason,
+        report.status,
+        report.detail
+      )
+
+      begin
+        if voting_msg = bot.send_message(
+             "@#{bot.voting_channel}",
+             text: text,
+             reply_markup: create_voting_markup(report.id)
+           )
+          report.update_column(:post_id, voting_msg.message_id) # 更新举报消息 ID
+        end
+
+        voting_msg
+      rescue e : TelegramBot::APIException
+        # 回滚已入库的举报
+        Model::Report.delete(report.id)
+        _, reason = bot.parse_error(e)
+        err_msg = t("report.generate_voting_error", {reason: reason})
+        if answer_query_id
+          bot.answer_callback_query(answer_query_id, text: err_msg)
+        elsif bot.send_message chat_id, err_msg, reply_to_message_id: reply_to_message_id
+        end
+
+        nil
+      end
+    end
+
+    def create_voting_markup(report_id)
+      markup = Markup.new
+      make_btn = ->(text : String, voting_type : String) {
+        Button.new(text: text, callback_data: "Voting:#{report_id}:#{voting_type}")
+      }
+      markup << [
+        make_btn.call("👍", "agree"),
+        make_btn.call("🙏", "abstention"),
+        make_btn.call("👎", "oppose"),
+      ]
+
+      markup
     end
 
     def make_text(authod_id, role_value, snapshot_id, target_id, reason_value, status_value, detail : String?)

@@ -35,6 +35,18 @@ module Policr
     abstract def match(msg)
     abstract def handle(msg)
 
+    macro match
+      def match(msg)
+        {{yield}}
+      end
+    end
+
+    macro handle
+      def handle(msg)
+        {{yield}}
+      end
+    end
+
     def setting_complete_with_delay_delete(msg)
       if sended_msg = bot.reply msg, t("setting_complete")
         msg_id = sended_msg.message_id
