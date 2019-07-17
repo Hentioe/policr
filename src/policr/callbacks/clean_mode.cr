@@ -2,7 +2,6 @@ module Policr
   DEFAULT_DELAY_DELETE = 60*90
 
   class CleanModeCallback < Callback
-    alias EnableStatus = Policr::EnableStatus
     alias DeleteTarget = Policr::CleanDeleteTarget
 
     def initialize(bot)

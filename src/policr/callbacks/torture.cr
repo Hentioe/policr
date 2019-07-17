@@ -141,6 +141,15 @@ module Policr
         else
           t("pass_by_self", {user_id: target_user_id})
         end
+
+      # 如果启用了欢迎消息，根据设置决定是否启用链接预览
+      disable_link_preview =
+        if enabled_welcome
+          KVStore.disabled_welcome_link_preview?(chat_id)
+        else
+          true
+        end
+
       # 异步调用
       if photo
         spawn bot.delete_message chat_id, message_id
@@ -149,7 +158,8 @@ module Policr
             chat_id,
             text: text,
             reply_to_message_id: reply_id,
-            reply_markup: nil
+            reply_markup: nil,
+            disable_web_page_preview: disable_link_preview
           )
 
           if sended_msg && !KVStore.record_mode?(chat_id) && !enabled_welcome
@@ -167,7 +177,8 @@ module Policr
           chat_id,
           message_id: message_id,
           text: text,
-          reply_markup: nil
+          reply_markup: nil,
+          disable_web_page_preview: disable_link_preview
         ) }
       end
 

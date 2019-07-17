@@ -22,19 +22,22 @@ module Policr
 
         KVStore.set_welcome(msg.chat.id, msg.text)
 
-        updated_text = updated_preview_settings(chat_id)
-        spawn {
-          bot.edit_message_text chat_id, message_id: reply_msg_id, text: updated_text
-        }
+        updated_text, updated_markup = updated_settings_preview(chat_id)
+        spawn { bot.edit_message_text(
+          chat_id,
+          message_id: reply_msg_id,
+          text: updated_text,
+          reply_markup: updated_markup
+        ) }
 
         setting_complete_with_delay_delete msg
       end
     end
 
-    def updated_preview_settings(chat_id)
+    def updated_settings_preview(chat_id)
       midcall WelcomeCommander do
-        _commander.text chat_id
-      end
+        {_commander.text(chat_id), _commander.markup(chat_id)}
+      end || {nil, nil}
     end
   end
 end

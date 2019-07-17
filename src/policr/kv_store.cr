@@ -12,6 +12,54 @@ module Policr::KVStore
 
   TRUE_INDEX = "true_index" # 已废弃，储存正确答案索引
 
+  WELCOME_LINK_PREVIEW = "welcome_link_preview"
+
+  macro def_toggle(name, disable = 0, enable = 0)
+    {% if enable == 1 %}
+      def enable_{{name.id}}(chat_id)
+        if db = @@db
+          db.put "#{WELCOME_LINK_PREVIEW}_#{chat_id}", 1
+        end
+      end
+
+      def disable_{{name.id}}(chat_id)
+        if db = @@db
+          db.delete "#{WELCOME_LINK_PREVIEW}_#{chat_id}"
+        end
+      end
+
+      def enabled_{{name.id}}?(chat_id)
+        if (db = @@db) && (i = db.get?("#{WELCOME_LINK_PREVIEW}_#{chat_id}"))
+          i.to_i == 1
+        else
+          false
+        end
+      end
+    {% elsif disable == 1 %}
+      def disable_{{name.id}}(chat_id)
+        if db = @@db
+          db.put "#{WELCOME_LINK_PREVIEW}_#{chat_id}", 1
+        end
+      end
+
+      def enable_{{name.id}}(chat_id)
+        if db = @@db
+          db.delete "#{WELCOME_LINK_PREVIEW}_#{chat_id}"
+        end
+      end
+
+      def disabled_{{name.id}}?(chat_id)
+        if (db = @@db) && (i = db.get?("#{WELCOME_LINK_PREVIEW}_#{chat_id}"))
+          i.to_i == 1
+        else
+          false
+        end
+      end
+    {% end %}
+  end
+
+  def_toggle {{WELCOME_LINK_PREVIEW}}, disable: 1
+
   private def put(key, value)
     if db = @@db
       db.put(key, value)

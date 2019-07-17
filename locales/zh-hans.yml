@@ -326,6 +326,7 @@ welcome:
     ░░░░░░░░░░░░░░░░
 
     附加教程：[在欢迎消息中嵌入链接](https://policr.bluerain.io#link_in_welcome)
+  disable_link_preview: "禁用链接预览"
 from:
   question: "ε(*´･∀･｀)з 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
   message: "\\_( ﾟДﾟ)ﾉ 居然是从「%{from}」过来的，大家赶快孤立 [TA](tg://user?id=%{user_id})。"
