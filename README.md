@@ -57,5 +57,5 @@
 
 ## 加入我们
 
-- [POLICR · 中文社区](https://t.me/policr_community)
+- [POLICR · 中文社区](https://policr.bluerain.io/community)
 - [POLICR · 更新通知](https://t.me/policr_changelog)
