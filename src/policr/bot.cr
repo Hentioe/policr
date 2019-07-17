@@ -165,7 +165,7 @@ module Policr
       end
     end
 
-    def is_admin?(chat_id, user_id)
+    def is_admin?(chat_id, user_id, dirty = true)
       has_permission?(chat_id, user_id, :admin)
     end
 
@@ -189,12 +189,16 @@ module Policr
             end
 
         # 异步更新缓存
-        spawn { Cache.set_admins chat_id, get_chat_administrators(chat_id) } if dirty
+        spawn { refresh_admins chat_id } if dirty
         result
       else # 没有获得管理员列表，缓存并递归
         Cache.set_admins chat_id, get_chat_administrators(chat_id)
         has_permission?(chat_id, user_id, role, dirty: false)
       end
+    end
+
+    def refresh_admins(chat_id)
+      Cache.set_admins chat_id, get_chat_administrators(chat_id)
     end
 
     def from_group?(msg)
