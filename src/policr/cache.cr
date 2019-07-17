@@ -7,18 +7,27 @@ module Policr::Cache
   # 缓存管理员列表
   @@admins = Hash(Int64, Array(TelegramBot::ChatMember)).new
 
-  macro def_carving(msg_type_s)
+  macro def_carving(msg_type_s, conflicts = [] of String)
 
     {{msg_type_name = "#{msg_type_s.id}_msg"}}
 
     @@{{msg_type_name.id}} = Set(String).new
 
-    def carving_{{msg_type_name.id}}(chat_id, msg_id)
-      @@{{msg_type_name.id}} << "#{chat_id}_#{msg_id}"
+    def carving_{{msg_type_name.id}}(key_1, key_2)
+      @@{{msg_type_name.id}} << "#{key_1}_#{key_2}"
+
+      # 删除具有冲突的缓存设置标记
+      {% for conflict in conflicts %}
+        delete_{{conflict.id}}_carving key_1, key_2
+      {% end %}
     end
 
-    def {{msg_type_name.id}}?(chat_id, msg_id)
-      @@{{msg_type_name.id}}.includes? "#{chat_id}_#{msg_id}"
+    def {{msg_type_name.id}}?(key_1, key_2)
+      @@{{msg_type_name.id}}.includes? "#{key_1}_#{key_2}"
+    end
+
+    def delete_{{msg_type_s.id}}_carving(key_1, key_2)
+      @@{{msg_type_name.id}}.delete "#{key_1}_#{key_2}"
     end
   end
 
@@ -37,9 +46,6 @@ module Policr::Cache
     end
   end
 
-  # 标记屏蔽内容设置消息
-  def_carving "blocked_content"
-
   # 标记来源调查设置消息
   def_carving "from_setting"
 
@@ -52,8 +58,11 @@ module Policr::Cache
   # 标记自定义验证设置消息
   def_carving "custom_setting"
 
+  # 标记屏蔽内容设置消息
+  def_carving "blocked_content", conflicts: ["max_length"]
+
   # 标记长度限制设置消息
-  def_carving "max_length"
+  def_carving "max_length", conflicts: ["blocked_content"]
 
   # 标记举报详情消息
   def_carving_with_data "report_detail", TelegramBot::User
