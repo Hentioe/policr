@@ -16,7 +16,7 @@ module Policr::KVStore
     {% if enable == 1 %}
       def enable_{{name.id}}(chat_id)
         if db = @@db
-          db.put "{{key.id}}_#{chat_id}", 1
+          db.put "{{key.id}}_#{chat_id.to_s}", 1
           {% for conflict in conflicts %}
             disable_{{conflict.id}} chat_id
           {% end %}
@@ -25,12 +25,12 @@ module Policr::KVStore
 
       def disable_{{name.id}}(chat_id)
         if db = @@db
-          db.delete "{{key.id}}_#{chat_id}"
+          db.delete "{{key.id}}_#{chat_id.to_s}"
         end
       end
 
       def enabled_{{name.id}}?(chat_id)
-        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id}"))
+        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id.to_s}"))
           i.to_i == 1
         else
           false
@@ -39,18 +39,18 @@ module Policr::KVStore
     {% elsif disable == 1 %}
       def disable_{{name.id}}(chat_id)
         if db = @@db
-          db.put "{{key.id}}_#{chat_id}", 1
+          db.put "{{key.id}}_#{chat_id.to_s}", 1
         end
       end
 
       def enable_{{name.id}}(chat_id)
         if db = @@db
-          db.delete "{{key.id}}_#{chat_id}"
+          db.delete "{{key.id}}_#{chat_id.to_s}"
         end
       end
 
       def disabled_{{name.id}}?(chat_id)
-        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id}"))
+        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id.to_s}"))
           i.to_i == 1
         else
           false
