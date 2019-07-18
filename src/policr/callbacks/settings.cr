@@ -54,7 +54,7 @@ module Policr
         )
       when "enable_from"
         unless KVStore.get_from(chat_id)
-          bot.answer_callback_query(query.id, text: t("settings.not_from"))
+          bot.answer_callback_query(query.id, text: t("settings.not_from"), show_alert: true)
           return
         end
         selected = KVStore.enabled_from?(chat_id)

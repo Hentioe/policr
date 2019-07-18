@@ -101,7 +101,7 @@ settings:
   unselected: "取消"
   not_from: "请先使用 /from 指令进行设置。"
   not_welcome: "请先使用 /welcome 指令进行设置。"
-  fault_tolerance_not_supported: "容错模式暂时仅支持图片验证/算术验证和棋局验证。"
+  fault_tolerance_not_supported: "容错模式暂时仅支持图片验证、算术验证和棋局验证。"
 subfunctions:
   desc: |
     您正在定制核心的审核功能，它主要由多个子功能组成。下面分别进行简短的介绍：
