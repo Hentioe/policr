@@ -35,7 +35,7 @@ module Policr
               report.target_user_id,
               report.reason,
               report.status,
-              report.detail
+              escape_markdown(report.detail)
             )
             begin
               bot.edit_message_text(

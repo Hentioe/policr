@@ -15,3 +15,11 @@ macro midcall(cls)
     end
   {% end %}
 end
+
+macro escape_all(text,
+                 symbol,
+                 chars = [] of String)
+  {{text}}{% for char in chars %}
+    .gsub({{char}}, "{{symbol.id}}{{char.id}}")
+  {% end %}
+end

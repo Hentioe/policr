@@ -178,7 +178,7 @@ module Policr
         report.target_user_id,
         report.reason,
         report.status,
-        report.detail
+        escape_markdown(report.detail)
       )
 
       begin
@@ -227,7 +227,7 @@ module Policr
         target_id: target_id,
         reason:    make_reason(reason_value),
         status:    make_status(status_value),
-        detail:    detail ? "\n\n#{detail}\n" : "无",
+        detail:    detail ? "\n\n#{detail}\n" : t("report.none"),
       }
       t "report.voting_message", inject_data
     end
@@ -279,7 +279,7 @@ module Policr
       if snapshot_id != 0
         "[#{snapshot_id}](https://t.me/#{bot.snapshot_channel}/#{snapshot_id})"
       else
-        "无"
+        t("report.none")
       end
     end
   end

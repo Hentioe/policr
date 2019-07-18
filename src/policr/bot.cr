@@ -9,6 +9,12 @@ macro is_private_chat?(chat_id)
   {{chat_id}} > 0
 end
 
+def escape_markdown(text)
+  if text
+    escape_all text, "\\\\", ["*", "_", "`"]
+  end
+end
+
 module Policr
   DEFAULT_TORTURE_SEC = 55 # 默认验证等待时长（秒）
 

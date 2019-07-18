@@ -218,6 +218,7 @@ report:
     reject: "不受理"
     accept: "被处理"
     unban: "通过申诉"
+  none: "无"
 voting:
   no_permissions: "抱歉，您暂时没有权限投票。"
   report_invalid: "此举报已经失效了，不可投票。"
