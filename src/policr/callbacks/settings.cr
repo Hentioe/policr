@@ -9,7 +9,7 @@ module Policr
     def handle(query, msg, data)
       chat_id = msg.chat.id
       from_user_id = query.from.id
-      name, _ = data[0]
+      name = data[0]
 
       # 检测权限
       role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
@@ -33,10 +33,6 @@ module Policr
       when "trust_admin"
         selected = KVStore.enabled_trust_admin?(chat_id)
         selected ? KVStore.disable_trust_admin(chat_id) : KVStore.enable_trust_admin(chat_id)
-
-        puts "RecordMode: #{KVStore.enabled_record_mode?(chat_id)}"
-        puts "FaultTolerance: #{KVStore.enabled_fault_tolerance?(chat_id)}"
-
         text = t "settings.desc", {last_change: def_change}
         spawn bot.answer_callback_query(query.id)
         bot.edit_message_text(
@@ -47,7 +43,7 @@ module Policr
         )
       when "record_mode"
         selected = KVStore.enabled_record_mode?(chat_id)
-        selected ? KVStore.enable_clean_mode(chat_id) : KVStore.enable_record_mode(chat_id)
+        selected ? KVStore.disable_record_mode(chat_id) : KVStore.enable_record_mode(chat_id)
         text = t "settings.desc", {last_change: def_change}
         spawn bot.answer_callback_query(query.id)
         bot.edit_message_text(

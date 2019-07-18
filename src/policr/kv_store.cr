@@ -60,23 +60,31 @@ module Policr::KVStore
   end
 
   WELCOME_LINK_PREVIEW = "welcome_link_preview"
-  ENABLED_FROM         = "enabled_from"
-  ENABLED_EXAMINE      = "enabled_examine"
-  TRUST_ADMIN          = "trust_admin"
   DYNAMIC_CAPTCHA      = "dynamic"
   CHESSBOARD_CAPTCHA   = "chessboard"
   IMAGE_CAPTCHA        = "image_captcha"
+  # 启用审核
+  ENABLED_EXAMINE      = "enabled_examine"
+  # 信任管理
+  TRUST_ADMIN          = "trust_admin"
+  # 容错模式
   FAULT_TOLERANCE      = "fault_tolerance"
+  # 来源调查
+  ENABLED_FROM         = "enabled_from"
+  # 欢迎消息
   ENABLE_WELCOME       = "enabled_welcome"
-  CLEAN_MODE           = "clean_mode"
+  # 记录模式
   RECORD_MODE          = "record_mode"
 
-  def_toggle {{WELCOME_LINK_PREVIEW}}, disable: 1
-  def_toggle "from", key: {{ENABLED_FROM}}, enable: 1
+  # 综合设置菜单
   def_toggle "examine", key: {{ENABLED_EXAMINE}}, enable: 1
-  def_toggle {{TRUST_ADMIN}}, enable: 1
-  def_toggle {{FAULT_TOLERANCE}}, enable: 1
+  def_toggle "trust_admin", key: {{TRUST_ADMIN}}, enable: 1
+  def_toggle "record_mode", key: {{RECORD_MODE}}, enable: 1
+  def_toggle "from", key: {{ENABLED_FROM}}, enable: 1
   def_toggle "welcome", key: {{ENABLE_WELCOME}}, enable: 1
+  def_toggle "fault_tolerance", key: {{FAULT_TOLERANCE}}, enable: 1
+
+  def_toggle "welcome_link_preview", key: {{WELCOME_LINK_PREVIEW}}, disable: 1
 
   def_toggle "dynamic_captcha", key: {{DYNAMIC_CAPTCHA}}, enable: 1, conflicts: [
     "custom_captcha", "chessboard_captcha", "image_captcha",
@@ -87,9 +95,6 @@ module Policr::KVStore
   def_toggle "image_captcha", enable: 1, conflicts: [
     "custom_captcha", "chessboard_captcha", "dynamic_captcha",
   ]
-
-  def_toggle {{CLEAN_MODE}}, enable: 1, conflicts: ["record_mode"]
-  def_toggle {{RECORD_MODE}}, enable: 1, conflicts: ["clean_mode"]
 
   def put_chat_from(chat_id, text)
     if db = @@db

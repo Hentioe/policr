@@ -206,7 +206,6 @@ module Policr
           markup << btn_text_list.map { |text| btn.call(text) }
         end
         reply_to_message_id = Cache.user_join_msg? user_id, chat_id
-        puts t("from.question")
         sended_msg = bot.send_message(
           chat_id,
           text: t("from.question"),
