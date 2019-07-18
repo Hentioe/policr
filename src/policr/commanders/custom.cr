@@ -5,7 +5,7 @@ module Policr
     end
 
     def handle(msg)
-      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
         bot.send_message(
           msg.chat.id,
@@ -27,17 +27,17 @@ module Policr
         when :custom
           KVStore.custom(chat_id) ? CHECKED : UNCHECKED
         when :dynamic
-          KVStore.dynamic?(chat_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_dynamic_captcha?(chat_id) ? CHECKED : UNCHECKED
         when :image
-          KVStore.enabled_image?(chat_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_image_captcha?(chat_id) ? CHECKED : UNCHECKED
         when :chessboard
-          KVStore.enabled_chessboard?(chat_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_chessboard_captcha?(chat_id) ? CHECKED : UNCHECKED
         when :default
           (
             !KVStore.custom(chat_id) &&
-            !KVStore.dynamic?(chat_id) &&
-            !KVStore.enabled_image?(chat_id) &&
-            !KVStore.enabled_chessboard?(chat_id)
+            !KVStore.enabled_dynamic_captcha?(chat_id) &&
+            !KVStore.enabled_image_captcha?(chat_id) &&
+            !KVStore.enabled_chessboard_captcha?(chat_id)
           ) ? CHECKED : UNCHECKED
         else
           UNCHECKED

@@ -12,24 +12,25 @@ module Policr::KVStore
 
   TRUE_INDEX = "true_index" # 已废弃，储存正确答案索引
 
-  WELCOME_LINK_PREVIEW = "welcome_link_preview"
-
-  macro def_toggle(name, disable = 0, enable = 0)
+  macro def_toggle(name, key = name, disable = 0, enable = 0, conflicts = [] of String)
     {% if enable == 1 %}
       def enable_{{name.id}}(chat_id)
         if db = @@db
-          db.put "#{WELCOME_LINK_PREVIEW}_#{chat_id}", 1
+          db.put "{{key.id}}_#{chat_id}", 1
+          {% for conflict in conflicts %}
+            disable_{{conflict.id}} chat_id
+          {% end %}
         end
       end
 
       def disable_{{name.id}}(chat_id)
         if db = @@db
-          db.delete "#{WELCOME_LINK_PREVIEW}_#{chat_id}"
+          db.delete "{{key.id}}_#{chat_id}"
         end
       end
 
       def enabled_{{name.id}}?(chat_id)
-        if (db = @@db) && (i = db.get?("#{WELCOME_LINK_PREVIEW}_#{chat_id}"))
+        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id}"))
           i.to_i == 1
         else
           false
@@ -38,18 +39,18 @@ module Policr::KVStore
     {% elsif disable == 1 %}
       def disable_{{name.id}}(chat_id)
         if db = @@db
-          db.put "#{WELCOME_LINK_PREVIEW}_#{chat_id}", 1
+          db.put "{{key.id}}_#{chat_id}", 1
         end
       end
 
       def enable_{{name.id}}(chat_id)
         if db = @@db
-          db.delete "#{WELCOME_LINK_PREVIEW}_#{chat_id}"
+          db.delete "{{key.id}}_#{chat_id}"
         end
       end
 
       def disabled_{{name.id}}?(chat_id)
-        if (db = @@db) && (i = db.get?("#{WELCOME_LINK_PREVIEW}_#{chat_id}"))
+        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id}"))
           i.to_i == 1
         else
           false
@@ -58,35 +59,41 @@ module Policr::KVStore
     {% end %}
   end
 
-  def_toggle {{WELCOME_LINK_PREVIEW}}, disable: 1
+  WELCOME_LINK_PREVIEW = "welcome_link_preview"
+  ENABLED_FROM         = "enabled_from"
+  ENABLED_EXAMINE      = "enabled_examine"
+  TRUST_ADMIN          = "trust_admin"
+  DYNAMIC_CAPTCHA      = "dynamic"
+  CHESSBOARD_CAPTCHA   = "chessboard"
+  IMAGE_CAPTCHA        = "image_captcha"
+  FAULT_TOLERANCE      = "fault_tolerance"
+  ENABLE_WELCOME       = "enabled_welcome"
+  CLEAN_MODE           = "clean_mode"
+  RECORD_MODE          = "record_mode"
 
-  private def put(key, value)
-    if db = @@db
-      db.put(key, value)
-    end
-  end
+  def_toggle {{WELCOME_LINK_PREVIEW}}, disable: 1
+  def_toggle "from", key: {{ENABLED_FROM}}, enable: 1
+  def_toggle "examine", key: {{ENABLED_EXAMINE}}, enable: 1
+  def_toggle {{TRUST_ADMIN}}, enable: 1
+  def_toggle {{FAULT_TOLERANCE}}, enable: 1
+  def_toggle "welcome", key: {{ENABLE_WELCOME}}, enable: 1
+
+  def_toggle "dynamic_captcha", key: {{DYNAMIC_CAPTCHA}}, enable: 1, conflicts: [
+    "custom_captcha", "chessboard_captcha", "image_captcha",
+  ]
+  def_toggle "chessboard_captcha", key: {{CHESSBOARD_CAPTCHA}}, enable: 1, conflicts: [
+    "custom_captcha", "dynamic_captcha", "image_captcha",
+  ]
+  def_toggle "image_captcha", enable: 1, conflicts: [
+    "custom_captcha", "chessboard_captcha", "dynamic_captcha",
+  ]
+
+  def_toggle {{CLEAN_MODE}}, enable: 1, conflicts: ["record_mode"]
+  def_toggle {{RECORD_MODE}}, enable: 1, conflicts: ["clean_mode"]
 
   def put_chat_from(chat_id, text)
     if db = @@db
       db.put("from_#{chat_id.to_s}", text)
-    end
-  end
-
-  def enable_from(chat_id)
-    if db = @@db
-      db.put("enabled_from_#{chat_id.to_s}", 1)
-    end
-  end
-
-  def disable_from(chat_id)
-    if db = @@db
-      db.delete("enabled_from_#{chat_id.to_s}")
-    end
-  end
-
-  def enabled_from?(chat_id)
-    if (db = @@db) && (i = db.get?("enabled_from_#{chat_id.to_s}"))
-      i.to_i == 1
     end
   end
 
@@ -97,24 +104,6 @@ module Policr::KVStore
         list += [line.split("-").select { |s| s != "" }.map { |s| s.strip }]
       end
       list
-    end
-  end
-
-  def enable_examine(chat_id)
-    if db = @@db
-      db.put("enabled_examine_#{chat_id.to_s}", 1)
-    end
-  end
-
-  def disable_examine(chat_id)
-    if db = @@db
-      db.delete("enabled_examine_#{chat_id.to_s}")
-    end
-  end
-
-  def enable_examine?(chat_id)
-    if (db = @@db) && (i = db.get?("enabled_examine_#{chat_id.to_s}"))
-      i.to_i == 1
     end
   end
 
@@ -130,24 +119,6 @@ module Policr::KVStore
     end
   end
 
-  def trust_admin(chat_id)
-    if db = @@db
-      db.put("trust_admin_#{chat_id.to_s}", 1)
-    end
-  end
-
-  def trust_admin?(chat_id)
-    if (db = @@db) && (status = db.get?("trust_admin_#{chat_id.to_s}"))
-      status.to_i == 1
-    end
-  end
-
-  def distrust_admin(chat_id)
-    if db = @@db
-      db.delete("trust_admin_#{chat_id.to_s}")
-    end
-  end
-
   def add_to_whitelist(user_id)
     if db = @@db
       db.put("halal_white_#{user_id}", 1)
@@ -160,44 +131,14 @@ module Policr::KVStore
     end
   end
 
-  CLEAN_MODE = "clean_mode"
-
-  def clean_mode(chat_id)
-    if db = @@db
-      db.put("#{CLEAN_MODE}_#{chat_id}", 1)
-      db.delete("#{RECORD_MODE}_#{chat_id}")
-    end
-  end
-
-  def clean_mode?(chat_id)
-    if (db = @@db) && (level = db.get?("#{CLEAN_MODE}_#{chat_id}"))
-      level.to_i == 1
-    end
-  end
-
-  RECORD_MODE = "record_mode"
-
-  def record_mode(chat_id)
-    if db = @@db
-      db.put("#{RECORD_MODE}_#{chat_id}", 1)
-      db.delete("#{CLEAN_MODE}_#{chat_id}")
-    end
-  end
-
-  def record_mode?(chat_id)
-    if (db = @@db) && (level = db.get?("#{RECORD_MODE}_#{chat_id}"))
-      level.to_i == 1
-    end
-  end
-
   CUSTOM_TEXT = "custom_text"
 
   def custom_text(chat_id, text)
     if db = @@db
       db.put("#{CUSTOM_TEXT}_#{chat_id}", text)
-      disable_dynamic chat_id
-      disable_image chat_id
-      disable_chessboard chat_id
+      disable_dynamic_captcha chat_id
+      disable_image_captcha chat_id
+      disable_chessboard_captcha chat_id
     end
   end
 
@@ -215,88 +156,18 @@ module Policr::KVStore
     end
   end
 
-  def disable_custom(chat_id)
+  def disable_custom_captcha(chat_id)
     if db = @@db
       db.delete "#{CUSTOM_TEXT}_#{chat_id}"
     end
   end
 
-  DYNAMIC_CAPTCHA = "dynamic"
-
-  def dynamic(chat_id)
-    if db = @@db
-      disable_custom chat_id
-      disable_image chat_id
-      disable_chessboard chat_id
-      db.put("#{DYNAMIC_CAPTCHA}_#{chat_id}", 1)
-    end
-  end
-
-  def disable_dynamic(chat_id)
-    if db = @@db
-      db.delete "#{DYNAMIC_CAPTCHA}_#{chat_id}"
-    end
-  end
-
-  def dynamic?(chat_id)
-    if (db = @@db) && (status = db.get?("#{DYNAMIC_CAPTCHA}_#{chat_id}"))
-      status.to_i == 1
-    end
-  end
-
   def default(chat_id)
     if db = @@db
-      disable_custom chat_id
-      disable_dynamic chat_id
-      disable_image chat_id
-      disable_chessboard chat_id
-    end
-  end
-
-  # 棋局验证
-  CHESSBOARD_CAPTCHA = "chessboard"
-
-  def enable_chessboard(chat_id)
-    if db = @@db
-      disable_custom chat_id
-      disable_dynamic chat_id
-      disable_image chat_id
-      db.put "#{CHESSBOARD_CAPTCHA}_#{chat_id}", 1
-    end
-  end
-
-  def disable_chessboard(chat_id)
-    if db = @@db
-      db.delete "#{CHESSBOARD_CAPTCHA}_#{chat_id}"
-    end
-  end
-
-  def enabled_chessboard?(chat_id)
-    if (db = @@db) && (status = db.get?("#{CHESSBOARD_CAPTCHA}_#{chat_id}"))
-      status.to_i == 1
-    end
-  end
-
-  IMAGE_CAPTCHA = "image_captcha"
-
-  def enable_image(chat_id)
-    if db = @@db
-      disable_custom chat_id
-      disable_dynamic chat_id
-      disable_chessboard chat_id
-      db.put "#{IMAGE_CAPTCHA}_#{chat_id}", 1
-    end
-  end
-
-  def disable_image(chat_id)
-    if db = @@db
-      db.delete "#{IMAGE_CAPTCHA}_#{chat_id}"
-    end
-  end
-
-  def enabled_image?(chat_id)
-    if (db = @@db) && (status = db.get?("#{IMAGE_CAPTCHA}_#{chat_id}"))
-      status.to_i == 1
+      disable_custom_captcha chat_id
+      disable_dynamic_captcha chat_id
+      disable_image_captcha chat_id
+      disable_chessboard_captcha chat_id
     end
   end
 
@@ -322,50 +193,6 @@ module Policr::KVStore
     end
   end
 
-  FIND_TOKEN_BY_USER = "find_token_by_user"
-  FIND_USER_BY_TOKEN = "find_user_by_token"
-
-  def gen_token(user_id)
-    if db = @@db
-      # 删除已存在的 Token
-      if token = db.get?("#{FIND_TOKEN_BY_USER}_#{user_id}")
-        db.delete("#{FIND_USER_BY_TOKEN}_#{token}")
-      end
-      token = KSUID.new.to_s
-      # 关联用户和新 Token
-      db.put("#{FIND_TOKEN_BY_USER}_#{user_id}", token)
-      db.put("#{FIND_USER_BY_TOKEN}_#{token}", user_id)
-      # 返回 Token
-      token
-    end
-  end
-
-  def find_user_by_token(token)
-    if db = @@db
-      db.get?("#{FIND_USER_BY_TOKEN}_#{token}")
-    end
-  end
-
-  ENABLE_WELCOME = "enabled_welcome"
-
-  def enable_welcome(chat_id)
-    if db = @@db
-      db.put "#{ENABLE_WELCOME}_#{chat_id}", 1
-    end
-  end
-
-  def enabled_welcome?(chat_id)
-    if (db = @@db) && (status = db.get?("#{ENABLE_WELCOME}_#{chat_id}"))
-      status.to_i == 1
-    end
-  end
-
-  def disable_welcome(chat_id)
-    if db = @@db
-      db.delete "#{ENABLE_WELCOME}_#{chat_id}"
-    end
-  end
-
   WELCOME = "welcome"
 
   def set_welcome(chat_id, content)
@@ -377,34 +204,6 @@ module Policr::KVStore
   def get_welcome(chat_id)
     if db = @@db
       db.get? "#{WELCOME}_#{chat_id}"
-    end
-  end
-
-  FAULT_TOLERANCE = "fault_tolerance"
-
-  def fault_tolerance(chat_id)
-    if db = @@db
-      db.put "#{FAULT_TOLERANCE}_#{chat_id}", 1
-    end
-  end
-
-  def disable_fault_tolerance(chat_id)
-    if db = @@db
-      db.delete "#{FAULT_TOLERANCE}_#{chat_id}"
-    end
-  end
-
-  def fault_tolerance?(chat_id)
-    if (db = @@db) && (status = db.get?("#{FAULT_TOLERANCE}_#{chat_id}"))
-      status.to_i
-    end
-  end
-
-  FORECE_MULTIPLE = "force_multiple"
-
-  def force_multiple?(chat_id)
-    if (db = @@db) && (status = db.get?("#{FORECE_MULTIPLE}_#{chat_id}"))
-      status.to_i == 1
     end
   end
 end

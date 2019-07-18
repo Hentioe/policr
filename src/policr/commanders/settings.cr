@@ -5,7 +5,7 @@ module Policr
     end
 
     def handle(msg)
-      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
       if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
         bot.send_message(
           msg.chat.id,
@@ -28,17 +28,17 @@ module Policr
       make_status = ->(name : String) {
         case name
         when "enable_examine"
-          KVStore.enable_examine?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_examine?(chat_id) ? SELECTED : UNSELECTED
         when "trust_admin"
-          KVStore.trust_admin?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_trust_admin?(chat_id) ? SELECTED : UNSELECTED
         when "record_mode"
-          KVStore.record_mode?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_record_mode?(chat_id) ? SELECTED : UNSELECTED
         when "enable_from"
           KVStore.enabled_from?(chat_id) ? SELECTED : UNSELECTED
         when "welcome"
           KVStore.enabled_welcome?(chat_id) ? SELECTED : UNSELECTED
         when "fault_tolerance"
-          KVStore.fault_tolerance?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_fault_tolerance?(chat_id) ? SELECTED : UNSELECTED
         else
           UNSELECTED
         end

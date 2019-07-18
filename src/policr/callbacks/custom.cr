@@ -12,7 +12,7 @@ module Policr
       way = report[0]
 
       # 检测权限
-      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
       unless (user = msg.from) && bot.has_permission?(msg.chat.id, from_user_id, role)
         bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         return
@@ -30,7 +30,7 @@ module Policr
         )
         bot.answer_callback_query(query.id)
       when "dynamic"
-        KVStore.dynamic chat_id
+        KVStore.enable_dynamic_captcha chat_id
         text = t "captcha.dynamic"
         bot.edit_message_text(
           chat_id,
@@ -41,7 +41,7 @@ module Policr
         bot.answer_callback_query(query.id)
       when "image"
         back_to_default = ->{
-          KVStore.disable_image chat_id
+          KVStore.disable_image_captcha chat_id
           text = t "captcha.switch_image_failed"
           spawn {
             bot.edit_message_text(
@@ -71,7 +71,7 @@ module Policr
           return
         end
 
-        KVStore.enable_image chat_id
+        KVStore.enable_image_captcha chat_id
         text = t "captcha.image"
         bot.edit_message_text(
           chat_id,
@@ -81,7 +81,7 @@ module Policr
         )
         bot.answer_callback_query(query.id)
       when "chessboard"
-        KVStore.enable_chessboard chat_id
+        KVStore.enable_chessboard_captcha chat_id
         text = t "captcha.chessboard"
         bot.edit_message_text(
           chat_id,

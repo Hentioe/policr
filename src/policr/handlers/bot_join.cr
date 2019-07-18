@@ -2,7 +2,7 @@ module Policr
   class BotJoinHandler < Handler
     def match(msg)
       all_pass? [
-        KVStore.enable_examine?(msg.chat.id),
+        KVStore.enabled_examine?(msg.chat.id),
         msg.new_chat_members,
         !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BotJoin), # 未关闭子功能
       ]
@@ -16,7 +16,7 @@ module Policr
           # 管理员拉入，放行
           if (user = msg.from) && bot.is_admin?(msg.chat.id, user.id)
             if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
-              Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.record_mode?(chat_id)
+              Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
             end
             return
           end

@@ -6,13 +6,13 @@ module Policr
       super(bot, "Settings")
     end
 
-    def handle(query, msg, report)
+    def handle(query, msg, data)
       chat_id = msg.chat.id
       from_user_id = query.from.id
-      name, _ = report
+      name, _ = data[0]
 
       # 检测权限
-      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
       unless (user = msg.from) && bot.has_permission?(msg.chat.id, from_user_id, role)
         bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         return
@@ -20,38 +20,42 @@ module Policr
 
       case name
       when "enable_examine"
-        selected = KVStore.enable_examine?(chat_id)
+        selected = KVStore.enabled_examine?(chat_id)
         selected ? KVStore.disable_examine(chat_id) : KVStore.enable_examine(chat_id)
         text = t "settings.desc", {last_change: def_change}
+        spawn bot.answer_callback_query(query.id)
         bot.edit_message_text(
           chat_id,
           message_id: msg.message_id,
           text: text,
           reply_markup: create_markup(chat_id)
         )
-        bot.answer_callback_query(query.id)
       when "trust_admin"
-        selected = KVStore.trust_admin?(chat_id)
-        selected ? KVStore.distrust_admin(chat_id) : KVStore.trust_admin(chat_id)
+        selected = KVStore.enabled_trust_admin?(chat_id)
+        selected ? KVStore.disable_trust_admin(chat_id) : KVStore.enable_trust_admin(chat_id)
+
+        puts "RecordMode: #{KVStore.enabled_record_mode?(chat_id)}"
+        puts "FaultTolerance: #{KVStore.enabled_fault_tolerance?(chat_id)}"
+
         text = t "settings.desc", {last_change: def_change}
+        spawn bot.answer_callback_query(query.id)
         bot.edit_message_text(
           chat_id,
           message_id: msg.message_id,
           text: text,
           reply_markup: create_markup(chat_id)
         )
-        bot.answer_callback_query(query.id)
       when "record_mode"
-        selected = KVStore.record_mode?(chat_id)
-        selected ? KVStore.clean_mode(chat_id) : KVStore.record_mode(chat_id)
+        selected = KVStore.enabled_record_mode?(chat_id)
+        selected ? KVStore.enable_clean_mode(chat_id) : KVStore.enable_record_mode(chat_id)
         text = t "settings.desc", {last_change: def_change}
+        spawn bot.answer_callback_query(query.id)
         bot.edit_message_text(
           chat_id,
           message_id: msg.message_id,
           text: text,
           reply_markup: create_markup(chat_id)
         )
-        bot.answer_callback_query(query.id)
       when "enable_from"
         unless KVStore.get_from(chat_id)
           bot.answer_callback_query(query.id, text: t("settings.not_from"))
@@ -60,13 +64,13 @@ module Policr
         selected = KVStore.enabled_from?(chat_id)
         selected ? KVStore.disable_from(chat_id) : KVStore.enable_from(chat_id)
         text = t "settings.desc", {last_change: def_change}
+        spawn bot.answer_callback_query(query.id)
         bot.edit_message_text(
           chat_id,
           message_id: msg.message_id,
           text: text,
           reply_markup: create_markup(chat_id)
         )
-        bot.answer_callback_query(query.id)
       when "welcome"
         unless KVStore.get_welcome(chat_id)
           bot.answer_callback_query(query.id, text: t("settings.not_welcome"), show_alert: true)
@@ -75,28 +79,30 @@ module Policr
         selected = KVStore.enabled_welcome?(chat_id)
         selected ? KVStore.disable_welcome(chat_id) : KVStore.enable_welcome(chat_id)
         text = t "settings.desc", {last_change: def_change}
+        spawn bot.answer_callback_query(query.id)
         bot.edit_message_text(
           chat_id,
           message_id: msg.message_id,
           text: text,
           reply_markup: create_markup(chat_id)
         )
-        bot.answer_callback_query(query.id)
       when "fault_tolerance"
-        unless KVStore.dynamic?(chat_id) || KVStore.enabled_image?(chat_id)
+        unless KVStore.enabled_dynamic_captcha?(chat_id) ||
+               KVStore.enabled_image_captcha?(chat_id) ||
+               KVStore.enabled_chessboard_captcha?(chat_id)
           bot.answer_callback_query(query.id, text: t("settings.fault_tolerance_not_supported"), show_alert: true)
           return
         end
-        selected = KVStore.fault_tolerance?(chat_id)
-        selected ? KVStore.disable_fault_tolerance(chat_id) : KVStore.fault_tolerance(chat_id)
+        selected = KVStore.enabled_fault_tolerance?(chat_id)
+        selected ? KVStore.disable_fault_tolerance(chat_id) : KVStore.enable_fault_tolerance(chat_id)
         text = t "settings.desc", {last_change: def_change}
+        spawn bot.answer_callback_query(query.id)
         bot.edit_message_text(
           chat_id,
           message_id: msg.message_id,
           text: text,
           reply_markup: create_markup(chat_id)
         )
-        bot.answer_callback_query(query.id)
       end
     end
 

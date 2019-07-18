@@ -5,7 +5,7 @@ module Policr
     allow_edit
 
     def match(msg)
-      role = KVStore.trust_admin?(msg.chat.id) ? :admin : :creator
+      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
 
       all_pass? [
         (user = msg.from),

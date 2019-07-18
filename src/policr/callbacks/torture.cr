@@ -60,10 +60,10 @@ module Policr
           }
           case status
           when VerificationStatus::Init
-            if KVStore.fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
-              if Model::ErrorCount.counting(chat_id, target_user_id) > 0     # 继续验证
-                Cache.verification_next chat_id, target_user_id              # 更新验证状态避免超时
-                Model::ErrorCount.destory chat_id, target_user_id            # 销毁错误记录
+            if KVStore.enabled_fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
+              if Model::ErrorCount.counting(chat_id, target_user_id) > 0             # 继续验证
+                Cache.verification_next chat_id, target_user_id                      # 更新验证状态避免超时
+                Model::ErrorCount.destory chat_id, target_user_id                    # 销毁错误记录
                 midcall UserJoinHandler do
                   spawn bot.delete_message chat_id, message_id
                   handler.promptly_torture chat_id, join_msg_id, target_user_id, target_username, re: true
@@ -90,8 +90,8 @@ module Policr
           when VerificationStatus::Slowed
             slow_with_receipt(query, chat_id, target_user_id, target_username, message_id)
           end
-        else                                                               # 未通过验证
-          if KVStore.fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
+        else                                                                       # 未通过验证
+          if KVStore.enabled_fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
             fault_tolerance chat_id, target_user_id, message_id, query.id, target_username, join_msg_id, is_photo
           else
             bot.log "Username '#{target_username}' did not pass verification"
@@ -162,7 +162,7 @@ module Policr
             disable_web_page_preview: disable_link_preview
           )
 
-          if sended_msg && !KVStore.record_mode?(chat_id) && !enabled_welcome
+          if sended_msg && !KVStore.enabled_record_mode?(chat_id) && !enabled_welcome
             msg_id = sended_msg.message_id
             Schedule.after(5.seconds) { bot.delete_message(chat_id, msg_id) }
           end
@@ -183,7 +183,7 @@ module Policr
       end
 
       # 非记录且没启用欢迎消息模式删除消息
-      if !KVStore.record_mode?(chat_id) && !enabled_welcome && !photo
+      if !KVStore.enabled_record_mode?(chat_id) && !enabled_welcome && !photo
         Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) }
       end
 
@@ -206,6 +206,7 @@ module Policr
           markup << btn_text_list.map { |text| btn.call(text) }
         end
         reply_to_message_id = Cache.user_join_msg? user_id, chat_id
+        puts t("from.question")
         sended_msg = bot.send_message(
           chat_id,
           text: t("from.question"),

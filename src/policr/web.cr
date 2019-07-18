@@ -37,7 +37,7 @@ module Policr::Web
 
     post "/login" do |env|
       if token = env.params.body["token"]?
-        if ((user_id = KVStore.find_user_by_token(token.strip)) && KVStore.managed_groups(user_id)) || token == bot.token
+        if ((user_id = nil) && KVStore.managed_groups(user_id)) || token == bot.token
           remember = env.params.body["remember"]?
           env.session.string("token", token) unless remember
           if remember
@@ -65,7 +65,7 @@ module Policr::Web
 
     get "/admin" do |env|
       if token = find_token(env)
-        if (user_id = KVStore.find_user_by_token(token.strip)) && (groups = KVStore.managed_groups(user_id))
+        if (user_id = nil) && (groups = KVStore.managed_groups(user_id))
           title = "后台管理"
           render "src/views/admin.html.ecr", "src/views/layout.html.ecr"
         else
