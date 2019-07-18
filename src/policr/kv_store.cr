@@ -64,17 +64,17 @@ module Policr::KVStore
   CHESSBOARD_CAPTCHA   = "chessboard"
   IMAGE_CAPTCHA        = "image_captcha"
   # 启用审核
-  ENABLED_EXAMINE      = "enabled_examine"
+  ENABLED_EXAMINE = "enabled_examine"
   # 信任管理
-  TRUST_ADMIN          = "trust_admin"
+  TRUST_ADMIN = "trust_admin"
   # 容错模式
-  FAULT_TOLERANCE      = "fault_tolerance"
+  FAULT_TOLERANCE = "fault_tolerance"
   # 来源调查
-  ENABLED_FROM         = "enabled_from"
+  ENABLED_FROM = "enabled_from"
   # 欢迎消息
-  ENABLE_WELCOME       = "enabled_welcome"
+  ENABLE_WELCOME = "enabled_welcome"
   # 记录模式
-  RECORD_MODE          = "record_mode"
+  RECORD_MODE = "record_mode"
 
   # 综合设置菜单
   def_toggle "examine", key: {{ENABLED_EXAMINE}}, enable: 1

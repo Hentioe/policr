@@ -21,6 +21,8 @@ module Policr
         is_disable = KVStore.disabled_welcome_link_preview? chat_id
         is_disable ? KVStore.enable_welcome_link_preview(chat_id) : KVStore.disable_welcome_link_preview(chat_id)
 
+        spawn bot.answer_callback_query(query.id)
+
         updated_text, updated_markup = updated_settings_preview chat_id
 
         bot.edit_message_text(
