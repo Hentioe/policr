@@ -16,21 +16,29 @@ module Policr::KVStore
     {% if enable == 1 %}
       def enable_{{name.id}}(chat_id)
         if db = @@db
-          db.put "{{key.id}}_#{chat_id.to_s}", 1
+          db.put "{{key.id}}_#{chat_id}", 1
           {% for conflict in conflicts %}
             disable_{{conflict.id}} chat_id
           {% end %}
+          
+          # puts "{{key.id}}_#{chat_id}"
+          # puts "trust_admin_#{chat_id}"
+          # r = if (db = @@db) && (i = db.get?("trust_admin_#{chat_id}"))
+          #       i.to_i == 1
+          #     end
+          # puts "r: #{r}"
         end
       end
 
       def disable_{{name.id}}(chat_id)
         if db = @@db
-          db.delete "{{key.id}}_#{chat_id.to_s}"
+          db.delete "{{key.id}}_#{chat_id}"
         end
       end
 
       def enabled_{{name.id}}?(chat_id)
-        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id.to_s}"))
+
+        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id}"))
           i.to_i == 1
         else
           false
@@ -39,18 +47,18 @@ module Policr::KVStore
     {% elsif disable == 1 %}
       def disable_{{name.id}}(chat_id)
         if db = @@db
-          db.put "{{key.id}}_#{chat_id.to_s}", 1
+          db.put "{{key.id}}_#{chat_id}", 1
         end
       end
 
       def enable_{{name.id}}(chat_id)
         if db = @@db
-          db.delete "{{key.id}}_#{chat_id.to_s}"
+          db.delete "{{key.id}}_#{chat_id}"
         end
       end
 
       def disabled_{{name.id}}?(chat_id)
-        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id.to_s}"))
+        if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id}"))
           i.to_i == 1
         else
           false
@@ -60,7 +68,7 @@ module Policr::KVStore
   end
 
   # 综合设置菜单
-  def_toggle "examine", key: enabled_examin, enable: 1
+  def_toggle "examine", key: enabled_examine, enable: 1
   def_toggle "trust_admin", key: trust_admin, enable: 1
   def_toggle "record_mode", key: record_mode, enable: 1
   def_toggle "from", key: enabled_from, enable: 1
