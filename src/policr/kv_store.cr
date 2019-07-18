@@ -20,13 +20,6 @@ module Policr::KVStore
           {% for conflict in conflicts %}
             disable_{{conflict.id}} chat_id
           {% end %}
-          
-          # puts "{{key.id}}_#{chat_id}"
-          # puts "trust_admin_#{chat_id}"
-          # r = if (db = @@db) && (i = db.get?("trust_admin_#{chat_id}"))
-          #       i.to_i == 1
-          #     end
-          # puts "r: #{r}"
         end
       end
 
