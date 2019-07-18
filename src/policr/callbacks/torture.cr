@@ -1,3 +1,5 @@
+# 2019-07-18 此文件需要重构！！！
+
 module Policr
   class TortureCallback < Callback
     alias DeleteTarget = Policr::CleanDeleteTarget
