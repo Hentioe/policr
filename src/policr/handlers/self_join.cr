@@ -61,7 +61,7 @@ module Policr
 
       # 没有管理员，自动启用信任管理
       unless has_creator
-        KVStore.trust_admin(chat_id)
+        KVStore.enable_trust_admin(chat_id)
         text = t "add_to_group.no_creator"
         bot.send_message chat_id, text
       end

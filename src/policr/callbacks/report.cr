@@ -59,7 +59,7 @@ module Policr
         if bot.is_admin?(chat_id, from_user_id)
           if bot.has_permission?(chat_id, from_user_id, :creator, dirty: false)
             UserRole::Creator
-          elsif KVStore.trust_admin?(chat_id) # 受信管理员
+          elsif KVStore.enabled_trust_admin?(chat_id) # 受信管理员
             UserRole::TrustedAdmin
           else
             UserRole::Admin
