@@ -29,20 +29,6 @@ module Policr
   end
 
   class Bot < TelegramBot::Bot
-    private macro midreg(cls)
-      {{ cls_name = cls.stringify }}
-      {{ key = cls_name.underscore.gsub(/(_handler|_commander|_callback)/, "") }}
-      %mid =
-      {% if cls_name.ends_with?("Handler") %}
-        handlers
-      {% elsif cls_name.ends_with?("Commander") %}
-        commanders
-      {% elsif cls_name.ends_with?("Callback") %}
-        callbacks
-      {% end %}
-      %mid[{{key}}] = {{cls}}.new self
-    end
-
     private macro regall(cls_list)
       {% for cls in cls_list %}
         midreg {{cls}}
