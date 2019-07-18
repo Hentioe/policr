@@ -132,8 +132,6 @@ module Policr::KVStore
 
   def custom(chat_id)
     if (db = @@db) && (text = db.get?("#{CUSTOM_TEXT}_#{chat_id}"))
-      # 删除动态验证
-      db.delete("#{DYNAMIC_CAPTCHA}_#{chat_id}")
       lines = text.split("\n").map { |line| line.strip }.select { |line| line != "" }
       true_indices = Array(Int32).new
       answers = lines[1..].map_with_index do |line, index|
