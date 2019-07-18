@@ -12,7 +12,7 @@ module Policr::KVStore
 
   TRUE_INDEX = "true_index" # 已废弃，储存正确答案索引
 
-  macro def_toggle(name, key = name, disable = 0, enable = 0, conflicts = [] of String)
+  macro def_toggle(name, key = "none", disable = 0, enable = 0, conflicts = [] of String)
     {% if enable == 1 %}
       def enable_{{name.id}}(chat_id)
         if db = @@db
@@ -75,7 +75,7 @@ module Policr::KVStore
   def_toggle "chessboard_captcha", key: chessboard, enable: 1, conflicts: [
     "custom_captcha", "dynamic_captcha", "image_captcha",
   ]
-  def_toggle "image_captcha", enable: 1, conflicts: [
+  def_toggle "image_captcha", key: image_captcha, enable: 1, conflicts: [
     "custom_captcha", "chessboard_captcha", "dynamic_captcha",
   ]
 
