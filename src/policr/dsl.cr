@@ -30,7 +30,6 @@ macro midreg(cls)
   %mid[{{key}}] = {{cls}}.new self
 end
 
-
 macro escape_all(text,
                  symbol,
                  chars = [] of String)

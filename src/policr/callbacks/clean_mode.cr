@@ -48,6 +48,7 @@ module Policr
       when "from_delay_time"
         def_delay "from"
       when "back"
+        spawn bot.answer_callback_query(query.id)
         midcall CleanModeCommander do
           bot.edit_message_text(
             chat_id,
@@ -62,12 +63,12 @@ module Policr
     end
 
     macro def_target(target_s)
+      spawn bot.answer_callback_query(query.id)
       {{ delete_target = target_s.camelcase }}
       cm = get_cm.call DeleteTarget::{{delete_target.id}}
       selected = cm.status == EnableStatus::TurnOn.value
       selected ? cm.update_column(:status, EnableStatus::TurnOff.value) : cm.update_column(:status, EnableStatus::TurnOn.value)
       text = t "clean_mode.desc"
-      spawn bot.answer_callback_query(query.id)
       bot.edit_message_text(
         chat_id, 
         message_id: msg.message_id, 
@@ -77,6 +78,7 @@ module Policr
     end
 
     macro def_delay(target_s)
+      spawn bot.answer_callback_query(query.id)
       {{ delete_target = target_s.camelcase }}
       cm = get_cm.call DeleteTarget::{{delete_target.id}}
       sec = cm.delay_sec || DEFAULT_DELAY_DELETE
