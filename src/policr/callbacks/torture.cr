@@ -137,7 +137,7 @@ module Policr
       enabled_welcome = KVStore.enabled_welcome? chat_id
       text =
         if enabled_welcome && (welcome = KVStore.get_welcome chat_id)
-          welcome
+          welcome.gsub("{{fullname}}", FromUser.new(query.from).markdown_link)
         elsif admin
           t("pass_by_admin", {user_id: target_user_id, admin: admin.markdown_link})
         else
@@ -193,11 +193,10 @@ module Policr
       bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
 
       # 来源调查
-      from_investigate(chat_id, message_id, target_username, target_user_id) if KVStore.enabled_from?(chat_id)
+      from_enquire(chat_id, message_id, target_username, target_user_id) if KVStore.enabled_from?(chat_id)
     end
 
-    def from_investigate(chat_id, message_id, username, user_id)
-      bot.log "From investigation of '#{username}'"
+    def from_enquire(chat_id, message_id, username, user_id)
       if from_list = KVStore.get_from(chat_id)
         index = -1
         btn = ->(text : String) {

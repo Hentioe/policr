@@ -14,12 +14,9 @@ module Policr
       message_id = msg.message_id
 
       unless from_user_id == target_user_id
-        bot.log "Unrelated User ID '#{from_user_id}' click to From Investigate button"
         bot.answer_callback_query(query.id, text: t("unrelated_click"), show_alert: true)
         return
       end
-
-      bot.log "Username '#{target_username}' has selected from: #{chooese_id}"
 
       all_from = Array(String).new
       if from_list = KVStore.get_from(chat_id)

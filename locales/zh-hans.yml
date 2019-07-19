@@ -318,13 +318,17 @@ torture:
 welcome:
   none: "无"
   hint: |
-    您正在设置欢迎消息，请回复欢迎内容。注意了，回复完成请在综合设置菜单中启用，并且本消息很可能因为机器人的重启而存在回复有效期。
+    您正在设置欢迎消息，请回复欢迎内容。注意了，回复完成请在综合设置菜单中启用。
 
     当前的设置：
 
     ░░░░░░░░░░░░░░░░
     %{welcome_text}
     ░░░░░░░░░░░░░░░░
+
+    支持插入的变量列表（[如何使用？](https://policr.bluerain.io#vars_in_welcome)）：
+
+    用户名称 => `{{fullname}}`
 
     附加教程：[在欢迎消息中嵌入链接](https://policr.bluerain.io#link_in_welcome)
   disable_link_preview: "禁用链接预览"
