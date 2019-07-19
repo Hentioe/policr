@@ -31,9 +31,10 @@ module Policr
           name = bot.display_name(member)
 
           midcall HalalMessageHandler do
-            if !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal) && handler.is_halal(name)
-              # 未关闭封杀清真子功能
-              handler.kick_halal_with_receipt(msg, member)
+            if !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal) && # 未关闭封杀清真子功能
+               handler.is_halal(name) &&
+               !KVStore.halal_white?(member.id) # 非白名单
+              _handler.kick_halal(msg, member)
             else
               start_torture(msg, member)
             end
