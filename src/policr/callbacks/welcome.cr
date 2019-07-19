@@ -31,6 +31,24 @@ module Policr
           text: updated_text,
           reply_markup: updated_markup
         )
+      when "welcome"
+        unless KVStore.get_welcome(chat_id)
+          bot.answer_callback_query(query.id, text: t("welcome.missing_content"), show_alert: true)
+          return
+        end
+        selected = KVStore.enabled_welcome?(chat_id)
+        selected ? KVStore.disable_welcome(chat_id) : KVStore.enable_welcome(chat_id)
+
+        spawn bot.answer_callback_query(query.id)
+
+        updated_text, updated_markup = updated_settings_preview chat_id
+
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: updated_text,
+          reply_markup: updated_markup
+        )
       else # 失效键盘
         bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
       end

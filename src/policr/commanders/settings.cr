@@ -35,8 +35,6 @@ module Policr
           KVStore.enabled_record_mode?(chat_id) ? SELECTED : UNSELECTED
         when "enable_from"
           KVStore.enabled_from?(chat_id) ? SELECTED : UNSELECTED
-        when "welcome"
-          KVStore.enabled_welcome?(chat_id) ? SELECTED : UNSELECTED
         when "fault_tolerance"
           KVStore.enabled_fault_tolerance?(chat_id) ? SELECTED : UNSELECTED
         else
@@ -49,7 +47,6 @@ module Policr
       markup << def_toggle "trust_admin"
       markup << def_toggle "record_mode"
       markup << def_toggle "enable_from"
-      markup << def_toggle "welcome"
       markup << def_toggle "fault_tolerance"
 
       markup

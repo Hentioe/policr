@@ -95,12 +95,10 @@ settings:
   trust_admin: "信任管理"
   record_mode: "记录模式"
   enable_from: "来源调查"
-  welcome: "欢迎消息"
   fault_tolerance: "容错模式"
   selected: "选中"
   unselected: "取消"
   not_from: "请先使用 /from 指令进行设置。"
-  not_welcome: "请先使用 /welcome 指令进行设置。"
   fault_tolerance_not_supported: "容错模式暂时仅支持图片验证、算术验证和棋局验证。"
 subfunctions:
   desc: |
@@ -321,21 +319,23 @@ torture:
     附加阅读：[不限时验证的危害](https://policr.bluerain.io#no_time_limit)
   inf_time: "无验证倒计时（不推荐）"
 welcome:
+  welcome: "启用欢迎消息"
+  missing_content: "请先设置内容！"
   none: "无"
   hint: |
-    您正在设置欢迎消息，请回复欢迎内容。注意了，回复完成请在综合设置菜单中启用。
+    您正在设置欢迎消息，请回复欢迎内容。注意了，设置完成记得启用。
 
     当前的设置：
-
     ░░░░░░░░░░░░░░░░
     %{welcome_text}
     ░░░░░░░░░░░░░░░░
 
-    支持插入的变量列表（[如何使用？](https://policr.bluerain.io#vars_in_welcome)）：
+    支持插入的变量：
+    • 用户名称 => `{{fullname}}`
 
-    用户名称 => `{{fullname}}`
-
-    附加教程：[在欢迎消息中嵌入链接](https://policr.bluerain.io#link_in_welcome)
+    附加教程：
+    1. [在欢迎消息中嵌入链接](https://policr.bluerain.io#link_in_welcome)
+    2. [在欢迎消息中插入变量](https://policr.bluerain.io#vars_in_welcome)
   disable_link_preview: "禁用链接预览"
 from:
   question: "ε(\\*´･∀･｀)з 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
