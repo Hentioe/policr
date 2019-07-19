@@ -31,6 +31,8 @@ module Policr
           KVStore.enabled_examine?(chat_id) ? SELECTED : UNSELECTED
         when "trust_admin"
           KVStore.enabled_trust_admin?(chat_id) ? SELECTED : UNSELECTED
+        when "privacy_setting"
+          KVStore.enabled_privacy_setting?(chat_id) ? SELECTED : UNSELECTED
         when "record_mode"
           KVStore.enabled_record_mode?(chat_id) ? SELECTED : UNSELECTED
         when "enable_from"
@@ -45,6 +47,7 @@ module Policr
       markup = Markup.new
       markup << def_toggle "enable_examine"
       markup << def_toggle "trust_admin"
+      markup << def_toggle "privacy_setting"
       markup << def_toggle "record_mode"
       markup << def_toggle "enable_from"
       markup << def_toggle "fault_tolerance"

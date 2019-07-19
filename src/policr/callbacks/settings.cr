@@ -41,6 +41,17 @@ module Policr
           text: text,
           reply_markup: create_markup(chat_id)
         )
+      when "privacy_setting"
+        selected = KVStore.enabled_privacy_setting?(chat_id)
+        selected ? KVStore.disable_privacy_setting(chat_id) : KVStore.enable_privacy_setting(chat_id)
+        text = t "settings.desc", {last_change: def_change}
+        spawn bot.answer_callback_query(query.id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
       when "record_mode"
         selected = KVStore.enabled_record_mode?(chat_id)
         selected ? KVStore.disable_record_mode(chat_id) : KVStore.enable_record_mode(chat_id)

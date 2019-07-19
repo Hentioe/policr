@@ -87,12 +87,17 @@ captcha:
     chessboard: "棋局验证"
 settings:
   desc: |
-    通过复选按钮，调整设置。提醒：注意看官网首页对相关功能的说明。刚刚进行的更改：%{last_change}
+    通过复选按钮，调整设置。提醒：建议看官网首页对相关功能的更详细说明。
+
+    刚刚进行的更改：%{last_change}
 
     推荐设置：启用审核并信任管理，不使用记录模式。
-  none: "暂无。"
+
+    启用私信设置后机器人的设置菜单将通过私聊发送。注意了，当前私信调整设置支持还不完整。
+  none: "暂无"
   enable_examine: "启用审核"
   trust_admin: "信任管理"
+  privacy_setting: "私信设置"
   record_mode: "记录模式"
   enable_from: "来源调查"
   fault_tolerance: "容错模式"

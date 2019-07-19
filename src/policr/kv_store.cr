@@ -63,13 +63,16 @@ module Policr::KVStore
   # 综合设置菜单
   def_toggle "examine", key: enabled_examine, enable: 1
   def_toggle "trust_admin", key: trust_admin, enable: 1
+  def_toggle "privacy_setting", key: privacy_setting, enable: 1
   def_toggle "record_mode", key: record_mode, enable: 1
   def_toggle "from", key: enabled_from, enable: 1
-  def_toggle "welcome", key: enabled_welcome, enable: 1
   def_toggle "fault_tolerance", key: fault_tolerance, enable: 1
 
+  # 欢迎消息设置
+  def_toggle "welcome", key: enabled_welcome, enable: 1
   def_toggle "welcome_link_preview", key: welcome_link_preview, disable: 1
 
+  # 验证方式
   def_toggle "dynamic_captcha", key: dynamic, enable: 1, conflicts: [
     "custom_captcha", "chessboard_captcha", "image_captcha",
   ]

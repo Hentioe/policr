@@ -9,55 +9,50 @@ module Policr
     end
 
     def handle(query, msg, data)
-      chat_id = msg.chat.id
-      from_user_id = query.from.id
-      name = data[0]
+      target_group do
+        chat_id = msg.chat.id
+        from_user_id = query.from.id
+        name = data[0]
 
-      # 检测权限
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      unless (user = msg.from) && bot.has_permission?(msg.chat.id, from_user_id, role)
-        bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
-        return
-      end
-
-      get_cm = ->(delete_target : DeleteTarget) {
-        Model::CleanMode.find_or_create chat_id, delete_target, data: {
-          chat_id:       chat_id,
-          delete_target: delete_target.value,
-          delay_sec:     nil,
-          status:        EnableStatus::TurnOff.value,
+        get_cm = ->(delete_target : DeleteTarget) {
+          Model::CleanMode.find_or_create _group_id, delete_target, data: {
+            chat_id:       _group_id,
+            delete_target: delete_target.value,
+            delay_sec:     nil,
+            status:        EnableStatus::TurnOff.value,
+          }
         }
-      }
 
-      case name
-      when "timeout_verified"
-        def_target "timeout_verified"
-      when "wrong_verified"
-        def_target "wrong_verified"
-      when "welcome"
-        def_target "welcome"
-      when "from"
-        def_target "from"
-      when "timeout_verified_delay_time"
-        def_delay "timeout_verified"
-      when "wrong_verified_delay_time"
-        def_delay "wrong_verified"
-      when "welcome_delay_time"
-        def_delay "welcome"
-      when "from_delay_time"
-        def_delay "from"
-      when "back"
-        spawn bot.answer_callback_query(query.id)
-        midcall CleanModeCommander do
-          bot.edit_message_text(
-            chat_id,
-            message_id: msg.message_id,
-            text: t("clean_mode.desc"),
-            reply_markup: commander.create_markup(chat_id)
-          )
+        case name
+        when "timeout_verified"
+          def_target "timeout_verified"
+        when "wrong_verified"
+          def_target "wrong_verified"
+        when "welcome"
+          def_target "welcome"
+        when "from"
+          def_target "from"
+        when "timeout_verified_delay_time"
+          def_delay "timeout_verified"
+        when "wrong_verified_delay_time"
+          def_delay "wrong_verified"
+        when "welcome_delay_time"
+          def_delay "welcome"
+        when "from_delay_time"
+          def_delay "from"
+        when "back"
+          spawn bot.answer_callback_query(query.id)
+          midcall CleanModeCommander do
+            bot.edit_message_text(
+              chat_id,
+              message_id: msg.message_id,
+              text: t("clean_mode.desc"),
+              reply_markup: commander.create_markup(_group_id)
+            )
+          end
+        else # 失效键盘
+          bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
         end
-      else # 失效键盘
-        bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
       end
     end
 
@@ -72,7 +67,7 @@ module Policr
         chat_id, 
         message_id: msg.message_id, 
         text: text,
-        reply_markup: create_markup(chat_id)
+        reply_markup: create_markup(_group_id)
       )
     end
 
@@ -85,24 +80,20 @@ module Policr
       bot.edit_message_text(
         chat_id, 
         message_id: msg.message_id, 
-        text: create_time_setting_text(chat_id, DeleteTarget::{{delete_target.id}}, model: cm), 
-        reply_markup: create_time_setting_markup(chat_id, DeleteTarget::{{delete_target.id}})
+        text: create_time_setting_text(_group_id, DeleteTarget::{{delete_target.id}}, model: cm), 
+        reply_markup: create_time_setting_markup(_group_id, DeleteTarget::{{delete_target.id}})
       )
     end
 
-    # macro def_change
-    #   (selected ? t("settings.unselected") : t("settings.selected")) + t("settings.#{name}")
-    # end
-
-    def create_markup(chat_id)
+    def create_markup(group_id)
       midcall CleanModeCommander do
-        commander.create_markup(chat_id)
+        commander.create_markup(group_id)
       end
     end
 
-    def create_time_setting_text(chat_id, delete_target, model : Model::CleanMode? = nil)
-      cm = model || Model::CleanMode.find_or_create chat_id, delete_target, data: {
-        chat_id:       chat_id,
+    def create_time_setting_text(group_id, delete_target, model : Model::CleanMode? = nil)
+      cm = model || Model::CleanMode.find_or_create group_id, delete_target, data: {
+        chat_id:       group_id,
         delete_target: delete_target.value,
         delay_sec:     nil,
         status:        EnableStatus::TurnOff.value,
@@ -129,7 +120,7 @@ module Policr
 
     BACK_SYMBOL = "«"
 
-    def create_time_setting_markup(chat_id, delete_target)
+    def create_time_setting_markup(group_id, delete_target)
       markup = Markup.new
 
       btn = ->(text : String, sec : Int32 | String) {
