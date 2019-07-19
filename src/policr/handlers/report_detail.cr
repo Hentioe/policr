@@ -42,7 +42,7 @@ module Policr
                 "@#{bot.voting_channel}",
                 message_id: exists_r.post_id,
                 text: text,
-                reply_markup: _callback.create_voting_markup(report.id)
+                reply_markup: _callback.create_voting_markup(report)
               )
               bot.reply msg, t("private_forward_report.update_success_for_other")
             rescue e : TelegramBot::APIException
