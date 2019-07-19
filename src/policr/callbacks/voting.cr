@@ -66,7 +66,7 @@ module Policr
       if report
         begin
           report.add_votes({:author_id => from_user_id.to_i64, :type => voting_action.value})
-          spawn bot.answer_callback_query(query.id, text: t("voting.success"), show_alert: true)
+          spawn bot.answer_callback_query(query.id, text: t("voting.success"))
         rescue e : Exception
           bot.answer_callback_query(query.id, text: t("voting.vote_failure", {reason: e.message}), show_alert: true)
         end
