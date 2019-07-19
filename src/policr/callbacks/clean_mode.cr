@@ -2,7 +2,7 @@ module Policr
   DEFAULT_DELAY_DELETE = 60*90
 
   class CleanModeCallback < Callback
-    alias DeleteTarget = Policr::CleanDeleteTarget
+    alias DeleteTarget = CleanDeleteTarget
 
     def initialize(bot)
       super(bot, "CleanMode")
@@ -21,13 +21,12 @@ module Policr
       end
 
       get_cm = ->(delete_target : DeleteTarget) {
-        cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == delete_target.value) }.first
-        cm = cm || Model::CleanMode.create!({
+        Model::CleanMode.find_or_create chat_id, delete_target, data: {
           chat_id:       chat_id,
           delete_target: delete_target.value,
           delay_sec:     nil,
           status:        EnableStatus::TurnOff.value,
-        })
+        }
       }
 
       case name
@@ -78,15 +77,15 @@ module Policr
     end
 
     macro def_delay(target_s)
-      spawn bot.answer_callback_query(query.id)
       {{ delete_target = target_s.camelcase }}
+      spawn bot.answer_callback_query(query.id)
       cm = get_cm.call DeleteTarget::{{delete_target.id}}
-      sec = cm.delay_sec || DEFAULT_DELAY_DELETE
-      text = t "clean_mode.delay_setting", {target: t("clean_mode.{{target_s.id}}"), hor: (sec.to_f / 3600).round(2)}
+      Cache.carving_clean_mode_time_msg chat_id, msg.message_id, {cm, DeleteTarget::{{delete_target.id}}}
+
       bot.edit_message_text(
         chat_id, 
         message_id: msg.message_id, 
-        text: text, 
+        text: create_time_setting_text(chat_id, DeleteTarget::{{delete_target.id}}, model: cm), 
         reply_markup: create_time_setting_markup(chat_id, DeleteTarget::{{delete_target.id}})
       )
     end
@@ -99,6 +98,33 @@ module Policr
       midcall CleanModeCommander do
         commander.create_markup(chat_id)
       end
+    end
+
+    def create_time_setting_text(chat_id, delete_target, model : Model::CleanMode? = nil)
+      cm = model || Model::CleanMode.find_or_create chat_id, delete_target, data: {
+        chat_id:       chat_id,
+        delete_target: delete_target.value,
+        delay_sec:     nil,
+        status:        EnableStatus::TurnOff.value,
+      }
+      sec = cm.delay_sec || DEFAULT_DELAY_DELETE
+      delete_target_s =
+        case delete_target
+        when DeleteTarget::TimeoutVerified
+          "timeout_verified"
+        when DeleteTarget::WrongVerified
+          "wrong_verified"
+        when DeleteTarget::Welcome
+          "welcome"
+        when DeleteTarget::From
+          "from"
+        else
+          "unknown"
+        end
+      text = t("clean_mode.delay_setting", {
+        target: t("clean_mode.#{delete_target_s}"),
+        hor:    (sec.to_f / 3600).round(2),
+      })
     end
 
     BACK_SYMBOL = "«"

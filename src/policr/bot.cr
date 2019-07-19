@@ -72,6 +72,7 @@ module Policr
         BlockedContentHandler,
         MaxLengthHandler,
         MaxLengthSettingHandler,
+        CleanModeTimeSettingHandler,
       ]
 
       # 注册回调模块
