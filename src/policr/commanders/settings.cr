@@ -5,40 +5,37 @@ module Policr
     end
 
     def handle(msg)
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
+      reply_menu do
         bot.send_message(
-          msg.chat.id,
+          _chat_id,
           text: t("settings.desc", {last_change: t("settings.none")}),
-          reply_to_message_id: msg.message_id,
-          reply_markup: create_markup(msg.chat.id)
+          reply_to_message_id: _reply_msg_id,
+          reply_markup: create_markup(_group_id)
         )
-      else
-        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
 
     SELECTED   = "■"
     UNSELECTED = "□"
 
-    def create_markup(chat_id)
+    def create_markup(group_id)
       toggle_btn = ->(text : String, name : String) {
         Button.new(text: text, callback_data: "Settings:#{name}:toggle")
       }
       make_status = ->(name : String) {
         case name
         when "enable_examine"
-          KVStore.enabled_examine?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_examine?(group_id) ? SELECTED : UNSELECTED
         when "trust_admin"
-          KVStore.enabled_trust_admin?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_trust_admin?(group_id) ? SELECTED : UNSELECTED
         when "privacy_setting"
-          KVStore.enabled_privacy_setting?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_privacy_setting?(group_id) ? SELECTED : UNSELECTED
         when "record_mode"
-          KVStore.enabled_record_mode?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_record_mode?(group_id) ? SELECTED : UNSELECTED
         when "enable_from"
-          KVStore.enabled_from?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_from?(group_id) ? SELECTED : UNSELECTED
         when "fault_tolerance"
-          KVStore.enabled_fault_tolerance?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_fault_tolerance?(group_id) ? SELECTED : UNSELECTED
         else
           UNSELECTED
         end
