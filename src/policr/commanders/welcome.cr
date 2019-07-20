@@ -5,28 +5,25 @@ module Policr
     end
 
     def handle(msg)
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
-        chat_id = msg.chat.id
-
+      reply_menu do
         sended_msg = bot.send_message(
-          chat_id,
-          text: text(chat_id),
-          reply_to_message_id: msg.message_id,
-          reply_markup: markup(chat_id)
+          _chat_id,
+          text: text(_group_id),
+          reply_to_message_id: _reply_msg_id,
+          reply_markup: markup(_group_id)
         )
 
         if sended_msg
-          Cache.carving_welcome_setting_msg chat_id, sended_msg.message_id
+          Cache.carving_welcome_setting_msg _chat_id, sended_msg.message_id
         end
-      else
-        bot.delete_message(msg.chat.id, msg.message_id)
+
+        sended_msg
       end
     end
 
-    def text(chat_id)
+    def text(group_id)
       welcome_text =
-        if welcome = KVStore.get_welcome(chat_id)
+        if welcome = KVStore.get_welcome(group_id)
           escape_markdown welcome
         else
           t "welcome.none"
@@ -37,13 +34,13 @@ module Policr
     SELECTED   = "■"
     UNSELECTED = "□"
 
-    def markup(chat_id)
+    def markup(group_id)
       make_status = ->(name : String) {
         case name
         when "disable_link_preview"
-          KVStore.disabled_welcome_link_preview?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.disabled_welcome_link_preview?(group_id) ? SELECTED : UNSELECTED
         when "welcome"
-          KVStore.enabled_welcome?(chat_id) ? SELECTED : UNSELECTED
+          KVStore.enabled_welcome?(group_id) ? SELECTED : UNSELECTED
         else
           UNSELECTED
         end

@@ -18,18 +18,17 @@ module Policr
 
     macro target_group
       # 检测权限
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
+      %role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
       _group_id = msg.chat.id
       _chat_id = msg.chat.id
       if msg.chat.id > 0 &&
-         (group_id = Model::PrivateMenu.find_group_id(msg.chat.id, msg.message_id)) &&
-         KVStore.enabled_privacy_setting?(group_id)
-        _group_id = group_id
+         (%group_id = Model::PrivateMenu.find_group_id(msg.chat.id, msg.message_id)) &&
+         KVStore.enabled_privacy_setting?(%group_id)
+        _group_id = %group_id
       end
 
-      unless (user = msg.from) &&
-             bot.has_permission?(_group_id, query.from.id, role)
-             bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
+      unless bot.has_permission?(_group_id, query.from.id, %role)
+        bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         return
       end
 

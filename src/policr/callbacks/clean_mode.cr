@@ -10,7 +10,6 @@ module Policr
 
     def handle(query, msg, data)
       target_group do
-        from_user_id = query.from.id
         name = data[0]
 
         get_cm = ->(delete_target : DeleteTarget) {

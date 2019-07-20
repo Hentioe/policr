@@ -353,7 +353,7 @@ welcome:
   disable_link_preview: "禁用链接预览"
 from:
   question: "ε(\\*´･∀･｀)з 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
-  message: "\\_( ﾟДﾟ)ﾉ 居然是从「%{from}」过来的，大家赶快孤立 [TA](tg://user?id=%{user_id})。"
+  message: "\\_( ﾟДﾟ)ﾉ 居然是从「%{from}」过来的，大家赶快孤立 [TA](tg://user?id=%{user_id})"
   none: 无
   desc: |
     您正在设置[来源调查](https://policr.bluerain.io#from)，一个具体的例子：
