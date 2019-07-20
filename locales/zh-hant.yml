@@ -1,0 +1,7 @@
+language:
+  desc: |
+    選擇機器人的工作語言，立即生效。
+
+torture:
+  hint: "請確認「%{title}」以通過驗證，[妳](tg://user?id=%{user_id})有 %{torture_sec} 秒的時間。"
+

@@ -27,7 +27,7 @@ module Policr
     def text(chat_id)
       welcome_text =
         if welcome = KVStore.get_welcome(chat_id)
-          welcome
+          escape_markdown welcome
         else
           t "welcome.none"
         end
@@ -38,14 +38,33 @@ module Policr
     UNSELECTED = "□"
 
     def markup(chat_id)
-      chk_status = KVStore.disabled_welcome_link_preview?(chat_id) ? SELECTED : UNSELECTED
+      make_status = ->(name : String) {
+        case name
+        when "disable_link_preview"
+          KVStore.disabled_welcome_link_preview?(chat_id) ? SELECTED : UNSELECTED
+        when "welcome"
+          KVStore.enabled_welcome?(chat_id) ? SELECTED : UNSELECTED
+        else
+          UNSELECTED
+        end
+      }
+      make_btn = ->(text : String, name : String) {
+        Button.new(text: text, callback_data: "Welcome:#{name}")
+      }
 
       markup = Markup.new
 
-      btn_name = "disable_link_preview"
-      markup << [Button.new(text: "#{chk_status} #{t("welcome.#{btn_name}")}", callback_data: "Welcome:#{btn_name}")]
+      markup << def_btn_list ["welcome", "disable_link_preview"]
 
       markup
+    end
+
+    macro def_btn_list(list)
+      [
+      {% for name in list %}
+        make_btn.call(make_status.call({{name}}) + " " + t("welcome.{{name.id}}"), {{name}}),
+      {% end %}
+      ]
     end
   end
 end

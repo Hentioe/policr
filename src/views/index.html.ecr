@@ -199,6 +199,12 @@
                 <td align="center">设置</td>
                 <td align="center">略</td>
               </tr>
+              <tr>
+                <td align="left"><code>/language</code></td>
+                <td align="left">切换工作语言</td>
+                <td align="center">设置</td>
+                <td align="center">略</td>
+              </tr>
             </tbody>
           </table>
           <h3 class="subtitle is-3">快速入门</h3>
@@ -211,6 +217,13 @@
           <div class="content">
             <ul>
               <li>
+                <p class="subtitle is-6">启用审核</p>
+                <p>
+                  <strong>推荐</strong
+                  >。验证用户，打击清真等子功能的总开关，它能避免被垃圾内容或危险帐号打扰。
+                </p>
+              </li>
+              <li>
                 <p class="subtitle is-6">信任管理</p>
                 <p>
                   <strong>推荐</strong
@@ -218,10 +231,9 @@
                 </p>
               </li>
               <li>
-                <p class="subtitle is-6">启用审核</p>
+                <p class="subtitle is-6">私信设置</p>
                 <p>
-                  <strong>推荐</strong
-                  >。验证用户，打击清真等子功能的总开关，它能避免被垃圾内容或危险帐号打扰。
+                  较推荐。在群组中发送设置相关的指令，机器人会主动私聊设置菜单，从而保护了设置的私密性。但设置不公开也意味着不安全，毕竟无法得知哪个管理员设置过什么。
                 </p>
               </li>
               <li>
@@ -234,12 +246,6 @@
                 <p class="subtitle is-6">来源调查</p>
                 <p>
                   视需求。询问通过验证用户来自何处，通常用于统计热门宣传渠道。
-                </p>
-              </li>
-              <li>
-                <p class="subtitle is-6">欢迎消息</p>
-                <p>
-                  视需求。给通过验证用户显示欢迎消息，会替代验证成功的提示，并无视记录模式状态永久保留。
                 </p>
               </li>
               <li>
@@ -567,11 +573,12 @@
                   假设一名叫做「哆啦A梦」的用户通过了验证，我们可以这样在欢迎中显示他的名字：
                   <br />
                   <br />
-                  <code>欢迎 {{fullname}} 加入本群</code>
+                  <code>欢迎{{fullname}}加入本群</code>
+                  <br />
                   <br />
                   <br />
                   其中<code>{{fullname}}</code>会被替换为「哆啦A梦」，所以欢迎内容实际为：<code
-                    >欢迎 多啦A梦 加入本群</code
+                    >欢迎多啦A梦加入本群</code
                   >
                   <br />
                   <br />

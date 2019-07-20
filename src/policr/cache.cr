@@ -70,6 +70,9 @@ module Policr::Cache
   # 标记新用户入群消息
   def_carving_with_data "user_join", Int32
 
+  # 标记干净模式删除时间设置消息
+  def_carving_with_data "clean_mode_time", {Model::CleanMode, CleanDeleteTarget}
+
   macro def_list(name, type)
     @@{{name.id}}_list = {{type.id}}.new
 

@@ -137,7 +137,8 @@ module Policr
       enabled_welcome = KVStore.enabled_welcome? chat_id
       text =
         if enabled_welcome && (welcome = KVStore.get_welcome chat_id)
-          welcome.gsub("{{fullname}}", FromUser.new(query.from).markdown_link)
+          (escape_markdown(welcome) || "")
+            .gsub("{{fullname}}", FromUser.new(query.from).markdown_link)
         elsif admin
           t("pass_by_admin", {user_id: target_user_id, admin: admin.markdown_link})
         else

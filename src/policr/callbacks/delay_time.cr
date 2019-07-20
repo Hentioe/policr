@@ -21,13 +21,12 @@ module Policr
       end
 
       get_cm = ->(delete_target : DeleteTarget) {
-        cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == delete_target.value) }.first
-        cm = cm || Model::CleanMode.create!({
+        cm = Model::CleanMode.find_or_create chat_id, delete_target, data: {
           chat_id:       chat_id,
           delete_target: delete_target.value,
           delay_sec:     nil,
           status:        EnableStatus::TurnOff.value,
-        })
+        }
       }
 
       case DeleteTarget.new(delete_target_value.to_i)

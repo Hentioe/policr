@@ -17,7 +17,7 @@ module Policr
 
     def handle(msg)
       if (text = msg.text) && (user = msg.from)
-        kick_halal_with_receipt(msg, user) if is_halal(text)
+        kick_halal(msg, user) if is_halal(text)
       end
     end
 
@@ -37,13 +37,10 @@ module Policr
       r >= 0.65
     end
 
-    def kick_halal_with_receipt(msg, member)
+    def kick_halal(msg, member)
       name = bot.display_name(member)
       bot.log "Found a halal '#{name}'"
-      if KVStore.halal_white? member.id
-        bot.log "Halal '#{name}' in whitelist, ignored"
-        return
-      end
+
       text = t("halal.found")
       sended_msg = bot.reply msg, text
 

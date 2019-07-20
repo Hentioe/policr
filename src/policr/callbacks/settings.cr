@@ -41,6 +41,17 @@ module Policr
           text: text,
           reply_markup: create_markup(chat_id)
         )
+      when "privacy_setting"
+        selected = KVStore.enabled_privacy_setting?(chat_id)
+        selected ? KVStore.disable_privacy_setting(chat_id) : KVStore.enable_privacy_setting(chat_id)
+        text = t "settings.desc", {last_change: def_change}
+        spawn bot.answer_callback_query(query.id)
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg.message_id,
+          text: text,
+          reply_markup: create_markup(chat_id)
+        )
       when "record_mode"
         selected = KVStore.enabled_record_mode?(chat_id)
         selected ? KVStore.disable_record_mode(chat_id) : KVStore.enable_record_mode(chat_id)
@@ -67,21 +78,6 @@ module Policr
           text: text,
           reply_markup: create_markup(chat_id)
         )
-      when "welcome"
-        unless KVStore.get_welcome(chat_id)
-          bot.answer_callback_query(query.id, text: t("settings.not_welcome"), show_alert: true)
-          return
-        end
-        selected = KVStore.enabled_welcome?(chat_id)
-        selected ? KVStore.disable_welcome(chat_id) : KVStore.enable_welcome(chat_id)
-        text = t "settings.desc", {last_change: def_change}
-        spawn bot.answer_callback_query(query.id)
-        bot.edit_message_text(
-          chat_id,
-          message_id: msg.message_id,
-          text: text,
-          reply_markup: create_markup(chat_id)
-        )
       when "fault_tolerance"
         unless KVStore.enabled_dynamic_captcha?(chat_id) ||
                KVStore.enabled_image_captcha?(chat_id) ||
@@ -99,6 +95,8 @@ module Policr
           text: text,
           reply_markup: create_markup(chat_id)
         )
+      else # 失效键盘
+        bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
       end
     end
 

@@ -47,6 +47,24 @@ module Policr
       end
     end
 
+    macro target_group
+      _group_id = msg.chat.id
+      if (reply_msg = msg.reply_to_message) &&
+         (reply_msg_id = reply_msg.message_id)
+        if msg.chat.id > 0 &&
+           (group_id = Model::PrivateMenu.find_group_id(msg.chat.id, reply_msg_id)) &&
+           KVStore.enabled_privacy_setting?(group_id)
+           _group_id = group_id
+        end
+
+        _reply_msg_id = reply_msg_id
+      end
+
+      @group_id = _group_id
+
+      {{yield}}
+    end
+
     def setting_complete_with_delay_delete(msg)
       if sended_msg = bot.reply msg, t("setting_complete")
         msg_id = sended_msg.message_id

@@ -1,6 +1,5 @@
 module Policr
   class CleanModeCommander < Commander
-    alias EnableStatus = Policr::EnableStatus
     alias DeleteTarget = Policr::CleanDeleteTarget
 
     def initialize(bot)
@@ -8,16 +7,13 @@ module Policr
     end
 
     def handle(msg)
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
+      reply_menu do
         bot.send_message(
-          msg.chat.id,
+          _chat_id,
           text: t("clean_mode.desc"),
-          reply_to_message_id: msg.message_id,
-          reply_markup: create_markup(msg.chat.id)
+          reply_to_message_id: _reply_msg_id,
+          reply_markup: create_markup(_group_id)
         )
-      else
-        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
 
@@ -25,12 +21,12 @@ module Policr
     SELECTED    = "■"
     UNSELECTED  = "□"
 
-    def create_markup(chat_id)
+    def create_markup(group_id)
       btn = ->(text : String, name : String) {
         Button.new(text: text, callback_data: "CleanMode:#{name}")
       }
       symbol = ->(delete_target : DeleteTarget) {
-        cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == delete_target.value) }.first
+        cm = Model::CleanMode.where { (_chat_id == group_id) & (_delete_target == delete_target.value) }.first
         if cm
           cm.status == EnableStatus::TurnOn.value ? SELECTED : UNSELECTED
         else

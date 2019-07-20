@@ -100,32 +100,6 @@ module Policr
       # 生成投票
       if r
         return unless voting_msg = create_report_voting(chat_id: chat_id, report: r, answer_query_id: query.id)
-        # text = make_text(r.author_id, r.role, r.target_snapshot_id, target_user_id, r.reason, r.status, nil)
-
-        # report_id = r.id
-        # markup = Markup.new
-        # make_btn = ->(text : String, voting_type : String) {
-        #   Button.new(text: text, callback_data: "Voting:#{report_id}:#{voting_type}")
-        # }
-        # markup << [
-        #   make_btn.call("👍", "agree"),
-        #   make_btn.call("🙏", "abstention"),
-        #   make_btn.call("👎", "oppose"),
-        # ]
-        # begin
-        #   voting_msg = bot.send_message "@#{bot.voting_channel}", text, reply_markup: markup
-        # rescue e : TelegramBot::APIException
-        #   # 回滚已入库的举报
-        #   Model::Report.delete(r.id)
-        #   _, reason = bot.parse_error(e)
-        #   err_msg = t("report.generate_voting_error", {reason: reason})
-        #   if query
-        #     bot.answer_callback_query(query.id, text: err_msg)
-        #   else
-        #     bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
-        #   end
-        #   return
-        # end
       end
 
       # 响应举报生成结果
@@ -185,7 +159,7 @@ module Policr
         if voting_msg = bot.send_message(
              "@#{bot.voting_channel}",
              text: text,
-             reply_markup: create_voting_markup(report.id)
+             reply_markup: create_voting_markup(report)
            )
           report.update_column(:post_id, voting_msg.message_id) # 更新举报消息 ID
         end
@@ -205,18 +179,20 @@ module Policr
       end
     end
 
-    def create_voting_markup(report_id)
-      markup = Markup.new
-      make_btn = ->(text : String, voting_type : String) {
-        Button.new(text: text, callback_data: "Voting:#{report_id}:#{voting_type}")
-      }
-      markup << [
-        make_btn.call("👍", "agree"),
-        make_btn.call("🙏", "abstention"),
-        make_btn.call("👎", "oppose"),
-      ]
+    def create_voting_markup(report)
+      if report && report.status == Status::Begin.value
+        markup = Markup.new
+        make_btn = ->(text : String, voting_type : String) {
+          Button.new(text: text, callback_data: "Voting:#{report.id}:#{voting_type}")
+        }
+        markup << [
+          make_btn.call("👍", "agree"),
+          make_btn.call("🙏", "abstention"),
+          make_btn.call("👎", "oppose"),
+        ]
 
-      markup
+        markup
+      end
     end
 
     def make_text(authod_id, role_value, snapshot_id, target_id, reason_value, status_value, detail : String?)

@@ -1,0 +1,6 @@
+language:
+  desc: |
+    Select the working language of the bot and it will take effect immediately.
+
+torture:
+  hint: Please confirm "%{title}" to pass the verification, you have %{torture_sec} seconds.
