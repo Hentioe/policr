@@ -20,6 +20,7 @@ module Policr
       # 检测权限
       role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
       _group_id = msg.chat.id
+      _chat_id = msg.chat.id
       if msg.chat.id > 0 &&
          (group_id = Model::PrivateMenu.find_group_id(msg.chat.id, msg.message_id)) &&
          KVStore.enabled_privacy_setting?(group_id)

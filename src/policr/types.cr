@@ -44,6 +44,10 @@ module Policr
     Unknown; UserJoin; BotJoin; BanHalal; Blacklist
   end
 
+  enum LanguageCode
+    English; ZhHans; ZhHant
+  end
+
   class FromUser
     getter user : TelegramBot::User?
 

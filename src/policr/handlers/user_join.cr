@@ -137,9 +137,10 @@ module Policr
       spawn bot.restrict_chat_member(chat_id, member_id, can_send_messages: false)
 
       torture_sec = KVStore.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
+      locale = gen_locale chat_id
       question =
         if torture_sec > 0
-          hint = t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title})
+          hint = t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title}, locale: locale)
         else
           t("torture.no_time_reply", {user_id: member_id, title: title})
         end

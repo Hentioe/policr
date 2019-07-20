@@ -12,6 +12,7 @@ module Policr
 
     macro reply_menu
       _chat_id = msg.chat.id
+      _group_id = msg.chat.id
       _reply_msg_id = msg.message_id
 
       role = KVStore.enabled_trust_admin?(_chat_id) ? :admin : :creator

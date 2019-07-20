@@ -1,4 +1,4 @@
-class CreatePrivateMenu < Jennifer::Migration::Base
+class CreatePrivateMenus < Jennifer::Migration::Base
   def up
     create_table :private_menus do |t|
       # 私聊ID

@@ -10,7 +10,6 @@ module Policr
 
     def handle(query, msg, data)
       target_group do
-        chat_id = msg.chat.id
         from_user_id = query.from.id
         name = data[0]
 
@@ -44,7 +43,7 @@ module Policr
           spawn bot.answer_callback_query(query.id)
           midcall CleanModeCommander do
             bot.edit_message_text(
-              chat_id,
+              _chat_id,
               message_id: msg.message_id,
               text: t("clean_mode.desc"),
               reply_markup: commander.create_markup(_group_id)
@@ -64,7 +63,7 @@ module Policr
       selected ? cm.update_column(:status, EnableStatus::TurnOff.value) : cm.update_column(:status, EnableStatus::TurnOn.value)
       text = t "clean_mode.desc"
       bot.edit_message_text(
-        chat_id, 
+        _chat_id, 
         message_id: msg.message_id, 
         text: text,
         reply_markup: create_markup(_group_id)
@@ -75,10 +74,10 @@ module Policr
       {{ delete_target = target_s.camelcase }}
       spawn bot.answer_callback_query(query.id)
       cm = get_cm.call DeleteTarget::{{delete_target.id}}
-      Cache.carving_clean_mode_time_msg chat_id, msg.message_id, {cm, DeleteTarget::{{delete_target.id}}}
+      Cache.carving_clean_mode_time_msg _chat_id, msg.message_id, {cm, DeleteTarget::{{delete_target.id}}}
 
       bot.edit_message_text(
-        chat_id, 
+        _chat_id, 
         message_id: msg.message_id, 
         text: create_time_setting_text(_group_id, DeleteTarget::{{delete_target.id}}, model: cm), 
         reply_markup: create_time_setting_markup(_group_id, DeleteTarget::{{delete_target.id}})

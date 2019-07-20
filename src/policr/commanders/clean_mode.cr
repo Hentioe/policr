@@ -1,6 +1,5 @@
 module Policr
   class CleanModeCommander < Commander
-    alias EnableStatus = Policr::EnableStatus
     alias DeleteTarget = Policr::CleanDeleteTarget
 
     def initialize(bot)
@@ -13,7 +12,7 @@ module Policr
           _chat_id,
           text: t("clean_mode.desc"),
           reply_to_message_id: _reply_msg_id,
-          reply_markup: create_markup(msg.chat.id)
+          reply_markup: create_markup(_group_id)
         )
       end
     end
@@ -22,12 +21,12 @@ module Policr
     SELECTED    = "■"
     UNSELECTED  = "□"
 
-    def create_markup(chat_id)
+    def create_markup(group_id)
       btn = ->(text : String, name : String) {
         Button.new(text: text, callback_data: "CleanMode:#{name}")
       }
       symbol = ->(delete_target : DeleteTarget) {
-        cm = Model::CleanMode.where { (_chat_id == chat_id) & (_delete_target == delete_target.value) }.first
+        cm = Model::CleanMode.where { (_chat_id == group_id) & (_delete_target == delete_target.value) }.first
         if cm
           cm.status == EnableStatus::TurnOn.value ? SELECTED : UNSELECTED
         else

@@ -1,12 +1,29 @@
 require "telegram_bot"
 require "schedule"
 
-macro t(key, options = nil)
-  I18n.translate({{key}}, {{options}})
+macro t(key, options = nil, locale = "zh-hans")
+  I18n.translate({{key}}, {{options}}, {{locale}})
 end
 
 macro is_private_chat?(chat_id)
   {{chat_id}} > 0
+end
+
+macro gen_locale(group_id)
+  if lang = Model::Language.find({{group_id}})
+    case LanguageCode.new(lang.code)
+    when LanguageCode::ZhHans
+      "zh-hans"
+    when LanguageCode::ZhHant
+      "zh-hant"
+    when LanguageCode::English
+      "english"
+    else
+      "zh-hans"
+    end
+  else
+    "zh-hans"
+  end
 end
 
 def escape_markdown(text)
@@ -96,6 +113,7 @@ module Policr
         StrictModeCallback,
         MaxLengthCallback,
         WelcomeCallback,
+        LanguageCallback,
       ]
 
       # 注册指令模块
@@ -112,6 +130,7 @@ module Policr
         GomokuCommander,
         SubfunctionsCommander,
         StrictModeCommander,
+        LanguageCommander,
       ]
 
       commanders.each do |_, command|

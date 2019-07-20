@@ -222,6 +222,15 @@ report:
     accept: "被处理"
     unban: "通过申诉"
   none: "无"
+language:
+  desc: |
+    选择机器人的工作语言，立即生效。
+
+    很遗憾的告诉大家，由于国际化的进程才刚开始，目前只有最基本的句子被翻译。强烈建议您加入我们，贡献翻译。
+  code:
+    zh_hans: "简体中文 🇨🇳"
+    zh_hant: "繁體中文 🇭🇰"
+    english: "English 🇺🇸"
 voting:
   no_permissions: "抱歉，您暂时没有权限投票。"
   report_invalid: "此举报已经失效了，不可投票。"
