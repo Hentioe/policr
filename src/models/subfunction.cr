@@ -1,7 +1,5 @@
 module Policr::Model
   class Subfunction < Jennifer::Model::Base
-    alias FunctionType = SubfunctionType
-
     with_timestamps
 
     mapping(
