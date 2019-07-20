@@ -27,7 +27,7 @@ module Policr
     def text(chat_id)
       welcome_text =
         if welcome = KVStore.get_welcome(chat_id)
-          welcome
+          escape_markdown welcome
         else
           t "welcome.none"
         end
