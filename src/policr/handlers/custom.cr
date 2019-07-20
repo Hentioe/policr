@@ -1,50 +1,49 @@
 module Policr
   class CustomHandler < Handler
     allow_edit # 处理编辑消息
+    target :fields
 
     def match(msg)
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
+      target :group do
+        role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
 
-      all_pass? [
-        msg.text,
-        (user = msg.from),
-        (reply_msg = msg.reply_to_message),
-        (reply_msg_id = reply_msg.message_id),
-        Cache.custom_setting_msg?(msg.chat.id, reply_msg_id), # 回复目标为定制问题指令？
-        bot.has_permission?(msg.chat.id, user.id, role),
-      ]
+        all_pass? [
+          msg.text,
+          (user = msg.from),
+          bot.has_permission?(_group_id, user.id, role),
+          (@reply_msg_id = _reply_msg_id),
+          Cache.custom_setting_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置自定义问题消息？
+        ]
+      end
     end
 
     def handle(msg)
-      bot.log "Custom verification for chat_id '#{msg.chat.id}'"
       if (text = msg.text) && !valid?(text) # 内容不合法？
         bot.reply msg, t("custom.wrong_format")
         return
       end
 
-      chat_id = msg.chat.id
+      if (group_id = @group_id) && (reply_msg_id = @reply_msg_id)
+        chat_id = msg.chat.id
 
-      KVStore.custom_text(msg.chat.id, msg.text)
+        KVStore.custom_text(group_id, msg.text)
 
-      # 更新回复消息内联键盘
-      if reply_msg = msg.reply_to_message
-        updated_text, updated_markup = updated_preview_settings(chat_id)
-        reply_msg_id = reply_msg.message_id
+        updated_text, updated_markup = updated_preview_settings(group_id)
 
         spawn { bot.edit_message_text(
-          msg.chat.id,
+          chat_id,
           message_id: reply_msg_id,
           text: updated_text,
           reply_markup: updated_markup
         ) }
-      end
 
-      setting_complete_with_delay_delete msg
+        setting_complete_with_delay_delete msg
+      end
     end
 
-    def updated_preview_settings(chat_id)
+    def updated_preview_settings(group_id)
       midcall CustomCommander do
-        {_commander.custom_text(chat_id), _commander.create_markup(chat_id)}
+        {_commander.custom_text(group_id), _commander.create_markup(group_id)}
       end || {nil, nil}
     end
 

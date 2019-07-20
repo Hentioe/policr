@@ -5,39 +5,36 @@ module Policr
     end
 
     def handle(msg)
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
+      reply_menu do
         bot.send_message(
-          msg.chat.id,
+          _chat_id,
           text: t("captcha.desc"),
-          reply_to_message_id: msg.message_id,
-          reply_markup: create_markup(msg.chat.id)
+          reply_to_message_id: _reply_msg_id,
+          reply_markup: create_markup(_group_id)
         )
-      else
-        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
 
     CHECKED   = "●"
     UNCHECKED = "○"
 
-    def create_markup(chat_id)
+    def create_markup(group_id)
       checked_status = ->(way : Symbol) {
         case way
         when :custom
-          KVStore.custom(chat_id) ? CHECKED : UNCHECKED
+          KVStore.custom(group_id) ? CHECKED : UNCHECKED
         when :dynamic
-          KVStore.enabled_dynamic_captcha?(chat_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_dynamic_captcha?(group_id) ? CHECKED : UNCHECKED
         when :image
-          KVStore.enabled_image_captcha?(chat_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_image_captcha?(group_id) ? CHECKED : UNCHECKED
         when :chessboard
-          KVStore.enabled_chessboard_captcha?(chat_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_chessboard_captcha?(group_id) ? CHECKED : UNCHECKED
         when :default
           (
-            !KVStore.custom(chat_id) &&
-            !KVStore.enabled_dynamic_captcha?(chat_id) &&
-            !KVStore.enabled_image_captcha?(chat_id) &&
-            !KVStore.enabled_chessboard_captcha?(chat_id)
+            !KVStore.custom(group_id) &&
+            !KVStore.enabled_dynamic_captcha?(group_id) &&
+            !KVStore.enabled_image_captcha?(group_id) &&
+            !KVStore.enabled_chessboard_captcha?(group_id)
           ) ? CHECKED : UNCHECKED
         else
           UNCHECKED
@@ -66,9 +63,9 @@ module Policr
       markup
     end
 
-    def custom_text(chat_id)
+    def custom_text(group_id)
       custom_text =
-        if custom = custom_tup = KVStore.custom(chat_id)
+        if custom = custom_tup = KVStore.custom(group_id)
           true_indices, title, answers = custom_tup
           String.build do |str|
             str << title
