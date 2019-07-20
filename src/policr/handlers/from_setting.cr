@@ -2,27 +2,29 @@ module Policr
   class FromSettingHandler < Handler
     allow_edit # 处理编辑消息
 
-    @reply_msg_id : Int32?
+    target :fields
 
     def match(msg)
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
+      target :group do
+        role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
 
-      all_pass? [
-        (user = msg.from),
-        (reply_msg = msg.reply_to_message),
-        (@reply_msg_id = reply_msg.message_id),
-        Cache.from_setting_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置来源指令？
-        bot.has_permission?(msg.chat.id, user.id, role),
-      ]
+        puts Cache.from_setting_msg?(msg.chat.id, @reply_msg_id) # 回复目标为设置来源指令？
+        all_pass? [
+          (user = msg.from),
+          bot.has_permission?(_group_id, user.id, role),
+          (@reply_msg_id = _reply_msg_id),
+          Cache.from_setting_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置来源指令？
+        ]
+      end
     end
 
     def handle(msg)
-      if reply_msg_id = @reply_msg_id
+      if (group_id = @group_id) && (reply_msg_id = @reply_msg_id)
         chat_id = msg.chat.id
 
-        KVStore.put_chat_from(msg.chat.id, msg.text)
+        KVStore.put_chat_from(group_id, msg.text)
 
-        updated_text = updated_preview_settings(chat_id)
+        updated_text = updated_preview_settings(group_id)
         spawn {
           bot.edit_message_text chat_id, message_id: reply_msg_id, text: updated_text
         }
@@ -31,9 +33,9 @@ module Policr
       end
     end
 
-    def updated_preview_settings(chat_id)
+    def updated_preview_settings(group_id)
       midcall FromCommander do
-        _commander.text(chat_id)
+        _commander.text(group_id)
       end
     end
   end

@@ -37,3 +37,20 @@ macro escape_all(text,
     .gsub({{char}}, "{{symbol.id}}{{char.id}}")
   {% end %}
 end
+
+macro gen_locale(group_id)
+  if lang = Model::Language.find({{group_id}})
+    case LanguageCode.new(lang.code)
+    when LanguageCode::ZhHans
+      "zh-hans"
+    when LanguageCode::ZhHant
+      "zh-hant"
+    when LanguageCode::English
+      "english"
+    else
+      "zh-hans"
+    end
+  else
+    "zh-hans"
+  end
+end

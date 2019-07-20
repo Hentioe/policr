@@ -22,8 +22,8 @@ module Policr
           _reply_msg_id = nil
         end
 
-        if sended_msg = {{yield}}
-          Model::PrivateMenu.add(_chat_id, sended_msg.message_id, msg.chat.id)
+        if %sended_msg = {{yield}}
+          Model::PrivateMenu.add(_chat_id, %sended_msg.message_id, msg.chat.id) if _chat_id > 0
         end
       else
         bot.delete_message(_chat_id, msg.message_id)

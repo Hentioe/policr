@@ -5,27 +5,6 @@ macro t(key, options = nil, locale = "zh-hans")
   I18n.translate({{key}}, {{options}}, {{locale}})
 end
 
-macro is_private_chat?(chat_id)
-  {{chat_id}} > 0
-end
-
-macro gen_locale(group_id)
-  if lang = Model::Language.find({{group_id}})
-    case LanguageCode.new(lang.code)
-    when LanguageCode::ZhHans
-      "zh-hans"
-    when LanguageCode::ZhHant
-      "zh-hant"
-    when LanguageCode::English
-      "english"
-    else
-      "zh-hans"
-    end
-  else
-    "zh-hans"
-  end
-end
-
 def escape_markdown(text)
   if text
     escape_all text, "\\\\", ["*", "_", "`"]
@@ -181,8 +160,8 @@ module Policr
     end
 
     def has_permission?(chat_id, user_id, role, dirty = true)
-      return false if is_private_chat?(chat_id) # 私聊无权限
-      if admins = Cache.get_admins chat_id      # 从缓存中获取管理员列表
+      return false if chat_id > 0          # 私聊无权限
+      if admins = Cache.get_admins chat_id # 从缓存中获取管理员列表
         tmp_filter_users = admins.select { |m| m.user.id == user_id }
         noperm = tmp_filter_users.size == 0
         status = noperm ? nil : tmp_filter_users[0].status

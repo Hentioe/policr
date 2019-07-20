@@ -115,7 +115,7 @@ module Policr
       # 如果受理，向来源群组通知举报被受理的消息
       if status == Status::Accept && (chat_id = report.from_chat_id)
         inject_text_data = {voting_url: "https://t.me/#{bot.voting_channel}/#{msg.message_id}"}
-        text = is_private_chat?(chat_id) ? t("voting.private_notify_msg", inject_text_data) : t("voting.group_notify_msg", inject_text_data)
+        text = chat_id > 0 ? t("voting.private_notify_msg", inject_text_data) : t("voting.group_notify_msg", inject_text_data)
         bot.send_message chat_id, text
       end
     end

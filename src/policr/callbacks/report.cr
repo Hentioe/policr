@@ -64,7 +64,7 @@ module Policr
           else
             UserRole::Admin
           end
-        elsif is_private_chat?(chat_id)
+        elsif chat_id > 0
           UserRole::Unknown
         else
           UserRole::Member

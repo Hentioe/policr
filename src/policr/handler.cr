@@ -47,6 +47,15 @@ module Policr
       end
     end
 
+    macro target(type)
+      {% if type == :fields %}
+        @group_id : Int64?
+        @reply_msg_id : Int32?
+      {% elsif type == :group %}
+        target_group do {{yield}} end
+      {% end %}
+    end
+
     macro target_group
       _group_id = msg.chat.id
       if (reply_msg = msg.reply_to_message) &&
