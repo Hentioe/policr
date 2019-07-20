@@ -7,37 +7,29 @@ module Policr
     end
 
     def handle(query, msg, data)
-      chat_id = msg.chat.id
-      from_user_id = query.from.id
-      type_value, _ = data
+      target_group do
+        type_value, _ = data
 
-      # 检测权限
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      unless (user = msg.from) && bot.has_permission?(msg.chat.id, from_user_id, role)
-        bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
-        return
-      end
+        get_sf = ->(func_type : FunctionType) {
+          Model::Subfunction.find_or_create!(_group_id, func_type, {
+            chat_id: _group_id.to_i64,
+            type:    func_type.value,
+            status:  EnableStatus::TurnOn.value,
+          })
+        }
 
-      get_sf = ->(function_type : FunctionType) {
-        sf = Model::Subfunction.where { (_chat_id == chat_id) & (_type == function_type.value) }.first
-        sf = sf || Model::Subfunction.create!({
-          chat_id: chat_id,
-          type:    function_type.value,
-          status:  EnableStatus::TurnOn.value,
-        })
-      }
-
-      case type_value.to_i
-      when FunctionType::UserJoin.value
-        def_toggle "user_join"
-      when FunctionType::BotJoin.value
-        def_toggle "bot_join"
-      when FunctionType::BanHalal.value
-        def_toggle "ban_halal"
-      when FunctionType::Blacklist.value
-        def_toggle "blacklist"
-      else # 失效键盘
-        bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
+        case type_value.to_i
+        when FunctionType::UserJoin.value
+          def_toggle "user_join"
+        when FunctionType::BotJoin.value
+          def_toggle "bot_join"
+        when FunctionType::BanHalal.value
+          def_toggle "ban_halal"
+        when FunctionType::Blacklist.value
+          def_toggle "blacklist"
+        else # 失效键盘
+          bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
+        end
       end
     end
 
@@ -50,10 +42,10 @@ module Policr
       text = t "subfunctions.desc"
       midcall SubfunctionsCommander do
         bot.edit_message_text(
-          chat_id,
+          _chat_id,
            message_id: msg.message_id, 
            text: text, 
-           reply_markup: commander.create_markup(chat_id)
+           reply_markup: commander.create_markup(_group_id)
         )
       end
     end

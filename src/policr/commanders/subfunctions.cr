@@ -7,23 +7,20 @@ module Policr
     end
 
     def handle(msg)
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
+      reply_menu do
         bot.send_message(
-          msg.chat.id,
+          _chat_id,
           text: t("subfunctions.desc"),
-          reply_to_message_id: msg.message_id,
-          reply_markup: create_markup(msg.chat.id)
+          reply_to_message_id: _reply_msg_id,
+          reply_markup: create_markup(_group_id)
         )
-      else
-        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
 
     SELECTED   = "■"
     UNSELECTED = "□"
 
-    def create_markup(chat_id)
+    def create_markup(group_id)
       toggle_btn = ->(text : String, type : FunctionType) {
         Button.new(text: text, callback_data: "Subfunctions:#{type.value}:toggle")
       }
@@ -39,7 +36,7 @@ module Policr
 
     private macro def_toggle(type_s)
       {% function_type = type_s.camelcase.id %}
-      %symbol = Model::Subfunction.disabled?(chat_id, FunctionType::{{function_type.id}}) ? UNSELECTED : SELECTED
+      %symbol = Model::Subfunction.disabled?(group_id, FunctionType::{{function_type.id}}) ? UNSELECTED : SELECTED
       [
         toggle_btn.call(%symbol + " " + t("subfunctions.{{type_s.id}}"), FunctionType::{{function_type.id}})
       ]
