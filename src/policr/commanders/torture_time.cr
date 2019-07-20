@@ -5,20 +5,17 @@ module Policr
     end
 
     def handle(msg)
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      if (user = msg.from) && bot.has_permission?(msg.chat.id, user.id, role)
-        chat_id = msg.chat.id
-
+      reply_menu do
         if send_message = bot.send_message(
-             msg.chat.id,
-             text: text(msg.chat.id),
-             reply_to_message_id: msg.message_id,
+             _chat_id,
+             text: text(_group_id),
+             reply_to_message_id: _reply_msg_id,
              reply_markup: create_markup
            )
-          Cache.carving_torture_time_msg chat_id, send_message.message_id
+          Cache.carving_torture_time_msg _chat_id, send_message.message_id
+
+          send_message
         end
-      else
-        bot.delete_message(msg.chat.id, msg.message_id)
       end
     end
 
@@ -33,9 +30,9 @@ module Policr
       markup
     end
 
-    def text(chat_id)
+    def text(group_id)
       current = t "torture.default_set", {seconds: DEFAULT_TORTURE_SEC}
-      if sec = KVStore.get_torture_sec chat_id
+      if sec = KVStore.get_torture_sec group_id
         time_len = sec > 0 ? t("units.sec", {n: sec}) : t("units.inf")
         current = t("torture.exists_set", {time_len: time_len})
       end

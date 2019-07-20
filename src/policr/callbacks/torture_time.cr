@@ -4,55 +4,32 @@ module Policr
       super(bot, "TortureTime")
     end
 
-    def handle(query, msg, report)
-      chat_id = msg.chat.id
-      from_user_id = query.from.id
-      sec = report[0]
+    def handle(query, msg, data)
+      target_group do
+        sec = data[0]
 
-      # 检测权限
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      unless (user = msg.from) && bot.has_permission?(msg.chat.id, from_user_id, role)
-        bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
-        return
-      end
-
-      case sec
-      when "refresh"
-        begin
-          bot.edit_message_text(
-            msg.chat.id,
-            message_id: msg.message_id,
-            text: text(msg.chat.id),
-            reply_markup: markup
-          )
-          bot.answer_callback_query(query.id)
-        rescue e : TelegramBot::APIException
-          bot.answer_callback_query(query.id)
-        end
-      else
-        # 标记消息
-        Cache.carving_torture_time_msg chat_id, msg.message_id
+        Cache.carving_torture_time_msg _chat_id, msg.message_id
         # 储存设置
-        KVStore.set_torture_sec(msg.chat.id, sec.to_i)
+        KVStore.set_torture_sec(_group_id, sec.to_i)
         # 更新设置时间消息文本
         bot.edit_message_text(
-          msg.chat.id,
+          _chat_id,
           message_id: msg.message_id,
-          text: text(msg.chat.id),
-          reply_markup: markup
+          text: create_text(_group_id),
+          reply_markup: create_markup
         )
         # 响应成功
         bot.answer_callback_query(query.id)
       end
     end
 
-    def text(chat_id)
+    def create_text(group_id)
       midcall TortureTimeCommander do
-        commander.text(chat_id)
+        commander.text(group_id)
       end
     end
 
-    def markup
+    def create_markup
       midcall TortureTimeCommander do
         commander.create_markup
       end
