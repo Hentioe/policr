@@ -7,81 +7,74 @@ module Policr
     end
 
     def handle(query, msg, data)
-      chat_id = msg.chat.id
-      from_user_id = query.from.id
-      name = data[0]
+      target_group do
+        name = data[0]
 
-      # 检测权限
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
-      unless (user = msg.from) && bot.has_permission?(msg.chat.id, from_user_id, role)
-        bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
-        return
-      end
-
-      case name
-      when "max_length"
-        if ml = Model::MaxLength.find(chat_id) # 删除长度限制
-          Model::MaxLength.delete(ml.id)
-        else
-          bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
-          return
-        end
-        bot.edit_message_text(
-          chat_id,
-          message_id: msg.message_id,
-          text: t("strict_mode.desc"),
-          reply_markup: markup(chat_id)
-        )
-      when "content_blocked"
-        if bc = Model::BlockContent.find(chat_id) # 删除内容屏蔽规则
-          Model::BlockContent.delete(bc.id)
-        else
-          bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
-          return
-        end
-        bot.edit_message_text(
-          chat_id,
-          message_id: msg.message_id,
-          text: t("strict_mode.desc"),
-          reply_markup: markup(chat_id)
-        )
-      when "max_length_setting"
-        Cache.carving_max_length_msg chat_id, msg.message_id
-        bot.edit_message_text(
-          chat_id,
-          message_id: msg.message_id,
-          text: create_max_length_text(chat_id),
-          reply_markup: create_max_length_markup(chat_id)
-        )
-      when "content_blocked_setting"
-        # 标记设置消息
-        Cache.carving_blocked_content_msg chat_id, msg.message_id
-        bot.edit_message_text(
-          chat_id,
-          message_id: msg.message_id,
-          text: create_content_blocked_text(chat_id),
-          reply_markup: create_content_blocked_markup(chat_id)
-        )
-      when "back"
-        midcall StrictModeCommander do
+        case name
+        when "max_length"
+          if ml = Model::MaxLength.find(_group_id) # 删除长度限制
+            Model::MaxLength.delete(ml.id)
+          else
+            bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
+            return
+          end
           bot.edit_message_text(
-            chat_id,
+            _chat_id,
             message_id: msg.message_id,
             text: t("strict_mode.desc"),
-            reply_markup: commander.create_markup(chat_id)
+            reply_markup: markup(_group_id)
           )
+        when "content_blocked"
+          if bc = Model::BlockContent.find(_group_id) # 删除内容屏蔽规则
+            Model::BlockContent.delete(bc.id)
+          else
+            bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
+            return
+          end
+          bot.edit_message_text(
+            _chat_id,
+            message_id: msg.message_id,
+            text: t("strict_mode.desc"),
+            reply_markup: markup(_group_id)
+          )
+        when "max_length_setting"
+          Cache.carving_max_length_msg _chat_id, msg.message_id
+          bot.edit_message_text(
+            _chat_id,
+            message_id: msg.message_id,
+            text: create_max_length_text(_group_id),
+            reply_markup: create_max_length_markup(_group_id)
+          )
+        when "content_blocked_setting"
+          # 标记设置消息
+          Cache.carving_blocked_content_msg _chat_id, msg.message_id
+          bot.edit_message_text(
+            _chat_id,
+            message_id: msg.message_id,
+            text: create_content_blocked_text(_group_id),
+            reply_markup: create_content_blocked_markup(_group_id)
+          )
+        when "back"
+          midcall StrictModeCommander do
+            bot.edit_message_text(
+              _chat_id,
+              message_id: msg.message_id,
+              text: t("strict_mode.desc"),
+              reply_markup: commander.create_markup(_group_id)
+            )
+          end
+        else # 失效键盘
+          bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
         end
-      else # 失效键盘
-        bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
       end
     end
 
     BACK_SYMBOL     = "«"
     BIG_BACK_SYMBOL = "🔙"
 
-    def create_content_blocked_text(chat_id)
+    def create_content_blocked_text(group_id)
       rule =
-        if bc = Model::BlockContent.find(chat_id)
+        if bc = Model::BlockContent.find(group_id)
           bc.expression
         else
           t("content_blocked.none")
@@ -89,7 +82,7 @@ module Policr
       t "content_blocked.desc", {size: MAX_RULE_LENGTH, rule: rule}
     end
 
-    def create_content_blocked_markup(chat_id)
+    def create_content_blocked_markup(group_id)
       markup = Markup.new
 
       markup << [Button.new(text: BIG_BACK_SYMBOL, callback_data: "StrictMode:back")]
@@ -97,12 +90,12 @@ module Policr
       markup
     end
 
-    def create_max_length_text(chat_id)
-      total, rows = Model::MaxLength.values(chat_id)
+    def create_max_length_text(group_id)
+      total, rows = Model::MaxLength.values(group_id)
       t "max_length.desc", {total: total || t("max_length.none"), rows: rows || t("max_length.none")}
     end
 
-    def create_max_length_markup(chat_id)
+    def create_max_length_markup(group_id)
       markup = Markup.new
 
       make_btn = ->(text : String, size : String) {
@@ -117,9 +110,9 @@ module Policr
       markup
     end
 
-    def markup(chat_id)
+    def markup(group_id)
       midcall StrictModeCommander do
-        _commander.create_markup chat_id
+        _commander.create_markup group_id
       end
     end
 

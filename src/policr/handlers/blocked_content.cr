@@ -1,28 +1,29 @@
 module Policr
   class BlockedContentHandler < Handler
-    @reply_msg_id : Int32?
-
     allow_edit
+    target :fields
 
     def match(msg)
-      role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
+      target :group do
+        role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
 
-      all_pass? [
-        (user = msg.from),
-        (reply_msg = msg.reply_to_message),
-        (@reply_msg_id = reply_msg.message_id),
-        Cache.blocked_content_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置屏蔽内容？
-        bot.has_permission?(msg.chat.id, user.id, role),
-      ]
+        all_pass? [
+          msg.text,
+          (user = msg.from),
+          bot.has_permission?(_group_id, user.id, role),
+          (@reply_msg_id = _reply_msg_id),
+          Cache.blocked_content_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置屏蔽内容？
+        ]
+      end
     end
 
     def handle(msg)
-      if (text = msg.text) && (reply_msg_id = @reply_msg_id)
+      if (group_id = @group_id) && (reply_msg_id = @reply_msg_id) && (text = msg.text)
         chat_id = msg.chat.id
 
-        Model::BlockContent.update_expression(chat_id, text)
+        Model::BlockContent.update_expression(group_id, text)
 
-        update_text, update_markup = update_preview_settings(chat_id)
+        update_text, update_markup = update_preview_settings(group_id)
         spawn { bot.edit_message_text(
           chat_id,
           message_id: reply_msg_id,
@@ -34,10 +35,10 @@ module Policr
       end
     end
 
-    def update_preview_settings(chat_id)
+    def update_preview_settings(group_id)
       midcall StrictModeCallback do
-        {_callback.create_content_blocked_text(chat_id),
-         _callback.create_content_blocked_markup(chat_id)}
+        {_callback.create_content_blocked_text(group_id),
+         _callback.create_content_blocked_markup(group_id)}
       end || {nil, nil}
     end
   end
