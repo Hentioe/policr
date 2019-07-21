@@ -21,7 +21,7 @@ module Policr
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
-            text: t("strict_mode.desc"),
+            text: back_text(_group_id, _group_name),
             reply_markup: markup(_group_id)
           )
         when "content_blocked"
@@ -34,7 +34,7 @@ module Policr
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
-            text: t("strict_mode.desc"),
+            text: back_text(_group_id, _group_name),
             reply_markup: markup(_group_id)
           )
         when "max_length_setting"
@@ -42,7 +42,7 @@ module Policr
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
-            text: create_max_length_text(_group_id),
+            text: create_max_length_text(_group_id, _group_name),
             reply_markup: create_max_length_markup(_group_id)
           )
         when "content_blocked_setting"
@@ -51,7 +51,7 @@ module Policr
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
-            text: create_content_blocked_text(_group_id),
+            text: create_content_blocked_text(_group_id, _group_name),
             reply_markup: create_content_blocked_markup(_group_id)
           )
         when "back"
@@ -59,7 +59,7 @@ module Policr
             bot.edit_message_text(
               _chat_id,
               message_id: msg.message_id,
-              text: t("strict_mode.desc"),
+              text: back_text(_group_id, _group_name),
               reply_markup: commander.create_markup(_group_id)
             )
           end
@@ -69,12 +69,18 @@ module Policr
       end
     end
 
-    BACK_SYMBOL     = "«"
-    BIG_BACK_SYMBOL = "🔙"
+    def back_text(group_id, group_name)
+      midcall StrictModeCommander do
+        _commander.create_text group_id, group_name
+      end
+    end
 
-    def create_content_blocked_text(group_id)
+    BACK_SYMBOL     = "«"
+    BIG_BACK_SYMBOL = "返回"
+
+    def_text create_content_blocked_text do
       rule =
-        if bc = Model::BlockContent.find(group_id)
+        if bc = Model::BlockContent.find(_group_id)
           bc.expression
         else
           t("content_blocked.none")
@@ -90,8 +96,8 @@ module Policr
       markup
     end
 
-    def create_max_length_text(group_id)
-      total, rows = Model::MaxLength.values(group_id)
+    def_text create_max_length_text do
+      total, rows = Model::MaxLength.values(_group_id)
       t "max_length.desc", {total: total || t("max_length.none"), rows: rows || t("max_length.none")}
     end
 

@@ -23,15 +23,15 @@ module Policr
         bot.edit_message_text(
           _chat_id,
           message_id: msg.message_id,
-          text: create_text(_group_id),
+          text: create_text(_group_id, _group_name),
           reply_markup: create_markup(_group_id)
         )
       end
     end
 
-    def create_text(group_id)
+    def create_text(group_id, group_name)
       midcall StrictModeCallback do
-        _callback.create_max_length_text(group_id)
+        _callback.create_max_length_text(group_id, group_name)
       end
     end
 

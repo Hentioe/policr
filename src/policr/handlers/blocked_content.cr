@@ -23,7 +23,7 @@ module Policr
 
         Model::BlockContent.update_expression(_group_id, text)
 
-        update_text, update_markup = update_preview_settings(_group_id)
+        update_text, update_markup = update_preview_settings(_group_id, _group_name)
         spawn { bot.edit_message_text(
           chat_id,
           message_id: _reply_msg_id,
@@ -35,9 +35,9 @@ module Policr
       end
     end
 
-    def update_preview_settings(group_id)
+    def update_preview_settings(group_id, group_name)
       midcall StrictModeCallback do
-        {_callback.create_content_blocked_text(group_id),
+        {_callback.create_content_blocked_text(group_id, group_name),
          _callback.create_content_blocked_markup(group_id)}
       end || {nil, nil}
     end

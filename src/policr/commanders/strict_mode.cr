@@ -8,7 +8,7 @@ module Policr
       reply_menu do
         bot.send_message(
           _chat_id,
-          text: t("strict_mode.desc"),
+          text: paste_text,
           reply_to_message_id: _reply_msg_id,
           reply_markup: create_markup(_group_id)
         )
@@ -18,6 +18,10 @@ module Policr
     MORE_SYMBOL = "»"
     SELECTED    = "■"
     UNSELECTED  = "□"
+
+    def_text do
+      t("strict_mode.desc")
+    end
 
     def create_markup(group_id)
       btn = ->(text : String, name : String) {
