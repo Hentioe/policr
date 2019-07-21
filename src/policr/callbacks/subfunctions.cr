@@ -44,9 +44,15 @@ module Policr
         bot.edit_message_text(
           _chat_id,
            message_id: msg.message_id, 
-           text: text, 
+           text: create_text(_group_id, _group_name), 
            reply_markup: commander.create_markup(_group_id)
         )
+      end
+    end
+
+    def create_text(group_id, group_name)
+      midcall SubfunctionsCommander do
+        _commander.create_text(group_id, group_name)
       end
     end
   end

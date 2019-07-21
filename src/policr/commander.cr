@@ -69,5 +69,9 @@ module Policr
         bot.delete_message(_chat_id, msg.message_id)
       end
     end
+
+    macro paste_text
+      create_text(_group_id, _group_name)
+    end
   end
 end

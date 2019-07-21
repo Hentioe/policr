@@ -10,11 +10,15 @@ module Policr
       reply_menu do
         bot.send_message(
           _chat_id,
-          text: t("subfunctions.desc"),
+          text: paste_text,
           reply_to_message_id: _reply_msg_id,
           reply_markup: create_markup(_group_id)
         )
       end
+    end
+
+    def_text do
+      t("subfunctions.desc")
     end
 
     SELECTED   = "■"
