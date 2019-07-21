@@ -21,15 +21,15 @@ module Policr
       end
     end
 
-    def text(group_id, group_name : String? = nil)
+    def_text text do
       welcome_text =
-        if welcome = KVStore.get_welcome(group_id)
+        if welcome = KVStore.get_welcome(_group_id)
           escape_markdown welcome
         else
           t "welcome.none"
         end
 
-      wrapper_title t("welcome.hint", {welcome_text: welcome_text})
+      t("welcome.hint", {welcome_text: welcome_text})
     end
 
     SELECTED   = "■"

@@ -17,7 +17,7 @@ module Policr
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
-            text: text,
+            text: text(_group_id, text, group_name: _group_name),
             reply_markup: create_markup(_group_id)
           )
           bot.answer_callback_query(query.id)
@@ -27,7 +27,7 @@ module Policr
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
-            text: text,
+            text: text(_group_id, text, group_name: _group_name),
             reply_markup: create_markup(_group_id)
           )
           bot.answer_callback_query(query.id)
@@ -39,7 +39,7 @@ module Policr
               bot.edit_message_text(
                 _chat_id,
                 message_id: msg.message_id,
-                text: text,
+                text: text(_group_id, text, group_name: _group_name),
                 reply_markup: create_markup(_group_id)
               )
             }
@@ -68,7 +68,7 @@ module Policr
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
-            text: text,
+            text: text(_group_id, text, group_name: _group_name),
             reply_markup: create_markup(_group_id)
           )
           bot.answer_callback_query(query.id)
@@ -78,7 +78,7 @@ module Policr
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
-            text: text,
+            text: text(_group_id, text, group_name: _group_name),
             reply_markup: create_markup(_group_id)
           )
           bot.answer_callback_query(query.id)
@@ -90,7 +90,7 @@ module Policr
             bot.edit_message_text(
               _chat_id,
               message_id: msg.message_id,
-              text: custom_text(_group_id),
+              text: custom_text(_group_id, _group_name),
               reply_markup: create_markup(_group_id)
             )
             bot.answer_callback_query(query.id)
@@ -102,15 +102,19 @@ module Policr
       end
     end
 
+    def_text text, text do
+      text
+    end
+
     def create_markup(group_id)
       midcall CustomCommander do
         commander.create_markup(group_id)
       end
     end
 
-    def custom_text(group_id)
+    def custom_text(group_id, group_name)
       midcall CustomCommander do
-        _commander.custom_text group_id
+        _commander.custom_text group_id, group_name
       end
     end
   end

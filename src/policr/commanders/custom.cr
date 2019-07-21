@@ -8,11 +8,15 @@ module Policr
       reply_menu do
         bot.send_message(
           _chat_id,
-          text: t("captcha.desc"),
+          text: create_text(_group_id, _group_name),
           reply_to_message_id: _reply_msg_id,
           reply_markup: create_markup(_group_id)
         )
       end
+    end
+
+    def_text do
+      t("captcha.desc")
     end
 
     CHECKED   = "●"
@@ -63,9 +67,9 @@ module Policr
       markup
     end
 
-    def custom_text(group_id)
+    def_text custom_text do
       custom_text =
-        if custom = custom_tup = KVStore.custom(group_id)
+        if custom = custom_tup = KVStore.custom(_group_id)
           true_indices, title, answers = custom_tup
           String.build do |str|
             str << title

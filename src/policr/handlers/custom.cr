@@ -28,7 +28,7 @@ module Policr
 
         KVStore.custom_text(_group_id, text)
 
-        updated_text, updated_markup = updated_preview_settings(_group_id)
+        updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
 
         spawn { bot.edit_message_text(
           chat_id,
@@ -41,9 +41,9 @@ module Policr
       end
     end
 
-    def updated_preview_settings(group_id)
+    def updated_preview_settings(group_id, group_name)
       midcall CustomCommander do
-        {_commander.custom_text(group_id), _commander.create_markup(group_id)}
+        {_commander.custom_text(group_id, group_name), _commander.create_markup(group_id)}
       end || {nil, nil}
     end
 
