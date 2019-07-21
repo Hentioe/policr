@@ -18,15 +18,15 @@ module Policr
     end
 
     def handle(msg)
-      if (group_id = @group_id) && (reply_msg_id = @reply_msg_id)
+      retrieve [(text = msg.text)] do
         chat_id = msg.chat.id
 
-        KVStore.set_welcome(group_id, msg.text)
+        KVStore.set_welcome(_group_id, text)
 
-        updated_text, updated_markup = updated_settings_preview(group_id)
+        updated_text, updated_markup = updated_settings_preview(_group_id, _group_name)
         spawn { bot.edit_message_text(
           chat_id,
-          message_id: reply_msg_id,
+          message_id: _reply_msg_id,
           text: updated_text,
           reply_markup: updated_markup
         ) }
@@ -35,9 +35,9 @@ module Policr
       end
     end
 
-    def updated_settings_preview(group_id)
+    def updated_settings_preview(group_id, group_name)
       midcall WelcomeCommander do
-        {_commander.text(group_id), _commander.markup(group_id)}
+        {_commander.text(group_id, group_name), _commander.markup(group_id)}
       end || {nil, nil}
     end
   end

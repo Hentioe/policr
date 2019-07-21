@@ -3,13 +3,12 @@ module Policr
     alias DeleteTarget = CleanDeleteTarget
 
     allow_edit # 处理编辑消息
+    target :fields
 
-    @reply_msg_id : Int32?
     @data : {Model::CleanMode, DeleteTarget}?
-    @group_id : Int64?
 
     def match(msg)
-      target_group do
+      target :group do
         role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
 
         all_pass? [
@@ -22,16 +21,16 @@ module Policr
     end
 
     def handle(msg)
-      if (group_id = @group_id) && (text = msg.text) && (reply_msg_id = @reply_msg_id) && (data = @data)
+      retrieve [(text = msg.text), (data = @data)] do
         chat_id = msg.chat.id
 
         clean_mode, delete_target = data
 
         clean_mode.update_column(:delay_sec, (text.to_f * 3600).to_i)
-        updated_text, updated_markup = updated_preview_settings(group_id, delete_target)
+        updated_text, updated_markup = updated_preview_settings(_group_id, delete_target)
         spawn { bot.edit_message_text(
           chat_id,
-          message_id: reply_msg_id,
+          message_id: _reply_msg_id,
           text: updated_text,
           reply_markup: updated_markup
         ) }

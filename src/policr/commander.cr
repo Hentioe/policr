@@ -29,6 +29,7 @@ module Policr
       if (%user = msg.from) && bot.has_permission?(_chat_id, %user.id, %role)
         if KVStore.enabled_privacy_setting?(_group_id) && (%user = msg.from)
           _chat_id = %user.id
+          _group_name = msg.chat.title
           _reply_msg_id = nil
         end
 
@@ -45,7 +46,10 @@ module Policr
 
         begin
           if %sended_msg = {{yield}}
-            Model::PrivateMenu.add(_chat_id, %sended_msg.message_id, msg.chat.id) if _chat_id > 0
+            Model::PrivateMenu.add(_chat_id, 
+                                   %sended_msg.message_id,
+                                   _group_id,
+                                   _group_name) if _chat_id > 0
           end
         rescue %ex : TelegramBot::APIException
           _, %reason = bot.parse_error %ex

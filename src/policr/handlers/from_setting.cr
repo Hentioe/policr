@@ -18,14 +18,14 @@ module Policr
     end
 
     def handle(msg)
-      if (group_id = @group_id) && (reply_msg_id = @reply_msg_id)
+      retrieve [(text = msg.text)] do
         chat_id = msg.chat.id
 
-        KVStore.put_chat_from(group_id, msg.text)
+        KVStore.put_chat_from(_group_id, text)
 
-        updated_text = updated_preview_settings(group_id)
+        updated_text = updated_preview_settings(_group_id)
         spawn {
-          bot.edit_message_text chat_id, message_id: reply_msg_id, text: updated_text
+          bot.edit_message_text chat_id, message_id: _reply_msg_id, text: updated_text
         }
 
         setting_complete_with_delay_delete msg

@@ -20,24 +20,20 @@ module Policr
     end
 
     def handle(msg)
-      if (group_id = @group_id) && (reply_msg_id = @reply_msg_id)
-        sec =
-          if text = msg.text
-            text.to_i
-          else
-            DEFAULT_TORTURE_SEC
-          end
+      retrieve [(text = msg.text)] do
+        sec = text.to_i
+
         if sec > 0 && sec < MIN_TORTURE_SEC # 时间不合法
           bot.reply msg, t("torture.time_too_short", {min_sec: MIN_TORTURE_SEC})
         else
           chat_id = msg.chat.id
 
-          KVStore.set_torture_sec(group_id, sec)
+          KVStore.set_torture_sec(_group_id, sec)
 
-          updated_text, updated_markup = updated_preview_settings(group_id)
+          updated_text, updated_markup = updated_preview_settings(_group_id)
           spawn { bot.edit_message_text(
             chat_id,
-            message_id: reply_msg_id,
+            message_id: _reply_msg_id,
             text: updated_text,
             reply_markup: updated_markup
           ) }

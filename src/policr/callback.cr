@@ -20,9 +20,10 @@ module Policr
       _group_id = msg.chat.id
       _chat_id = msg.chat.id
       if _chat_id > 0 &&
-         (%group_id = Model::PrivateMenu.find_group_id(_chat_id, msg.message_id)) &&
-         KVStore.enabled_privacy_setting?(%group_id)
-        _group_id = %group_id
+         (%menu = Model::PrivateMenu.find(_chat_id, msg.message_id)) &&
+         KVStore.enabled_privacy_setting?(%menu.group_id)
+        _group_id = %menu.group_id
+        _group_name = %menu.group_name
       end
 
       %role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator

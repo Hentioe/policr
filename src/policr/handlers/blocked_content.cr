@@ -18,15 +18,15 @@ module Policr
     end
 
     def handle(msg)
-      if (group_id = @group_id) && (reply_msg_id = @reply_msg_id) && (text = msg.text)
+      retrieve [(text = msg.text)] do
         chat_id = msg.chat.id
 
-        Model::BlockContent.update_expression(group_id, text)
+        Model::BlockContent.update_expression(_group_id, text)
 
-        update_text, update_markup = update_preview_settings(group_id)
+        update_text, update_markup = update_preview_settings(_group_id)
         spawn { bot.edit_message_text(
           chat_id,
-          message_id: reply_msg_id,
+          message_id: _reply_msg_id,
           text: update_text,
           reply_markup: update_markup
         ) }

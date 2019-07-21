@@ -49,7 +49,7 @@ module Policr
 
     macro target(type)
       {% if type == :fields %}
-        @group_id : Int64?
+        @group_info : Tuple(Int64, String?)?
         @reply_msg_id : Int32?
       {% elsif type == :group %}
         target_group do {{yield}} end
@@ -58,20 +58,34 @@ module Policr
 
     macro target_group
       _group_id = msg.chat.id
+
       if (%reply_msg = msg.reply_to_message) &&
          (%reply_msg_id = %reply_msg.message_id)
         if msg.chat.id > 0 &&
-           (%group_id = Model::PrivateMenu.find_group_id(msg.chat.id, %reply_msg_id)) &&
-           KVStore.enabled_privacy_setting?(%group_id)
-           _group_id = %group_id
+           (%menu = Model::PrivateMenu.find(msg.chat.id, %reply_msg_id)) &&
+           KVStore.enabled_privacy_setting?(%menu.group_id)
+           _group_id = %menu.group_id
+           _group_name = %menu.group_name || %menu.group_id.to_s
         end
 
         _reply_msg_id = %reply_msg_id
       end
 
-      @group_id = _group_id
+      _group_info = {_group_id, _group_name}
+      @group_info = _group_info
 
       {{yield}}
+    end
+
+    macro retrieve(conditions = [] of Any)
+      if (%group_info = @group_info) && (_reply_msg_id = @reply_msg_id) &&
+        {% for condition, index in conditions %}
+          {{condition}} {% if index < conditions.size - 1 %} && {% end %}
+        {% end %}
+        _group_id, _group_name = %group_info
+
+        {{yield}}
+      end
     end
 
     def setting_complete_with_delay_delete(msg)

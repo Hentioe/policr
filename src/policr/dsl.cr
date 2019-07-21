@@ -54,3 +54,11 @@ macro gen_locale(group_id)
     "zh-hans"
   end
 end
+
+macro wrapper_title(text)
+  if group_name
+    "__From #{group_name}__\n\n#{{{text}}}"
+  else
+    {{text}}
+  end
+end

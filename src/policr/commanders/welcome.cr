@@ -8,7 +8,7 @@ module Policr
       reply_menu do
         sended_msg = bot.send_message(
           _chat_id,
-          text: text(_group_id),
+          text: text(_group_id, _group_name),
           reply_to_message_id: _reply_msg_id,
           reply_markup: markup(_group_id)
         )
@@ -21,14 +21,15 @@ module Policr
       end
     end
 
-    def text(group_id)
+    def text(group_id, group_name : String? = nil)
       welcome_text =
         if welcome = KVStore.get_welcome(group_id)
           escape_markdown welcome
         else
           t "welcome.none"
         end
-      t "welcome.hint", {welcome_text: welcome_text}
+
+      wrapper_title t("welcome.hint", {welcome_text: welcome_text})
     end
 
     SELECTED   = "■"

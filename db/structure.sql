@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS "reports"(id integer PRIMARY KEY, author_id integer N
 CREATE TABLE error_counts (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, user_id integer NOT NULL, count integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE max_lengths (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, total integer, rows integer, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE block_contents (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, version text NOT NULL, expression text NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
-CREATE TABLE private_menus (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, msg_id integer NOT NULL, group_id integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
+CREATE TABLE private_menus (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, msg_id integer NOT NULL, group_id integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL, group_name text);
 CREATE TABLE languages (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, code integer NOT NULL, auto integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);

@@ -15,7 +15,7 @@ module Policr
 
           spawn bot.answer_callback_query(query.id)
 
-          updated_text, updated_markup = updated_settings_preview _group_id
+          updated_text, updated_markup = updated_settings_preview _group_id, _group_name
 
           bot.edit_message_text(
             _chat_id,
@@ -33,7 +33,7 @@ module Policr
 
           spawn bot.answer_callback_query(query.id)
 
-          updated_text, updated_markup = updated_settings_preview _group_id
+          updated_text, updated_markup = updated_settings_preview _group_id, _group_name
 
           bot.edit_message_text(
             _chat_id,
@@ -47,9 +47,9 @@ module Policr
       end
     end
 
-    def updated_settings_preview(group_id)
+    def updated_settings_preview(group_id, group_name)
       midcall WelcomeCommander do
-        {_commander.text(group_id), _commander.markup(group_id)}
+        {_commander.text(group_id, group_name), _commander.markup(group_id)}
       end || {nil, nil}
     end
   end
