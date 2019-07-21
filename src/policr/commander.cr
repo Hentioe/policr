@@ -10,6 +10,11 @@ module Policr
 
     abstract def handle(msg)
 
+    BOT_NOT_INIT = "Forbidden: bot can't initiate conversation with a user"
+    BOT_BLOCKED  = "Forbidden: bot was blocked by the user"
+
+    CAPTURE_PRIVATE_SETTING_ISSUES = [BOT_NOT_INIT, BOT_BLOCKED]
+
     macro reply_menu
       _chat_id = msg.chat.id
       _group_id = msg.chat.id
@@ -20,10 +25,10 @@ module Policr
         return
       end
 
-      role = KVStore.enabled_trust_admin?(_chat_id) ? :admin : :creator
-      if (user = msg.from) && bot.has_permission?(_chat_id, user.id, role)
-        if KVStore.enabled_privacy_setting?(_chat_id) && (user = msg.from)
-          _chat_id = user.id
+      %role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
+      if (%user = msg.from) && bot.has_permission?(_chat_id, %user.id, %role)
+        if KVStore.enabled_privacy_setting?(_group_id) && (%user = msg.from)
+          _chat_id = %user.id
           _reply_msg_id = nil
         end
 
@@ -38,8 +43,23 @@ module Policr
           }
         end
 
-        if %sended_msg = {{yield}}
-          Model::PrivateMenu.add(_chat_id, %sended_msg.message_id, msg.chat.id) if _chat_id > 0
+        begin
+          if %sended_msg = {{yield}}
+            Model::PrivateMenu.add(_chat_id, %sended_msg.message_id, msg.chat.id) if _chat_id > 0
+          end
+        rescue %ex : TelegramBot::APIException
+          _, %reason = bot.parse_error %ex
+          %error_msg = 
+            if CAPTURE_PRIVATE_SETTING_ISSUES.includes? %reason
+              t "private_setting.contact_me"
+            else
+              bot.log "Private setting failed: #{%reason}"
+              t "private_setting.unknown_reason"
+            end
+          _chat_id = _group_id
+
+          bot.send_message _chat_id, text: %error_msg
+          {{yield}}
         end
       else
         bot.delete_message(_chat_id, msg.message_id)
