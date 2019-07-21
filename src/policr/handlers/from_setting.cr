@@ -23,7 +23,7 @@ module Policr
 
         KVStore.put_chat_from(_group_id, text)
 
-        updated_text = updated_preview_settings(_group_id)
+        updated_text = updated_preview_settings(_group_id, _group_name)
         spawn {
           bot.edit_message_text chat_id, message_id: _reply_msg_id, text: updated_text
         }
@@ -32,9 +32,9 @@ module Policr
       end
     end
 
-    def updated_preview_settings(group_id)
+    def updated_preview_settings(group_id, group_name)
       midcall FromCommander do
-        _commander.text(group_id)
+        _commander.text(group_id, group_name)
       end
     end
   end
