@@ -8,11 +8,15 @@ module Policr
       reply_menu do
         bot.send_message(
           _chat_id,
-          text: t("settings.desc", {last_change: t("settings.none")}),
+          text: create_text(_group_id, t("settings.none"), _group_name),
           reply_to_message_id: _reply_msg_id,
           reply_markup: create_markup(_group_id)
         )
       end
+    end
+
+    def_text create_text, change do
+      t("settings.desc", {last_change: change})
     end
 
     SELECTED   = "■"
