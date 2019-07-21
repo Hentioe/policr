@@ -30,7 +30,7 @@ module Policr
 
           KVStore.set_torture_sec(_group_id, sec)
 
-          updated_text, updated_markup = updated_preview_settings(_group_id)
+          updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
           spawn { bot.edit_message_text(
             chat_id,
             message_id: _reply_msg_id,
@@ -43,9 +43,9 @@ module Policr
       end
     end
 
-    def updated_preview_settings(group_id)
+    def updated_preview_settings(group_id, group_name)
       midcall TortureTimeCommander do
-        {_commander.text(group_id), _commander.create_markup}
+        {_commander.create_text(group_id, group_name), _commander.create_markup}
       end || {nil, nil}
     end
   end

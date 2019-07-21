@@ -8,7 +8,7 @@ module Policr
       reply_menu do
         if send_message = bot.send_message(
              _chat_id,
-             text: text(_group_id),
+             text: create_text(_group_id, _group_name),
              reply_to_message_id: _reply_msg_id,
              reply_markup: create_markup
            )
@@ -30,9 +30,9 @@ module Policr
       markup
     end
 
-    def text(group_id)
+    def_text do
       current = t "torture.default_set", {seconds: DEFAULT_TORTURE_SEC}
-      if sec = KVStore.get_torture_sec group_id
+      if sec = KVStore.get_torture_sec _group_id
         time_len = sec > 0 ? t("units.sec", {n: sec}) : t("units.inf")
         current = t("torture.exists_set", {time_len: time_len})
       end

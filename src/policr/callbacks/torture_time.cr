@@ -15,7 +15,7 @@ module Policr
         bot.edit_message_text(
           _chat_id,
           message_id: msg.message_id,
-          text: create_text(_group_id),
+          text: create_text(_group_id, _group_name),
           reply_markup: create_markup
         )
         # 响应成功
@@ -23,9 +23,9 @@ module Policr
       end
     end
 
-    def create_text(group_id)
+    def create_text(group_id, group_name)
       midcall TortureTimeCommander do
-        commander.text(group_id)
+        commander.create_text(group_id, group_name)
       end
     end
 
