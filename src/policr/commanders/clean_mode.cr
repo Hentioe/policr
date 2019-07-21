@@ -10,7 +10,7 @@ module Policr
       reply_menu do
         bot.send_message(
           _chat_id,
-          text: t("clean_mode.desc"),
+          text: create_text(_group_id, _group_name),
           reply_to_message_id: _reply_msg_id,
           reply_markup: create_markup(_group_id)
         )
@@ -37,6 +37,10 @@ module Policr
       def_button_list ["timeout_verified", "wrong_verified", "welcome", "from"]
 
       markup
+    end
+
+    def_text do
+      t("clean_mode.desc")
     end
 
     macro def_button_list(target_list)

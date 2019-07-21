@@ -27,7 +27,7 @@ module Policr
         clean_mode, delete_target = data
 
         clean_mode.update_column(:delay_sec, (text.to_f * 3600).to_i)
-        updated_text, updated_markup = updated_preview_settings(_group_id, delete_target)
+        updated_text, updated_markup = updated_preview_settings(_group_id, delete_target, _group_name)
         spawn { bot.edit_message_text(
           chat_id,
           message_id: _reply_msg_id,
@@ -39,9 +39,9 @@ module Policr
       end
     end
 
-    def updated_preview_settings(group_id, delete_target)
+    def updated_preview_settings(group_id, delete_target, group_name)
       midcall CleanModeCallback do
-        {_callback.create_time_setting_text(group_id, delete_target),
+        {_callback.create_time_setting_text(group_id, delete_target, group_name: group_name),
          _callback.create_time_setting_markup(group_id, delete_target)}
       end || {nil, nil}
     end

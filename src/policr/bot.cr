@@ -11,6 +11,15 @@ def escape_markdown(text)
   end
 end
 
+macro def_text(method_name = "create_text", *args)
+  {{ args_exp_s = args.join(", ") }}
+
+  def {{method_name.id}}(_group_id, {{args_exp_s.id}} {% if args.size > 0 %}, {% end %} group_name : String? = nil)
+    %text = {{yield}}
+    wrapper_title %text
+  end
+end
+
 module Policr
   DEFAULT_TORTURE_SEC = 55 # 默认验证等待时长（秒）
 

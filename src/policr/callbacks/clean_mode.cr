@@ -14,7 +14,7 @@ module Policr
 
         get_cm = ->(delete_target : DeleteTarget) {
           Model::CleanMode.find_or_create _group_id, delete_target, data: {
-            chat_id:       _group_id,
+            chat_id:       _group_id.to_i64,
             delete_target: delete_target.value,
             delay_sec:     nil,
             status:        EnableStatus::TurnOff.value,
@@ -44,7 +44,7 @@ module Policr
             bot.edit_message_text(
               _chat_id,
               message_id: msg.message_id,
-              text: t("clean_mode.desc"),
+              text: back_text(_group_id, _group_name),
               reply_markup: commander.create_markup(_group_id)
             )
           end
@@ -64,7 +64,7 @@ module Policr
       bot.edit_message_text(
         _chat_id, 
         message_id: msg.message_id, 
-        text: text,
+        text: back_text(_group_id, _group_name),
         reply_markup: create_markup(_group_id)
       )
     end
@@ -78,7 +78,10 @@ module Policr
       bot.edit_message_text(
         _chat_id, 
         message_id: msg.message_id, 
-        text: create_time_setting_text(_group_id, DeleteTarget::{{delete_target.id}}, model: cm), 
+        text: create_time_setting_text(_group_id,
+                                       DeleteTarget::{{delete_target.id}}, 
+                                       model: cm, 
+                                       group_name: _group_name), 
         reply_markup: create_time_setting_markup(_group_id, DeleteTarget::{{delete_target.id}})
       )
     end
@@ -89,9 +92,15 @@ module Policr
       end
     end
 
-    def create_time_setting_text(group_id, delete_target, model : Model::CleanMode? = nil)
-      cm = model || Model::CleanMode.find_or_create group_id, delete_target, data: {
-        chat_id:       group_id,
+    def back_text(group_id, group_name)
+      midcall CleanModeCommander do
+        _commander.create_text group_id, group_name
+      end
+    end
+
+    def_text create_time_setting_text, delete_target, model : Model::CleanMode? = nil do
+      cm = model || Model::CleanMode.find_or_create _group_id, delete_target, data: {
+        chat_id:       _group_id,
         delete_target: delete_target.value,
         delay_sec:     nil,
         status:        EnableStatus::TurnOff.value,
