@@ -36,7 +36,7 @@ module Policr
 
       lang.update_column(:code, Code::{{code.id}}.value)
 
-      updated_text, updated_markup = updated_preview_settings(_group_id)
+      updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
 
       spawn bot.answer_callback_query(query.id)
       bot.edit_message_text(
@@ -47,9 +47,9 @@ module Policr
       )
     end
 
-    def updated_preview_settings(group_id)
+    def updated_preview_settings(group_id, group_name)
       midcall LanguageCommander do
-        {_commander.create_text(group_id), _commander.create_markup(group_id)}
+        {_commander.create_text(group_id, group_name), _commander.create_markup(group_id)}
       end || {nil, nil}
     end
   end

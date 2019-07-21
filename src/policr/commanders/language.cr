@@ -10,7 +10,7 @@ module Policr
       reply_menu do
         bot.send_message(
           _chat_id,
-          text: create_text(_group_id),
+          text: create_text(_group_id, _group_name),
           reply_to_message_id: _reply_msg_id,
           reply_markup: create_markup(_group_id)
         )
@@ -20,8 +20,8 @@ module Policr
     CHECKED   = "😀 "
     UNCHECKED = ""
 
-    def create_text(group_id)
-      locale = gen_locale group_id
+    def_text do
+      locale = gen_locale _group_id
 
       t("language.desc", locale: locale)
     end
