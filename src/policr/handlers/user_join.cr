@@ -19,6 +19,14 @@ module Policr
             if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
               Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
             end
+            bot.send_welcome(
+              chat_id,
+              msg.message_id,
+              FromUser.new(member),
+              is_reply: true,
+              reply_id: msg.message_id,
+              last_delete: false
+            )
             return
           end
 

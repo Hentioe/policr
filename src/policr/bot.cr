@@ -273,5 +273,49 @@ module Policr
         reply_markup: reply_markup
       )
     end
+
+    def send_welcome(chat_id,
+                     message_id,
+                     from_user,
+                     is_reply = false,
+                     reply_id : Int32? = nil,
+                     last_delete = true)
+      if welcome = KVStore.get_welcome(chat_id)
+        disable_link_preview = KVStore.disabled_welcome_link_preview?(chat_id)
+        text = (escape_markdown(welcome) || "")
+          .gsub("{{fullname}}", from_user.markdown_link)
+
+        # 异步调用
+        if is_reply
+          spawn { delete_message chat_id, message_id } if last_delete
+          spawn {
+            sended_msg = send_message(
+              chat_id,
+              text: text,
+              reply_to_message_id: reply_id,
+              reply_markup: nil,
+              disable_web_page_preview: disable_link_preview
+            )
+
+            if sended_msg # 根据设置延迟清理
+              msg_id = sended_msg.message_id
+              Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) { delete_message(chat_id, msg_id) }
+            end
+          }
+        else
+          spawn {
+            edit_message_text(
+              chat_id,
+              message_id: message_id,
+              text: text,
+              reply_markup: nil,
+              disable_web_page_preview: disable_link_preview
+            )
+            # 根据设置延迟清理
+            Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) { delete_message(chat_id, message_id) }
+          }
+        end
+      end
+    end
   end
 end

@@ -131,65 +131,49 @@ module Policr
                reply_id : Int32? = nil)
       Cache.verification_passed chat_id, target_user_id # 更新验证状态
       Model::ErrorCount.destory chat_id, target_user_id # 销毁错误记录
-      bot.log "Username '#{target_username}' passed verification"
       # 异步调用
       spawn bot.answer_callback_query(query.id, text: t("pass_alert")) unless admin
-      enabled_welcome = KVStore.enabled_welcome? chat_id
-      text =
-        if enabled_welcome && (welcome = KVStore.get_welcome chat_id)
-          (escape_markdown(welcome) || "")
-            .gsub("{{fullname}}", FromUser.new(query.from).markdown_link)
-        elsif admin
-          t("pass_by_admin", {user_id: target_user_id, admin: admin.markdown_link})
-        else
-          t("pass_by_self", {user_id: target_user_id})
-        end
 
-      # 如果启用了欢迎消息，根据设置决定是否启用链接预览
-      disable_link_preview =
-        if enabled_welcome
-          KVStore.disabled_welcome_link_preview?(chat_id)
-        else
-          true
-        end
-
-      # 异步调用
-      if photo
-        spawn bot.delete_message chat_id, message_id
-        spawn {
-          sended_msg = bot.send_message(
-            chat_id,
-            text: text,
-            reply_to_message_id: reply_id,
-            reply_markup: nil,
-            disable_web_page_preview: disable_link_preview
-          )
-
-          if sended_msg && !KVStore.enabled_record_mode?(chat_id) && !enabled_welcome
-            msg_id = sended_msg.message_id
-            Schedule.after(5.seconds) { bot.delete_message(chat_id, msg_id) }
+      unless KVStore.enabled_welcome? chat_id
+        text =
+          if admin
+            t("pass_by_admin", {user_id: target_user_id, admin: admin.markdown_link})
+          else
+            t("pass_by_self", {user_id: target_user_id})
           end
 
-          if sended_msg && enabled_welcome # 根据干净模式数据延迟清理欢迎消息
-            msg_id = sended_msg.message_id
-            Model::CleanMode.working(chat_id, DeleteTarget::Welcome) { bot.delete_message(chat_id, msg_id) }
-          end
-        }
+        if photo
+          spawn bot.delete_message chat_id, message_id
+          spawn {
+            sended_msg = bot.send_message(
+              chat_id,
+              text: text,
+              reply_to_message_id: reply_id,
+              reply_markup: nil
+            )
+
+            if sended_msg && !KVStore.enabled_record_mode?(chat_id)
+              msg_id = sended_msg.message_id
+              Schedule.after(5.seconds) { bot.delete_message(chat_id, msg_id) }
+            end
+          }
+        else
+          spawn {
+            bot.edit_message_text(
+              chat_id,
+              message_id: message_id,
+              text: text,
+              reply_markup: nil
+            )
+
+            unless KVStore.enabled_record_mode?(chat_id)
+              Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) }
+            end
+          }
+        end
       else
-        spawn { bot.edit_message_text(
-          chat_id,
-          message_id: message_id,
-          text: text,
-          reply_markup: nil,
-          disable_web_page_preview: disable_link_preview
-        ) }
+        bot.send_welcome chat_id, message_id, FromUser.new(query.from), photo, reply_id
       end
-
-      # 非记录且没启用欢迎消息模式删除消息
-      if !KVStore.enabled_record_mode?(chat_id) && !enabled_welcome && !photo
-        Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) }
-      end
-
       # 初始化用户权限
       bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
 
