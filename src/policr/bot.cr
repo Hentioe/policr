@@ -274,19 +274,19 @@ module Policr
       )
     end
 
-    def send_welcome(chat_id,
-                     message_id,
-                     from_user,
-                     is_reply = false,
+    def send_welcome(chat_id : Int | String,
+                     message_id : Int32?,
+                     from_user : FromUser,
+                     reply : Bool? = false,
                      reply_id : Int32? = nil,
-                     last_delete = true)
+                     last_delete : Bool? = true)
       if welcome = KVStore.get_welcome(chat_id)
         disable_link_preview = KVStore.disabled_welcome_link_preview?(chat_id)
         text = (escape_markdown(welcome) || "")
           .gsub("{{fullname}}", from_user.markdown_link)
 
         # 异步调用
-        if is_reply
+        if reply
           spawn { delete_message chat_id, message_id } if last_delete
           spawn {
             sended_msg = send_message(

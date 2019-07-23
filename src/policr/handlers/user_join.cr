@@ -23,10 +23,10 @@ module Policr
               chat_id,
               msg.message_id,
               FromUser.new(member),
-              is_reply: true,
+              reply: true,
               reply_id: msg.message_id,
               last_delete: false
-            )
+            ) if KVStore.enabled_welcome?(chat_id)
             return
           end
 
