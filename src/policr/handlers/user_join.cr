@@ -189,7 +189,6 @@ module Policr
       end
       ban_task = ->(message_id : Int32) {
         if Cache.verification?(chat_id, member_id) == VerificationStatus::Init # 如果仍然是验证初步状态则判定超时
-          bot.log "User '#{username}' torture time expired and has been banned"
           Cache.verification_slowed(chat_id, member_id)
           failed(chat_id, message_id, member_id, username, timeout: true, photo: send_image, reply_id: msg_id)
         end
@@ -197,7 +196,6 @@ module Policr
 
       ban_timer = ->(message_id : Int32) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id) } }
       if sended_msg && (message_id = sended_msg.message_id)
-        # 储存被验证的加群消息
 
         # 存在验证时间，定时任务调用
         ban_timer.call(message_id) if torture_sec > 0
