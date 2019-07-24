@@ -59,7 +59,7 @@ module Policr
             )
             bot.log "Halal '#{name}' has been banned"
           rescue ex : TelegramBot::APIException
-            text = t("halal.kick_failed")
+            text = t("halal.kick_failed", {user_id: member.id})
             bot.edit_message_text sended_msg.chat.id, message_id: sended_msg.message_id, text: text
             _, reason = bot.parse_error(ex)
             bot.log "Halal '#{name}' banned failure, reason: #{reason}"
