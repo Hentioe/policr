@@ -4,4 +4,5 @@ language:
 
 torture:
   hint: "請確認「%{title}」以通過驗證，[妳](tg://user?id=%{user_id})有 %{torture_sec} 秒的時間。"
+  no_time_reply: "請[你](tg://user?id=%{user_id})主動確認「%{title}」以解除限制"
 

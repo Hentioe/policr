@@ -322,7 +322,7 @@ torture:
   time_too_short: "时间必须大于 %{min_sec} 秒"
   hint: "请确认「%{title}」以通过验证，[你](tg://user?id=%{user_id})有 %{torture_sec} 秒的时间。"
   caption: "请[您](tg://user?id=%{user_id})在 %{torture_sec} 秒内告诉我，看到了什么（单选）？"
-  caption_no_time: "请[您](tg://user?id=%{user_id})主动确认图中的内容以解除限制（单选）"
+  caption_no_time: "请[你](tg://user?id=%{user_id})主动确认图中的内容以解除限制（单选）"
   re: "重新来过，"
   no_time_reply: "请[你](tg://user?id=%{user_id})主动确认「%{title}」以解除限制"
   default_set: "此群组当前使用 Bot 默认的时长（%{seconds} 秒）"

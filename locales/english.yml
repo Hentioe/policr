@@ -4,3 +4,4 @@ language:
 
 torture:
   hint: Please confirm "%{title}" to pass the verification, you have %{torture_sec} seconds.
+  no_time_reply: Please take the initiative to confirm "%{title}" to lift the restriction

@@ -151,7 +151,7 @@ module Policr
         if torture_sec > 0 && torture_sec < MAX_COUNTDOWN
           hint = t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title}, locale: locale)
         else
-          t("torture.no_time_reply", {user_id: member_id, title: title})
+          t("torture.no_time_reply", {user_id: member_id, title: title}, locale: locale)
         end
       question = (t("torture.re") + question) if re
       reply_id = msg_id
