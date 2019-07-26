@@ -4,7 +4,7 @@ module Policr
     alias Status = ReportStatus
     alias UserRole = ReportUserRole
 
-    TARGET_MSG_NOT_EXISTS = "Bad Request: MESSAGE_ID_INVALID"
+    TARGET_MSG_INVALID = "Bad Request: MESSAGE_ID_INVALID"
 
     def initialize(bot)
       super(bot, "Report")
@@ -15,6 +15,7 @@ module Policr
       from_user_id = query.from.id
 
       author_id, target_user_id, target_msg_id, reason_value = data
+
       author_id = author_id.to_i
       target_user_id = target_user_id.to_i
       target_msg_id = target_msg_id.to_i
@@ -40,8 +41,8 @@ module Policr
         _, reason = bot.parse_error(e)
         reason =
           case reason
-          when TARGET_MSG_NOT_EXISTS
-            t "report.message_not_exists"
+          when TARGET_MSG_INVALID
+            t "report.message_invalid"
           else
             reason
           end
@@ -233,6 +234,8 @@ module Policr
         t("report.reason.halal")
       when Reason::Other
         t("report.reason.other")
+      when Reason::Hateful
+        t("report.reason.hateful")
       end
     end
 

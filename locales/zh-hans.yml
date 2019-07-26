@@ -189,6 +189,7 @@ report:
     注意：在完成举报前请不要删除被举报消息。
   mass_ad: "恶意散播广告"
   unident_halal: "未识别的清真"
+  hateful: "仇恨或恐怖主义"
   author_cant_self: "你这么想送自己进去的话，明说就行了～"
   target_user_cant_the_bot: "敢举报本大人？信不信先把你送进去了！"
   target_user_invalid: "举报目标用户无效。它可能是个频道或其它的什么东西～"
@@ -197,6 +198,7 @@ report:
   generate_voting_error: "举报生成失败，原因：%{reason}"
   update_result_error: "举报结果更新失败，原因：%{reason}"
   message_not_exists: "举报目标消息已不存在"
+  message_invalid: "举报目标消息无效"
   voting_message: |
     举报发起人：[%{author_id}](tg://user?id=%{author_id})
     举报人身份：%{role}
@@ -216,6 +218,7 @@ report:
     unknown: "未记录"
     spam: "恶意散播广告"
     halal: "未识别的清真"
+    hateful: "仇恨/恐怖主义"
     other: "其它"
   status:
     unknown: "不明"

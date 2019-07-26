@@ -8,7 +8,7 @@ module Policr
   end
 
   enum ReportReason
-    Unknown; Spam; Halal; Other
+    Unknown; Spam; Halal; Other; Hateful
   end
 
   # 举报状态

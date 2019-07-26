@@ -1,5 +1,7 @@
 module Policr
   class ReportCommander < Commander
+    alias Reason = ReportReason
+
     def initialize(bot)
       super(bot, "report")
     end
@@ -21,8 +23,10 @@ module Policr
           Button.new(text: text, callback_data: "Report:#{author_id}:#{target_user_id}:#{target_msg_id}:#{reason.value}")
         }
 
-        markup << [btn.call(t("report.mass_ad"), ReportReason::Spam)]
-        markup << [btn.call(t("report.unident_halal"), ReportReason::Halal)]
+        markup << [btn.call(t("report.mass_ad"), Reason::Spam)]
+        markup << [btn.call(t("report.unident_halal"), Reason::Halal)]
+        markup << [btn.call(t("report.hateful"), Reason::Hateful)]
+
         text = t "report.admin_reply", {user_id: target_user_id, voting_channel: bot.voting_channel}
         bot.send_message(
           msg.chat.id,
