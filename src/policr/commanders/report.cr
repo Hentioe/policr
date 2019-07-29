@@ -11,9 +11,10 @@ module Policr
         author_id = user.id
         target_user_id = target_user.id
         target_msg_id = reply_msg.message_id
+        chat_id = msg.chat.id
 
         if error_msg = check_legality(author_id, target_user_id)
-          bot.send_message msg.chat.id, error_msg, reply_to_message_id: msg.message_id
+          bot.send_message chat_id, error_msg, reply_to_message_id: msg.message_id
           return
         end
 
@@ -26,6 +27,7 @@ module Policr
         markup << [btn.call(t("report.mass_ad"), Reason::Spam)]
         markup << [btn.call(t("report.unident_halal"), Reason::Halal)]
         markup << [btn.call(t("report.hateful"), Reason::Hateful)]
+        markup << [btn.call(t("report.adname"), Reason::Adname)]
 
         text = t "report.admin_reply", {user_id: target_user_id, voting_channel: bot.voting_channel}
         bot.send_message(
@@ -34,6 +36,8 @@ module Policr
           reply_to_message_id: msg.message_id,
           reply_markup: markup
         )
+        # 缓存被举报用户
+        Cache.carving_report_target_msg chat_id, target_msg_id, target_user
       else
         bot.delete_message(msg.chat.id, msg.message_id)
       end

@@ -73,6 +73,9 @@ module Policr::Cache
   # 标记干净模式删除时间设置消息
   def_carving_with_data "clean_mode_time", {Model::CleanMode, CleanDeleteTarget}
 
+  # 标记被举报用户
+  def_carving_with_data "report_target", TelegramBot::User
+
   macro def_list(name, type)
     @@{{name.id}}_list = {{type.id}}.new
 
