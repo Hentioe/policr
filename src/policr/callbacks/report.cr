@@ -12,12 +12,12 @@ module Policr
 
     def handle(query, msg, data)
       chat_id = msg.chat.id
-      from_user_id = query.from.id
+      from_user_id = query.from.id.to_i64
 
       author_id, target_user_id, target_msg_id, reason_value = data
 
-      author_id = author_id.to_i
-      target_user_id = target_user_id.to_i
+      author_id = author_id.to_i64
+      target_user_id = target_user_id.to_i64
       target_msg_id = target_msg_id.to_i
       reason_value = reason_value.to_i
 
@@ -29,14 +29,22 @@ module Policr
       make_report chat_id, msg.message_id, target_msg_id, target_user_id, from_user_id, reason_value, query: query
     end
 
-    def make_report(chat_id, msg_id, target_msg_id, target_user_id, from_user_id, reason_value, query : TelegramBot::CallbackQuery? = nil)
+    def make_report(chat_id : Int64,
+                    msg_id : Int32,
+                    target_msg_id : Int32,
+                    target_user_id : Int64,
+                    from_user_id : Int64,
+                    reason_value : Int32,
+                    query : TelegramBot::CallbackQuery? = nil)
+      need_forward = reason_value != Reason::Adname.value
+
       # 转发举报消息
       begin
         snapshot_message = bot.forward_message(
           chat_id: "@#{bot.snapshot_channel}",
           from_chat_id: chat_id,
           message_id: target_msg_id
-        )
+        ) if need_forward
       rescue e : TelegramBot::APIException
         _, reason = bot.parse_error(e)
         reason =
@@ -72,31 +80,47 @@ module Policr
         end
 
       # 生成举报并入库
-      if snapshot_message
-        begin
-          data =
-            {
-              author_id:          from_user_id.to_i64,
-              post_id:            0, # 临时 post id，举报消息发布以后更新
-              target_snapshot_id: snapshot_message.message_id,
-              target_user_id:     target_user_id.to_i64,
-              target_msg_id:      target_msg_id,
-              reason:             reason_value,
-              status:             Status::Begin.value,
-              role:               role.value,
-              from_chat_id:       chat_id.to_i64,
-            }
-          r = Model::Report.create!(data)
-        rescue e : Exception
-          bot.log "Save reporting data failed: #{e.message}"
-          err_msg = t("report.storage_error")
-          if query
-            bot.answer_callback_query(query.id, text: err_msg)
-          else
-            bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
-          end
-          return
+      detail =
+        if (reason_value == Reason::Adname.value) &&
+           (target_user = Cache.report_target_msg?(chat_id, target_msg_id))
+          t "report.adname_detail", {name: bot.display_name(target_user)}
         end
+
+      snapshot_message_id =
+        if snapshot_message
+          snapshot_message.message_id
+        else
+          0
+        end
+      if need_forward && snapshot_message_id == 0
+        bot.answer_callback_query(query.id, text: t("report.no_forward_success"))
+        return
+      end
+
+      begin
+        data =
+          {
+            author_id:          from_user_id.to_i64,
+            post_id:            0, # 临时 post id，举报消息发布以后更新
+            target_snapshot_id: snapshot_message_id,
+            target_user_id:     target_user_id.to_i64,
+            target_msg_id:      target_msg_id,
+            reason:             reason_value,
+            status:             Status::Begin.value,
+            role:               role.value,
+            from_chat_id:       chat_id.to_i64,
+            detail:             detail,
+          }
+        r = Model::Report.create!(data)
+      rescue e : Exception
+        bot.log "Save reporting data failed: #{e.message}"
+        err_msg = t("report.storage_error")
+        if query
+          bot.answer_callback_query(query.id, text: err_msg)
+        else
+          bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+        end
+        return
       end
       # 生成投票
       if r
@@ -236,6 +260,8 @@ module Policr
         t("report.reason.other")
       when Reason::Hateful
         t("report.reason.hateful")
+      when Reason::Adname
+        t("report.reason.adname")
       end
     end
 

@@ -16,8 +16,8 @@ module Policr
         midcall ReportCallback do
           if (reply_msg = msg.reply_to_message) && (target_user = reply_msg.forward_from) && (from_user = query.from)
             target_msg_id = reply_msg.message_id
-            target_user_id = target_user.id
-            from_user_id = from_user.id
+            target_user_id = target_user.id.to_i64
+            from_user_id = from_user.id.to_i64
 
             _callback.make_report chat_id, msg_id, target_msg_id, target_user_id, from_user_id, reason_value, query: query
           end
