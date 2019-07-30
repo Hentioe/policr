@@ -39,29 +39,30 @@ module Policr
       need_forward = reason_value != Reason::Adname.value
 
       # 转发举报消息
-      begin
-        snapshot_message = bot.forward_message(
-          chat_id: "@#{bot.snapshot_channel}",
-          from_chat_id: chat_id,
-          message_id: target_msg_id
-        ) if need_forward
-      rescue e : TelegramBot::APIException
-        _, reason = bot.parse_error(e)
-        reason =
-          case reason
-          when TARGET_MSG_INVALID
-            t "report.message_invalid"
+      snapshot_message =
+        begin
+          bot.forward_message(
+            chat_id: "@#{bot.snapshot_channel}",
+            from_chat_id: chat_id,
+            message_id: target_msg_id
+          ) if need_forward
+        rescue e : TelegramBot::APIException
+          _, reason = bot.parse_error(e)
+          reason =
+            case reason
+            when TARGET_MSG_INVALID
+              t "report.message_invalid"
+            else
+              reason
+            end
+          err_msg = t("report.forward_error", {reason: reason})
+          if query
+            bot.answer_callback_query(query.id, text: err_msg)
           else
-            reason
+            bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
           end
-        err_msg = t("report.forward_error", {reason: reason})
-        if query
-          bot.answer_callback_query(query.id, text: err_msg)
-        else
-          bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+          return
         end
-        return
-      end
 
       # 并获得举报人角色
       role =
@@ -86,8 +87,6 @@ module Policr
           t "report.adname_detail", {name: bot.display_name(target_user)}
         end
 
-      puts "Temporary fix 'Invalid memory access' compiler BUG in ReportCallback"
-
       snapshot_message_id =
         if snapshot_message
           snapshot_message.message_id
@@ -99,31 +98,32 @@ module Policr
         return
       end
 
-      begin
-        data =
-          {
-            author_id:          from_user_id.to_i64,
-            post_id:            0, # 临时 post id，举报消息发布以后更新
-            target_snapshot_id: snapshot_message_id,
-            target_user_id:     target_user_id.to_i64,
-            target_msg_id:      target_msg_id,
-            reason:             reason_value,
-            status:             Status::Begin.value,
-            role:               role.value,
-            from_chat_id:       chat_id.to_i64,
-            detail:             detail,
-          }
-        r = Model::Report.create!(data)
-      rescue e : Exception
-        bot.log "Save reporting data failed: #{e.message}"
-        err_msg = t("report.storage_error")
-        if query
-          bot.answer_callback_query(query.id, text: err_msg)
-        else
-          bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+      r =
+        begin
+          data =
+            {
+              author_id:          from_user_id.to_i64,
+              post_id:            0, # 临时 post id，举报消息发布以后更新
+              target_snapshot_id: snapshot_message_id,
+              target_user_id:     target_user_id.to_i64,
+              target_msg_id:      target_msg_id,
+              reason:             reason_value,
+              status:             Status::Begin.value,
+              role:               role.value,
+              from_chat_id:       chat_id.to_i64,
+              detail:             detail,
+            }
+          Model::Report.create!(data)
+        rescue e : Exception
+          bot.log "Save reporting data failed: #{e.message}"
+          err_msg = t("report.storage_error")
+          if query
+            bot.answer_callback_query(query.id, text: err_msg)
+          else
+            bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+          end
+          return
         end
-        return
-      end
       # 生成投票
       if r
         return unless voting_msg = create_report_voting(chat_id: chat_id, report: r, answer_query_id: query.id)
