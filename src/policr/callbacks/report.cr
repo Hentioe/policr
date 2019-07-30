@@ -21,7 +21,9 @@ module Policr
       target_msg_id = target_msg_id.to_i
       reason_value = reason_value.to_i
 
-      unless from_user_id == author_id.to_i
+      puts "Temporary fix 'Invalid memory access' compiler BUG in ReportCallback"
+
+      unless from_user_id == author_id
         bot.answer_callback_query(query.id, text: t("unrelated_warning"), show_alert: true)
         return
       end
