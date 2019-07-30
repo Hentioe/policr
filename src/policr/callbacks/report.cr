@@ -21,8 +21,6 @@ module Policr
       target_msg_id = target_msg_id.to_i
       reason_value = reason_value.to_i
 
-      puts "Temporary fix 'Invalid memory access' compiler BUG in ReportCallback"
-
       unless from_user_id == author_id
         bot.answer_callback_query(query.id, text: t("unrelated_warning"), show_alert: true)
         return
@@ -87,6 +85,8 @@ module Policr
            (target_user = Cache.report_target_msg?(chat_id, target_msg_id))
           t "report.adname_detail", {name: bot.display_name(target_user)}
         end
+
+      puts "Temporary fix 'Invalid memory access' compiler BUG in ReportCallback"
 
       snapshot_message_id =
         if snapshot_message

@@ -220,7 +220,7 @@ report:
   reason:
     unknown: "未记录"
     spam: "散播广告消息"
-    halal: "未自动识别的清真"
+    halal: "发表清真消息"
     hateful: "仇恨或恐怖主义"
     other: "其它"
     adname: "广告昵称"
