@@ -1,5 +1,7 @@
 module Policr
   class BotJoinHandler < Handler
+    alias AntiTarget = AntiMessageDeleteTarget
+
     def match(msg)
       all_pass? [
         KVStore.enabled_examine?(msg.chat.id),
@@ -17,6 +19,11 @@ module Policr
           if (user = msg.from) && bot.is_admin?(msg.chat.id, user.id)
             if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
               Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
+
+              # 删除入群
+              unless Model::AntiMessage.disabled?(chat_id, AntiTarget::JoinGroup)
+                bot.delete_message(chat_id, msg.message_id)
+              end
             end
             return
           end

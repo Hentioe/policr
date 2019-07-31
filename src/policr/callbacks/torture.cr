@@ -2,7 +2,8 @@
 
 module Policr
   class TortureCallback < Callback
-    alias DeleteTarget = Policr::CleanDeleteTarget
+    alias DeleteTarget = CleanDeleteTarget
+    alias AntiTarget = AntiMessageDeleteTarget
 
     def initialize(bot)
       super(bot, "Torture")
@@ -175,7 +176,13 @@ module Policr
         bot.send_welcome chat_id, message_id, FromUser.new(query.from), photo, reply_id
       end
       # 初始化用户权限
-      bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
+      spawn bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
+      # 删除入群消息
+      if _delete_msg_id = reply_id
+        unless Model::AntiMessage.disabled?(chat_id, AntiTarget::JoinGroup)
+          bot.delete_message(chat_id, _delete_msg_id)
+        end
+      end
 
       # 来源调查
       from_enquire(chat_id, message_id, target_username, target_user_id) if KVStore.enabled_from?(chat_id)

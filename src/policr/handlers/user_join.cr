@@ -1,6 +1,7 @@
 module Policr
   class UserJoinHandler < Handler
-    alias DeleteTarget = Policr::CleanDeleteTarget
+    alias DeleteTarget = CleanDeleteTarget
+    alias AntiTarget = AntiMessageDeleteTarget
 
     def match(msg)
       all_pass? [
@@ -18,6 +19,10 @@ module Policr
           if (user = msg.from) && (user.id != member.id) && bot.is_admin?(msg.chat.id, user.id)
             if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
               Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
+            end
+            # 删除入群消息
+            unless Model::AntiMessage.disabled?(chat_id, AntiTarget::JoinGroup)
+              spawn bot.delete_message(chat_id, msg.message_id)
             end
             bot.send_welcome(
               chat_id,

@@ -1,5 +1,7 @@
 module Policr
   class LeftGroupHandler < Handler
+    alias DeleteTarget = AntiMessageDeleteTarget
+
     def match(msg)
       all_pass? [
         KVStore.enabled_examine?(msg.chat.id),
@@ -8,7 +10,10 @@ module Policr
     end
 
     def handle(msg)
-      bot.delete_message(msg.chat.id, msg.message_id) unless KVStore.enabled_record_mode?(msg.chat.id)
+      # 删除退群消息
+      unless Model::AntiMessage.disabled?(msg.chat.id, DeleteTarget::LeaveGroup)
+        bot.delete_message(msg.chat.id, msg.message_id)
+      end
     end
   end
 end
