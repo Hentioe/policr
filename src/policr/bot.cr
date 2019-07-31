@@ -102,6 +102,7 @@ module Policr
         MaxLengthCallback,
         WelcomeCallback,
         LanguageCallback,
+        AntiServiceMsgCallback,
       ]
 
       # 注册指令模块
@@ -119,6 +120,7 @@ module Policr
         SubfunctionsCommander,
         StrictModeCommander,
         LanguageCommander,
+        AntiServiceMsgCommander,
       ]
 
       commanders.each do |_, command|

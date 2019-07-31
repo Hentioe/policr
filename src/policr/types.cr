@@ -34,6 +34,11 @@ module Policr
     Unknown; TimeoutVerified; WrongVerified; Welcome; From
   end
 
+  # 服务消息类型
+  enum AntiMessageDeleteTarget
+    Unknown; JoinGroup; LeaveGroup
+  end
+
   # 时间单位
   enum TimeUnit
     Sec; Min; Hour
@@ -46,21 +51,6 @@ module Policr
 
   enum LanguageCode
     English; ZhHans; ZhHant
-  end
-
-  class FromUser
-    getter user : TelegramBot::User?
-
-    def initialize(@user)
-    end
-
-    def markdown_link
-      if user = @user
-        "[#{Policr.display_name(user)}](tg://user?id=#{user.id})"
-      else
-        "Unknown"
-      end
-    end
   end
 
   enum QuestionType

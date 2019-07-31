@@ -8,6 +8,7 @@ alias VoteType = Policr::VoteType
 alias EnableStatus = Policr::EnableStatus
 alias DeleteTarget = Policr::CleanDeleteTarget
 alias SubfunctionType = Policr::SubfunctionType
+alias AntiDeleteTarget = Policr::AntiMessageDeleteTarget
 
 describe Policr do
   it "arabic characters match" do
@@ -158,5 +159,12 @@ describe Policr do
     if r
       r.rows_affected.should eq(1)
     end
+
+    # 删除服务消息
+    Model::AntiMessage.enable!(from_chat_id, AntiDeleteTarget::JoinGroup)
+    Model::AntiMessage.enabled?(from_chat_id, AntiDeleteTarget::JoinGroup).should be_true
+    Model::AntiMessage.disabled?(from_chat_id, AntiDeleteTarget::LeaveGroup).should be_false
+    Model::AntiMessage.disable!(from_chat_id, AntiDeleteTarget::LeaveGroup)
+    Model::AntiMessage.disabled?(from_chat_id, AntiDeleteTarget::LeaveGroup).should be_true
   end
 end
