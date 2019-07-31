@@ -25,19 +25,25 @@ module Policr
     end
 
     def create_markup(group_id)
-      make_selected_status = ->(delete_target) {
+      make_selected_status = ->(delete_target : DeleteTarget) {
         case delete_target
         when DeleteTarget::JoinGroup
-          Model::AntiMessage.disabled?(group_id, delete_target) ? SELECTED : UNSELECTED
+          Model::AntiMessage.disabled?(group_id, delete_target) ? UNSELECTED : SELECTED
         when DeleteTarget::LeaveGroup
-          Model::AntiMessage.disabled?(group_id, delete_target) ? SELECTED : UNSELECTED
+          Model::AntiMessage.disabled?(group_id, delete_target) ? UNSELECTED : SELECTED
         else
           UNSELECTED
         end
       }
       _markup = Markup.new
-
+      put_item "join_group"
+      put_item "leave_group"
       _markup
+    end
+
+    macro put_item(name)
+      %text = make_selected_status.call(DeleteTarget::{{name.camelcase.id}}) + " " + t("anti_service_msg.{{name.id}}")
+      _markup << [Button.new(text: %text, callback_data: "AntiServiceMsg:{{name.id}}")]
     end
   end
 end

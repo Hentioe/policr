@@ -102,6 +102,7 @@ module Policr
         MaxLengthCallback,
         WelcomeCallback,
         LanguageCallback,
+        AntiServiceMsgCallback,
       ]
 
       # 注册指令模块
