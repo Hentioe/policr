@@ -205,6 +205,12 @@
                 <td align="center">设置</td>
                 <td align="center">略</td>
               </tr>
+              <tr>
+                <td align="left"><code>/anti_service_msg</code></td>
+                <td align="left">删除服务消息</td>
+                <td align="center">综合开关</td>
+                <td align="center">略</td>
+              </tr>
             </tbody>
           </table>
           <h3 class="subtitle is-3">快速入门</h3>
@@ -287,7 +293,7 @@
           </figure>
           <article class="message is-warning">
             <div class="message-body">
-              请不要使用其它欢迎机器人。因为它们不会读取验证结果，只能无脑发送欢迎，哪怕没有通过验证：（
+              请不要使用其它欢迎机器人。因为它们不会读取验证结果，只能无脑发送欢迎，哪怕没有通过验证。
             </div>
           </article>
           <p class="subtitle is-6">
@@ -325,6 +331,18 @@
           <figure class="highlight">
             <pre><code class="language-bash" data-lang="bash">/clean_mode@<%= bot.username %></code></pre>
           </figure>
+          <p class="subtitle is-6">
+            想保留系统消息？哦不，我想保留入群消息，但不保留退群消息！
+          </p>
+          <figure class="highlight">
+            <pre><code class="language-bash" data-lang="bash">/anti_service_msg@<%= bot.username %></code></pre>
+          </figure>
+          <article class="message is-warning">
+            <div class="message-body">
+              请不要使用其它删除服务消息的机器人（例如
+              @AntiServiceMessageBot）。因为它们会影响依赖入群消息的验证功能（回复对象没有了）。通过本机器人自带的相关能力，将会在适当的时机下删除入群消息（例如完成验证），而不是无脑的立即删除。
+            </div>
+          </article>
         </div>
         <hr />
         <div>
