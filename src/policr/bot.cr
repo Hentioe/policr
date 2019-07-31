@@ -119,6 +119,7 @@ module Policr
         SubfunctionsCommander,
         StrictModeCommander,
         LanguageCommander,
+        AntiServiceMsgCommander,
       ]
 
       commanders.each do |_, command|
