@@ -21,7 +21,7 @@ module Policr
               Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
             end
             # 删除入群消息
-            unless Model::AntiMessage.disabled?(chat_id, AntiTarget::JoinGroup)
+            Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
               spawn bot.delete_message(chat_id, msg.message_id)
             end
             bot.send_welcome(
