@@ -56,7 +56,7 @@ module Policr::Model
     def self.working(group_id, delete_target)
       is_default =
         case delete_target
-        when DeleteTarget::JoinGroup, DeleteTarget::LeaveGroup
+        when DeleteTarget::LeaveGroup
           true
         else
           false
