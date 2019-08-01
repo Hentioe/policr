@@ -52,5 +52,15 @@ module Policr::Model
         false
       end
     end
+
+    def self.working(group_id, delete_target, default = false)
+      enabled =
+        if default
+          disabled? group_id, delete_target
+        else
+          enabled? group_id, delete_target
+        end
+      yield if enabled
+    end
   end
 end

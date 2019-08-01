@@ -122,11 +122,11 @@ module Policr
       end
     end
 
-    def passed(query,
-               chat_id,
-               target_user_id,
-               target_username,
-               message_id,
+    def passed(query : TelegramBot::CallbackQuery,
+               chat_id : Int64,
+               target_user_id : Int32,
+               target_username : String,
+               message_id : Int32,
                admin : FromUser? = nil,
                photo = false,
                reply_id : Int32? = nil)
@@ -177,15 +177,16 @@ module Policr
       end
       # 初始化用户权限
       spawn bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
+      is_enabled_from = KVStore.enabled_from? chat_id
       # 删除入群消息
-      if _delete_msg_id = reply_id
-        unless Model::AntiMessage.disabled?(chat_id, AntiTarget::JoinGroup)
+      if !is_enabled_from && (_delete_msg_id = reply_id)
+        Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
           bot.delete_message(chat_id, _delete_msg_id)
         end
       end
 
       # 来源调查
-      from_enquire(chat_id, message_id, target_username, target_user_id) if KVStore.enabled_from?(chat_id)
+      from_enquire(chat_id, message_id, target_username, target_user_id) if is_enabled_from
     end
 
     def from_enquire(chat_id, message_id, username, user_id)
@@ -209,6 +210,12 @@ module Policr
         if sended_msg
           msg_id = sended_msg.message_id
           Model::CleanMode.working(chat_id, DeleteTarget::From) { bot.delete_message(chat_id, msg_id) }
+        end
+        # 清理入群消息
+        if _delete_msg_id = reply_to_message_id
+          Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
+            bot.delete_message(chat_id, _delete_msg_id)
+          end
         end
       end
     end
