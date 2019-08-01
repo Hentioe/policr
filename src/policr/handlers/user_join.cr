@@ -252,7 +252,16 @@ module Policr
         if result_msg_id && !admin # 根据干净模式数据延迟清理消息
           delete_target = timeout ? DeleteTarget::TimeoutVerified : DeleteTarget::WrongVerified
           msg_id = result_msg_id
-          Model::CleanMode.working(chat_id, delete_target) { bot.delete_message(chat_id, msg_id) }
+          Model::CleanMode.working chat_id, delete_target do
+            # 删除加群消息
+            Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
+              if _delete_msg_id = reply_id
+                spawn bot.delete_message(chat_id, _delete_msg_id)
+              end
+            end
+            # 清理消息
+            bot.delete_message(chat_id, msg_id)
+          end
         end
       end
     end
