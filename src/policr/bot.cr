@@ -133,6 +133,7 @@ module Policr
         StrictModeCommander,
         LanguageCommander,
         AntiServiceMsgCommander,
+        TemplateCommander,
       ]
 
       commanders.each do |_, command|

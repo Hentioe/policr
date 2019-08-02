@@ -8,6 +8,10 @@ module Policr
       @name = name
     end
 
+    def create_markup(group_id) : (Markup | Nil)
+      nil
+    end
+
     abstract def handle(msg)
 
     BOT_NOT_INIT = "Forbidden: bot can't initiate conversation with a user"
@@ -75,7 +79,7 @@ module Policr
     end
 
     macro paste_markup
-      create_markup(_group_id, _group_name)
+      create_markup(_group_id)
     end
 
     macro reply(args)
