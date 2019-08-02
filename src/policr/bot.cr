@@ -128,7 +128,6 @@ module Policr
         ReportCommander,
         SettingsCommander,
         CleanModeCommander,
-        GomokuCommander,
         SubfunctionsCommander,
         StrictModeCommander,
         LanguageCommander,

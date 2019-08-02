@@ -1,10 +1,6 @@
 module Policr
-  class LanguageCommander < Commander
+  commander Language do
     alias Code = LanguageCode
-
-    def initialize(bot)
-      super(bot, "language")
-    end
 
     def handle(msg)
       reply_menu do

@@ -1,9 +1,5 @@
 module Policr
-  class TemplateCommander < Commander
-    def initialize(bot)
-      super(bot, "template")
-    end
-
+  commander Template do
     def handle(msg)
       reply_menu do
         reply({
@@ -14,7 +10,7 @@ module Policr
     end
 
     def_text do
-      t("template.desc")
+      t "template.desc"
     end
   end
 end

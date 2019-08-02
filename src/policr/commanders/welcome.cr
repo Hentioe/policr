@@ -1,9 +1,5 @@
 module Policr
-  class WelcomeCommander < Commander
-    def initialize(bot)
-      super(bot, "welcome")
-    end
-
+  commander Welcome do
     def handle(msg)
       reply_menu do
         sended_msg = bot.send_message(

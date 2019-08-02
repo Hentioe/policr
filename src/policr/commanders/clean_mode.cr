@@ -1,10 +1,6 @@
 module Policr
-  class CleanModeCommander < Commander
+  commander CleanMode do
     alias DeleteTarget = Policr::CleanDeleteTarget
-
-    def initialize(bot)
-      super(bot, "clean_mode")
-    end
 
     def handle(msg)
       reply_menu do

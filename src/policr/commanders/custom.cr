@@ -1,9 +1,5 @@
 module Policr
-  class CustomCommander < Commander
-    def initialize(bot)
-      super(bot, "custom")
-    end
-
+  commander Custom do
     def handle(msg)
       reply_menu do
         bot.send_message(

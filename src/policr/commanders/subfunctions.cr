@@ -1,10 +1,6 @@
 module Policr
-  class SubfunctionsCommander < Commander
+  commander Subfunctions do
     alias FunctionType = SubfunctionType
-
-    def initialize(bot)
-      super(bot, "subfunctions")
-    end
 
     def handle(msg)
       reply_menu do

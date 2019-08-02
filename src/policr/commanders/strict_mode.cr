@@ -1,9 +1,5 @@
 module Policr
-  class StrictModeCommander < Commander
-    def initialize(bot)
-      super(bot, "strict_mode")
-    end
-
+  commander StrictMode do
     def handle(msg)
       reply_menu do
         bot.send_message(

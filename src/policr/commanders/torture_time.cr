@@ -1,9 +1,5 @@
 module Policr
-  class TortureTimeCommander < Commander
-    def initialize(bot)
-      super(bot, "torture_time")
-    end
-
+  commander TortureTime do
     def handle(msg)
       reply_menu do
         if send_message = bot.send_message(

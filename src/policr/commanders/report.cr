@@ -1,10 +1,6 @@
 module Policr
-  class ReportCommander < Commander
+  commander Report do
     alias Reason = ReportReason
-
-    def initialize(bot)
-      super(bot, "report")
-    end
 
     def handle(msg)
       if (user = msg.from) && (reply_msg = msg.reply_to_message) && (target_user = reply_msg.from)

@@ -1,9 +1,5 @@
 module Policr
-  class FromCommander < Commander
-    def initialize(bot)
-      super(bot, "from")
-    end
-
+  commander From do
     def handle(msg)
       reply_menu do
         sended_msg = bot.send_message(

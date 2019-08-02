@@ -1,9 +1,5 @@
 module Policr
-  class PingCommander < Commander
-    def initialize(bot)
-      super(bot, "ping")
-    end
-
+  commander Ping do
     def handle(msg)
       spawn bot.delete_message msg.chat.id, msg.message_id
       sended_msg = bot.send_message msg.chat.id, "pong"
