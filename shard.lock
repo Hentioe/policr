@@ -14,7 +14,7 @@ shards:
 
   db:
     github: crystal-lang/crystal-db
-    version: 0.5.1
+    version: 0.6.0
 
   dotenv:
     github: gdotdesign/cr-dotenv
@@ -82,7 +82,7 @@ shards:
 
   sqlite3:
     github: crystal-lang/crystal-sqlite3
-    version: 0.12.0
+    version: 0.13.0
 
   telegram_bot:
     github: Hentioe/telegram_bot
