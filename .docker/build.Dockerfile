@@ -1,4 +1,4 @@
-FROM crystallang/crystal:0.29.0-build
+FROM crystallang/crystal:0.30.0-build
 
 
 RUN apt update && \
