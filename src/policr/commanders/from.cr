@@ -1,7 +1,5 @@
 module Policr
-  class FromCommander < Commander
-    match :from
-
+  commander From do
     def handle(msg)
       reply_menu do
         sended_msg = bot.send_message(

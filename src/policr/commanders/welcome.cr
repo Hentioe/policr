@@ -1,7 +1,5 @@
 module Policr
-  class WelcomeCommander < Commander
-    match :welcome
-
+  commander Welcome do
     def handle(msg)
       reply_menu do
         sended_msg = bot.send_message(

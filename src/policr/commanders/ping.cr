@@ -1,7 +1,5 @@
 module Policr
-  class PingCommander < Commander
-    match :ping
-
+  commander Ping do
     def handle(msg)
       spawn bot.delete_message msg.chat.id, msg.message_id
       sended_msg = bot.send_message msg.chat.id, "pong"

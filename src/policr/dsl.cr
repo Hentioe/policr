@@ -62,3 +62,12 @@ macro wrapper_title(text)
     {{text}}
   end
 end
+
+macro commander(name)
+  class {{name}}Commander < Commander
+    match :{{name.stringify.underscore}}
+
+    {{yield}}
+
+  end
+end

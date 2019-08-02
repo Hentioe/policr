@@ -1,8 +1,6 @@
 module Policr
-  class AntiServiceMsgCommander < Commander
+  commander AntiServiceMsg do
     alias DeleteTarget = AntiMessageDeleteTarget
-
-    match :anti_service_msg
 
     def handle(msg)
       reply_menu do

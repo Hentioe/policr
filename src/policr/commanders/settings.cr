@@ -1,7 +1,5 @@
 module Policr
-  class SettingsCommander < Commander
-    match :settings
-
+  commander Settings do
     def handle(msg)
       reply_menu do
         bot.send_message(

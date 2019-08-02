@@ -1,7 +1,5 @@
 module Policr
-  class TortureTimeCommander < Commander
-    match :torture_time
-
+  commander TortureTime do
     def handle(msg)
       reply_menu do
         if send_message = bot.send_message(

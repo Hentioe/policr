@@ -1,8 +1,6 @@
 module Policr
-  class CleanModeCommander < Commander
+  commander CleanMode do
     alias DeleteTarget = Policr::CleanDeleteTarget
-
-    match :clean_mode
 
     def handle(msg)
       reply_menu do

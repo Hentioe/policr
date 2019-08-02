@@ -1,8 +1,6 @@
 module Policr
-  class SubfunctionsCommander < Commander
+  commander Subfunctions do
     alias FunctionType = SubfunctionType
-
-    match :subfunctions
 
     def handle(msg)
       reply_menu do

@@ -1,8 +1,6 @@
 module Policr
-  class LanguageCommander < Commander
+  commander Language do
     alias Code = LanguageCode
-
-    match :language
 
     def handle(msg)
       reply_menu do

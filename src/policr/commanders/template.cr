@@ -1,7 +1,5 @@
 module Policr
-  class TemplateCommander < Commander
-    match :template
-
+  commander Template do
     def handle(msg)
       reply_menu do
         reply({
