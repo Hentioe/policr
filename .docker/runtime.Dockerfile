@@ -1,7 +1,7 @@
-FROM bluerain/crystal:runtime
+FROM bluerain/crystal:runtime-slim
 
 
 RUN apt update && \
-    apt install librocksdb4.1 sqlite3 libyaml-0-2 libgmp10 -y && \
+    apt install libsqlite3-0 librocksdb5.17 -y && \
     rm -rf /var/lib/apt/lists/*  && \
     rm -rf /var/lib/apt/lists/partial/*
