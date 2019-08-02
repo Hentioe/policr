@@ -8,12 +8,10 @@ module Policr
 
     def handle(msg)
       reply_menu do
-        bot.send_message(
-          _chat_id,
-          text: paste_text,
-          reply_to_message_id: _reply_msg_id,
-          reply_markup: create_markup(_group_id)
-        )
+        reply({
+          text:         paste_text,
+          reply_markup: paste_markup,
+        })
       end
     end
 
@@ -24,21 +22,19 @@ module Policr
       t("anti_service_msg.desc")
     end
 
-    def create_markup(group_id)
+    def_markup do
       make_selected_status = ->(delete_target : DeleteTarget) {
         case delete_target
         when DeleteTarget::JoinGroup
-          Model::AntiMessage.enabled?(group_id, delete_target) ? SELECTED : UNSELECTED
+          Model::AntiMessage.enabled?(_group_id, delete_target) ? SELECTED : UNSELECTED
         when DeleteTarget::LeaveGroup
-          Model::AntiMessage.disabled?(group_id, delete_target) ? UNSELECTED : SELECTED
+          Model::AntiMessage.disabled?(_group_id, delete_target) ? UNSELECTED : SELECTED
         else
           UNSELECTED
         end
       }
-      _markup = Markup.new
       put_item "join_group"
       put_item "leave_group"
-      _markup
     end
 
     macro put_item(name)

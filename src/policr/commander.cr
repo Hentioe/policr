@@ -73,5 +73,13 @@ module Policr
     macro paste_text
       create_text(_group_id, _group_name)
     end
+
+    macro paste_markup
+      create_markup(_group_id, _group_name)
+    end
+
+    macro reply(args)
+      bot.send_message(_chat_id, reply_to_message_id: _reply_msg_id, {{**args}})
+    end
   end
 end

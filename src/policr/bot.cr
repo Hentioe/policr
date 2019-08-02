@@ -14,9 +14,21 @@ end
 macro def_text(method_name = "create_text", *args)
   {{ args_exp_s = args.join(", ") }}
 
-  def {{method_name.id}}(_group_id, {{args_exp_s.id}} {% if args.size > 0 %}, {% end %} group_name : String? = nil)
+  def {{method_name.id}}(_group_id, {{args_exp_s.id}}{% if args.size > 0 %},{% end %} group_name : String? = nil)
     %text = {{yield}}
     wrapper_title %text
+  end
+end
+
+macro def_markup(method_name = "create_markup", *args)
+  {{ args_exp_s = args.join(", ") }}
+
+  def {{method_name.id}}(_group_id, {{args_exp_s.id}}{% if args.size > 0 %},{% end %} group_name : String? = nil)
+    _markup = Markup.new
+
+    {{yield}}
+
+    _markup
   end
 end
 
