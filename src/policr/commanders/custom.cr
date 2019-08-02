@@ -1,8 +1,6 @@
 module Policr
   class CustomCommander < Commander
-    def initialize(bot)
-      super(bot, "custom")
-    end
+    match :custom
 
     def handle(msg)
       reply_menu do

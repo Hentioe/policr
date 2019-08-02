@@ -1,8 +1,6 @@
 module Policr
   class StartCommander < Commander
-    def initialize(bot)
-      super(bot, "start")
-    end
+    match :start
 
     def handle(msg)
       text = t "start"

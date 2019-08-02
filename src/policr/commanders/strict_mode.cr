@@ -1,8 +1,6 @@
 module Policr
   class StrictModeCommander < Commander
-    def initialize(bot)
-      super(bot, "strict_mode")
-    end
+    match :strict_mode
 
     def handle(msg)
       reply_menu do

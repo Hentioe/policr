@@ -1,8 +1,6 @@
 module Policr
   class FromCommander < Commander
-    def initialize(bot)
-      super(bot, "from")
-    end
+    match :from
 
     def handle(msg)
       reply_menu do

@@ -2,9 +2,7 @@ module Policr
   class ReportCommander < Commander
     alias Reason = ReportReason
 
-    def initialize(bot)
-      super(bot, "report")
-    end
+    match :report
 
     def handle(msg)
       if (user = msg.from) && (reply_msg = msg.reply_to_message) && (target_user = reply_msg.from)

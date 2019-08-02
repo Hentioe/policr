@@ -1,8 +1,6 @@
 module Policr
   class SettingsCommander < Commander
-    def initialize(bot)
-      super(bot, "settings")
-    end
+    match :settings
 
     def handle(msg)
       reply_menu do

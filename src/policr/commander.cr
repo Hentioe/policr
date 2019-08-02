@@ -12,6 +12,13 @@ module Policr
       nil
     end
 
+    macro match(name)
+      def initialize(bot)
+        @bot = bot
+        @name = {{name}}.to_s
+      end
+    end
+
     abstract def handle(msg)
 
     BOT_NOT_INIT = "Forbidden: bot can't initiate conversation with a user"

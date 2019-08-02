@@ -1,8 +1,6 @@
 module Policr
   class TortureTimeCommander < Commander
-    def initialize(bot)
-      super(bot, "torture_time")
-    end
+    match :torture_time
 
     def handle(msg)
       reply_menu do

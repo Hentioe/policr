@@ -4,9 +4,7 @@ module Policr
   class GomokuCommander < Commander
     alias CellColor = Gomoku::CellColor
 
-    def initialize(bot)
-      super(bot, "gomoku")
-    end
+    match :gomoku
 
     def handle(msg)
       text = t "gomoku.start"
