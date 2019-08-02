@@ -1,3 +1,8 @@
+clone:
+  git:
+    image: plugins/git
+    recursive: false
+
 pipeline:
   test:
     image: bluerain/policr:build
