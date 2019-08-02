@@ -17,6 +17,8 @@ pipeline:
     when:
       branch:
         - master
+      event:
+        - push
     commands:
       - docker build . -t bluerain/policr
     volumes:
@@ -27,6 +29,8 @@ pipeline:
     when:
       branch:
         - master
+      event:
+        - push
     commands:
       - docker build -f migration.Dockerfile . -t bluerain/policr:migration
     volumes:
