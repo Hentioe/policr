@@ -30,3 +30,7 @@ pipeline:
       - docker build -f migration.Dockerfile . -t bluerain/policr:migration
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+trigger:
+  branch:
+    - master
