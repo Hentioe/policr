@@ -1,5 +1,5 @@
 module Policr
-  class ReportDetailHandler < Handler
+  handler ReportDetail do
     @target_user : TelegramBot::User?
     @reply_msg_id : Int32?
 

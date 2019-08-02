@@ -1,13 +1,9 @@
 module Policr
-  class BanedMenuCallback < Callback
-    def initialize(bot)
-      super(bot, "BanedMenu")
-    end
-
-    def handle(query, msg, report)
+  callbacker BanedMenu do
+    def handle(query, msg, data)
       chat_id = msg.chat.id
       from_user_id = query.from.id
-      target_id, target_username, ope = report
+      target_id, target_username, ope = data
 
       target_user_id = target_id.to_i
       message_id = msg.message_id

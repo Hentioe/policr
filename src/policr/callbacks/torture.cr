@@ -1,13 +1,9 @@
 # 2019-07-18 此文件需要重构！！！
 
 module Policr
-  class TortureCallback < Callback
+  callbacker Torture do
     alias DeleteTarget = CleanDeleteTarget
     alias AntiTarget = AntiMessageDeleteTarget
-
-    def initialize(bot)
-      super(bot, "Torture")
-    end
 
     def handle(query, msg, report)
       chat_id = msg.chat.id

@@ -1,9 +1,5 @@
 module Policr
-  class TortureTimeCallback < Callback
-    def initialize(bot)
-      super(bot, "TortureTime")
-    end
-
+  callbacker TortureTime do
     def handle(query, msg, data)
       target_group do
         sec = data[0]

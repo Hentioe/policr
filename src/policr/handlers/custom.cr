@@ -1,5 +1,5 @@
 module Policr
-  class CustomHandler < Handler
+  handler Custom do
     allow_edit # 处理编辑消息
     target :fields
 

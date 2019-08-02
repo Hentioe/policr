@@ -1,9 +1,5 @@
 module Policr
-  class WelcomeCallback < Callback
-    def initialize(bot)
-      super(bot, "Welcome")
-    end
-
+  callbacker Welcome do
     def handle(query, msg, data)
       target_group do
         name = data[0]

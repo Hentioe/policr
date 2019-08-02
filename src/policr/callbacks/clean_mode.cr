@@ -1,12 +1,8 @@
 module Policr
   DEFAULT_DELAY_DELETE = 60*90
 
-  class CleanModeCallback < Callback
+  callbacker CleanMode do
     alias DeleteTarget = CleanDeleteTarget
-
-    def initialize(bot)
-      super(bot, "CleanMode")
-    end
 
     def handle(query, msg, data)
       target_group do

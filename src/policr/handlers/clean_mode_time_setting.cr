@@ -1,5 +1,5 @@
 module Policr
-  class CleanModeTimeSettingHandler < Handler
+  handler CleanModeTimeSetting do
     alias DeleteTarget = CleanDeleteTarget
 
     allow_edit # 处理编辑消息

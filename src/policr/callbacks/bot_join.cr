@@ -1,9 +1,5 @@
 module Policr
-  class BotJoinCallback < Callback
-    def initialize(bot)
-      super(bot, "BotJoin")
-    end
-
+  callbacker BotJoin do
     def handle(query, msg, report)
       chat_id = msg.chat.id
       from_user_id = query.from.id

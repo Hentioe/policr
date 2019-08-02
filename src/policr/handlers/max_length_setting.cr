@@ -1,5 +1,5 @@
 module Policr
-  class MaxLengthSettingHandler < Handler
+  handler MaxLengthSetting do
     allow_edit
     target :fields
 

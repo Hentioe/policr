@@ -1,5 +1,5 @@
 module Policr
-  class LeftGroupHandler < Handler
+  handler LeftGroup do
     alias AntiTarget = AntiMessageDeleteTarget
 
     def match(msg)

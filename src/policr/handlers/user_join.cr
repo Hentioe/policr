@@ -1,5 +1,5 @@
 module Policr
-  class UserJoinHandler < Handler
+  handler UserJoin do
     alias DeleteTarget = CleanDeleteTarget
     alias AntiTarget = AntiMessageDeleteTarget
 

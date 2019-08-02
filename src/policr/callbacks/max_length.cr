@@ -1,9 +1,5 @@
 module Policr
-  class MaxLengthCallback < Callback
-    def initialize(bot)
-      super(bot, "MaxLength")
-    end
-
+  callbacker MaxLength do
     def handle(query, msg, data)
       target_group do
         size_s = data[0]

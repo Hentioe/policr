@@ -1,10 +1,6 @@
 module Policr
-  class DelayTimeCallback < Callback
-    alias DeleteTarget = Policr::CleanDeleteTarget
-
-    def initialize(bot)
-      super(bot, "DelayTime")
-    end
+  callbacker DelayTime do
+    alias DeleteTarget = CleanDeleteTarget
 
     def handle(query, msg, data)
       target_group do

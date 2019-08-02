@@ -1,5 +1,5 @@
 module Policr
-  class FromSettingHandler < Handler
+  handler FromSetting do
     allow_edit # 处理编辑消息
 
     target :fields

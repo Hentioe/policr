@@ -1,10 +1,6 @@
 module Policr
-  class SubfunctionsCallback < Callback
+  callbacker Subfunctions do
     alias FunctionType = SubfunctionType
-
-    def initialize(bot)
-      super(bot, "Subfunctions")
-    end
 
     def handle(query, msg, data)
       target_group do

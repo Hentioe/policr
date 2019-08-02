@@ -1,7 +1,7 @@
 module Policr
   MIN_TORTURE_SEC = 30
 
-  class TortureTimeSettingHandler < Handler
+  handler TortureTimeSetting do
     allow_edit # 处理编辑消息
     target :fields
 

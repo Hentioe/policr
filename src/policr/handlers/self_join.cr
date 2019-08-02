@@ -1,5 +1,5 @@
 module Policr
-  class SelfJoinHandler < Handler
+  handler SelfJoin do
     def match(msg)
       all_pass? [
         msg.new_chat_members,

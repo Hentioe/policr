@@ -1,13 +1,9 @@
 module Policr
-  class VotingCallback < Callback
+  callbacker Voting do
     alias Reason = ReportReason
     alias Status = ReportStatus
     alias UserRole = ReportUserRole
     alias VotingType = VoteType
-
-    def initialize(bot)
-      super(bot, "Voting")
-    end
 
     def handle(query, msg, data)
       chat_id = msg.chat.id

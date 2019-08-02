@@ -71,3 +71,20 @@ macro commander(name)
 
   end
 end
+
+macro callbacker(name)
+  class {{name}}Callback < Callback
+    match :{{name.stringify}}
+
+    {{yield}}
+
+  end
+end
+
+macro handler(name)
+  class {{name}}Handler < Handler
+
+    {{yield}}
+
+  end
+end

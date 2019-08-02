@@ -1,5 +1,5 @@
 module Policr
-  class BotJoinHandler < Handler
+  handler BotJoin do
     alias AntiTarget = AntiMessageDeleteTarget
 
     def match(msg)

@@ -1,9 +1,5 @@
 module Policr
-  class SelfJoinCallback < Callback
-    def initialize(bot)
-      super(bot, "SelfJoin")
-    end
-
+  callbacker SelfJoin do
     def handle(query, msg, item)
       chat_id = msg.chat.id
       from_user_id = query.from.id

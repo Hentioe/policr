@@ -1,5 +1,5 @@
 module Policr
-  class PrivateForwardHandler < Handler
+  handler PrivateForward do
     def match(msg)
       all_pass? [
         !bot.from_group?(msg),

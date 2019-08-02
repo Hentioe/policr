@@ -1,5 +1,5 @@
 module Policr
-  class BlockedContentHandler < Handler
+  handler BlockedContent do
     allow_edit
     target :fields
 

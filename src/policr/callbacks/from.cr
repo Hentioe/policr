@@ -1,13 +1,9 @@
 module Policr
-  class FromCallback < Callback
-    def initialize(bot)
-      super(bot, "From")
-    end
-
-    def handle(query, msg, report)
+  callbacker From do
+    def handle(query, msg, data)
       chat_id = msg.chat.id
       from_user_id = query.from.id
-      target_id, target_username, chooese = report
+      target_id, target_username, chooese = data
 
       chooese_id = chooese.to_i
       target_user_id = target_id.to_i

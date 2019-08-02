@@ -1,10 +1,6 @@
 module Policr
-  class AntiServiceMsgCallback < Callback
+  callbacker AntiServiceMsg do
     alias DeleteTarget = AntiMessageDeleteTarget
-
-    def initialize(bot)
-      super(bot, "AntiServiceMsg")
-    end
 
     def handle(query, msg, data)
       target_group do

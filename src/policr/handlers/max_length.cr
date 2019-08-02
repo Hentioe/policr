@@ -1,5 +1,5 @@
 module Policr
-  class MaxLengthHandler < Handler
+  handler MaxLength do
     @length : Model::MaxLength?
 
     def match(msg)

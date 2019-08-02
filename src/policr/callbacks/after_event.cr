@@ -1,13 +1,9 @@
 module Policr
-  class AfterEventCallback < Callback
-    def initialize(bot)
-      super(bot, "AfterEvent")
-    end
-
-    def handle(query, msg, report)
+  callbacker AfterEvent do
+    def handle(query, msg, data)
       chat_id = msg.chat.id
       from_user_id = query.from.id
-      member_id, username, item, msg_id = report
+      member_id, username, item, msg_id = data
 
       case item
       when "torture"                      # 开始验证

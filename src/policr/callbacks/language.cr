@@ -1,10 +1,6 @@
 module Policr
-  class LanguageCallback < Callback
+  callbacker Language do
     alias Code = LanguageCode
-
-    def initialize(bot)
-      super(bot, "Language")
-    end
 
     def handle(query, msg, data)
       target_group do

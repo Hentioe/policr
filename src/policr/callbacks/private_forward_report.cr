@@ -1,9 +1,5 @@
 module Policr
-  class PrivateForwardReportCallback < Callback
-    def initialize(bot)
-      super(bot, "PrivateForwardReport")
-    end
-
+  callbacker PrivateForwardReport do
     def handle(query, msg, data)
       chat_id = msg.chat.id
       chooese = data[0]

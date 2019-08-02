@@ -1,5 +1,5 @@
 module Policr
-  class UnverifiedMessageHandler < Handler
+  handler UnverifiedMessage do
     @status : VerificationStatus?
 
     def match(msg)

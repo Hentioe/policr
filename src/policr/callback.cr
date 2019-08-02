@@ -10,6 +10,13 @@ module Policr
       @name = name
     end
 
+    macro match(name)
+      def initialize(bot)
+        @bot = bot
+        @name = {{name}}.to_s
+      end
+    end
+
     def match?(call_name)
       call_name == @name
     end

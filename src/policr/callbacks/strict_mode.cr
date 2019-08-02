@@ -1,10 +1,6 @@
 module Policr
-  class StrictModeCallback < Callback
+  callbacker StrictMode do
     MAX_RULE_LENGTH = 26
-
-    def initialize(bot)
-      super(bot, "StrictMode")
-    end
 
     def handle(query, msg, data)
       target_group do

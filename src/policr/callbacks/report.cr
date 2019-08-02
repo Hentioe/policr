@@ -1,14 +1,10 @@
 module Policr
-  class ReportCallback < Callback
+  callbacker Report do
     alias Reason = ReportReason
     alias Status = ReportStatus
     alias UserRole = ReportUserRole
 
     TARGET_MSG_INVALID = "Bad Request: MESSAGE_ID_INVALID"
-
-    def initialize(bot)
-      super(bot, "Report")
-    end
 
     def handle(query, msg, data)
       chat_id = msg.chat.id
