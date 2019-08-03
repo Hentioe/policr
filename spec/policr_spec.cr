@@ -166,5 +166,18 @@ describe Policr do
     Model::AntiMessage.disabled?(from_chat_id, AntiDeleteTarget::LeaveGroup).should be_false
     Model::AntiMessage.disable!(from_chat_id, AntiDeleteTarget::LeaveGroup)
     Model::AntiMessage.disabled?(from_chat_id, AntiDeleteTarget::LeaveGroup).should be_true
+
+    r = Model::AntiMessage.where { _chat_id == from_chat_id }.delete
+    r.should be_truthy
+    if r
+      r.rows_affected.should eq(2)
+    end
+
+    # 格式限制
+    Model::FormatLimit.put_list!(from_chat_id, ["mp4", "gif"])
+    Model::FormatLimit.includes?(from_chat_id, "mp4").should be_true
+    Model::FormatLimit.clear(from_chat_id)
+    Model::FormatLimit.includes?(from_chat_id, "mp4").should be_false
+    Model::FormatLimit.find(from_chat_id).should be_falsey
   end
 end

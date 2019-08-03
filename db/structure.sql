@@ -10,3 +10,4 @@ CREATE TABLE block_contents (id integer PRIMARY KEY AUTOINCREMENT, chat_id integ
 CREATE TABLE private_menus (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, msg_id integer NOT NULL, group_id integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL, group_name text);
 CREATE TABLE languages (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, code integer NOT NULL, auto integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE anti_messages (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, delete_target integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL, status integer NOT NULL DEFAULT 2);
+CREATE TABLE format_limits (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, list text NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
