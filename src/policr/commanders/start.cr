@@ -2,7 +2,12 @@ module Policr
   commander Start do
     def handle(msg)
       text = t "start"
-      bot.send_message msg.chat.id, text
+      chat_id = msg.chat.id
+
+      bot.send_message chat_id, text, reply_markup: create_markup(chat_id)
+    end
+
+    def_markup do
     end
   end
 end

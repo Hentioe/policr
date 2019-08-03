@@ -115,13 +115,17 @@ subfunctions:
   desc: |
     您正在定制核心的审核功能，它主要由多个子功能组成。下面分别进行简短的介绍：
 
-    1. 新入群用户验证，最基本的功能不多描述
+    新入群用户验证：
+    最基础的功能，验证入群用户
 
-    2. 入群机器人限制，禁言普通用户拉入的机器人
+    入群机器人限制：
+    禁言普通用户拉入的机器人
 
-    3. 封杀清真及消息，包括顶着清真名称或发表清真文字消息的用户
+    封杀清真及消息：
+    包括顶着清真名称或发表清真文字消息的用户
 
-    4. 预封禁问题用户，其实就是黑名单总开关，之后会单独迁移至黑名单的定制指令中
+    预封禁问题用户：
+    其实就是黑名单总开关，之后会单独迁移至黑名单的定制指令中
 
     注意，与其它很多可选项相反，它们默认全部是启用状态。这不是强制性的，在您了解每个子功能的具体作用的前提下当然可以自由选择性关闭。
   user_join: "新入群用户验证"
@@ -196,6 +200,8 @@ report:
   unident_halal: "垃圾内容/清真"
   hateful: "恶意内容/仇恨"
   adname: "垃圾昵称/广告"
+  virus_file: "有害文件/病毒"
+  promo_file: "有害文件/推广"
   adname_detail: "全名：%{name}"
   no_forward_success: "没有成功转发原消息"
   author_cant_self: "你这么想送自己进去的话，明说就行了～"
@@ -227,6 +233,8 @@ report:
     spam: "散播广告消息"
     halal: "发表清真消息"
     hateful: "仇恨或恐怖主义"
+    virus_file: "传播病毒或恶意程序"
+    promo_file: "传播推广或恶意文件"
     other: "其它"
     adname: "广告昵称"
   status:
@@ -343,10 +351,8 @@ after_event:
 torture:
   time_too_short: "时间必须大于 %{min_sec} 秒"
   hint: "请确认「%{title}」以通过验证，[你](tg://user?id=%{user_id})有 %{torture_sec} 秒的时间。"
-  caption: "请[您](tg://user?id=%{user_id})在 %{torture_sec} 秒内告诉我，看到了什么（单选）？"
-  caption_no_time: "请[你](tg://user?id=%{user_id})主动确认图中的内容以解除限制（单选）"
   re: "重新来过，"
-  no_time_reply: "请[你](tg://user?id=%{user_id})主动确认「%{title}」以解除限制"
+  no_time_reply: "请[你](tg://user?id=%{user_id})主动确认「%{title}」以通过验证，否则将一直被限制。"
   default_set: "此群组当前使用 Bot 默认的时长（%{seconds} 秒）"
   exists_set: "此群组当前已设置时长（%{time_len}）"
   time_setting: |

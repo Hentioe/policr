@@ -260,6 +260,10 @@ module Policr
         t("report.reason.hateful")
       when Reason::Adname
         t("report.reason.adname")
+      when Reason::VirusFile
+        t("report.reason.virus_file")
+      when Reason::PromoFile
+        t("report.reason.promo_file")
       end
     end
 
