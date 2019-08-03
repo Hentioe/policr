@@ -291,16 +291,20 @@ module Policr
       )
     end
 
-    def send_welcome(chat_id : Int | String,
+    def send_welcome(chat : TelegramBot::Chat,
                      message_id : Int32?,
                      from_user : FromUser,
                      reply : Bool? = false,
                      reply_id : Int32? = nil,
                      last_delete : Bool? = true)
+      chat_id = chat.id
+
       if welcome = KVStore.get_welcome(chat_id)
         disable_link_preview = KVStore.disabled_welcome_link_preview?(chat_id)
         text = (escape_markdown(welcome) || "")
-          .gsub("{{fullname}}", from_user.markdown_link)
+          .gsub("{{fullname}}", from_user.fullname)
+          .gsub("{{chatname}}", chat.title)
+          .gsub("{{mention}}", from_user.markdown_link)
 
         # 异步调用
         if reply

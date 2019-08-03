@@ -28,7 +28,7 @@ module Policr
           bot.log "The administrator ended the torture by: #{chooese_i}"
           case chooese_i
           when 0
-            passed(query, chat_id, target_user_id, target_username, message_id, admin: FromUser.new(query.from), photo: is_photo, reply_id: join_msg_id)
+            passed(query, msg.chat, target_user_id, target_username, message_id, admin: FromUser.new(query.from), photo: is_photo, reply_id: join_msg_id)
           when -1
             failed(chat_id, message_id, target_user_id, target_username, admin: FromUser.new(query.from), photo: is_photo, reply_id: join_msg_id)
           end
@@ -53,7 +53,7 @@ module Policr
             end
           end
           passed = ->{
-            passed(query, chat_id, target_user_id,
+            passed(query, msg.chat, target_user_id,
               target_username, message_id,
               photo: is_photo, reply_id: join_msg_id)
           }
@@ -119,13 +119,15 @@ module Policr
     end
 
     def passed(query : TelegramBot::CallbackQuery,
-               chat_id : Int64,
+               chat : TelegramBot::Chat,
                target_user_id : Int32,
                target_username : String,
                message_id : Int32,
                admin : FromUser? = nil,
                photo = false,
                reply_id : Int32? = nil)
+      chat_id = chat.id
+
       Cache.verification_passed chat_id, target_user_id # 更新验证状态
       Model::ErrorCount.destory chat_id, target_user_id # 销毁错误记录
       # 异步调用
@@ -169,7 +171,7 @@ module Policr
           }
         end
       else
-        bot.send_welcome chat_id, message_id, FromUser.new(query.from), photo, reply_id
+        bot.send_welcome chat, message_id, FromUser.new(query.from), photo, reply_id
       end
       # 初始化用户权限
       spawn bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)

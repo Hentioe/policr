@@ -25,7 +25,7 @@ module Policr
               spawn bot.delete_message(chat_id, msg.message_id)
             end
             bot.send_welcome(
-              chat_id,
+              msg.chat,
               msg.message_id,
               FromUser.new(member),
               reply: true,
