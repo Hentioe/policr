@@ -90,6 +90,7 @@ module Policr
         MaxLengthHandler,
         MaxLengthSettingHandler,
         CleanModeTimeSettingHandler,
+        FormatLimitHandler,
       ]
 
       # 注册回调模块
@@ -115,6 +116,7 @@ module Policr
         WelcomeCallback,
         LanguageCallback,
         AntiServiceMsgCallback,
+        FormatLimitCallback,
       ]
 
       # 注册指令模块

@@ -6,6 +6,8 @@ module Policr
       target_group do
         name = data[0]
 
+        msg_id = msg.message_id
+
         case name
         when "max_length"
           if ml = Model::MaxLength.find(_group_id) # 删除长度限制
@@ -33,6 +35,19 @@ module Policr
             text: back_text(_group_id, _group_name),
             reply_markup: markup(_group_id)
           )
+        when "format_limit"
+          if fl = Model::FormatLimit.find(_group_id) # 删除文件格式限制
+            Model::FormatLimit.delete(fl.id)
+          else
+            bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
+            return
+          end
+          bot.edit_message_text(
+            _chat_id,
+            message_id: msg_id,
+            text: back_text(_group_id, _group_name),
+            reply_markup: markup(_group_id)
+          )
         when "max_length_setting"
           Cache.carving_max_length_msg _chat_id, msg.message_id
           bot.edit_message_text(
@@ -50,8 +65,16 @@ module Policr
             text: create_content_blocked_text(_group_id, _group_name),
             reply_markup: create_content_blocked_markup(_group_id)
           )
+        when "format_limit_setting"
+          bot.edit_message_text(
+            _chat_id,
+            message_id: msg.message_id,
+            text: create_format_limit_text(_group_id, _group_name),
+            reply_markup: create_format_limit_markup(_group_id)
+          )
         when "back"
           midcall StrictModeCommander do
+            spawn bot.answer_callback_query(query.id)
             bot.edit_message_text(
               _chat_id,
               message_id: msg.message_id,
@@ -110,6 +133,35 @@ module Policr
       markup << rows_line
 
       markup
+    end
+
+    BACK_BTN = Button.new(text: BACK_SYMBOL, callback_data: "StrictMode:back")
+
+    def_text create_format_limit_text do
+      list = Model::FormatLimit.get_format_list _group_id
+      puts list.size
+      list_s = list.size > 0 ? list.map { |extension_name| ".#{extension_name}" }.join(" | ") : t("none")
+      t "format_limit.desc", {list: list_s}
+    end
+
+    SELECTED   = "■"
+    UNSELECTED = "□"
+
+    def_markup create_format_limit_markup do
+      make_btn = ->(extension_name : String) {
+        status = Model::FormatLimit.includes?(_group_id, extension_name) ? SELECTED : UNSELECTED
+        Button.new(text: "#{status} .#{extension_name}", callback_data: "FormatLimit:#{extension_name}:toggle")
+      }
+      _markup << def_format_list(["exe", "com", "bat"])
+      _markup << [BACK_BTN] + def_format_list(["sh", "ps1"])
+    end
+
+    private macro def_format_list(list)
+      [
+        {% for extension_name in list %}
+          make_btn.call({{extension_name}}),
+        {% end %}
+      ]
     end
 
     def markup(group_id)

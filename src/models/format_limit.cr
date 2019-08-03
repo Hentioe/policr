@@ -35,10 +35,29 @@ module Policr::Model
 
     def self.put_list!(group_id, list)
       cur_list = get_format_list(group_id)
+      list = list.select { |format| !cur_list.includes?(format) }
       list += cur_list
+
+      raise "Too many specified formats" if list.size > 8
+
+      list = list.map do |extension_name|
+        if extension_name.starts_with?(".")
+          extension_name.gsub(/^\./, "")
+        else
+          extension_name
+        end
+      end
 
       fl = find(group_id) || add!(group_id, list)
       fl.update_column(:list, list.join(","))
+    end
+
+    def self.delete_format(group_id, extension_name)
+      if fl = find(group_id)
+        list = fl.list.split(",")
+        list = list.select { |format| format != extension_name.strip }
+        fl.update_column(:list, list.join(","))
+      end
     end
 
     def self.clear(group_id)
