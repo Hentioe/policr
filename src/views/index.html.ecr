@@ -591,17 +591,11 @@
                 <blockquote>
                   假设一名叫做「哆啦A梦」的用户通过了验证，我们可以这样在欢迎中显示他的名字：
                   <br />
+                  欢迎<code>{{fullname}}</code>加入本群
                   <br />
-                  <code>欢迎{{fullname}}加入本群</code>
+                  其中<code>{{fullname}}</code>会被替换为「哆啦A梦」，所以欢迎内容实际为：欢迎多啦A梦加入本群
                   <br />
-                  <br />
-                  <br />
-                  其中<code>{{fullname}}</code>会被替换为「哆啦A梦」，所以欢迎内容实际为：<code
-                    >欢迎多啦A梦加入本群</code
-                  >
-                  <br />
-                  <br />
-                  值得一提的是<code>fullname</code>变量不仅仅是名称，同时还是一个用户提及链接。其它变量的使用方法与之相同。
+                  其它变量的使用方法与之相同。
                 </blockquote>
               </li>
             </ul>
