@@ -27,9 +27,11 @@ module Policr
           Model::MaxLength.find(_group_id) ? SELECTED : UNSELECTED
         when "content_blocked"
           Model::BlockContent.find(_group_id) ? SELECTED : UNSELECTED
+        when "format_limit"
+          Model::FormatLimit.find(_group_id) ? SELECTED : UNSELECTED
         end
       }
-      def_button_list ["max_length", "content_blocked"]
+      def_button_list ["max_length", "content_blocked", "format_limit"]
     end
 
     macro def_button_list(item_list)
