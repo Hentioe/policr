@@ -59,10 +59,13 @@ module Policr::Cache
   def_carving "custom_setting"
 
   # 标记屏蔽内容设置消息
-  def_carving "blocked_content", conflicts: ["max_length"]
+  def_carving "blocked_content", conflicts: ["max_length", "format_limit"]
 
   # 标记长度限制设置消息
-  def_carving "max_length", conflicts: ["blocked_content"]
+  def_carving "max_length", conflicts: ["blocked_content", "format_limit"]
+
+  # 标记长度限制设置消息
+  def_carving "format_limit", conflicts: ["max_length", "blocked_content"]
 
   # 标记举报详情消息
   def_carving_with_data "report_detail", TelegramBot::User

@@ -91,6 +91,7 @@ module Policr
         MaxLengthSettingHandler,
         CleanModeTimeSettingHandler,
         FormatLimitHandler,
+        FormatLimitSettingHandler,
       ]
 
       # 注册回调模块

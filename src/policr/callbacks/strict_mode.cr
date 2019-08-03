@@ -66,6 +66,7 @@ module Policr
             reply_markup: create_content_blocked_markup(_group_id)
           )
         when "format_limit_setting"
+          Cache.carving_format_limit_msg _chat_id, msg.message_id
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
