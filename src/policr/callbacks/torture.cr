@@ -15,11 +15,10 @@ module Policr
       target_user_id = target_id.to_i
       message_id = msg.message_id
 
+      join_msg = msg.reply_to_message
       join_msg_id =
-        if reply_msg = msg.reply_to_message
-          reply_msg.message_id
-        else
-          nil
+        if join_msg
+          join_msg.message_id
         end
 
       if chooese_i <= 0 # 管理员菜单
@@ -27,9 +26,16 @@ module Policr
         if bot.is_admin? chat_id, from_user_id
           case chooese_i
           when 0
-            passed(query, msg.chat, target_user_id, message_id, admin: FromUser.new(query.from), photo: is_photo, reply_id: join_msg_id)
+            passed(query, msg.chat, target_user_id, message_id, admin: FromUser.new(query.from), photo: is_photo, reply_msg: join_msg)
           when -1
-            failed(chat_id, message_id, target_user_id, admin: FromUser.new(query.from), photo: is_photo, reply_id: join_msg_id)
+            failed(
+              chat_id,
+              message_id,
+              target_user_id,
+              admin: FromUser.new(query.from),
+              photo: is_photo,
+              reply_msg: join_msg
+            )
           end
         else
           bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
@@ -51,9 +57,7 @@ module Policr
             end
           end
           passed = ->{
-            passed(query, msg.chat, target_user_id,
-              message_id,
-              photo: is_photo, reply_id: join_msg_id)
+            passed query, msg.chat, target_user_id, message_id, photo: is_photo, reply_msg: join_msg
           }
           case status
           when VerificationStatus::Init
@@ -89,16 +93,20 @@ module Policr
           end
         else                                                                       # 未通过验证
           if KVStore.enabled_fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
-            fault_tolerance chat_id, target_user_id, message_id, query.id, join_msg_id, is_photo
+            fault_tolerance chat_id, target_user_id, message_id, query.id, join_msg, is_photo
           else
             bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)
-            failed(chat_id, message_id, target_user_id, photo: is_photo, reply_id: join_msg_id)
+            failed(chat_id, message_id, target_user_id, photo: is_photo, reply_msg: join_msg)
           end
         end
       end
     end
 
-    def fault_tolerance(chat_id, user_id, message_id, query_id, join_msg_id, is_photo)
+    def fault_tolerance(chat_id, user_id, message_id, query_id, join_msg, is_photo)
+      join_msg_id =
+        if join_msg
+          join_msg.message_id
+        end
       count = Model::ErrorCount.counting chat_id, user_id
       if count == 0                                 # 继续验证
         Cache.verification_next chat_id, user_id    # 更新验证状态避免超时
@@ -110,7 +118,7 @@ module Policr
         end
       else # 验证失败
         bot.answer_callback_query(query_id, text: t("no_pass_alert"), show_alert: true)
-        failed(chat_id, message_id, user_id, photo: is_photo, reply_id: join_msg_id)
+        failed(chat_id, message_id, user_id, photo: is_photo, reply_msg: join_msg)
       end
     end
 
@@ -120,8 +128,12 @@ module Policr
                message_id : Int32,
                admin : FromUser? = nil,
                photo = false,
-               reply_id : Int32? = nil)
+               reply_msg : TelegramBot::Message? = nil)
       chat_id = chat.id
+      reply_id =
+        if reply_msg
+          reply_msg.message_id
+        end
 
       Cache.verification_passed chat_id, target_user_id # 更新验证状态
       Model::ErrorCount.destory chat_id, target_user_id # 销毁错误记录
@@ -166,10 +178,26 @@ module Policr
           }
         end
       else
-        bot.send_welcome chat, message_id, FromUser.new(query.from), photo, reply_id
+        from_user =
+          if admin
+            if reply_msg
+              FromUser.new(reply_msg.from)
+            end
+          elsif reply_msg
+            FromUser.new(query.from)
+          end
+        bot.send_welcome chat, message_id, from_user, photo, reply_id
       end
       # 初始化用户权限
-      spawn bot.restrict_chat_member(chat_id, target_user_id, can_send_messages: true, can_send_media_messages: true, can_send_other_messages: true, can_add_web_page_previews: true)
+      spawn bot.restrict_chat_member(
+        chat_id,
+        target_user_id,
+        can_send_messages: true,
+        can_send_media_messages: true,
+        can_send_other_messages: true,
+        can_add_web_page_previews: true
+      )
+
       is_enabled_from = KVStore.enabled_from? chat_id
       # 删除入群消息
       if !is_enabled_from && (_delete_msg_id = reply_id)
@@ -228,7 +256,16 @@ module Policr
       bot.unban_chat_member(chat_id, target_user_id)
     end
 
-    def failed(chat_id, message_id, user_id, admin : FromUser? = nil, timeout = false, photo = false, reply_id : Int32? = nil)
+    def failed(
+      chat_id : Int64,
+      message_id : Int32,
+      user_id : Int32,
+      admin : FromUser? = nil, timeout = false, photo = false, reply_msg : TelegramBot::Message? = nil
+    )
+      reply_id =
+        if reply_msg
+          reply_msg.message_id
+        end
       Model::ErrorCount.destory chat_id, user_id # 销毁错误记录
       midcall UserJoinHandler do
         handler.failed(chat_id, message_id, user_id, admin: admin, timeout: timeout, photo: photo, reply_id: reply_id)

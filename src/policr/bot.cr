@@ -291,9 +291,11 @@ module Policr
       )
     end
 
+    NONE_FROM_USER = "Unknown"
+
     def send_welcome(chat : TelegramBot::Chat,
                      message_id : Int32?,
-                     from_user : FromUser,
+                     from_user : FromUser? = nil,
                      reply : Bool? = false,
                      reply_id : Int32? = nil,
                      last_delete : Bool? = true)
@@ -301,10 +303,20 @@ module Policr
 
       if welcome = KVStore.get_welcome(chat_id)
         disable_link_preview = KVStore.disabled_welcome_link_preview?(chat_id)
-        text = (escape_markdown(welcome) || "")
-          .gsub("{{fullname}}", from_user.fullname)
-          .gsub("{{chatname}}", chat.title)
-          .gsub("{{mention}}", from_user.markdown_link)
+        text =
+          (escape_markdown(welcome) || "Empty welcome content")
+        text =
+          if from_user
+            text
+              .gsub("{{fullname}}", from_user.fullname)
+              .gsub("{{chatname}}", chat.title)
+              .gsub("{{mention}}", from_user.markdown_link)
+          else
+            text
+              .gsub("{{fullname}}", NONE_FROM_USER)
+              .gsub("{{chatname}}", NONE_FROM_USER)
+              .gsub("{{mention}}", NONE_FROM_USER)
+          end
 
         # 异步调用
         if reply
