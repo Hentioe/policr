@@ -2,6 +2,8 @@ module Policr
   commander Report do
     alias Reason = ReportReason
 
+    FILE_EXCLUDES = [".gif", ".mp4"]
+
     def handle(msg)
       if (user = msg.from) && (reply_msg = msg.reply_to_message) && (target_user = reply_msg.from)
         author_id = user.id
@@ -20,14 +22,16 @@ module Policr
           Button.new(text: text, callback_data: "Report:#{author_id}:#{target_user_id}:#{target_msg_id}:#{reason.value}")
         }
 
-        unless reply_msg.document
+        if (doc = reply_msg.document) &&
+           (filename = doc.file_name) &&
+           !FILE_EXCLUDES.includes?(File.extname(filename))
+          markup << [btn.call(t("report.virus_file"), Reason::VirusFile)]
+          markup << [btn.call(t("report.promo_file"), Reason::PromoFile)]
+        else
           markup << [btn.call(t("report.mass_ad"), Reason::Spam)]
           markup << [btn.call(t("report.unident_halal"), Reason::Halal)]
           markup << [btn.call(t("report.hateful"), Reason::Hateful)]
           markup << [btn.call(t("report.adname"), Reason::Adname)]
-        else
-          markup << [btn.call(t("report.virus_file"), Reason::VirusFile)]
-          markup << [btn.call(t("report.promo_file"), Reason::PromoFile)]
         end
 
         text = t "report.admin_reply", {user_id: target_user_id, voting_channel: bot.voting_channel}
