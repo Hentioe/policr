@@ -56,10 +56,10 @@ module Policr
       end
     end
 
-    def add_banned_menu(user_id, username, is_halal = false)
+    def add_banned_menu(user_id, is_halal = false)
       markup = Markup.new
-      markup << Button.new(text: t("baned_menu.unban"), callback_data: "BanedMenu:#{user_id}:#{username}:unban")
-      markup << Button.new(text: t("baned_menu.whitelist"), callback_data: "BanedMenu:#{user_id}:#{username}:whitelist") if is_halal
+      markup << Button.new(text: t("baned_menu.unban"), callback_data: "BanedMenu:#{user_id}:_:unban")
+      markup << Button.new(text: t("baned_menu.whitelist"), callback_data: "BanedMenu:#{user_id}:_:whitelist") if is_halal
       markup
     end
 
@@ -91,7 +91,7 @@ module Policr
         spawn bot.restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
         markup = Markup.new
         btn = ->(text : String, item : String) {
-          Button.new(text: text, callback_data: "AfterEvent:#{member.id}:#{member.username}:#{item}:#{msg.message_id}")
+          Button.new(text: text, callback_data: "AfterEvent:#{member.id}:_:#{item}:#{msg.message_id}")
         }
 
         markup << [btn.call(t("after_event.torture"), "torture")]
@@ -107,12 +107,11 @@ module Policr
         chat_id = msg.chat.id
         msg_id = msg.message_id
         member_id = member.id
-        username = member.username
-        promptly_torture(chat_id, msg_id, member_id, username)
+        promptly_torture(chat_id, msg_id, member_id)
       end
     end
 
-    def promptly_torture(chat_id, msg_id, member_id, username, re = false)
+    def promptly_torture(chat_id : Int64, msg_id : (Int32 | Nil), member_id : Int32, re = false)
       Cache.verification_init(chat_id, member_id) unless re
 
       params = {chat_id: chat_id}
@@ -162,7 +161,7 @@ module Policr
       reply_id = msg_id
 
       btn = ->(text : String, chooese_id : Int32) {
-        Button.new(text: text, callback_data: "Torture:#{member_id}:#{username}:#{chooese_id}:#{send_image ? 1 : 0}")
+        Button.new(text: text, callback_data: "Torture:#{member_id}:_:#{chooese_id}:#{send_image ? 1 : 0}")
       }
       markup = Markup.new
       i = 0
@@ -196,7 +195,7 @@ module Policr
       ban_task = ->(message_id : Int32) {
         if Cache.verification?(chat_id, member_id) == VerificationStatus::Init # 如果仍然是验证初步状态则判定超时
           Cache.verification_slowed(chat_id, member_id)
-          failed(chat_id, message_id, member_id, username, timeout: true, photo: send_image, reply_id: msg_id)
+          failed(chat_id, message_id, member_id, timeout: true, photo: send_image, reply_id: msg_id)
         end
       }
 
@@ -207,9 +206,8 @@ module Policr
       end
     end
 
-    def failed(chat_id, message_id, user_id, username, admin : FromUser? = nil, timeout = false, photo = false, reply_id : Int32? = nil)
+    def failed(chat_id, message_id, user_id, admin : FromUser? = nil, timeout = false, photo = false, reply_id : Int32? = nil)
       Cache.verification_status_clear chat_id, user_id
-      bot.log "Username '#{username}' has not been verified and has been banned"
       begin
         bot.kick_chat_member(chat_id, user_id)
       rescue ex : TelegramBot::APIException
@@ -235,7 +233,7 @@ module Policr
               chat_id,
               text: text,
               reply_to_message_id: reply_id,
-              reply_markup: add_banned_menu(user_id, username)
+              reply_markup: add_banned_menu(user_id)
             )
             if sended_msg
               sended_msg.message_id
@@ -245,7 +243,7 @@ module Policr
               chat_id,
               message_id: message_id,
               text: text,
-              reply_markup: add_banned_menu(user_id, username)
+              reply_markup: add_banned_menu(user_id)
             )
             message_id
           end

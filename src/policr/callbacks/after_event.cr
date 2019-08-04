@@ -3,7 +3,7 @@ module Policr
     def handle(query, msg, data)
       chat_id = msg.chat.id
       from_user_id = query.from.id
-      member_id, username, item, msg_id = data
+      member_id, _, item, msg_id = data
 
       case item
       when "torture"                      # 开始验证
@@ -12,7 +12,7 @@ module Policr
           return
         end
         midcall UserJoinHandler do
-          handler.promptly_torture(msg.chat.id, msg_id.to_i, member_id.to_i, username)
+          handler.promptly_torture(msg.chat.id, msg_id.to_i, member_id.to_i)
           bot.delete_message(msg.chat.id, msg.message_id)
         end
       when "unban" # 解封
