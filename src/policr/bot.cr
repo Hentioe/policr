@@ -52,6 +52,8 @@ module Policr
       {% end %}
     end
 
+    alias AntiTarget = AntiMessageDeleteTarget
+
     include TelegramBot::CmdHandler
 
     getter self_id : Int64
@@ -298,8 +300,20 @@ module Policr
                      from_user : FromUser? = nil,
                      reply : Bool? = false,
                      reply_id : Int32? = nil,
-                     last_delete : Bool? = true)
+                     last_delete : Bool? = true) : Bool
       chat_id = chat.id
+
+      # 延迟清理欢迎消息和加群消息（根据设置）
+      destory_task = ->(msg_id : Int32) {
+        Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) do
+          spawn delete_message(chat_id, msg_id)
+          if _delete_id = reply_id
+            Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
+              delete_message(chat_id, _delete_id)
+            end
+          end
+        end
+      }
 
       if welcome = KVStore.get_welcome(chat_id)
         disable_link_preview = KVStore.disabled_welcome_link_preview?(chat_id)
@@ -331,8 +345,7 @@ module Policr
             )
 
             if sended_msg # 根据设置延迟清理
-              msg_id = sended_msg.message_id
-              Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) { delete_message(chat_id, msg_id) }
+              destory_task.call sended_msg.message_id
             end
           }
         else
@@ -345,9 +358,12 @@ module Policr
               disable_web_page_preview: disable_link_preview
             )
             # 根据设置延迟清理
-            Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) { delete_message(chat_id, message_id) }
+            destory_task.call message_id
           }
         end
+        true
+      else
+        false
       end
     end
   end

@@ -186,7 +186,7 @@ module Policr
           elsif reply_msg
             FromUser.new(query.from)
           end
-        bot.send_welcome chat, message_id, from_user, photo, reply_id
+        is_enabled_welcome = bot.send_welcome chat, message_id, from_user, photo, reply_id
       end
       # 初始化用户权限
       spawn bot.restrict_chat_member(
@@ -199,8 +199,8 @@ module Policr
       )
 
       is_enabled_from = KVStore.enabled_from? chat_id
-      # 删除入群消息
-      if !is_enabled_from && (_delete_msg_id = reply_id)
+      # 立即删除入群消息
+      if !is_enabled_from && !is_enabled_welcome && (_delete_msg_id = reply_id)
         Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
           bot.delete_message(chat_id, _delete_msg_id)
         end
