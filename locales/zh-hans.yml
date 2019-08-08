@@ -277,6 +277,7 @@ clean_mode:
   wrong_verified: "删除错误验证"
   welcome: "删除欢迎消息"
   from: "删除来源调查"
+  halal: "删除丢出清真"
   delay_time: "延迟时间"
   delay_setting: |
     您正在为「%{target}」设置独立的延迟时间。如果您没有设置过，以下可能是默认时间。
@@ -405,7 +406,7 @@ welcome:
     2. [在欢迎消息中插入变量](https://policr.bluerain.io#vars_in_welcome)
   disable_link_preview: "禁用链接预览"
 from:
-  question: "ε(\\*´･∀･｀)з 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
+  question: "( ・∇・) 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
   message: "\\_( ﾟДﾟ)ﾉ 居然是从「%{from}」过来的，大家赶快孤立 [TA](tg://user?id=%{user_id})"
   none: 无
   desc: |

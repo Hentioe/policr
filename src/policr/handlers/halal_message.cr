@@ -41,10 +41,12 @@ module Policr
       name = bot.display_name(member)
       bot.log "Found a halal '#{name}'"
 
+      chat_id = msg.chat.id
       text = t("halal.found")
       sended_msg = bot.reply msg, text
 
       if sended_msg
+        kick_msg_id = sended_msg.message_id
         midcall UserJoinHandler do
           begin
             bot.kick_chat_member(msg.chat.id, member.id)
@@ -52,11 +54,16 @@ module Policr
             text = t "halal.kicked", {user_id: member_id}
             markup = handler.add_banned_menu(member_id, true)
             bot.edit_message_text(
-              sended_msg.chat.id,
-              message_id: sended_msg.message_id,
+              chat_id,
+              message_id: kick_msg_id,
               text: text,
               reply_markup: markup
             )
+            # 延迟清理
+            Model::CleanMode.working(chat_id, CleanDeleteTarget::Halal) do
+              spawn bot.delete_message(chat_id, kick_msg_id)
+              spawn bot.delete_message(chat_id, msg.message_id)
+            end
             bot.log "Halal '#{name}' has been banned"
           rescue ex : TelegramBot::APIException
             text = t("halal.kick_failed", {user_id: member.id})

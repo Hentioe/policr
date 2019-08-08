@@ -31,7 +31,7 @@ module Policr
 
   # 干净模式删除目标
   enum CleanDeleteTarget
-    Unknown; TimeoutVerified; WrongVerified; Welcome; From
+    Unknown; TimeoutVerified; WrongVerified; Welcome; From; Halal
   end
 
   # 服务消息类型

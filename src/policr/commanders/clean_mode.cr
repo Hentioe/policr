@@ -30,7 +30,7 @@ module Policr
         end
       }
       markup = Markup.new
-      def_button_list ["timeout_verified", "wrong_verified", "welcome", "from"]
+      def_button_list ["timeout_verified", "wrong_verified", "welcome", "from", "halal"]
 
       markup
     end
