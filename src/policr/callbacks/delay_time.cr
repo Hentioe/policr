@@ -25,6 +25,8 @@ module Policr
           def_target "welcome"
         when DeleteTarget::From
           def_target "from"
+        when DeleteTarget::Halal
+          def_target "halal"
         else # 失效键盘
           bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
         end
@@ -36,7 +38,7 @@ module Policr
       cm = get_cm.call DeleteTarget::{{delete_target.id}}
       spawn bot.answer_callback_query(query.id)
       cm.update_column(:delay_sec, sec)
-      text = t "clean_mode.delay_setting", {target: t("clean_mode.{{target_s.id}}"), hor: (sec.to_f / 3600).round(2)}
+      text = create_text(_group_id, {{target_s}}, sec, group_name: _group_name)
       midcall CleanModeCallback do
         bot.edit_message_text(
           _chat_id, 
@@ -45,6 +47,10 @@ module Policr
           reply_markup: _callback.create_time_setting_markup(_group_id, DeleteTarget::{{delete_target.id}})
         )
       end
+    end
+
+    def_text create_text, target : String, sec : Int do
+      t "clean_mode.delay_setting", {target: t("clean_mode.#{target}"), hor: (sec.to_f / 3600).round(2)}
     end
   end
 end
