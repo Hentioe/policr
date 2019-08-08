@@ -32,6 +32,14 @@ macro def_markup(method_name = "create_markup", *args)
   end
 end
 
+macro render(str, vars, vals)
+  {{str}}.
+  {% for var, i in vars %}
+    gsub(/\\{\\{\s?{{var.id}}\s?\}\}/, {{vals}}[{{i}}])
+      {% if i < vars.size - 1 %}.{% end %}
+  {% end %}
+end
+
 module Policr
   DEFAULT_TORTURE_SEC = 55 # 默认验证等待时长（秒）
 
@@ -321,15 +329,13 @@ module Policr
           (escape_markdown(welcome) || "Empty welcome content")
         text =
           if from_user
-            text
-              .gsub("{{fullname}}", from_user.fullname)
-              .gsub("{{chatname}}", chat.title)
-              .gsub("{{mention}}", from_user.markdown_link)
+            render text,
+              ["fullname", "chatname", "mention"],
+              [from_user.fullname, chat.title, from_user.markdown_link]
           else
-            text
-              .gsub("{{fullname}}", NONE_FROM_USER)
-              .gsub("{{chatname}}", NONE_FROM_USER)
-              .gsub("{{mention}}", NONE_FROM_USER)
+            render text,
+              ["fullname", "chatname", "mention"],
+              [NONE_FROM_USER, NONE_FROM_USER, NONE_FROM_USER]
           end
 
         # 异步调用
