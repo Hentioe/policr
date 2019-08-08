@@ -10,7 +10,7 @@ shards:
 
   base62:
     github: Sija/base62.cr
-    version: 0.1.1
+    version: 0.1.2
 
   db:
     github: crystal-lang/crystal-db
@@ -62,7 +62,7 @@ shards:
 
   ksuid:
     github: Sija/ksuid.cr
-    version: 0.4.0
+    version: 0.5.0
 
   radix:
     github: luislavena/radix
