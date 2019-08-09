@@ -2,11 +2,10 @@ module Policr
   commander From do
     def handle(msg)
       reply_menu do
-        sended_msg = bot.send_message(
-          _chat_id,
-          text(_group_id, _group_name),
-          reply_to_message_id: _reply_msg_id
-        )
+        sended_msg = reply({
+          text:         paste_text,
+          reply_markup: paste_markup,
+        })
         if sended_msg
           Cache.carving_from_setting_msg _chat_id, sended_msg.message_id
         end
@@ -15,7 +14,16 @@ module Policr
       end
     end
 
-    def_text text do
+    SELECTED   = "■"
+    UNSELECTED = "□"
+
+    def_markup do
+      selected_status = KVStore.enabled_from?(_group_id) ? SELECTED : UNSELECTED
+      text = selected_status + " " + t("from.enable")
+      _markup << [Button.new(text: text, callback_data: "FromSetting:enable:toggle")]
+    end
+
+    def_text do
       from_text =
         if list = KVStore.get_from(_group_id)
           String.build do |str|

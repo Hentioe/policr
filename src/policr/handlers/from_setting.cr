@@ -23,9 +23,14 @@ module Policr
 
         KVStore.put_chat_from(_group_id, text)
 
-        updated_text = updated_preview_settings(_group_id, _group_name)
+        updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
         spawn {
-          bot.edit_message_text chat_id, message_id: _reply_msg_id, text: updated_text
+          bot.edit_message_text(
+            chat_id,
+            message_id: _reply_msg_id,
+            text: updated_text,
+            reply_markup: updated_markup
+          )
         }
 
         setting_complete_with_delay_delete msg
@@ -34,8 +39,11 @@ module Policr
 
     def updated_preview_settings(group_id, group_name)
       midcall FromCommander do
-        _commander.text(group_id, group_name)
-      end
+        {
+          _commander.create_text(group_id, group_name),
+          _commander.create_markup(group_id),
+        }
+      end || {nil, nil}
     end
   end
 end
