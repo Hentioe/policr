@@ -4,6 +4,12 @@ module Policr
 
     FILE_EXCLUDES = [".gif", ".mp4"]
 
+    def self.is_file?(reply_msg : TelegramBot::Message)
+      (doc = reply_msg.document) &&
+        (filename = doc.file_name) &&
+        !FILE_EXCLUDES.includes?(File.extname(filename))
+    end
+
     def handle(msg)
       if (user = msg.from) && (reply_msg = msg.reply_to_message) && (target_user = reply_msg.from)
         author_id = user.id
@@ -22,14 +28,12 @@ module Policr
           Button.new(text: text, callback_data: "Report:#{author_id}:#{target_user_id}:#{target_msg_id}:#{reason.value}")
         }
 
-        if (doc = reply_msg.document) &&
-           (filename = doc.file_name) &&
-           !FILE_EXCLUDES.includes?(File.extname(filename))
+        if ReportCommander.is_file? reply_msg
           markup << [btn.call(t("report.virus_file"), Reason::VirusFile)]
           markup << [btn.call(t("report.promo_file"), Reason::PromoFile)]
         else
-          markup << [btn.call(t("report.mass_ad"), Reason::Spam)]
-          markup << [btn.call(t("report.unident_halal"), Reason::Halal)]
+          markup << [btn.call(t("report.mass_ad"), Reason::MassAd)]
+          markup << [btn.call(t("report.halal"), Reason::Halal)]
           markup << [btn.call(t("report.hateful"), Reason::Hateful)]
           markup << [btn.call(t("report.adname"), Reason::Adname)]
         end

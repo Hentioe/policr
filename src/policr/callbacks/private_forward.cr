@@ -20,14 +20,19 @@ module Policr
             bot.answer_callback_query(query.id, text: error_msg, show_alert: true)
             return
           end
+
+          is_file = ReportCommander.is_file? reply_msg
         end
         markup = Markup.new
         make_btn = ->(text : String, reason : ReportReason) {
           Button.new(text: text, callback_data: "PrivateForwardReport:#{reason.value}")
         }
-        markup << [make_btn.call(t("private_forward.spam"), ReportReason::Spam)]
-        markup << [make_btn.call(t("private_forward.halal"), ReportReason::Halal)]
-        markup << [make_btn.call(t("private_forward.other"), ReportReason::Other)]
+
+        unless is_file
+          put_item_list ["mass_ad", "halal", "hateful", "adname", "other"]
+        else
+          put_item_list ["virus_file", "promo_file", "other"]
+        end
 
         text = t "private_forward.report_reason_chooese"
         bot.edit_message_text(
@@ -37,6 +42,12 @@ module Policr
           reply_markup: markup
         )
       end
+    end
+
+    macro put_item_list(list)
+      {% for reason in list %}
+        markup << [make_btn.call(t("report.{{reason.id}}"), ReportReason::{{reason.camelcase.id}})]
+      {% end %}
     end
   end
 end

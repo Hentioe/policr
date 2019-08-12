@@ -36,9 +36,6 @@ private_forward:
     您正在对一条自行转发的消息进行举报，转发源头将作为举报目标。请进一步选择举报原因。
 
     注意：如果您选择其它原因，还会更进一步进入一个提供举报理由的阶段。
-  spam: "垃圾内容/广告"
-  halal: "垃圾内容/清真"
-  other: "其它原因/补充"
 private_forward_report:
   other: |
     由于您选择了其它原因，请回复本消息告诉我们详情。举例：
@@ -198,9 +195,10 @@ report:
 
     注意：在完成举报前请不要删除被举报消息。
   mass_ad: "垃圾内容/广告"
-  unident_halal: "垃圾内容/清真"
+  halal: "垃圾内容/清真"
   hateful: "恶意内容/仇恨"
   adname: "垃圾昵称/广告"
+  other: "其它原因/补充"
   virus_file: "有害文件/病毒"
   promo_file: "有害文件/推广"
   adname_detail: "全名：%{name}"

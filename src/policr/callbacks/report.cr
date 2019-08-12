@@ -250,7 +250,7 @@ module Policr
       case Reason.new(reason_value)
       when Reason::Unknown
         t("report.reason.unknown")
-      when Reason::Spam
+      when Reason::MassAd
         t("report.reason.spam")
       when Reason::Halal
         t("report.reason.halal")
