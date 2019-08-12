@@ -36,7 +36,7 @@ describe Policr do
     target_snapshot_id = 29
     target_user_id = 871769395.to_i64
     target_msg_id = 234
-    reason = Reason::Spam.value
+    reason = Reason::MassAd.value
     status = ReportStatus::Begin.value
     role = UserRole::Creator.value
     from_chat_id = -1001301664514.to_i64
