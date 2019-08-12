@@ -397,9 +397,10 @@ welcome:
     ░░░░░░░░░░░░░░░░
 
     内置变量：
-    • 用户名称 => `{{fullname}}`
-    • 提及用户 => `{{mention}}`
-    • 群聊名称 => `{{chatname}}`
+    用户全名 => `{{fullname}}`
+    提及用户 => `{{metion}}`
+    群聊名称 => `{{chatname}}`
+    用户 ID    => `{{userid}}`
 
     附加教程：
     1. [在欢迎消息中嵌入链接](https://policr.bluerain.io#link_in_welcome)

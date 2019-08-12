@@ -330,13 +330,15 @@ module Policr
           (escape_markdown(welcome) || "Empty welcome content")
         text =
           if from_user
+            vals = [from_user.fullname, chat.title, from_user.markdown_link, from_user.user_id]
             render text,
-              ["fullname", "chatname", "mention"],
-              [from_user.fullname, chat.title, from_user.markdown_link]
+              ["fullname", "chatname", "mention", "userid"],
+              vals
           else
+            vals = [NONE_FROM_USER, NONE_FROM_USER, NONE_FROM_USER, NONE_FROM_USER]
             render text,
-              ["fullname", "chatname", "mention"],
-              [NONE_FROM_USER, NONE_FROM_USER, NONE_FROM_USER]
+              ["fullname", "chatname", "mention", "userid"],
+              vals
           end
 
         # 异步调用
