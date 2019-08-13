@@ -140,7 +140,6 @@ module Policr
 
     def_text create_format_limit_text do
       list = Model::FormatLimit.get_format_list _group_id
-      puts list.size
       list_s = list.size > 0 ? list.map { |extension_name| ".#{extension_name}" }.join(" | ") : t("none")
       t "format_limit.desc", {list: list_s}
     end

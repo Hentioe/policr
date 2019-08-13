@@ -20,30 +20,37 @@ module Policr
     def initialize(@bot)
     end
 
-    def registry(msg, from_edit = false)
-      unless from_edit
-        preprocess msg
+    def registry(msg, state, from_edit = false)
+      if from_edit && @allow_edit
+        preprocess msg, state
+      elsif !from_edit
+        preprocess(msg, state)
       else
-        preprocess(msg) if @allow_edit
+        state
       end
     end
 
-    private def preprocess(msg)
-      handle(msg) if match(msg)
+    private def preprocess(msg, state)
+      if match(msg, state)
+        handle(msg, state)
+      else
+        state
+      end
     end
 
-    abstract def match(msg)
-    abstract def handle(msg)
+    abstract def match(msg, state : Hash(Symbol, StateValueType)) : Bool | Nil
+    abstract def handle(msg, state : Hash(Symbol, StateValueType))
 
     macro match
-      def match(msg)
+      def match(msg, state)
         {{yield}}
       end
     end
 
     macro handle
-      def handle(msg)
+      def handle(msg, state)
         {{yield}}
+        read_state :done { true }
       end
     end
 

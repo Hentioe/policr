@@ -40,6 +40,14 @@ macro render(str, vars, vals)
   {% end %}
 end
 
+macro from_group_chat?(msg)
+  {{msg}}.message_id < 0
+end
+
+macro from_private_chat?(msg)
+  {{msg}}.message_id > 0
+end
+
 module Policr
   DEFAULT_TORTURE_SEC = 55 # 默认验证等待时长（秒）
 
@@ -102,6 +110,7 @@ module Policr
         CleanModeTimeSettingHandler,
         FormatLimitHandler,
         FormatLimitSettingHandler,
+        PrivateChatHandler,
       ]
 
       # 注册回调模块
@@ -161,14 +170,16 @@ module Policr
 
       super
 
+      state = Hash(Symbol, StateValueType).new
       handlers.each do |_, handler|
-        handler.registry(msg)
+        handler.registry(msg, state)
       end
     end
 
     def handle_edited(msg : TelegramBot::Message)
+      state = Hash(Symbol, StateValueType).new
       handlers.each do |_, handler|
-        handler.registry(msg, from_edit: true)
+        handler.registry(msg, state, from_edit: true)
       end
     end
 
@@ -245,6 +256,10 @@ module Policr
 
     def log(text)
       logger.info text
+    end
+
+    def debug(text)
+      logger.debug text
     end
 
     def token
