@@ -4,10 +4,10 @@ module Policr::Model
 
     mapping(
       id: Primary32,
-      author_id: Int64,
+      author_id: Int32,
       post_id: Int32,
       target_snapshot_id: Int32,
-      target_user_id: Int64,
+      target_user_id: Int32,
       target_msg_id: Int32,
       reason: Int32,
       status: Int32,
@@ -21,7 +21,11 @@ module Policr::Model
     has_many :votes, Vote
 
     def self.check_blacklist(user_id)
-      Model::Report.where { (_target_user_id == user_id) & (_status == ReportStatus::Accept.value) }.first
+      where { (_target_user_id == user_id) & (_status == ReportStatus::Accept.value) }.first
+    end
+
+    def self.all_valid(user_id)
+      where { (_target_user_id == user_id) & (_status == ReportStatus::Accept.value) }.to_a
     end
   end
 end

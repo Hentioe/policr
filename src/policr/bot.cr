@@ -147,6 +147,7 @@ module Policr
         LanguageCommander,
         AntiServiceMsgCommander,
         TemplateCommander,
+        AppealCommander,
       ]
 
       commanders.each do |_, command|
