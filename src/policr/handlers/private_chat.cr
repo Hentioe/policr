@@ -4,16 +4,20 @@ module Policr
       all_pass? [
         from_private_chat?(msg),
         !read_state :done { false },
-        msg.text,
       ]
     end
 
     handle do
-      bot.forward_message(
-        chat_id: 340396281,
-        from_chat_id: msg.chat.id,
-        message_id: msg.message_id
-      )
+      msg_id = msg.message_id
+      chat_id = msg.chat.id
+
+      if sended_msg = bot.forward_message(
+           chat_id: 340396281,
+           from_chat_id: msg.chat.id,
+           message_id: msg.message_id
+         )
+        Cache.carving_private_chat_msg "", sended_msg.message_id, {chat_id, msg_id}
+      end
     end
   end
 end

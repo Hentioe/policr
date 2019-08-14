@@ -111,6 +111,7 @@ module Policr
         CleanModeTimeSettingHandler,
         FormatLimitHandler,
         FormatLimitSettingHandler,
+        PrivateChatReplyHandler,
         PrivateChatHandler,
       ]
 
