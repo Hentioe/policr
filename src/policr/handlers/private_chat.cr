@@ -13,7 +13,7 @@ module Policr
       chat_id = msg.chat.id
 
       if sended_msg = bot.forward_message(
-           chat_id: 340396281,
+           chat_id: bot.owner_id,
            from_chat_id: msg.chat.id,
            message_id: msg.message_id
          )
