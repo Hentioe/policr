@@ -15,7 +15,7 @@ pipeline:
   build:
     image: bluerain/policr:build
     commands:
-      - shards build --release --progress --production
+      - shards build --release --progress --production --warnings=all
 
   build-app-image:
     image: docker
