@@ -40,12 +40,19 @@ macro render(str, vars, vals)
   {% end %}
 end
 
-macro from_group_chat?(msg)
-  {{msg}}.message_id < 0
+def from_group_chat?(msg)
+  case msg.chat.type
+  when "supergroup"
+    true
+  when "group"
+    true
+  else
+    false
+  end
 end
 
-macro from_private_chat?(msg)
-  {{msg}}.message_id > 0
+def from_private_chat?(msg)
+  !from_group_chat?(msg)
 end
 
 module Policr
