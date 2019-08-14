@@ -1,5 +1,7 @@
 module Policr
   handler PrivateChatReply do
+    allow_edit
+
     @chat_info : {Int64, Int32}?
 
     match do
