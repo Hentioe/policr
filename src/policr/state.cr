@@ -9,7 +9,7 @@ macro read_state(name)
   if (val = state[{{name}}]?) && (val.is_a?({{cls}}))
     val
   else
-    bot.debug "Setting state {{name}} in " + {{ @type.stringify }}
+    bot.log "Setting state {{name}} in " + {{ @type.stringify }}
     val = {{yield}}
     state[{{name}}] = val
 

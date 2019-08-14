@@ -26,19 +26,13 @@ module Policr
     logger.level = Logger::DEBUG
     logger.info "ready to start"
 
-    username = ENV["#{ENV_PREFIX}_USERNAME"]
-    token = ENV["#{ENV_PREFIX}_TOKEN"]
-    owner_id = ENV["#{ENV_PREFIX}_OWNER_ID"]
-    snapshot_channel = ENV["#{ENV_PREFIX}_SNAPSHOT_CHANNEL"]
-    voting_channel = ENV["#{ENV_PREFIX}_VOTING_CHANNEL"]
-
     bot = Bot.new(
-      username,
-      token,
-      owner_id,
+      from_env("USERNAME"),
+      from_env("TOKEN"),
+      from_env("OWNER_ID"),
       logger,
-      snapshot_channel,
-      voting_channel
+      from_env("SNAPSHOT_CHANNEL"),
+      from_env("VOTING_CHANNEL")
     )
     spawn do
       logger.info "start web"
@@ -47,6 +41,10 @@ module Policr
     logger.info "start bot"
 
     bot.polling
+  end
+
+  private macro from_env(var_name)
+    ENV["#{ENV_PREFIX}_{{var_name.upcase.id}}"]
   end
 end
 
