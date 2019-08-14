@@ -6,6 +6,7 @@ clone:
 pipeline:
   test:
     image: bluerain/policr:build
+    pull: true
     commands:
       - shards --production
       - mkdir data
@@ -14,6 +15,7 @@ pipeline:
 
   build:
     image: bluerain/policr:build
+    pull: true
     commands:
       - shards build --release --progress --production --warnings=all
 
