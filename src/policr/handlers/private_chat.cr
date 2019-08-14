@@ -3,6 +3,7 @@ module Policr
     match do
       all_pass? [
         from_private_chat?(msg),
+        !msg.forward_date, # 非转发消息
         !read_state :done { false },
       ]
     end

@@ -2,7 +2,7 @@ module Policr
   handler PrivateForward do
     match do
       all_pass? [
-        !bot.from_group?(msg),
+        from_private_chat?(msg),
         msg.forward_from,
       ]
     end
