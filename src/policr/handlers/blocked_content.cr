@@ -3,11 +3,12 @@ module Policr
     allow_edit
     target :fields
 
-    def match(msg)
+    match do
       target :group do
         role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
 
         all_pass? [
+          from_group_chat?(msg),
           msg.text,
           (@reply_msg_id = _reply_msg_id),
           Cache.blocked_content_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置屏蔽内容？
@@ -17,7 +18,7 @@ module Policr
       end
     end
 
-    def handle(msg)
+    handle do
       retrieve [(text = msg.text)] do
         chat_id = msg.chat.id
 

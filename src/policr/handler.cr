@@ -20,30 +20,41 @@ module Policr
     def initialize(@bot)
     end
 
-    def registry(msg, from_edit = false)
-      unless from_edit
-        preprocess msg
+    def registry(msg, state, from_edit = false)
+      if from_edit && @allow_edit
+        preprocess msg, state
+      elsif !from_edit
+        preprocess(msg, state)
       else
-        preprocess(msg) if @allow_edit
+        state
       end
     end
 
-    private def preprocess(msg)
-      handle(msg) if match(msg)
+    private def preprocess(msg, state)
+      if (text = msg.text) && (text.starts_with?("/")) && bot.command_names.includes?(text)
+        read_state :done { true } # 如果是指令，直接 done => true
+        return
+      end
+      if match(msg, state)
+        handle(msg, state)
+      else
+        state
+      end
     end
 
-    abstract def match(msg)
-    abstract def handle(msg)
+    abstract def match(msg, state : Hash(Symbol, StateValueType)) : Bool | Nil
+    abstract def handle(msg, state : Hash(Symbol, StateValueType))
 
     macro match
-      def match(msg)
+      def match(msg, state)
         {{yield}}
       end
     end
 
     macro handle
-      def handle(msg)
+      def handle(msg, state)
         {{yield}}
+        read_state :done { true }
       end
     end
 

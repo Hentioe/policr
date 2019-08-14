@@ -40,6 +40,21 @@ macro render(str, vars, vals)
   {% end %}
 end
 
+def from_group_chat?(msg)
+  case msg.chat.type
+  when "supergroup"
+    true
+  when "group"
+    true
+  else
+    false
+  end
+end
+
+def from_private_chat?(msg)
+  !from_group_chat?(msg)
+end
+
 module Policr
   DEFAULT_TORTURE_SEC = 55 # 默认验证等待时长（秒）
 
@@ -68,15 +83,15 @@ module Policr
     getter handlers = Hash(String, Handler).new
     getter callbacks = Hash(String, Callback).new
     getter commanders = Hash(String, Commander).new
+    getter command_names = Set(String).new
 
     getter snapshot_channel : String
     getter voting_channel : String
     getter username : String
+    getter owner_id : String
 
-    def initialize(username, token, logger, snapshot_channel, voting_channel)
+    def initialize(username, token, @owner_id, logger, @snapshot_channel, @voting_channel)
       super(username, token, logger: logger)
-      @snapshot_channel = snapshot_channel
-      @voting_channel = voting_channel
       @username = username
 
       me = get_me || raise Exception.new("Failed to get bot data")
@@ -102,6 +117,8 @@ module Policr
         CleanModeTimeSettingHandler,
         FormatLimitHandler,
         FormatLimitSettingHandler,
+        PrivateChatReplyHandler,
+        PrivateChatHandler,
       ]
 
       # 注册回调模块
@@ -163,14 +180,16 @@ module Policr
 
       super
 
+      state = Hash(Symbol, StateValueType).new
       handlers.each do |_, handler|
-        handler.registry(msg)
+        handler.registry(msg, state)
       end
     end
 
     def handle_edited(msg : TelegramBot::Message)
+      state = Hash(Symbol, StateValueType).new
       handlers.each do |_, handler|
-        handler.registry(msg, from_edit: true)
+        handler.registry(msg, state, from_edit: true)
       end
     end
 
@@ -247,6 +266,10 @@ module Policr
 
     def log(text)
       logger.info text
+    end
+
+    def debug(text)
+      logger.debug text
     end
 
     def token

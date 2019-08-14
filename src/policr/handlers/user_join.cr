@@ -3,14 +3,14 @@ module Policr
     alias DeleteTarget = CleanDeleteTarget
     alias AntiTarget = AntiMessageDeleteTarget
 
-    def match(msg)
+    match do
       all_pass? [
         KVStore.enabled_examine?(msg.chat.id),
         msg.new_chat_members,
       ]
     end
 
-    def handle(msg)
+    handle do
       chat_id = msg.chat.id
 
       if members = msg.new_chat_members

@@ -4,7 +4,7 @@ module Policr
 
     target :fields
 
-    def match(msg)
+    match do
       target :group do
         role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
 
@@ -17,7 +17,7 @@ module Policr
       end
     end
 
-    def handle(msg)
+    handle do
       retrieve [(text = msg.text)] do
         chat_id = msg.chat.id
 

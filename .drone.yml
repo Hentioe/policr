@@ -1,10 +1,8 @@
-clone:
-  git:
-    image: plugins/git
-    recursive: false
+kind: pipeline
+name: default
 
-pipeline:
-  test:
+steps:
+  - name: test
     image: bluerain/policr:build
     pull: true
     commands:
@@ -13,32 +11,38 @@ pipeline:
       - POLICR_ENV=test crystal sam.cr -- db:setup
       - POLICR_ENV=test crystal spec
 
-  build:
+  - name: build
     image: bluerain/policr:build
     pull: true
     commands:
       - shards build --release --progress --production --warnings=all
 
-  build-app-image:
-    image: docker
+  - name: push-app-image
+    image: plugins/docker
+    settings:
+      repo: bluerain/policr
+      username: bluerain
+      password:
+        from_secret: docker_password
+      dockerfile: Dockerfile
+      tags: latest
     when:
       branch:
         - master
       event:
         - push
-    commands:
-      - docker build . -t bluerain/policr
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
 
-  build-migration-image:
-    image: docker
+  - name: push-migration-image
+    image: plugins/docker
+    settings:
+      repo: bluerain/policr
+      username: bluerain
+      password:
+        from_secret: docker_password
+      dockerfile: migration.Dockerfile
+      tags: migration
     when:
       branch:
-        - master
+        - migration/update
       event:
         - push
-    commands:
-      - docker build -f migration.Dockerfile . -t bluerain/policr:migration
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock

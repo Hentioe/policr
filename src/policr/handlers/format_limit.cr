@@ -1,6 +1,6 @@
 module Policr
   handler FormatLimit do
-    def match(msg)
+    match do
       role = KVStore.enabled_trust_admin?(msg.chat.id) ? :admin : :creator
 
       all_pass? [
@@ -10,7 +10,7 @@ module Policr
       ]
     end
 
-    def handle(msg)
+    handle do
       if document = msg.document
         chat_id = msg.chat.id
         msg_id = msg.message_id

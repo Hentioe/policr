@@ -7,7 +7,7 @@ module Policr
 
     @data : {Model::CleanMode, DeleteTarget}?
 
-    def match(msg)
+    match do
       target :group do
         role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
 
@@ -20,7 +20,7 @@ module Policr
       end
     end
 
-    def handle(msg)
+    handle do
       retrieve [(text = msg.text), (data = @data)] do
         chat_id = msg.chat.id
 

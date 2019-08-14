@@ -1,13 +1,13 @@
 module Policr
   handler PrivateForward do
-    def match(msg)
+    match do
       all_pass? [
-        !bot.from_group?(msg),
+        from_private_chat?(msg),
         msg.forward_from,
       ]
     end
 
-    def handle(msg)
+    handle do
       markup = Markup.new
       markup << [Button.new(text: t("private_forward.report"), callback_data: "PrivateForward:report")]
       bot.send_message(
