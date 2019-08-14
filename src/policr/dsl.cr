@@ -24,6 +24,8 @@ macro midreg(cls)
     handlers
   {% elsif cls_name.ends_with?("Commander") %}
     commanders
+    command_names << "/{{key.id}}"
+    command_names << "/{{key.id}}@#{username}"
   {% elsif cls_name.ends_with?("Callback") %}
     callbacks
   {% end %}

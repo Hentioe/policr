@@ -1,7 +1,6 @@
 module Policr
   handler PrivateChat do
     match do
-      !read_state :done { false }
       all_pass? [
         from_private_chat?(msg),
         !read_state :done { false },

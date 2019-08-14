@@ -31,6 +31,10 @@ module Policr
     end
 
     private def preprocess(msg, state)
+      if (text = msg.text) && (text.starts_with?("/")) && bot.command_names.includes?(text)
+        read_state :done { true } # 如果是指令，直接 done => true
+        return
+      end
       if match(msg, state)
         handle(msg, state)
       else

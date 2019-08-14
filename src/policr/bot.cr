@@ -76,6 +76,7 @@ module Policr
     getter handlers = Hash(String, Handler).new
     getter callbacks = Hash(String, Callback).new
     getter commanders = Hash(String, Commander).new
+    getter command_names = Set(String).new
 
     getter snapshot_channel : String
     getter voting_channel : String
