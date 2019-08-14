@@ -23,7 +23,7 @@ module Policr
     I18n.default_locale = "zh-hans"
 
     logger = Logger.new(STDOUT)
-    logger.level = Logger::DEBUG
+    logger.level = config.prod ? Logger::INFO : Logger::DEBUG
     logger.info "ready to start"
 
     bot = Bot.new(

@@ -11,7 +11,7 @@ module Policr::Web
     end
 
     def write(message : String)
-      @logger.debug message.strip
+      @logger.info message.strip
     end
 
     private def elapsed_text(elapsed)
