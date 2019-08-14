@@ -19,52 +19,32 @@ pipeline:
     commands:
       - shards build --release --progress --production --warnings=all
 
-  build-app-image:
+  push-app-image:
     image: docker
-    when:
-      branch:
-        - master
-      event:
-        - push
-    commands:
-      - docker build . -t bluerain/policr
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  build-migration-image:
-    image: docker
-    when:
-      branch:
-        - migration/update
-      event:
-        - push
-    commands:
-      - docker build -f migration.Dockerfile . -t bluerain/policr:migration
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  push_app_image:
-    image: plugins/docker
-    when:
-      branch:
-        - master
-      event:
-        - push
     settings:
       repo: bluerain/policr
       username: bluerain
       password:
         from_secret: docker_password
+      dockerfile: Dockerfile
+      tags: latest
+    when:
+      branch:
+        - master
+      event:
+        - push
 
-  push_migration_image:
-    image: plugins/docker
+  push-migration-image:
+    image: docker
+    settings:
+      repo: bluerain/policr
+      username: bluerain
+      password:
+        from_secret: docker_password
+      dockerfile: migration.Dockerfile
+      tags: migration
     when:
       branch:
         - migration/update
       event:
         - push
-    settings:
-      repo: bluerain/policr:migration
-      username: bluerain
-      password:
-        from_secret: docker_password
