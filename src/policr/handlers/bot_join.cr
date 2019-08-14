@@ -2,7 +2,7 @@ module Policr
   handler BotJoin do
     alias AntiTarget = AntiMessageDeleteTarget
 
-    def match(msg)
+    match do
       all_pass? [
         KVStore.enabled_examine?(msg.chat.id),
         msg.new_chat_members,
@@ -10,7 +10,7 @@ module Policr
       ]
     end
 
-    def handle(msg)
+    handle do
       chat_id = msg.chat.id
 
       if members = msg.new_chat_members

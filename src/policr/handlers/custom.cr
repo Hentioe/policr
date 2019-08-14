@@ -3,7 +3,7 @@ module Policr
     allow_edit # 处理编辑消息
     target :fields
 
-    def match(msg)
+    match do
       target :group do
         role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
 
@@ -17,7 +17,7 @@ module Policr
       end
     end
 
-    def handle(msg)
+    handle do
       retrieve [(text = msg.text)] do
         unless valid?(text) # 内容不合法？
           bot.reply msg, t("custom.wrong_format")

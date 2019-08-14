@@ -7,17 +7,19 @@ module Policr
 
     allow_edit # 处理编辑消息
 
-    def match(msg)
+    match do
       all_pass? [
+        from_group_chat?(msg),
         KVStore.enabled_examine?(msg.chat.id),
         !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal), # 未关闭子功能
-        msg.from,
+        (text = msg.text),
+        is_halal(text),
       ]
     end
 
-    def handle(msg)
+    handle do
       if (text = msg.text) && (user = msg.from)
-        kick_halal(msg, user) if is_halal(text)
+        kick_halal(msg, user)
       end
     end
 

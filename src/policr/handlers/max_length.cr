@@ -2,13 +2,14 @@ module Policr
   handler MaxLength do
     @length : Model::MaxLength?
 
-    def match(msg)
+    match do
       all_pass? [
+        from_group_chat?(msg),
         (@length = Model::MaxLength.find(msg.chat.id)), # 启用了相关设置？
       ]
     end
 
-    def handle(msg)
+    handle do
       if (text = msg.text) && (length = @length)
         chat_id = msg.chat.id
         msg_id = msg.message_id

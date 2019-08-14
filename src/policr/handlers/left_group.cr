@@ -2,14 +2,14 @@ module Policr
   handler LeftGroup do
     alias AntiTarget = AntiMessageDeleteTarget
 
-    def match(msg)
+    match do
       all_pass? [
         KVStore.enabled_examine?(msg.chat.id),
         msg.left_chat_member, # 离开聊天？
       ]
     end
 
-    def handle(msg)
+    handle do
       chat_id = msg.chat.id
       # 删除退群消息
       Model::AntiMessage.working chat_id, AntiTarget::LeaveGroup do

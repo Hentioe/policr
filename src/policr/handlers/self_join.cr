@@ -1,12 +1,12 @@
 module Policr
   handler SelfJoin do
-    def match(msg)
+    match do
       all_pass? [
         msg.new_chat_members,
       ]
     end
 
-    def handle(msg)
+    handle do
       chat_id = msg.chat.id
 
       if members = msg.new_chat_members

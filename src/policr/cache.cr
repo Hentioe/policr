@@ -79,6 +79,9 @@ module Policr::Cache
   # 标记被举报用户
   def_carving_with_data "report_target", TelegramBot::User
 
+  # 标记私聊消息（值为用户方私聊消息 ID）
+  def_carving_with_data "private_chat", {Int64, Int32}
+
   macro def_list(name, type)
     @@{{name.id}}_list = {{type.id}}.new
 
