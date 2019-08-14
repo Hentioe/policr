@@ -1,10 +1,8 @@
-clone:
-  git:
-    image: plugins/git
-    recursive: false
+kind: pipeline
+name: default
 
-pipeline:
-  test:
+steps:
+  - name: test
     image: bluerain/policr:build
     pull: true
     commands:
@@ -13,13 +11,13 @@ pipeline:
       - POLICR_ENV=test crystal sam.cr -- db:setup
       - POLICR_ENV=test crystal spec
 
-  build:
+  - name: build
     image: bluerain/policr:build
     pull: true
     commands:
       - shards build --release --progress --production --warnings=all
 
-  push-app-image:
+  - name: push-app-image
     image: plugins/docker
     settings:
       repo: bluerain/policr
@@ -34,7 +32,7 @@ pipeline:
       event:
         - push
 
-  push-migration-image:
+  - name: push-migration-image
     image: plugins/docker
     settings:
       repo: bluerain/policr
