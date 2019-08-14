@@ -35,7 +35,7 @@ pipeline:
     image: docker
     when:
       branch:
-        - master
+        - migration/update
       event:
         - push
     commands:
