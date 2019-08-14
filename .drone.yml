@@ -20,7 +20,7 @@ pipeline:
       - shards build --release --progress --production --warnings=all
 
   push-app-image:
-    image: docker
+    image: plugins/docker
     settings:
       repo: bluerain/policr
       username: bluerain
@@ -35,7 +35,7 @@ pipeline:
         - push
 
   push-migration-image:
-    image: docker
+    image: plugins/docker
     settings:
       repo: bluerain/policr
       username: bluerain
