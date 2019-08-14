@@ -224,7 +224,7 @@ module Policr
         role:      make_role(role_value),
         snapshot:  make_snapshot(snapshot_id),
         target_id: target_id,
-        reason:    make_reason(reason_value),
+        reason:    ReportCallback.make_reason(reason_value),
         status:    make_status(status_value),
         detail:    detail ? "\n\n#{detail}\n" : t("report.none"),
       }
@@ -246,7 +246,7 @@ module Policr
       end
     end
 
-    def make_reason(reason_value)
+    def self.make_reason(reason_value)
       case Reason.new(reason_value)
       when Reason::Unknown
         t("report.reason.unknown")

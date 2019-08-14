@@ -27,5 +27,9 @@ module Policr::Model
     def self.all_valid(user_id)
       where { (_target_user_id == user_id) & (_status == ReportStatus::Accept.value) }.to_a
     end
+
+    def self.first_valid(user_id)
+      where { (_target_user_id == user_id) & (_status == ReportStatus::Accept.value) }.first
+    end
   end
 end

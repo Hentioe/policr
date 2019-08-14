@@ -129,6 +129,7 @@ module Policr
         AntiServiceMsgCallback,
         FormatLimitCallback,
         FromSettingCallback,
+        AppealCallback,
       ]
 
       # 注册指令模块
