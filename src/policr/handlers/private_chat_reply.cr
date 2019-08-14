@@ -1,16 +1,16 @@
 module Policr
   handler PrivateChatReply do
+    allow_edit
+
     @chat_info : {Int64, Int32}?
 
     match do
-      if all_pass? [
-           from_private_chat?(msg),
-           (reply_msg = msg.reply_to_message),
-           (@chat_info = Cache.private_chat_msg?("", reply_msg.message_id)), # 针对无关私聊的回复？
-           msg.text,
-         ]
-        true
-      end
+      all_pass? [
+        from_private_chat?(msg),
+        (reply_msg = msg.reply_to_message),
+        (@chat_info = Cache.private_chat_msg?("", reply_msg.message_id)), # 针对无关私聊的回复？
+        msg.text,
+      ]
     end
 
     handle do
