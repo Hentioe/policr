@@ -15,6 +15,7 @@ module Policr
             target_msg_id = reply_msg.message_id
             target_user_id = target_user.id
             from_user_id = from_user.id
+
             # 缓存被举报用户
             Cache.carving_report_target_msg chat_id, target_msg_id, target_user
 

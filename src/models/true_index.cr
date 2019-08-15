@@ -13,7 +13,7 @@ module Policr::Model
 
     def self.add(chat_id, msg_id, indices)
       create({
-        chat_id: chat_id,
+        chat_id: chat_id.to_i64,
         msg_id:  msg_id,
         indices: indices.join(","),
       })
