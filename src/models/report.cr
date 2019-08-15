@@ -4,10 +4,10 @@ module Policr::Model
 
     mapping(
       id: Primary32,
-      author_id: Int64,
+      author_id: Int32,
       post_id: Int32,
       target_snapshot_id: Int32,
-      target_user_id: Int64,
+      target_user_id: Int32,
       target_msg_id: Int32,
       reason: Int32,
       status: Int32,

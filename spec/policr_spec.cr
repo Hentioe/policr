@@ -31,10 +31,10 @@ describe Policr do
   end
 
   it "crud" do
-    author_id = 340396281.to_i64
+    author_id = 340396281
     post_id = 18
     target_snapshot_id = 29
-    target_user_id = 871769395.to_i64
+    target_user_id = 871769395
     target_msg_id = 234
     reason = Reason::MassAd.value
     status = ReportStatus::Begin.value
@@ -54,9 +54,9 @@ describe Policr do
     })
     r1.should be_truthy
 
-    v1 = r1.add_votes({:author_id => author_id, :type => VoteType::Agree.value})
+    v1 = r1.add_votes({:author_id => author_id.to_i64, :type => VoteType::Agree.value})
     v1.should be_truthy
-    v2 = r1.add_votes({:author_id => author_id, :type => VoteType::Abstention.value})
+    v2 = r1.add_votes({:author_id => author_id.to_i64, :type => VoteType::Abstention.value})
     v2.should be_truthy
 
     v_list = Model::Vote.all.where { _report_id == r1.id }.to_a
@@ -123,8 +123,8 @@ describe Policr do
     end
     # 错误次数
     ec1 = Model::ErrorCount.create({
-      chat_id: from_chat_id,
-      user_id: target_user_id,
+      chat_id: from_chat_id.to_i64,
+      user_id: target_user_id.to_i64,
     })
     ec1.should be_truthy
     r = Model::ErrorCount.delete(ec1.id)

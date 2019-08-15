@@ -8,12 +8,12 @@ module Policr
 
     def handle(query, msg, data)
       chat_id = msg.chat.id
-      from_user_id = query.from.id.to_i64
+      from_user_id = query.from.id
 
       author_id, target_user_id, target_msg_id, reason_value = data
 
-      author_id = author_id.to_i64
-      target_user_id = target_user_id.to_i64
+      author_id = author_id.to_i
+      target_user_id = target_user_id.to_i
       target_msg_id = target_msg_id.to_i
       reason_value = reason_value.to_i
 
@@ -28,8 +28,8 @@ module Policr
     def make_report(chat_id : Int64,
                     msg_id : Int32,
                     target_msg_id : Int32,
-                    target_user_id : Int64,
-                    from_user_id : Int64,
+                    target_user_id : Int32,
+                    from_user_id : Int32,
                     reason_value : Int32,
                     query : TelegramBot::CallbackQuery? = nil)
       need_forward = reason_value != Reason::Adname.value
@@ -98,10 +98,10 @@ module Policr
         begin
           data =
             {
-              author_id:          from_user_id.to_i64,
+              author_id:          from_user_id,
               post_id:            0, # 临时 post id，举报消息发布以后更新
               target_snapshot_id: snapshot_message_id,
-              target_user_id:     target_user_id.to_i64,
+              target_user_id:     target_user_id,
               target_msg_id:      target_msg_id,
               reason:             reason_value,
               status:             Status::Begin.value,

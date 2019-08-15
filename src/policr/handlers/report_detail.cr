@@ -15,8 +15,8 @@ module Policr
 
     handle do
       if (target_user = @target_user) && (reply_msg_id = @reply_msg_id) && (from_user = msg.from) && (detail = msg.text)
-        target_user_id = target_user.id.to_i64
-        from_user_id = from_user.id.to_i64
+        target_user_id = target_user.id
+        from_user_id = from_user.id
 
         if exists_r = Model::Report.where {
              (_target_user_id == target_user_id) & (_author_id == from_user_id) & (_target_msg_id == reply_msg_id)
@@ -68,7 +68,7 @@ module Policr
                 from_chat_id:       msg.chat.id.to_i64,
                 detail:             detail,
               }
-            r = Model::Report.create(data)
+            r = Model::Report.create!(data)
             # 生成投票
             if r
               midcall ReportCallback do
