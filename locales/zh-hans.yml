@@ -396,7 +396,7 @@ welcome:
 
     内置变量：
     用户全名 => `{{fullname}}`
-    提及用户 => `{{metion}}`
+    提及用户 => `{{mention}}`
     群聊名称 => `{{chatname}}`
     用户 ID    => `{{userid}}`
 
