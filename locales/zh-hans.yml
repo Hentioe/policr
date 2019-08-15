@@ -162,8 +162,8 @@ halal:
 captcha_result:
   error: "踢不掉 [TA](tg://user?id=%{user_id}) 诶（自己想想什么原因？）……"
   admin_ban: "(|||ﾟдﾟ) 太残忍了， [TA](tg://user?id=%{user_id}) 还没来得及验证就被丧心病狂的 %{admin} 直接干掉了！"
-  timeout: "(〒︿〒) [他](tg://user?id=%{user_id})验证超时([?](https://policr.bluerain.io#verification_failure))，永久的离开了我们。 #FAILURE #TIMEOUT"
-  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误([?](https://policr.bluerain.io#verification_failure))，永久的离开了我们。 #FAILURE #MISTAKE"
+  timeout: "(〒︿〒) [他](tg://user?id=%{user_id})验证超时[¹](https://policr.bluerain.io#verification_failure)，永久的离开了我们[²](https://policr.bluerain.io#failure_result)。 #FAILURE #TIMEOUT"
+  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误[¹](https://policr.bluerain.io#verification_failure)，永久的离开了我们[²](https://policr.bluerain.io#failure_result)。 #FAILURE #MISTAKE"
 restrict_bot_menu:
   derestrict: "解除限制"
   remove: "直接移除"
@@ -364,7 +364,7 @@ gomoku:
 
     注意了，您是执 ● 子的一方，而 ○ 子是您的对手，它并不是用来暗示您落子的位置。
 after_event:
-  tip: "事后审核([?](https://policr.bluerain.io#afterwards))，您已被禁言。请主动完成验证以解除限制。"
+  tip: "事后审核[¹](https://policr.bluerain.io#afterwards)，您已被禁言。请主动完成验证以解除限制。"
   torture: "开始验证"
   unban: "解除禁言"
   kick: "直接移除"
