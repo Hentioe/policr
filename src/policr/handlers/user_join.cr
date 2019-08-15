@@ -206,12 +206,25 @@ module Policr
       end
     end
 
+    KICK_ISSUE_IS_ADMIN   = "Bad Request: user is an administrator of the chat"
+    KICK_ISSUE_NOT_RIGHTS = "Bad Request: not enough rights to restrict/unrestrict chat member"
+
     def failed(chat_id, message_id, user_id, admin : FromUser? = nil, timeout = false, photo = false, reply_id : Int32? = nil)
       Cache.verification_status_clear chat_id, user_id
       begin
         bot.kick_chat_member(chat_id, user_id)
       rescue ex : TelegramBot::APIException
-        text = t "captcha_result.error", {user_id: user_id}
+        _, reason = bot.parse_error ex
+        reason =
+          case reason
+          when KICK_ISSUE_IS_ADMIN
+            t "captcha_result.error.is_admin"
+          when KICK_ISSUE_NOT_RIGHTS
+            t "captcha_result.error.not_rights"
+          else
+            reason
+          end
+        text = t "captcha_result.error.desc", {user_id: user_id, reason: reason}
         if photo
           spawn bot.delete_message chat_id, message_id
           bot.send_message chat_id, text, reply_to_message_id: reply_id

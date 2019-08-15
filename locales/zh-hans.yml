@@ -157,10 +157,13 @@ baned_menu:
   whitelist: "加入白名单"
 halal:
   found: "d(\\`･∀･)b 诶发现一名清真，看我干掉它……"
-  kicked: "(ﾉ>ω<)ﾉ 已成功丢出[一只](tg://user?id=%{user_id})清真，真棒！"
+  kicked: "(ﾉ>ω<)ﾉ 已成功丢出一只[清真](tg://user?id=%{user_id})，真棒！"
   kick_failed: "╰(〒皿〒)╯ 啥情况，[这枚](tg://user?id=%{user_id})清真移除失败了。"
 captcha_result:
-  error: "踢不掉 [TA](tg://user?id=%{user_id}) 诶（自己想想什么原因？）……"
+  error: 
+    desc: "踢不掉[他](tg://user?id=%{user_id})诶（%{reason}）……"
+    is_admin: "他！有！权！限！"
+    not_rights: "我！没！权！限！"
   admin_ban: "(|||ﾟдﾟ) 太残忍了， [TA](tg://user?id=%{user_id}) 还没来得及验证就被丧心病狂的 %{admin} 直接干掉了！"
   timeout: "(〒︿〒) [他](tg://user?id=%{user_id})验证超时[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久的离开了我们[⁽²⁾](https://policr.bluerain.io#failure_result)。 #FAILURE #TIMEOUT"
   wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久的离开了我们[⁽²⁾](https://policr.bluerain.io#failure_result)。 #FAILURE #MISTAKE"
