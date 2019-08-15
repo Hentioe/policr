@@ -681,9 +681,14 @@
           <h3 class="subtitle is-3">消息访问</h3>
           <div class="content">
             <blockquote>
-              所有将本项目实例提升为<code>admin</code>的群组产生的任何消息都会被实例机器人接收，但不会转发或存储任何和功能无关的消息。为了提供人工服务，所有功能无关的机器人私聊消息将被转发给管理员，注意：仅是对机器人私聊。
+              所有将本项目实例提升为<code>admin</code>的群组产生的任何消息都会被机器人接收，但并不会转发或存储任何和功能无关的消息。为了提供人工服务，所有功能无关的机器人私聊消息将被转发给管理员。注意：仅是对机器人私聊。
             </blockquote>
           </div>
+          <article class="message is-warning" style="margin-top:1.5rem;">
+            <div class="message-body">
+              所谓「功能无关」消息指的是并非指令，也并非设置内容（例如回复欢迎消息或自定义问题）。此类消息机器人不会有如何响应，但若在私聊时发送此类消息将可能收到管理员的回复：）
+            </div>
+          </article>
           <h3 class="subtitle is-3">数据储存</h3>
           <div class="content">
             <blockquote>
