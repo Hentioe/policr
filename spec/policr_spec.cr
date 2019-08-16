@@ -69,6 +69,21 @@ describe Policr do
       end
     end
 
+    a1 = r1.add_appeals({:author_id => author_id, :done => true})
+    a1.should be_truthy
+    a2 = r1.add_appeals({:author_id => author_id, :done => false})
+    a2.should be_truthy
+
+    a_list = Model::Appeal.all.where { _report_id == r1.id }.to_a
+    a_list.size.should eq(2)
+    a_list.each do |a|
+      r = Model::Appeal.delete(a.id)
+      r.should be_truthy
+      if r
+        r.rows_affected.should eq(1)
+      end
+    end
+
     r = Model::Report.delete(r1.id)
     r.should be_truthy
     if r

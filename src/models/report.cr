@@ -16,11 +16,13 @@ module Policr::Model
       role: Int32,
       from_chat_id: Int64,
       detail: String?,
+      appeal_post_id: Int32?,
       created_at: Time?,
       updated_at: Time?
     )
 
     has_many :votes, Vote
+    has_many :appeals, Appeal
 
     def self.check_blacklist(user_id)
       where { (_target_user_id == user_id) & (_status == Status::Accept.value) }.first

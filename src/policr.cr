@@ -27,12 +27,12 @@ module Policr
     logger.info "ready to start"
 
     bot = Bot.new(
-      from_env("USERNAME"),
-      from_env("TOKEN"),
-      from_env("OWNER_ID"),
+      from_env("username"),
+      from_env("token"),
+      from_env("owner_id"),
       logger,
-      from_env("SNAPSHOT_CHANNEL"),
-      from_env("VOTING_CHANNEL")
+      from_env("snapshot_channel"),
+      from_env("voting_channel")
     )
     spawn do
       logger.info "start web"
