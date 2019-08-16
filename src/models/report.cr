@@ -1,5 +1,7 @@
 module Policr::Model
   class Report < Jennifer::Model::Base
+    alias Status = ReportStatus
+
     with_timestamps
 
     mapping(
@@ -21,7 +23,15 @@ module Policr::Model
     has_many :votes, Vote
 
     def self.check_blacklist(user_id)
-      Model::Report.where { (_target_user_id == user_id) & (_status == ReportStatus::Accept.value) }.first
+      where { (_target_user_id == user_id) & (_status == Status::Accept.value) }.first
+    end
+
+    def self.all_valid(user_id)
+      where { (_target_user_id == user_id) & (_status == Status::Accept.value) }.to_a
+    end
+
+    def self.first_valid(user_id)
+      where { (_target_user_id == user_id) & (_status == Status::Accept.value) }.first
     end
   end
 end

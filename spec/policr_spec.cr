@@ -42,10 +42,10 @@ describe Policr do
     from_chat_id = -1001301664514.to_i64
 
     r1 = Model::Report.create({
-      author_id:          author_id,
+      author_id:          author_id.to_i32,
       post_id:            post_id,
       target_snapshot_id: target_snapshot_id,
-      target_user_id:     target_user_id,
+      target_user_id:     target_user_id.to_i32,
       target_msg_id:      target_msg_id,
       reason:             reason,
       status:             status,
