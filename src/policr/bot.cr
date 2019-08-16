@@ -195,17 +195,17 @@ module Policr
 
     def handle(query : TelegramBot::CallbackQuery)
       _handle = ->(data : String, message : TelegramBot::Message) {
-        report = data.split(":")
-        if report.size < 2
+        args = data.split(":")
+        if args.size < 2
           logger.info "'#{display_name(query.from)}' clicked on the invalid inline keyboard button"
           answer_callback_query(query.id, text: t("invalid_callback"))
           return
         end
 
-        call_name = report[0]
+        call_name = args[0]
 
         callbacks.each do |_, callback|
-          callback.handle(query, message, report[1..]) if callback.match?(call_name)
+          callback.handle(query, message, args[1..]) if callback.match?(call_name)
         end
       }
       if (data = query.data) && (message = query.message)

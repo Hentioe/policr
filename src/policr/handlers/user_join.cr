@@ -180,7 +180,14 @@ module Policr
       markup << [btn.call(pass_text, 0), btn.call(ban_text, -1)]
       sended_msg =
         if img = image
-          bot.send_photo(chat_id, File.new(img), caption: question, reply_to_message_id: reply_id, reply_markup: markup, parse_mode: "markdown")
+          bot.send_photo(
+            chat_id,
+            File.new(img),
+            caption: question,
+            reply_to_message_id: reply_id,
+            reply_markup: markup,
+            parse_mode: "markdown"
+          )
         else
           bot.send_message(
             chat_id,
