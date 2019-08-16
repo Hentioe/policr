@@ -47,20 +47,6 @@ module Policr
             text: create_text(_group_id, def_change, _group_name),
             reply_markup: create_markup(_group_id)
           )
-        when "enable_from"
-          unless KVStore.get_from(_group_id)
-            bot.answer_callback_query(query.id, text: t("settings.not_from"), show_alert: true)
-            return
-          end
-          selected = KVStore.enabled_from?(_group_id)
-          selected ? KVStore.disable_from(_group_id) : KVStore.enable_from(_group_id)
-          spawn bot.answer_callback_query(query.id)
-          bot.edit_message_text(
-            _chat_id,
-            message_id: msg.message_id,
-            text: create_text(_group_id, def_change, _group_name),
-            reply_markup: create_markup(_group_id)
-          )
         when "fault_tolerance"
           selected = KVStore.enabled_fault_tolerance?(_group_id)
 

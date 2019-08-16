@@ -32,8 +32,6 @@ module Policr
           KVStore.enabled_privacy_setting?(group_id) ? SELECTED : UNSELECTED
         when "record_mode"
           KVStore.enabled_record_mode?(group_id) ? SELECTED : UNSELECTED
-        when "enable_from"
-          KVStore.enabled_from?(group_id) ? SELECTED : UNSELECTED
         when "fault_tolerance"
           KVStore.enabled_fault_tolerance?(group_id) ? SELECTED : UNSELECTED
         else
@@ -46,7 +44,6 @@ module Policr
       markup << def_toggle "trust_admin"
       markup << def_toggle "privacy_setting"
       markup << def_toggle "record_mode"
-      markup << def_toggle "enable_from"
       markup << def_toggle "fault_tolerance"
 
       markup
