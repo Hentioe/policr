@@ -11,6 +11,10 @@ def escape_markdown(text)
   end
 end
 
+def schedule(time, &block)
+  Schedule.after time, &block
+end
+
 macro def_text(method_name = "create_text", *args)
   {{ args_exp_s = args.join(", ") }}
 

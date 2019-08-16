@@ -1,4 +1,6 @@
 module Policr
+  REPORT_RECEIPT_DEL_DELAY = 55
+
   callbacker Voting do
     alias Reason = ReportReason
     alias Status = ReportStatus
@@ -112,7 +114,10 @@ module Policr
       if status == Status::Accept && (chat_id = report.from_chat_id)
         inject_text_data = {voting_url: "https://t.me/#{bot.voting_channel}/#{msg.message_id}"}
         text = chat_id > 0 ? t("voting.private_notify_msg", inject_text_data) : t("voting.group_notify_msg", inject_text_data)
-        bot.send_message chat_id, text
+        if sended_msg = bot.send_message chat_id, text
+          _del_msg_id = sended_msg.message_id
+          schedule(REPORT_RECEIPT_DEL_DELAY.seconds) { bot.delete_message(chat_id, _del_msg_id) }
+        end
       end
     end
   end
