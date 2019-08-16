@@ -84,6 +84,8 @@ module Policr
         chooese = data[2]
 
         if (reply_msg = msg.reply_to_message) && (report = Model::Report.find(report_id))
+          flow_msg_id = reply_msg.message_id
+
           unless report.status == ReportStatus::Accept.value
             bot.answer_callback_query(query.id, text: t("这条举报（暂时）没有生效。"), show_alert: true)
             return
@@ -91,39 +93,29 @@ module Policr
 
           spawn bot.delete_message chat_id, msg_id
           if Model::TrueIndex.contains?(chat_id, msg_id, chooese)
-            make_behavior = ->(reason : ReportReason) {
-              case reason
-              when ReportReason::Unknown
-                "产生大家不赞同的行为"
-              when ReportReason::MassAd
-                "散播广告"
-              when ReportReason::Halal
-                "发表清真消息"
-              when ReportReason::Other
-                "产生大家不赞同的行为"
-              when ReportReason::Hateful
-                "发表充满仇恨或恐怖主义内容"
-              when ReportReason::Adname
-                "使用广告昵称"
-              when ReportReason::VirusFile
-                "传播病毒或恶意程序"
-              when ReportReason::PromoFile
-                "传播推广或恶意文件"
-              else
-                "产生大家不赞同的行为"
-              end
-            }
-            behavior = make_behavior.call(ReportReason.new(report.reason))
-            text = "验证成功，请继续。回复「我不再继续#{behavior}，我遵守大家共同制定的规定，我不会找举报人的麻烦」至本消息即可解除黑名单 (ゝ∀･)b\n\n请尽快回复，本消息不保证时效性。"
+            content = AppealCallback.make_text ReportReason.new(report.reason)
+            text = "验证成功，请继续。回复以下内容至本消息即可解除黑名单 (ゝ∀･)b\n\n`#{content}`\n\n注意：请尽快回复，本消息不保证时效性。"
             bot.edit_message_text(
               chat_id,
-              message_id: reply_msg.message_id,
+              message_id: flow_msg_id,
               text: text
             )
+            # 生成申诉
+            appeals = report.add_appeals({:author_id => chat_id.to_i32, :done => false})
+            if appeals && appeals.size > 0
+              # 标记申诉流程消息
+              Cache.carving_appeal_flow_msg chat_id, flow_msg_id, appeals[0]
+            else
+              bot.edit_message_text(
+                chat_id,
+                message_id: flow_msg_id,
+                text: "申诉生成失败了。您可以再试一次。如果仍然出现这个情况请即时反映这个现象。"
+              )
+            end
           else # 验证失败
             bot.edit_message_text(
               chat_id,
-              message_id: reply_msg.message_id,
+              message_id: flow_msg_id,
               text: "您没能验证成功，申诉失败。"
             )
           end
@@ -133,6 +125,34 @@ module Policr
       else # 失效键盘
         bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
       end
+    end
+
+    def self.make_behavior(reason)
+      case reason
+      when ReportReason::Unknown
+        "产生大家不赞同的行为"
+      when ReportReason::MassAd
+        "散播广告"
+      when ReportReason::Halal
+        "发表清真消息"
+      when ReportReason::Other
+        "产生大家不赞同的行为"
+      when ReportReason::Hateful
+        "发表充满仇恨或恐怖主义内容"
+      when ReportReason::Adname
+        "使用广告昵称"
+      when ReportReason::VirusFile
+        "传播病毒或恶意程序"
+      when ReportReason::PromoFile
+        "传播推广或恶意文件"
+      else
+        "产生大家不赞同的行为"
+      end
+    end
+
+    def self.make_text(reason)
+      behavior = make_behavior(reason)
+      "我不再继续#{behavior}，我遵守大家共同制定的规定，我不会找举报人的麻烦。"
     end
   end
 end

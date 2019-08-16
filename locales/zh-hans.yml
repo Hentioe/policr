@@ -243,6 +243,7 @@ report:
     被执行用户：[%{target_id}](tg://user?id=%{target_id})
     举报原因：%{reason}
     详细说明：%{detail}
+    申诉详情：%{appeal}
     当前状态：%{status}
   generated: "举报已经生成（[在这里](https://t.me/%{voting_channel}/%{voting_message_id})），具有投票权的用户会对举报内容进行表决。注意了，[您](tg://user?id=%{user_id})作为发起人不能进行投票。如果举报受理成功将会在本群通知。"
   role:

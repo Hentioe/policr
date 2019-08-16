@@ -218,7 +218,14 @@ module Policr
       end
     end
 
-    def make_text(authod_id, role_value, snapshot_id, target_id, reason_value, status_value, detail : String?)
+    def make_text(authod_id,
+                  role_value,
+                  snapshot_id,
+                  target_id,
+                  reason_value,
+                  status_value,
+                  detail : String?,
+                  appeal_post_id : Int32? = nil)
       inject_data = {
         author_id: authod_id,
         role:      make_role(role_value),
@@ -227,8 +234,22 @@ module Policr
         reason:    ReportCallback.make_reason(reason_value),
         status:    make_status(status_value),
         detail:    detail ? "\n\n#{detail}\n" : t("report.none"),
+        appeal:    make_appeal(appeal_post_id),
       }
       t "report.voting_message", inject_data
+    end
+
+    def make_text_from_report(report : Model::Report)
+      make_text(
+        report.author_id,
+        report.role,
+        report.target_snapshot_id,
+        report.target_user_id,
+        report.reason,
+        report.status,
+        escape_markdown(report.detail),
+        report.appeal_post_id
+      )
     end
 
     def make_role(role_value)
@@ -287,6 +308,14 @@ module Policr
         "[#{snapshot_id}](https://t.me/#{bot.snapshot_channel}/#{snapshot_id})"
       else
         t("report.none")
+      end
+    end
+
+    def make_appeal(appeal_post_id)
+      if appeal_post_id
+        "[#{appeal_post_id}](https://t.me/#{bot.snapshot_channel}/#{appeal_post_id})"
+      else
+        t("none")
       end
     end
   end

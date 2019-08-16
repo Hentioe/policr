@@ -82,6 +82,9 @@ module Policr::Cache
   # 标记私聊消息（值: 用户ID, 回复目标消息ID）
   def_carving_with_data "private_chat", {Int64, Int32}
 
+  # 标记申诉流程消息
+  def_carving_with_data "appeal_flow", Model::Appeal
+
   macro def_list(name, type)
     @@{{name.id}}_list = {{type.id}}.new
 
