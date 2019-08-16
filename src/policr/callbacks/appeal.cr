@@ -35,19 +35,21 @@ module Policr
         else
           bot.edit_message_text chat_id, message_id: msg_id, text: t("appeal.non_blacklist")
         end
+      when "not_agree"
+        bot.edit_message_text(chat_id, message_id: msg_id, text: t("appeal.contact_me"))
       when "agree" # 我认同
         report_id = data[1].to_i
         if report = Model::Report.find(report_id)
           unless report.status == ReportStatus::Accept.value
-            bot.answer_callback_query(query.id, text: t("这条举报（暂时）没有生效。"), show_alert: true)
+            bot.answer_callback_query(query.id, text: t("appeal.report.not_valid"), show_alert: true)
             return
           end
           spawn bot.answer_callback_query(query.id)
-          spawn bot.edit_message_text(chat_id, message_id: msg_id, text: "等待验证……")
+          spawn bot.edit_message_text(chat_id, message_id: msg_id, text: t("appeal.verification.waiting"))
           # 生成验证问题
           verification = ImageVerification.new chat_id: chat_id
           question = verification.make
-          title = "请确认「#{question.title}」完成验证以继续申诉流程。"
+          title = t("appeal.verification.title", {hint: question.title})
           answers = question.answers
 
           btn = ->(text : String, chooese_id : Int32) {
@@ -77,7 +79,7 @@ module Policr
             verification.storage(sended_msg.message_id)
           end
         else
-          bot.answer_callback_query(query.id, text: t("这条举报已经不存在。"), show_alert: true)
+          bot.answer_callback_query(query.id, text: t("appeal.report.not_exists"), show_alert: true)
         end
       when "verification"
         report_id = data[1].to_i
@@ -87,14 +89,14 @@ module Policr
           flow_msg_id = reply_msg.message_id
 
           unless report.status == ReportStatus::Accept.value
-            bot.answer_callback_query(query.id, text: t("这条举报（暂时）没有生效。"), show_alert: true)
+            bot.answer_callback_query(query.id, text: t("appeal.not_valid"), show_alert: true)
             return
           end
 
           spawn bot.delete_message chat_id, msg_id
           if Model::TrueIndex.contains?(chat_id, msg_id, chooese)
             content = AppealCallback.make_text ReportReason.new(report.reason)
-            text = "验证成功，请继续。回复以下内容至本消息即可解除黑名单 (ゝ∀･)b\n\n`#{content}`\n\n注意：请尽快回复，本消息不保证时效性。"
+            text = t("appeal.need_reply", {content: content})
             bot.edit_message_text(
               chat_id,
               message_id: flow_msg_id,
@@ -109,18 +111,18 @@ module Policr
               bot.edit_message_text(
                 chat_id,
                 message_id: flow_msg_id,
-                text: "申诉生成失败了。您可以再试一次。如果仍然出现这个情况请即时反映这个现象。"
+                text: t("appeal.retry")
               )
             end
           else # 验证失败
             bot.edit_message_text(
               chat_id,
               message_id: flow_msg_id,
-              text: "您没能验证成功，申诉失败。"
+              text: t("appeal.verification.failure")
             )
           end
         else
-          bot.answer_callback_query(query.id, text: "没有获取到流程消息或没有找到该条举报～", show_alert: true)
+          bot.answer_callback_query(query.id, text: t("appeal.not_found"), show_alert: true)
         end
       else # 失效键盘
         bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
@@ -130,29 +132,29 @@ module Policr
     def self.make_behavior(reason)
       case reason
       when ReportReason::Unknown
-        "产生大家不赞同的行为"
+        t "appeal.reason.unknown"
       when ReportReason::MassAd
-        "散播广告"
+        t "appeal.reason.mass_ad"
       when ReportReason::Halal
-        "发表清真消息"
+        t "appeal.reason.halal"
       when ReportReason::Other
-        "产生大家不赞同的行为"
+        t "appeal.reason.other"
       when ReportReason::Hateful
-        "发表充满仇恨或恐怖主义内容"
+        t "appeal.reason.hateful"
       when ReportReason::Adname
-        "使用广告昵称"
+        t "appeal.reason.adname"
       when ReportReason::VirusFile
-        "传播病毒或恶意程序"
+        t "appeal.reason.virus_file"
       when ReportReason::PromoFile
-        "传播推广或恶意文件"
+        t "appeal.reason.promo_file"
       else
-        "产生大家不赞同的行为"
+        t "appeal.reason.unknown"
       end
     end
 
     def self.make_text(reason)
       behavior = make_behavior(reason)
-      "我不再继续#{behavior}，我遵守大家共同制定的规定，我不会找举报人的麻烦。"
+      t "appeal.reply_content", {behavior: behavior}
     end
   end
 end

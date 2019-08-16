@@ -69,12 +69,12 @@ module Policr
               bot.edit_message_text(
                 chat_id,
                 message_id: flow_msg_id,
-                text: "恭喜您申诉成功！请珍惜这次机会，下次可能不再允许了～",
+                text: t("appeal.success"),
               )
             end
           end
         else
-          bot.reply msg, "申诉已过期或相关条举报已经无效。"
+          bot.reply msg, t("appeal.expired")
         end
       end
     end
