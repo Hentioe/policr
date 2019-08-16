@@ -36,7 +36,22 @@ module Policr
           bot.edit_message_text chat_id, message_id: msg_id, text: t("appeal.non_blacklist")
         end
       when "not_agree"
-        bot.edit_message_text(chat_id, message_id: msg_id, text: t("appeal.contact_me"))
+        report_id = data[1].to_i
+        if report = Model::Report.find(report_id)
+          appeals = report.add_appeals({:author_id => chat_id.to_i32, :done => false})
+          if appeals && appeals.size > 0
+            text = t("appeal.contact_me", {appeal_id: appeals[0].id})
+            bot.edit_message_text(chat_id, message_id: msg_id, text: text)
+          else
+            bot.edit_message_text(
+              chat_id,
+              message_id: msg_id,
+              text: t("appeal.retry")
+            )
+          end
+        else
+          bot.answer_callback_query(query.id, text: t("appeal.report.not_exists"), show_alert: true)
+        end
       when "agree" # 我认同
         report_id = data[1].to_i
         if report = Model::Report.find(report_id)
