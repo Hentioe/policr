@@ -122,6 +122,8 @@ module Policr
         FormatLimitHandler,
         FormatLimitSettingHandler,
         PrivateChatReplyHandler,
+        AppealReplyHandler,
+        # 此 Handler 置底
         PrivateChatHandler,
       ]
 
