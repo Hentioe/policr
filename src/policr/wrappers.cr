@@ -6,7 +6,7 @@ module Policr
     def initialize(user : TelegramBot::User?)
       if user
         @user_id = user.id
-        @fullname = Policr.display_name(user)
+        @fullname = fullname(user)
       else
         @user_id = -1
         @fullname = "Unknown"

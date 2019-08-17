@@ -80,7 +80,7 @@ module Policr
       detail =
         if (reason_value == Reason::Adname.value) &&
            (target_user = Cache.report_target_msg?(chat_id, target_msg_id))
-          t "report.adname_detail", {name: bot.display_name(target_user)}
+          t "report.adname_detail", {name: fullname(target_user)}
         end
 
       snapshot_message_id =

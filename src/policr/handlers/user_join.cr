@@ -41,7 +41,7 @@ module Policr
           # 关联并标记入群消息
           Cache.carving_user_join_msg member.id, msg.chat.id, msg.message_id
           # 判断清真
-          name = bot.display_name(member)
+          name = fullname(member)
 
           midcall HalalMessageHandler do
             if !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal) && # 未关闭封杀清真子功能

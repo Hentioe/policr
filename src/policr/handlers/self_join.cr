@@ -25,7 +25,7 @@ module Policr
             markup << [make_btn.call t("add_to_group.leave"), "leave"]
             markup << [Button.new(text: t("add_to_group.subscription_update"), url: "https://t.me/policr_changelog")]
 
-            user_data = {name: bot.display_name(user), user_id: user.id}
+            user_data = {name: fullname(user), user_id: user.id}
             is_admin = bot.is_admin?(chat_id, user.id)
             spawn check_group_owner(chat_id) # 检查群主是否存在
             text =

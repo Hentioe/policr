@@ -55,8 +55,19 @@ def from_group_chat?(msg)
   end
 end
 
+def from_supergroup?(msg)
+  msg.chat.type == "supergroup"
+end
+
 def from_private_chat?(msg)
-  !from_group_chat?(msg)
+  msg.chat.type == "private"
+end
+
+def fullname(user)
+  name = user.first_name
+  last_name = user.last_name
+  name = last_name ? "#{name} #{last_name}" : name
+  name
 end
 
 module Policr
@@ -64,13 +75,6 @@ module Policr
 
   alias Button = TelegramBot::InlineKeyboardButton
   alias Markup = TelegramBot::InlineKeyboardMarkup
-
-  def self.display_name(user)
-    name = user.first_name
-    last_name = user.last_name
-    name = last_name ? "#{name} #{last_name}" : name
-    name
-  end
 
   class Bot < TelegramBot::Bot
     private macro regall(cls_list)
@@ -183,7 +187,7 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
-      Cache.put_serve_group(msg.chat, self) if from_group?(msg)
+      Cache.put_serve_group(msg.chat, self) if from_group_chat?(msg)
 
       super
 
@@ -204,7 +208,6 @@ module Policr
       _handle = ->(data : String, message : TelegramBot::Message) {
         args = data.split(":")
         if args.size < 2
-          logger.info "'#{display_name(query.from)}' clicked on the invalid inline keyboard button"
           answer_callback_query(query.id, text: t("invalid_callback"))
           return
         end
@@ -256,21 +259,6 @@ module Policr
       Cache.set_admins chat_id, get_chat_administrators(chat_id)
     end
 
-    def from_group?(msg)
-      case msg.chat.type
-      when "supergroup"
-        true
-      when "group"
-        true
-      else
-        false
-      end
-    end
-
-    def from_supergroup?(msg)
-      msg.chat.type == "supergroup"
-    end
-
     def log(text)
       logger.info text
     end
@@ -281,10 +269,6 @@ module Policr
 
     def token
       @token
-    end
-
-    def display_name(user)
-      Policr.display_name user
     end
 
     def parse_error(ex : TelegramBot::APIException)
@@ -367,7 +351,7 @@ module Policr
               ["fullname", "chatname", "mention", "userid"],
               vals
           else
-            vals = [NONE_FROM_USER, NONE_FROM_USER, NONE_FROM_USER, NONE_FROM_USER]
+            vals = [NONE_FROM_USER, chat.title, NONE_FROM_USER, NONE_FROM_USER]
             render text,
               ["fullname", "chatname", "mention", "userid"],
               vals

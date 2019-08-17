@@ -40,7 +40,7 @@ module Policr
     end
 
     def kick_halal(msg, member)
-      name = bot.display_name(member)
+      name = fullname(member)
       bot.log "Found a halal '#{name}'"
 
       chat_id = msg.chat.id
