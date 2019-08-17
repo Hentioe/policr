@@ -91,7 +91,7 @@ module Policr
         spawn bot.restrict_chat_member(msg.chat.id, member.id, can_send_messages: false)
         markup = Markup.new
         btn = ->(text : String, item : String) {
-          Button.new(text: text, callback_data: "AfterEvent:#{member.id}:_:#{item}:#{msg.message_id}")
+          Button.new(text: text, callback_data: "Afterwards:#{member.id}:_:#{item}:#{msg.message_id}")
         }
 
         markup << [btn.call(t("after_event.torture"), "torture")]

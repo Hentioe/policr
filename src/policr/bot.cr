@@ -153,6 +153,7 @@ module Policr
         FormatLimitCallback,
         FromSettingCallback,
         AppealCallback,
+        AfterwardsCallback,
       ]
 
       # 注册指令模块
