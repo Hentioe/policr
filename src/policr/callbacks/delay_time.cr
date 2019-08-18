@@ -27,6 +27,8 @@ module Policr
           def_target "from"
         when DeleteTarget::Halal
           def_target "halal"
+        when DeleteTarget::Report
+          def_target "report"
         else # 失效键盘
           bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
         end
