@@ -1,7 +1,6 @@
 module Policr
   handler UserJoin do
     alias DeleteTarget = CleanDeleteTarget
-    alias AntiTarget = AntiMessageDeleteTarget
 
     match do
       all_pass? [
@@ -21,7 +20,7 @@ module Policr
               Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
             end
             # 删除入群消息
-            Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
+            Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
               spawn bot.delete_message(chat_id, msg.message_id)
             end
             bot.send_welcome(
@@ -272,7 +271,7 @@ module Policr
           msg_id = result_msg_id
           Model::CleanMode.working chat_id, delete_target do
             # 删除加群消息
-            Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
+            Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
               if _delete_msg_id = reply_id
                 spawn bot.delete_message(chat_id, _delete_msg_id)
               end

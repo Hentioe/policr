@@ -83,8 +83,6 @@ module Policr
       {% end %}
     end
 
-    alias AntiTarget = AntiMessageDeleteTarget
-
     include TelegramBot::CmdHandler
 
     getter self_id : Int64
@@ -333,7 +331,7 @@ module Policr
         Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) do
           spawn delete_message(chat_id, msg_id)
           if _delete_id = reply_id
-            Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
+            Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
               delete_message(chat_id, _delete_id)
             end
           end

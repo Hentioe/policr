@@ -11,9 +11,7 @@ module Policr::Model
       updated_at: Time?
     )
 
-    alias DeleteTarget = AntiMessageDeleteTarget
-
-    def self.add!(group_id, delete_target : DeleteTarget)
+    def self.add!(group_id, delete_target : ServiceMessage)
       create!({
         chat_id:       group_id.to_i64,
         delete_target: delete_target.value,
@@ -33,7 +31,7 @@ module Policr::Model
       cm.update_column(:status, EnableStatus::TurnOff.value)
     end
 
-    def self.find(group_id, delete_target : DeleteTarget)
+    def self.find(group_id, delete_target : ServiceMessage)
       where { (_chat_id == group_id) & (_delete_target == delete_target.value) }.first
     end
 
@@ -56,7 +54,7 @@ module Policr::Model
     def self.working(group_id, delete_target)
       is_default =
         case delete_target
-        when DeleteTarget::LeaveGroup
+        when ServiceMessage::LeaveGroup
           true
         else
           false

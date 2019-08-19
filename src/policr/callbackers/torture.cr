@@ -3,7 +3,6 @@
 module Policr
   callbacker Torture do
     alias DeleteTarget = CleanDeleteTarget
-    alias AntiTarget = AntiMessageDeleteTarget
 
     def handle(query, msg, data)
       chat_id = msg.chat.id
@@ -201,7 +200,7 @@ module Policr
       is_enabled_from = KVStore.enabled_from? chat_id
       # 立即删除入群消息
       if !is_enabled_from && !is_enabled_welcome && (_delete_msg_id = reply_id)
-        Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
+        Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
           bot.delete_message(chat_id, _delete_msg_id)
         end
       end
@@ -234,7 +233,7 @@ module Policr
         end
         # 清理入群消息
         if _delete_msg_id = reply_to_message_id
-          Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
+          Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
             bot.delete_message(chat_id, _delete_msg_id)
           end
         end

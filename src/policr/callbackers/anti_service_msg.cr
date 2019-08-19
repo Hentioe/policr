@@ -1,7 +1,5 @@
 module Policr
   callbacker AntiServiceMsg do
-    alias DeleteTarget = AntiMessageDeleteTarget
-
     def handle(query, msg, data)
       target_group do
         name = data[0]
@@ -20,7 +18,7 @@ module Policr
     macro def_toggle(target_s, default = false)
       spawn bot.answer_callback_query(query.id)
       {{ delete_target = target_s.camelcase }}
-      delete_target = DeleteTarget::{{delete_target.id}}
+      delete_target = ServiceMessage::{{delete_target.id}}
       {% if default == false %}
         selected = Model::AntiMessage.enabled? _group_id, delete_target
       {% elsif default == true %}

@@ -35,7 +35,7 @@ module Policr
   end
 
   # 服务消息类型
-  enum AntiMessageDeleteTarget
+  enum ServiceMessage
     Unknown; JoinGroup; LeaveGroup
   end
 

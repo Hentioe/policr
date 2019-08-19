@@ -1,7 +1,5 @@
 module Policr
   commander AntiServiceMsg do
-    alias DeleteTarget = AntiMessageDeleteTarget
-
     def handle(msg)
       reply_menu do
         reply({
@@ -19,11 +17,11 @@ module Policr
     end
 
     def_markup do
-      make_selected_status = ->(delete_target : DeleteTarget) {
+      make_selected_status = ->(delete_target : ServiceMessage) {
         case delete_target
-        when DeleteTarget::JoinGroup
+        when ServiceMessage::JoinGroup
           Model::AntiMessage.enabled?(_group_id, delete_target) ? SELECTED : UNSELECTED
-        when DeleteTarget::LeaveGroup
+        when ServiceMessage::LeaveGroup
           Model::AntiMessage.disabled?(_group_id, delete_target) ? UNSELECTED : SELECTED
         else
           UNSELECTED
@@ -34,7 +32,7 @@ module Policr
     end
 
     macro put_item(name)
-      %text = make_selected_status.call(DeleteTarget::{{name.camelcase.id}}) + " " + t("anti_service_msg.{{name.id}}")
+      %text = make_selected_status.call(ServiceMessage::{{name.camelcase.id}}) + " " + t("anti_service_msg.{{name.id}}")
       _markup << [Button.new(text: %text, callback_data: "AntiServiceMsg:{{name.id}}")]
     end
   end

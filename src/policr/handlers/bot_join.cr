@@ -1,7 +1,5 @@
 module Policr
   handler BotJoin do
-    alias AntiTarget = AntiMessageDeleteTarget
-
     match do
       all_pass? [
         KVStore.enabled_examine?(msg.chat.id),
@@ -21,7 +19,7 @@ module Policr
               Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
 
               # 删除入群消息
-              Model::AntiMessage.working chat_id, AntiTarget::JoinGroup do
+              Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
                 bot.delete_message(chat_id, msg.message_id)
               end
             end
