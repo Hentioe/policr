@@ -28,9 +28,9 @@ module Policr
       end
       if report && report.status != Status::Begin.value # 状态可能不正确，刷新状态
         spawn bot.answer_callback_query(query.id, text: t("voting.report_ended"), show_alert: true)
-        midcall ReportCallback do
+        midcall ReportCallbacker do
           if r = report
-            text = callback.make_text(
+            text = _callbacker.make_text(
               r.author_id, r.role, r.target_snapshot_id,
               r.target_user_id, r.reason, r.status, r.detail
             )
@@ -92,9 +92,9 @@ module Policr
         bot.answer_callback_query(query.id, text: t("voting.update_error"), show_alert: true)
         return
       end
-      midcall ReportCallback do
+      midcall ReportCallbacker do
         if r = report
-          result_text = callback.make_text(
+          result_text = _callbacker.make_text(
             r.author_id, r.role, r.target_snapshot_id,
             r.target_user_id, r.reason, status.value, r.detail
           )

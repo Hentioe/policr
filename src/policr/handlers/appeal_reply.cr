@@ -28,7 +28,7 @@ module Policr
         if report.status == ReportStatus::Accept.value
           appeal.update_column(:done, true)
 
-          content = AppealCallback.make_text ReportReason.new(report.reason)
+          content = AppealCallbacker.make_text ReportReason.new(report.reason)
           if text.strip == content
             # 转发申诉消息到快照频道
             appeal_post_id =
@@ -80,8 +80,8 @@ module Policr
     end
 
     def restore_report_text(report)
-      midcall ReportCallback do
-        _callback.make_text_from_report report
+      midcall ReportCallbacker do
+        _callbacker.make_text_from_report report
       end || t("none")
     end
   end

@@ -231,7 +231,7 @@ module Policr
         role:      make_role(role_value),
         snapshot:  make_snapshot(snapshot_id),
         target_id: target_id,
-        reason:    ReportCallback.make_reason(reason_value),
+        reason:    ReportCallbacker.make_reason(reason_value),
         status:    make_status(status_value),
         detail:    detail ? "\n\n#{detail}\n" : t("report.none"),
         appeal:    make_appeal(appeal_post_id),

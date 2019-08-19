@@ -41,12 +41,12 @@ module Policr
       spawn bot.answer_callback_query(query.id)
       cm.update_column(:delay_sec, sec)
       text = create_text(_group_id, {{target_s}}, sec, group_name: _group_name)
-      midcall CleanModeCallback do
+      midcall CleanModeCallbacker do
         bot.edit_message_text(
           _chat_id, 
           message_id: msg.message_id, 
           text: text, 
-          reply_markup: _callback.create_time_setting_markup(_group_id, DeleteTarget::{{delete_target.id}})
+          reply_markup: _callbacker.create_time_setting_markup(_group_id, DeleteTarget::{{delete_target.id}})
         )
       end
     end

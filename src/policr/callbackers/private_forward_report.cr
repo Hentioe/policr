@@ -10,7 +10,7 @@ module Policr
       case ReportReason.new(reason_value)
       when ReportReason::MassAd, ReportReason::Halal, ReportReason::Hateful, ReportReason::Adname,
            ReportReason::VirusFile, ReportReason::PromoFile
-        midcall ReportCallback do
+        midcall ReportCallbacker do
           if (reply_msg = msg.reply_to_message) && (target_user = reply_msg.forward_from) && (from_user = query.from)
             target_msg_id = reply_msg.message_id
             target_user_id = target_user.id
@@ -19,7 +19,7 @@ module Policr
             # 缓存被举报用户
             Cache.carving_report_target_msg chat_id, target_msg_id, target_user
 
-            _callback.make_report chat_id, msg_id, target_msg_id, target_user_id, from_user_id, reason_value, query: query
+            _callbacker.make_report chat_id, msg_id, target_msg_id, target_user_id, from_user_id, reason_value, query: query
           end
         end
       when ReportReason::Other

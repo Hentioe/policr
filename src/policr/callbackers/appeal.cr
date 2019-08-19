@@ -22,7 +22,7 @@ module Policr
           text = t("appeal.report.detail", {
             begin_date: begin_date.to_s(DATE_FORMAT),
             end_date:   end_date.to_s(DATE_FORMAT),
-            reason:     ReportCallback.make_reason(r.reason),
+            reason:     ReportCallbacker.make_reason(r.reason),
             link:       "t.me/#{bot.voting_channel}/#{report.post_id}",
           })
           make_btn = ->(action : String) {
@@ -110,7 +110,7 @@ module Policr
 
           spawn bot.delete_message chat_id, msg_id
           if Model::TrueIndex.contains?(chat_id, msg_id, chooese)
-            content = AppealCallback.make_text ReportReason.new(report.reason)
+            content = AppealCallbacker.make_text ReportReason.new(report.reason)
             text = t("appeal.need_reply", {content: content})
             bot.edit_message_text(
               chat_id,

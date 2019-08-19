@@ -40,9 +40,9 @@ module Policr
     end
 
     def updated_preview_settings(group_id, delete_target, group_name)
-      midcall CleanModeCallback do
-        {_callback.create_time_setting_text(group_id, delete_target, group_name: group_name),
-         _callback.create_time_setting_markup(group_id, delete_target)}
+      midcall CleanModeCallbacker do
+        {_callbacker.create_time_setting_text(group_id, delete_target, group_name: group_name),
+         _callbacker.create_time_setting_markup(group_id, delete_target)}
       end || {nil, nil}
     end
   end

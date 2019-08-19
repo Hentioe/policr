@@ -37,9 +37,9 @@ module Policr
     end
 
     def update_preview_settings(group_id, group_name)
-      midcall StrictModeCallback do
-        {_callback.create_content_blocked_text(group_id, group_name),
-         _callback.create_content_blocked_markup(group_id)}
+      midcall StrictModeCallbacker do
+        {_callbacker.create_content_blocked_text(group_id, group_name),
+         _callbacker.create_content_blocked_markup(group_id)}
       end || {nil, nil}
     end
   end

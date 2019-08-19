@@ -1,5 +1,5 @@
 module Policr
-  abstract class Callback
+  abstract class Callbacker
     getter bot : Bot
     getter name : String
 

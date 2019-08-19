@@ -26,9 +26,9 @@ module Policr
           # 更新举报详情
           exists_r.update_column(:detail, detail)
           # 编辑举报消息
-          midcall ReportCallback do
+          midcall ReportCallbacker do
             report = exists_r
-            text = _callback.make_text(
+            text = _callbacker.make_text(
               report.author_id,
               report.role,
               report.target_snapshot_id,
@@ -42,7 +42,7 @@ module Policr
                 "@#{bot.voting_channel}",
                 message_id: exists_r.post_id,
                 text: text,
-                reply_markup: _callback.create_voting_markup(report)
+                reply_markup: _callbacker.create_voting_markup(report)
               )
               bot.reply msg, t("private_forward_report.update_success_for_other")
             rescue e : TelegramBot::APIException
@@ -71,8 +71,8 @@ module Policr
             r = Model::Report.create!(data)
             # 生成投票
             if r
-              midcall ReportCallback do
-                if _callback.create_report_voting chat_id: msg.chat.id, report: r, reply_to_message_id: msg.message_id
+              midcall ReportCallbacker do
+                if _callbacker.create_report_voting chat_id: msg.chat.id, report: r, reply_to_message_id: msg.message_id
                   bot.reply msg, t("private_forward_report.success_for_other")
                 end
               end

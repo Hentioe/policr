@@ -1,6 +1,6 @@
 macro midcall(cls)
   {{ cls_name = cls.stringify }}
-  {{ key = cls_name.underscore.gsub(/(_handler|_commander|_callback)/, "") }}
+  {{ key = cls_name.underscore.gsub(/(_handler|_commander|_callbacker)/, "") }}
   {% if cls_name.ends_with?("Handler") %}
     if (handler = bot.handlers[{{key}}]?) && (handler.is_a?({{cls}})) && (_handler = handler)
       {{yield}}
@@ -9,8 +9,8 @@ macro midcall(cls)
     if (commander = bot.commanders[{{key}}]?) && (commander.is_a?({{cls}})) && (_commander = commander)
       {{yield}}
     end
-  {% elsif cls_name.ends_with?("Callback") %}
-    if (callback = bot.callbacks[{{key}}]?) && (callback.is_a?({{cls}})) && (_callback = callback)
+  {% elsif cls_name.ends_with?("Callbacker") %}
+    if (_callbacker = bot.callbackers[{{key}}]?) && _callbacker.is_a?({{cls}})
       {{yield}}
     end
   {% end %}
@@ -18,7 +18,7 @@ end
 
 macro midreg(cls)
   {{ cls_name = cls.stringify }}
-  {{ key = cls_name.underscore.gsub(/(_handler|_commander|_callback)/, "") }}
+  {{ key = cls_name.underscore.gsub(/(_handler|_commander|_callbacker)/, "") }}
   %mid =
   {% if cls_name.ends_with?("Handler") %}
     handlers
@@ -26,8 +26,8 @@ macro midreg(cls)
     commanders
     command_names << "/{{key.id}}"
     command_names << "/{{key.id}}@#{username}"
-  {% elsif cls_name.ends_with?("Callback") %}
-    callbacks
+  {% elsif cls_name.ends_with?("Callbacker") %}
+    callbackers
   {% end %}
   %mid[{{key}}] = {{cls}}.new self
 end
@@ -75,7 +75,7 @@ macro commander(name)
 end
 
 macro callbacker(name)
-  class {{name}}Callback < Callback
+  class {{name}}Callbacker < Callbacker
     match :{{name.stringify}}
 
     {{yield}}

@@ -26,14 +26,14 @@ module Policr
     end
 
     def create_text(group_id, group_name)
-      midcall StrictModeCallback do
-        _callback.create_max_length_text(group_id, group_name)
+      midcall StrictModeCallbacker do
+        _callbacker.create_max_length_text(group_id, group_name)
       end
     end
 
     def create_markup(group_id)
-      midcall StrictModeCallback do
-        _callback.create_max_length_markup(group_id)
+      midcall StrictModeCallbacker do
+        _callbacker.create_max_length_markup(group_id)
       end
     end
   end

@@ -29,10 +29,10 @@ module Policr
     end
 
     def updated_preview_settings(group_id, group_name)
-      midcall StrictModeCallback do
+      midcall StrictModeCallbacker do
         {
-          _callback.create_format_limit_text(group_id, group_name),
-          _callback.create_format_limit_markup(group_id),
+          _callbacker.create_format_limit_text(group_id, group_name),
+          _callbacker.create_format_limit_markup(group_id),
         }
       end || {nil, nil}
     end

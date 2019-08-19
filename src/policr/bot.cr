@@ -89,7 +89,7 @@ module Policr
 
     getter self_id : Int64
     getter handlers = Hash(String, Handler).new
-    getter callbacks = Hash(String, Callback).new
+    getter callbackers = Hash(String, Callbacker).new
     getter commanders = Hash(String, Commander).new
     getter command_names = Set(String).new
 
@@ -133,31 +133,31 @@ module Policr
 
       # 注册回调模块
       regall [
-        TortureCallback,
-        BanedMenuCallback,
-        BotJoinCallback,
-        SelfJoinCallback,
-        FromCallback,
-        AfterEventCallback,
-        TortureTimeCallback,
-        CustomCallback,
-        SettingsCallback,
-        ReportCallback,
-        VotingCallback,
-        CleanModeCallback,
-        DelayTimeCallback,
-        SubfunctionsCallback,
-        PrivateForwardCallback,
-        PrivateForwardReportCallback,
-        StrictModeCallback,
-        MaxLengthCallback,
-        WelcomeCallback,
-        LanguageCallback,
-        AntiServiceMsgCallback,
-        FormatLimitCallback,
-        FromSettingCallback,
-        AppealCallback,
-        AfterwardsCallback,
+        TortureCallbacker,
+        BanedMenuCallbacker,
+        BotJoinCallbacker,
+        SelfJoinCallbacker,
+        FromCallbacker,
+        AfterEventCallbacker,
+        TortureTimeCallbacker,
+        CustomCallbacker,
+        SettingsCallbacker,
+        ReportCallbacker,
+        VotingCallbacker,
+        CleanModeCallbacker,
+        DelayTimeCallbacker,
+        SubfunctionsCallbacker,
+        PrivateForwardCallbacker,
+        PrivateForwardReportCallbacker,
+        StrictModeCallbacker,
+        MaxLengthCallbacker,
+        WelcomeCallbacker,
+        LanguageCallbacker,
+        AntiServiceMsgCallbacker,
+        FormatLimitCallbacker,
+        FromSettingCallbacker,
+        AppealCallbacker,
+        AfterwardsCallbacker,
       ]
 
       # 注册指令模块
@@ -214,8 +214,8 @@ module Policr
 
         call_name = args[0]
 
-        callbacks.each do |_, callback|
-          callback.handle(query, message, args[1..]) if callback.match?(call_name)
+        callbackers.each do |_, cb|
+          cb.handle(query, message, args[1..]) if cb.match?(call_name)
         end
       }
       if (data = query.data) && (message = query.message)

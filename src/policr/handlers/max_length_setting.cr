@@ -36,22 +36,24 @@ module Policr
         Model::MaxLength.update_total(_group_id, total)
         Model::MaxLength.update_rows(_group_id, rows)
 
-        update_text, update_markup = update_preview_settings(_group_id, _group_name)
+        updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
         spawn { bot.edit_message_text(
           chat_id,
           message_id: _reply_msg_id,
-          text: update_text,
-          reply_markup: update_markup
+          text: updated_text,
+          reply_markup: updated_markup
         ) }
 
         setting_complete_with_delay_delete msg
       end
     end
 
-    def update_preview_settings(group_id, group_name)
-      midcall StrictModeCallback do
-        {_callback.create_max_length_text(group_id, group_name),
-         _callback.create_max_length_markup(group_id)}
+    def updated_preview_settings(group_id, group_name)
+      midcall StrictModeCallbacker do
+        {
+          _callbacker.create_max_length_text(group_id, group_name),
+          _callbacker.create_max_length_markup(group_id),
+        }
       end || {nil, nil}
     end
   end
