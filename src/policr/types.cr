@@ -56,4 +56,16 @@ module Policr
   enum QuestionType
     Normal; Image
   end
+
+  class InlineLink
+    @text : String
+    @url : String
+
+    def initialize(@text, @url)
+    end
+
+    def markdown
+      "[#{@text}](#{@url})"
+    end
+  end
 end

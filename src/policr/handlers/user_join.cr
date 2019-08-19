@@ -64,7 +64,7 @@ module Policr
     end
 
     def detect_blacklist(msg, member)
-      if report = Model::Report.check_blacklist(member.id) # 处于黑名单中
+      if report = Model::Report.first_valid(member.id) # 处于黑名单中
         text = t "blacklist.was_blocked", {
           user:           FromUser.new(member).markdown_link,
           voting_channel: bot.voting_channel,
