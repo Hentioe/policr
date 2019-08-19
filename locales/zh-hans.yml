@@ -334,6 +334,7 @@ clean_mode:
   welcome: "删除欢迎消息"
   from: "删除来源调查"
   halal: "删除丢出清真"
+  report: "删除举报完成"
   delay_time: "延迟时间"
   delay_setting: |
     您正在为「%{target}」设置独立的延迟时间。如果您没有设置过，以下可能是默认时间。

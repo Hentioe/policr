@@ -28,6 +28,8 @@ module Policr
           def_target "from"
         when "halal"
           def_target "halal"
+        when "report"
+          def_target "report"
         when "timeout_verified_delay_time"
           def_delay "timeout_verified"
         when "wrong_verified_delay_time"
@@ -38,6 +40,8 @@ module Policr
           def_delay "from"
         when "halal_delay_time"
           def_delay "halal"
+        when "report_delay_time"
+          def_delay "report"
         when "back"
           spawn bot.answer_callback_query(query.id)
           midcall CleanModeCommander do
@@ -118,6 +122,8 @@ module Policr
           "from"
         when DeleteTarget::Halal
           "halal"
+        when DeleteTarget::Report
+          "report"
         else
           "unknown"
         end

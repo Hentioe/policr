@@ -29,7 +29,7 @@ module Policr
           UNSELECTED
         end
       }
-      def_button_list ["timeout_verified", "wrong_verified", "welcome", "from", "halal"]
+      def_button_list ["timeout_verified", "wrong_verified", "welcome", "from", "halal", "report"]
     end
 
     def_text do
