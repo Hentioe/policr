@@ -21,6 +21,8 @@ module Policr
         sended_msg =
           if error_msg = check_legality(author_id, target_user_id)
             bot.send_message chat_id, error_msg, reply_to_message_id: msg_id
+          elsif link = repeat?(chat_id, target_msg_id)
+            bot.send_message chat_id, t("report.repeat_error", {voting_link: link}), reply_to_message_id: msg_id
           else
             # 创建举报原因内联键盘
             markup = Markup.new
@@ -73,6 +75,9 @@ module Policr
     end
 
     def repeat?(chat_id, msg_id)
+      if r = Model::Report.repeat?(chat_id, msg_id)
+        "https://t.me/#{bot.voting_channel}/#{r.post_id}"
+      end
     end
   end
 end

@@ -247,6 +247,7 @@ pass_by_admin: "Σ(\\*ﾟдﾟﾉ)ﾉ [这家伙](tg://user?id=%{user_id})被 %{
 pass_slow_alert: "验证通过，但是晚了一点点，再去试试？"
 pass_slow_receipt: "(´ﾟдﾟ`) TA 通过了验证，但是手慢了那么一点点，再给 TA 一次机会……"
 report:
+  repeat_error: "这条消息已被举报过了，看[这里](%{voting_link})。"
   admin_reply: |
     举报开始，请选择具体原因。举报将在完成选择以后被创建，并进入[黑名单公投频道](https://t.me/%{voting_channel})进行投票。如果您决定放弃举报，则不需要做任何选择。
 

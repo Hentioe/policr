@@ -13,7 +13,7 @@ module Policr
         members.select { |m| m.is_bot }.select { |m| m.id == bot.self_id }.each do |member| # 自己被拉入群组？
           if user = msg.from
             # 不允许黑名单用户邀请和使用本机器人
-            if report = Model::Report.check_blacklist(user.id)
+            if report = Model::Report.first_valid(user.id)
               text = t "add_to_group.no_right_to_invite", {user: FromUser.new(user).markdown_link}
               spawn { bot.send_message chat_id, text }
               bot.leave_chat chat_id
