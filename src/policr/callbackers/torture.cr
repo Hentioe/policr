@@ -1,6 +1,8 @@
 # 2019-07-18 此文件需要重构！！！
 
 module Policr
+  DELAY_SHORT = 3
+
   callbacker Torture do
     alias DeleteTarget = CleanDeleteTarget
 
@@ -133,50 +135,64 @@ module Policr
         if reply_msg
           reply_msg.message_id
         end
+      is_enabled_from = KVStore.enabled_from? chat_id
+
+      destory_join_msg = ->{
+        # 立即删除入群消息（如果没有启用来源调查）
+        if !is_enabled_from && (_delete_msg_id = reply_id)
+          Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
+            spawn bot.delete_message(chat_id, _delete_msg_id)
+          end
+        end
+      }
 
       Cache.verification_passed chat_id, target_user_id # 更新验证状态
       Model::ErrorCount.destory chat_id, target_user_id # 销毁错误记录
       # 异步调用
       spawn bot.answer_callback_query(query.id, text: t("pass_alert")) unless admin
 
-      unless KVStore.enabled_welcome? chat_id
-        text =
-          if admin
-            t("pass_by_admin", {user_id: target_user_id, admin: admin.markdown_link})
-          else
-            t("pass_by_self", {user_id: target_user_id})
-          end
-
-        if photo
-          spawn bot.delete_message chat_id, message_id
-          spawn {
-            sended_msg = bot.send_message(
-              chat_id,
-              text: text,
-              reply_to_message_id: reply_id,
-              reply_markup: nil
-            )
-
-            if sended_msg && !KVStore.enabled_record_mode?(chat_id)
-              msg_id = sended_msg.message_id
-              Schedule.after(5.seconds) { bot.delete_message(chat_id, msg_id) }
-            end
-          }
+      text =
+        if admin
+          t("pass_by_admin", {user_id: target_user_id, admin: admin.markdown_link})
         else
-          spawn {
-            bot.edit_message_text(
-              chat_id,
-              message_id: message_id,
-              text: text,
-              reply_markup: nil
-            )
-
-            unless KVStore.enabled_record_mode?(chat_id)
-              Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) }
-            end
-          }
+          t("pass_by_self", {user_id: target_user_id})
         end
+
+      if photo
+        spawn bot.delete_message chat_id, message_id
+        spawn {
+          sended_msg = bot.send_message(
+            chat_id,
+            text: text,
+            reply_to_message_id: reply_id
+          )
+
+          if sended_msg && !KVStore.enabled_record_mode?(chat_id)
+            msg_id = sended_msg.message_id
+            Schedule.after(DELAY_SHORT.seconds) do
+              spawn bot.delete_message(chat_id, msg_id)
+              destory_join_msg.call
+            end
+          end
+        }
       else
+        spawn {
+          bot.edit_message_text(
+            chat_id,
+            message_id: message_id,
+            text: text
+          )
+
+          unless KVStore.enabled_record_mode?(chat_id)
+            schedule(DELAY_SHORT.seconds) do
+              spawn bot.delete_message(chat_id, message_id)
+              destory_join_msg.call
+            end
+          end
+        }
+      end
+
+      if KVStore.enabled_welcome? chat_id
         from_user =
           if admin
             if reply_msg
@@ -185,7 +201,7 @@ module Policr
           elsif reply_msg
             FromUser.new(query.from)
           end
-        is_enabled_welcome = bot.send_welcome chat, message_id, from_user, photo, reply_id
+        bot.send_welcome chat, from_user
       end
       # 初始化用户权限
       spawn bot.restrict_chat_member(
@@ -197,19 +213,11 @@ module Policr
         can_add_web_page_previews: true
       )
 
-      is_enabled_from = KVStore.enabled_from? chat_id
-      # 立即删除入群消息
-      if !is_enabled_from && !is_enabled_welcome && (_delete_msg_id = reply_id)
-        Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
-          bot.delete_message(chat_id, _delete_msg_id)
-        end
-      end
-
       # 来源调查
-      from_enquire(chat_id, message_id, target_user_id) if is_enabled_from
+      inform_from(chat_id, target_user_id) if is_enabled_from
     end
 
-    def from_enquire(chat_id : Int64, message_id : Int32, user_id : Int32)
+    def inform_from(chat_id : Int64, user_id : Int32)
       if from_list = KVStore.get_from(chat_id)
         index = -1
         btn = ->(text : String) {
@@ -219,22 +227,23 @@ module Policr
         from_list.each do |btn_text_list|
           markup << btn_text_list.map { |text| btn.call(text) }
         end
-        reply_to_message_id = Cache.user_join_msg? user_id, chat_id
-        sended_msg = bot.send_message(
-          chat_id,
-          text: t("from.question"),
-          reply_to_message_id: reply_to_message_id,
-          reply_markup: markup
-        )
-        # 根据干净模式数据延迟清理来源调查
-        if sended_msg
-          msg_id = sended_msg.message_id
-          Model::CleanMode.working(chat_id, DeleteTarget::From) { bot.delete_message(chat_id, msg_id) }
-        end
-        # 清理入群消息
-        if _delete_msg_id = reply_to_message_id
-          Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
-            bot.delete_message(chat_id, _delete_msg_id)
+        join_msg_id = Cache.user_join_msg? user_id, chat_id
+        if sended_msg = bot.send_message(
+             chat_id,
+             text: t("from.question"),
+             reply_to_message_id: join_msg_id,
+             reply_markup: markup
+           )
+          # 根据干净模式数据延迟清理来源调查
+          _delete_from_msg_id = sended_msg.message_id
+          Model::CleanMode.working(chat_id, DeleteTarget::From) do
+            spawn bot.delete_message(chat_id, _delete_from_msg_id)
+            # 删除入群消息
+            if _delete_join_msg_id = join_msg_id
+              Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
+                spawn bot.delete_message(chat_id, _delete_join_msg_id)
+              end
+            end
           end
         end
       end
@@ -255,12 +264,13 @@ module Policr
       bot.unban_chat_member(chat_id, target_user_id)
     end
 
-    def failed(
-      chat_id : Int64,
-      message_id : Int32,
-      user_id : Int32,
-      admin : FromUser? = nil, timeout = false, photo = false, reply_msg : TelegramBot::Message? = nil
-    )
+    def failed(chat_id : Int64,
+               message_id : Int32,
+               user_id : Int32,
+               admin : FromUser? = nil,
+               timeout = false,
+               photo = false,
+               reply_msg : TelegramBot::Message? = nil)
       reply_id =
         if reply_msg
           reply_msg.message_id

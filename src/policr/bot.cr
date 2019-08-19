@@ -317,26 +317,10 @@ module Policr
     end
 
     NONE_FROM_USER = "Unknown"
+    WELCOME_VARS   = ["fullname", "chatname", "mention", "userid"]
 
-    def send_welcome(chat : TelegramBot::Chat,
-                     message_id : Int32?,
-                     from_user : FromUser? = nil,
-                     reply : Bool? = false,
-                     reply_id : Int32? = nil,
-                     last_delete : Bool? = true) : Bool
+    def send_welcome(chat : TelegramBot::Chat, from_user : FromUser? = nil)
       chat_id = chat.id
-
-      # 延迟清理欢迎消息和加群消息（根据设置）
-      destory_task = ->(msg_id : Int32) {
-        Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) do
-          spawn delete_message(chat_id, msg_id)
-          if _delete_id = reply_id
-            Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
-              delete_message(chat_id, _delete_id)
-            end
-          end
-        end
-      }
 
       if welcome = KVStore.get_welcome(chat_id)
         disable_link_preview = KVStore.disabled_welcome_link_preview?(chat_id)
@@ -345,48 +329,29 @@ module Policr
         text =
           if from_user
             vals = [from_user.fullname, chat.title, from_user.markdown_link, from_user.user_id]
-            render text,
-              ["fullname", "chatname", "mention", "userid"],
-              vals
+            render text, {{ WELCOME_VARS }}, vals
           else
             vals = [NONE_FROM_USER, chat.title, NONE_FROM_USER, NONE_FROM_USER]
-            render text,
-              ["fullname", "chatname", "mention", "userid"],
-              vals
+            render text, {{ WELCOME_VARS }}, vals
           end
 
-        # 异步调用
-        if reply
-          spawn { delete_message chat_id, message_id } if last_delete
-          spawn {
-            sended_msg = send_message(
-              chat_id,
-              text: text,
-              reply_to_message_id: reply_id,
-              reply_markup: nil,
-              disable_web_page_preview: disable_link_preview
-            )
+        welcome = escape_markdown welcome
 
-            if sended_msg # 根据设置延迟清理
-              destory_task.call sended_msg.message_id
+        spawn {
+          sended_msg = send_message(
+            chat_id,
+            text: text,
+            reply_markup: nil,
+            disable_web_page_preview: disable_link_preview
+          )
+
+          if sended_msg # 根据设置延迟清理
+            _del_msg_id = sended_msg.message_id
+            Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) do
+              delete_message(chat_id, _del_msg_id)
             end
-          }
-        else
-          spawn {
-            edit_message_text(
-              chat_id,
-              message_id: message_id,
-              text: text,
-              reply_markup: nil,
-              disable_web_page_preview: disable_link_preview
-            )
-            # 根据设置延迟清理
-            destory_task.call message_id
-          }
-        end
-        true
-      else
-        false
+          end
+        }
       end
     end
   end

@@ -20,7 +20,7 @@ module Policr
     def_text text do
       welcome_text =
         if welcome = KVStore.get_welcome(_group_id)
-          escape_markdown welcome
+          welcome
         else
           t "welcome.none"
         end

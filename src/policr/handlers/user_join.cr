@@ -25,11 +25,7 @@ module Policr
             end
             bot.send_welcome(
               msg.chat,
-              msg.message_id,
-              FromUser.new(member),
-              reply: true,
-              reply_id: msg.message_id,
-              last_delete: false
+              FromUser.new(member)
             ) if KVStore.enabled_welcome?(chat_id)
             return
           end
@@ -270,14 +266,13 @@ module Policr
           delete_target = timeout ? DeleteTarget::TimeoutVerified : DeleteTarget::WrongVerified
           msg_id = result_msg_id
           Model::CleanMode.working chat_id, delete_target do
+            spawn bot.delete_message(chat_id, msg_id)
             # 删除加群消息
             Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
               if _delete_msg_id = reply_id
                 spawn bot.delete_message(chat_id, _delete_msg_id)
               end
             end
-            # 清理消息
-            bot.delete_message(chat_id, msg_id)
           end
         end
       end

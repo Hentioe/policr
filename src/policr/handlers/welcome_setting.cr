@@ -37,7 +37,10 @@ module Policr
 
     def updated_settings_preview(group_id, group_name)
       midcall WelcomeCommander do
-        {_commander.text(group_id, group_name), _commander.markup(group_id)}
+        {
+          _commander.text(group_id, group_name),
+          _commander.markup(group_id)
+        }
       end || {nil, nil}
     end
   end
