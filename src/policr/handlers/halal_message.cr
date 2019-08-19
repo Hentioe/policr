@@ -54,7 +54,7 @@ module Policr
             bot.kick_chat_member(msg.chat.id, member.id)
             member_id = member.id
             text = t "halal.kicked", {user_id: member_id}
-            markup = handler.add_banned_menu(member_id, true)
+            markup = _handler.add_banned_menu(member_id, true)
             bot.edit_message_text(
               chat_id,
               message_id: kick_msg_id,

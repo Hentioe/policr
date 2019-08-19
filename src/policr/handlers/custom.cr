@@ -19,25 +19,24 @@ module Policr
 
     handle do
       retrieve [(text = msg.text)] do
-        unless valid?(text) # 内容不合法？
-          bot.reply msg, t("custom.wrong_format")
-          return
-        end
-
         chat_id = msg.chat.id
+        if valid?(text) # 内容合法？
 
-        KVStore.custom_text(_group_id, text)
+          KVStore.custom_text(_group_id, text)
 
-        updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
+          updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
 
-        spawn { bot.edit_message_text(
-          chat_id,
-          message_id: _reply_msg_id,
-          text: updated_text,
-          reply_markup: updated_markup
-        ) }
+          spawn { bot.edit_message_text(
+            chat_id,
+            message_id: _reply_msg_id,
+            text: updated_text,
+            reply_markup: updated_markup
+          ) }
 
-        setting_complete_with_delay_delete msg
+          setting_complete_with_delay_delete msg
+        else
+          bot.reply msg, t("custom.wrong_format")
+        end
       end
     end
 

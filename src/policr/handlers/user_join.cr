@@ -45,7 +45,7 @@ module Policr
 
           midcall HalalMessageHandler do
             if !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal) && # 未关闭封杀清真子功能
-               handler.is_halal(name) &&
+               _handler.is_halal(name) &&
                !KVStore.halal_white?(member.id) # 非白名单
               _handler.kick_halal(msg, member)
             else

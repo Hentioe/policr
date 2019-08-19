@@ -21,13 +21,13 @@ module Policr
 
     def create_text(group_id, group_name)
       midcall TortureTimeCommander do
-        commander.create_text(group_id, group_name)
+        _commander.create_text(group_id, group_name)
       end
     end
 
     def create_markup
       midcall TortureTimeCommander do
-        commander.create_markup
+        _commander.create_markup
       end
     end
   end

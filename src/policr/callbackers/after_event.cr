@@ -12,7 +12,7 @@ module Policr
           return
         end
         midcall UserJoinHandler do
-          handler.promptly_torture(msg.chat.id, msg_id.to_i, member_id.to_i)
+          _handler.promptly_torture(msg.chat.id, msg_id.to_i, member_id.to_i)
           bot.delete_message(msg.chat.id, msg.message_id)
         end
       when "unban" # 解封

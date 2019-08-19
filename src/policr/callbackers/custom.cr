@@ -104,7 +104,7 @@ module Policr
 
     def create_markup(group_id)
       midcall CustomCommander do
-        commander.create_markup(group_id)
+        _commander.create_markup(group_id)
       end
     end
 

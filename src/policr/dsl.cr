@@ -2,11 +2,11 @@ macro midcall(cls)
   {{ cls_name = cls.stringify }}
   {{ key = cls_name.underscore.gsub(/(_handler|_commander|_callbacker)/, "") }}
   {% if cls_name.ends_with?("Handler") %}
-    if (handler = bot.handlers[{{key}}]?) && (handler.is_a?({{cls}})) && (_handler = handler)
+    if (_handler = bot.handlers[{{key}}]?) && _handler.is_a?({{cls}})
       {{yield}}
     end
   {% elsif cls_name.ends_with?("Commander") %}
-    if (commander = bot.commanders[{{key}}]?) && (commander.is_a?({{cls}})) && (_commander = commander)
+    if (_commander = bot.commanders[{{key}}]?) && _commander.is_a?({{cls}})
       {{yield}}
     end
   {% elsif cls_name.ends_with?("Callbacker") %}

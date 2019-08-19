@@ -52,7 +52,7 @@ module Policr
             Cache.verification_init chat_id, target_user_id
             midcall UserJoinHandler do
               spawn bot.delete_message chat_id, message_id
-              handler.promptly_torture chat_id, join_msg_id, target_user_id, re: true
+              _handler.promptly_torture chat_id, join_msg_id, target_user_id, re: true
               return
             end
           end
@@ -67,7 +67,7 @@ module Policr
                 Model::ErrorCount.destory chat_id, target_user_id                    # 销毁错误记录
                 midcall UserJoinHandler do
                   spawn bot.delete_message chat_id, message_id
-                  handler.promptly_torture chat_id, join_msg_id, target_user_id, re: true
+                  _handler.promptly_torture chat_id, join_msg_id, target_user_id, re: true
                   return
                 end
               else
@@ -82,7 +82,7 @@ module Policr
               Model::ErrorCount.destory chat_id, target_user_id        # 销毁错误记录
               midcall UserJoinHandler do
                 spawn bot.delete_message chat_id, message_id
-                handler.promptly_torture chat_id, join_msg_id, target_user_id, re: true
+                _handler.promptly_torture chat_id, join_msg_id, target_user_id, re: true
                 return
               end
             else
@@ -113,7 +113,7 @@ module Policr
         Model::ErrorCount.one_time chat_id, user_id # 错误次数加一
         midcall UserJoinHandler do
           spawn bot.delete_message chat_id, message_id
-          handler.promptly_torture chat_id, join_msg_id, user_id, re: true
+          _handler.promptly_torture chat_id, join_msg_id, user_id, re: true
           return
         end
       else # 验证失败
@@ -268,7 +268,7 @@ module Policr
         end
       Model::ErrorCount.destory chat_id, user_id # 销毁错误记录
       midcall UserJoinHandler do
-        handler.failed(chat_id, message_id, user_id, admin: admin, timeout: timeout, photo: photo, reply_id: reply_id)
+        _handler.failed(chat_id, message_id, user_id, admin: admin, timeout: timeout, photo: photo, reply_id: reply_id)
       end
     end
   end

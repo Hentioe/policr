@@ -49,7 +49,7 @@ module Policr
               _chat_id,
               message_id: msg.message_id,
               text: back_text(_group_id, _group_name),
-              reply_markup: commander.create_markup(_group_id)
+              reply_markup: _commander.create_markup(_group_id)
             )
           end
         else # 失效键盘
@@ -92,7 +92,7 @@ module Policr
 
     def create_markup(group_id)
       midcall CleanModeCommander do
-        commander.create_markup(group_id)
+        _commander.create_markup(group_id)
       end
     end
 

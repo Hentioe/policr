@@ -41,7 +41,7 @@ module Policr
           _chat_id,
            message_id: msg.message_id, 
            text: create_text(_group_id, _group_name), 
-           reply_markup: commander.create_markup(_group_id)
+           reply_markup: _commander.create_markup(_group_id)
         )
       end
     end

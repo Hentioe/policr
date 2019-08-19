@@ -13,7 +13,7 @@ module Policr
           error_msg = midcall ReportCommander do
             author_id = from_user.id
             target_user_id = target_user.id
-            commander.check_legality(author_id, target_user_id)
+            _commander.check_legality(author_id, target_user_id)
           end
 
           if error_msg # 如果举报不合法响应错误
