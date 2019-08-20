@@ -126,6 +126,7 @@ module Policr
         PrivateChatReplyHandler,
         AppealReplyHandler,
         TemplateSettingHandler,
+        HalalCaptionHandler,
         # 此 Handler 置底
         PrivateChatHandler,
       ]
