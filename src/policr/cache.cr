@@ -52,6 +52,9 @@ module Policr::Cache
   # 标记欢迎消息设置消息
   def_carving "welcome_setting"
 
+  # 标记验证提示设置消息
+  def_carving "template_setting"
+
   # 标记验证时间设置消息
   def_carving "torture_time"
 

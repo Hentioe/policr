@@ -53,7 +53,7 @@ module Policr
             Cache.verification_init chat_id, target_user_id
             midcall UserJoinHandler do
               spawn bot.delete_message chat_id, message_id
-              _handler.promptly_torture chat_id, join_msg_id, target_user_id, re: true
+              _handler.promptly_torture chat_id, join_msg_id, query.from, re: true
               return
             end
           end
@@ -68,7 +68,7 @@ module Policr
                 Model::ErrorCount.destory chat_id, target_user_id                    # 销毁错误记录
                 midcall UserJoinHandler do
                   spawn bot.delete_message chat_id, message_id
-                  _handler.promptly_torture chat_id, join_msg_id, target_user_id, re: true
+                  _handler.promptly_torture chat_id, join_msg_id, query.from, re: true
                   return
                 end
               else
@@ -83,7 +83,7 @@ module Policr
               Model::ErrorCount.destory chat_id, target_user_id        # 销毁错误记录
               midcall UserJoinHandler do
                 spawn bot.delete_message chat_id, message_id
-                _handler.promptly_torture chat_id, join_msg_id, target_user_id, re: true
+                _handler.promptly_torture chat_id, join_msg_id, query.from, re: true
                 return
               end
             else
@@ -94,7 +94,7 @@ module Policr
           end
         else                                                                       # 未通过验证
           if KVStore.enabled_fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
-            fault_tolerance chat_id, target_user_id, message_id, query.id, join_msg, is_photo
+            fault_tolerance chat_id, query.from, message_id, query.id, join_msg, is_photo
           else
             bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)
             failed(chat_id, message_id, target_user_id, photo: is_photo, reply_msg: join_msg)
@@ -103,7 +103,8 @@ module Policr
       end
     end
 
-    def fault_tolerance(chat_id, user_id, message_id, query_id, join_msg, is_photo)
+    def fault_tolerance(chat_id, member : TelegramBot::User, message_id, query_id, join_msg, is_photo)
+      user_id = member.id
       join_msg_id =
         if join_msg
           join_msg.message_id
@@ -114,7 +115,7 @@ module Policr
         Model::ErrorCount.one_time chat_id, user_id # 错误次数加一
         midcall UserJoinHandler do
           spawn bot.delete_message chat_id, message_id
-          _handler.promptly_torture chat_id, join_msg_id, user_id, re: true
+          _handler.promptly_torture chat_id, join_msg_id, member, re: true
           return
         end
       else # 验证失败

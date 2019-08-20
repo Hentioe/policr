@@ -11,7 +11,7 @@ module Policr::Model
       updated_at: Time?
     )
 
-    private def self.exists?(chat_id : Int64)
+    def self.exists?(chat_id : Int64)
       where { _chat_id == chat_id }.first
     end
 
