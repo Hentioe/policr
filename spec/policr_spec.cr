@@ -8,7 +8,7 @@ alias VoteType = Policr::VoteType
 alias EnableStatus = Policr::EnableStatus
 alias DeleteTarget = Policr::CleanDeleteTarget
 alias SubfunctionType = Policr::SubfunctionType
-alias AntiDeleteTarget = Policr::AntiMessageDeleteTarget
+alias ServiceMessage = Policr::ServiceMessage
 
 describe Policr do
   it "arabic characters match" do
@@ -176,11 +176,11 @@ describe Policr do
     end
 
     # 删除服务消息
-    Model::AntiMessage.enable!(from_chat_id, AntiDeleteTarget::JoinGroup)
-    Model::AntiMessage.enabled?(from_chat_id, AntiDeleteTarget::JoinGroup).should be_true
-    Model::AntiMessage.disabled?(from_chat_id, AntiDeleteTarget::LeaveGroup).should be_false
-    Model::AntiMessage.disable!(from_chat_id, AntiDeleteTarget::LeaveGroup)
-    Model::AntiMessage.disabled?(from_chat_id, AntiDeleteTarget::LeaveGroup).should be_true
+    Model::AntiMessage.enable!(from_chat_id, ServiceMessage::JoinGroup)
+    Model::AntiMessage.enabled?(from_chat_id, ServiceMessage::JoinGroup).should be_true
+    Model::AntiMessage.disabled?(from_chat_id, ServiceMessage::LeaveGroup).should be_false
+    Model::AntiMessage.disable!(from_chat_id, ServiceMessage::LeaveGroup)
+    Model::AntiMessage.disabled?(from_chat_id, ServiceMessage::LeaveGroup).should be_true
 
     r = Model::AntiMessage.where { _chat_id == from_chat_id }.delete
     r.should be_truthy
@@ -194,5 +194,16 @@ describe Policr do
     Model::FormatLimit.clear(from_chat_id)
     Model::FormatLimit.includes?(from_chat_id, "mp4").should be_false
     Model::FormatLimit.find(from_chat_id).should be_falsey
+
+    # 模板
+    Model::Template.enabled?(from_chat_id).should be_falsey
+    t1 = Model::Template.set_content! from_chat_id, "我是模板内容"
+    t1.should be_truthy
+    Model::Template.enabled?(from_chat_id).should be_falsey
+    Model::Template.enable from_chat_id
+    Model::Template.enabled?(from_chat_id).should be_truthy
+    Model::Template.disable from_chat_id
+    Model::Template.enabled?(from_chat_id).should be_falsey
+    Model::Template.delete(t1.id).should be_truthy
   end
 end

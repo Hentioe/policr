@@ -12,3 +12,4 @@ CREATE TABLE languages (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NO
 CREATE TABLE anti_messages (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, delete_target integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL, status integer NOT NULL DEFAULT 2);
 CREATE TABLE format_limits (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, list text NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE IF NOT EXISTS "appeals"(id integer PRIMARY KEY, author_id integer NOT NULL, done integer NOT NULL, report_id integer, created_at text NOT NULL, updated_at text NOT NULL,FOREIGN KEY (report_id) REFERENCES reports(id));
+CREATE TABLE templates (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, content text NOT NULL, enabled integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
