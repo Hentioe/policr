@@ -494,7 +494,7 @@ welcome:
     2. [在欢迎消息中插入变量](https://policr.bluerain.io#vars_in_welcome)
   disable_link_preview: "禁用链接预览"
 from:
-  question: "( ・∇・) 欢迎加入本群，告诉大家你从哪个渠道进来的吧？"
+  question: "( ・∇・) 既然来了，就顺便告诉大家从哪个渠道进来的吧？"
   message: "\\_( ﾟДﾟ)ﾉ 居然是从「%{from}」过来的，大家小心！"
   none: 无
   enable: "启用来源调查"

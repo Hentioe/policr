@@ -6,7 +6,7 @@ module Policr
 
         case name
         when "join_group"
-          def_toggle "join_group", default: false
+          def_toggle "join_group", default: true
         when "leave_group"
           def_toggle "leave_group", default: true
         else # 失效键盘

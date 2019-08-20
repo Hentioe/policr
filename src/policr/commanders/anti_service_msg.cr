@@ -20,7 +20,7 @@ module Policr
       make_selected_status = ->(delete_target : ServiceMessage) {
         case delete_target
         when ServiceMessage::JoinGroup
-          Model::AntiMessage.enabled?(_group_id, delete_target) ? SELECTED : UNSELECTED
+          Model::AntiMessage.disabled?(_group_id, delete_target) ? UNSELECTED : SELECTED
         when ServiceMessage::LeaveGroup
           Model::AntiMessage.disabled?(_group_id, delete_target) ? UNSELECTED : SELECTED
         else
