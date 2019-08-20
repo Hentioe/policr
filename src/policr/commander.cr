@@ -8,10 +8,6 @@ module Policr
       @name = name
     end
 
-    def create_markup(group_id) : (Markup | Nil)
-      nil
-    end
-
     macro match(name)
       def initialize(bot)
         @bot = bot
@@ -86,7 +82,7 @@ module Policr
     end
 
     macro paste_markup
-      create_markup(_group_id)
+      create_markup(_group_id, _group_name)
     end
 
     macro reply(args)

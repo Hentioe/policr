@@ -125,6 +125,7 @@ module Policr
         FormatLimitSettingHandler,
         PrivateChatReplyHandler,
         AppealReplyHandler,
+        TemplateSettingHandler,
         # 此 Handler 置底
         PrivateChatHandler,
       ]
@@ -156,6 +157,7 @@ module Policr
         FromSettingCallbacker,
         AppealCallbacker,
         AfterwardsCallbacker,
+        TemplateCallbacker,
       ]
 
       # 注册指令模块

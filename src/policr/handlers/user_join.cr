@@ -102,11 +102,14 @@ module Policr
         chat_id = msg.chat.id
         msg_id = msg.message_id
         member_id = member.id
-        promptly_torture(chat_id, msg_id, member_id)
+        promptly_torture(chat_id, msg_id, member)
       end
     end
 
-    def promptly_torture(chat_id : Int64, msg_id : (Int32 | Nil), member_id : Int32, re = false)
+    VERIFITION_HINT_VARS = ["fullname", "mention", "userid", "question", "time"]
+
+    def promptly_torture(chat_id : Int64, msg_id : (Int32 | Nil), member : TelegramBot::User, re = false)
+      member_id = member.id
       Cache.verification_init(chat_id, member_id) unless re
 
       params = {chat_id: chat_id}
@@ -148,7 +151,18 @@ module Policr
       locale = gen_locale chat_id
       question =
         if torture_sec > 0 && torture_sec < MAX_COUNTDOWN
-          hint = t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title}, locale: locale)
+          default_hint = ->{
+            t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title}, locale: locale)
+          }
+          hint =
+            if t = Model::Template.enabled? chat_id
+              u = FromUser.new member
+              vals = [u.fullname, u.markdown_link, u.user_id, title, t("units.sec", {n: torture_sec})]
+              _tmp_hint = render t.content, {{VERIFITION_HINT_VARS}}, vals
+              escape_markdown(_tmp_hint) || default_hint.call
+            else
+              default_hint.call
+            end
         else
           t("torture.no_time_reply", {user_id: member_id, title: title}, locale: locale)
         end
