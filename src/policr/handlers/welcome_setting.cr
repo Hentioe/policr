@@ -39,7 +39,7 @@ module Policr
       midcall WelcomeCommander do
         {
           _commander.text(group_id, group_name),
-          _commander.markup(group_id)
+          _commander.markup(group_id),
         }
       end || {nil, nil}
     end
