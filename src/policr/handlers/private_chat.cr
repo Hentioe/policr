@@ -86,15 +86,17 @@ module Policr
       make_btn = ->(text : String, n : Int32) {
         Button.new(text: text, callback_data: "Manage:jump:#{n}")
       }
+      buttons = [] of Button
       markup = Markup.new
 
       if page_n > 1 # 存在上一页
-        markup << [make_btn.call("上一页", page_n - 1)]
+        buttons << make_btn.call("上一页", page_n - 1)
       end
-      markup << [make_btn.call("刷新", page_n)]
+      buttons << make_btn.call("刷新", page_n)
       if groups.size > SIZE # 存在下一页
-        markup << [make_btn.call("下一页", page_n + 1)]
+        buttons << make_btn.call("下一页", page_n + 1)
       end
+      markup << buttons
 
       markup
     end
