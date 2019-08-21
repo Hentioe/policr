@@ -25,8 +25,8 @@ module Policr
           bot.edit_message_text(
             chat_id,
             message_id: msg_id,
-            text: _handler.create_manage_text(1),
-            reply_markup: _handler.create_manage_markup(1)
+            text: _handler.create_manage_text(page_n),
+            reply_markup: _handler.create_manage_markup(page_n)
           )
         end
       end
