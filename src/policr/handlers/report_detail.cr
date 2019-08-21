@@ -7,6 +7,7 @@ module Policr
 
     match do
       all_pass? [
+        from_private_chat?(msg),
         (reply_msg = msg.reply_to_message),
         (@reply_msg_id = reply_msg.message_id),
         (@target_user = Cache.report_detail_msg?(msg.chat.id, @reply_msg_id)), # 回复目标为举报详情？

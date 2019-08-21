@@ -37,7 +37,7 @@ module Policr
           when "leave"
             group_id = args[1].to_i64
             bot.leave_chat group_id
-            Cache.delete_group group_id
+            Cache.delete_group(group_id)
           else
             nil
           end
@@ -92,7 +92,7 @@ module Policr
         markup << [make_btn.call("上一页", page_n - 1)]
       end
       markup << [make_btn.call("刷新", page_n)]
-      if groups.size > limit # 存在下一页
+      if groups.size > SIZE # 存在下一页
         markup << [make_btn.call("下一页", page_n + 1)]
       end
 
@@ -106,9 +106,13 @@ module Policr
     end
 
     def loading_groups(offset, limit)
-      Cache.serving_groups.select do |chat_id, info|
-        _, _, no = info
-        no > offset && no < (offset + limit)
+      i = 0
+      Cache.serving_groups.to_a.sort_by do |k, v|
+        _, _, no = v
+        no
+      end.select do
+        i += 1
+        i > offset && i <= (offset + limit)
       end
     end
   end

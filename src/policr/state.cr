@@ -2,6 +2,7 @@ alias StateValueType = Bool | Int32
 
 STATE_TYPE_MAP = {
   :done => Bool,
+  :self_left => Bool,
 }
 
 macro read_state(name)
