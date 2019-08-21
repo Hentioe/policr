@@ -142,6 +142,10 @@ module Policr::Cache
     @@group_list
   end
 
+  def delete_group(chat_id : Int64)
+    @@group_list.delete chat_id
+  end
+
   def get_admins(chat_id)
     @@admins[chat_id]?
   end

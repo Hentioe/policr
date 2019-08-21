@@ -32,7 +32,7 @@ module Policr
         begin
           args = text[1..].split(" ")
           case args[0]
-          when "rr" # Remove report
+          when "rr" # 删除错误举报
             if (appeal = Model::Appeal.find(args[1].to_i)) &&
                (report = appeal.report)
               if appeal.author_id == user_id
