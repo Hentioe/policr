@@ -159,6 +159,7 @@ module Policr
         AppealCallbacker,
         AfterwardsCallbacker,
         TemplateCallbacker,
+        ManageCallbacker,
       ]
 
       # 注册指令模块

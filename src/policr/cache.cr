@@ -1,8 +1,9 @@
 module Policr::Cache
   extend self
 
+  @@group_no = 0
   # 运行周期内服务的群组列表
-  @@group_list = Hash(Int64, Tuple(String, String)).new
+  @@group_list = Hash(Int64, Tuple(String, String, Int32)).new
 
   # 缓存管理员列表
   @@admins = Hash(Int64, Array(TelegramBot::ChatMember)).new
@@ -134,7 +135,8 @@ module Policr::Cache
         _, reason = bot.parse_error(e)
         reason.to_s
       end
-      @@group_list[chat.id] = {link, "#{chat.title}"}
+      @@group_no += 1
+      @@group_list[chat.id] = {link, "#{chat.title}", @@group_no}
     end
   end
 

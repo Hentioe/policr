@@ -29,30 +29,11 @@ module Policr
           args = text[1..].split(" ")
           case args[0]
           when "manage" # 管理群组列表
-            list_sb = String.build do |str|
-              Cache.serving_groups.each do |chat_id, info|
-                link, title = info
-                if link.starts_with? "t.me"
-                  str << "👥🌐|"
-                else
-                  str << "👥🔒|"
-                end
-                str << "🆔 `#{chat_id}`|"
-                if link.starts_with?("t.me") || link.starts_with?("https")
-                  str << "[#{title}](#{link})"
-                else
-                  str << escape_markdown(title)
-                end
-                str << "\n"
-              end
-            end
-            text =
-              if list_sb.to_s.empty?
-                t "none"
-              else
-                list_sb.to_s
-              end
-            bot.send_message bot.owner_id, text: text
+            bot.send_message(
+              bot.owner_id,
+              text: create_manage_text(1),
+              reply_markup: create_manage_markup(1)
+            )
           when "leave"
             group_id = args[1].to_i64
             bot.leave_chat group_id
@@ -63,6 +44,71 @@ module Policr
         rescue ex : Exception
           bot.send_message bot.owner_id, ex.message || ex.to_s
         end
+      end
+    end
+
+    SIZE = 20
+
+    def create_manage_text(page_n : Int32)
+      offset, limit = gen_ranging page_n
+
+      list_sb = String.build do |str|
+        groups = loading_groups offset, limit
+        groups.each do |chat_id, info|
+          link, title, _ = info
+          if link.starts_with? "t.me"
+            str << "👥🌐|"
+          else
+            str << "👥🔒|"
+          end
+          str << "🆔 `#{chat_id}`|"
+          if link.starts_with?("t.me") || link.starts_with?("https")
+            str << "[#{title}](#{link})"
+          else
+            str << escape_markdown(title)
+          end
+          str << "\n"
+        end
+        str << "\n页码: #{page_n} 时间戳: #{Time.now.to_unix}"
+      end
+
+      if list_sb.to_s.empty?
+        t "none"
+      else
+        list_sb.to_s
+      end
+    end
+
+    def create_manage_markup(page_n)
+      offset, limit = gen_ranging page_n
+      groups = loading_groups offset, (limit + 1)
+
+      make_btn = ->(text : String, n : Int32) {
+        Button.new(text: text, callback_data: "Manage:jump:#{n}")
+      }
+      markup = Markup.new
+
+      if page_n > 1 # 存在上一页
+        markup << [make_btn.call("上一页", page_n - 1)]
+      end
+      markup << [make_btn.call("刷新", page_n)]
+      if groups.size > limit # 存在下一页
+        markup << [make_btn.call("下一页", page_n + 1)]
+      end
+
+      markup
+    end
+
+    def gen_ranging(n)
+      offset = SIZE * (n - 1)
+      limit = n * SIZE
+      {offset, limit}
+    end
+
+    def loading_groups(offset, limit)
+      Cache.serving_groups.select do |chat_id, info|
+        _, _, no = info
+        no > offset && no < (offset + limit)
       end
     end
   end
