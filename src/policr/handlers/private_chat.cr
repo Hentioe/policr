@@ -47,7 +47,8 @@ module Policr
       end
     end
 
-    SIZE = 20
+    SIZE        = 20
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     def create_manage_text(page_n : Int32)
       offset, limit = gen_ranging page_n
@@ -69,7 +70,7 @@ module Policr
           end
           str << "\n"
         end
-        str << "\n页码: #{page_n} 时间戳: #{Time.now.to_unix}"
+        str << "\n页码: #{page_n} 刷新于: #{Time.now.to_s(DATE_FORMAT)}"
       end
 
       if list_sb.to_s.empty?

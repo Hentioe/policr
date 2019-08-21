@@ -21,6 +21,7 @@ module Policr
       when "jump"
         page_n = data[1].to_i
 
+        spawn bot.answer_callback_query(query.id)
         midcall PrivateChatHandler do
           bot.edit_message_text(
             chat_id,

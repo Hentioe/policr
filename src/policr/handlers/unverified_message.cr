@@ -3,7 +3,6 @@ module Policr
     @status : VerificationStatus?
 
     match do
-
       all_pass? [
         from_group_chat?(msg),
         !msg.new_chat_members,
