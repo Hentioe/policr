@@ -226,7 +226,7 @@ module Policr
     end
 
     def is_admin?(chat_id, user_id, dirty = true)
-      has_permission?(chat_id, user_id, :admin)
+      has_permission?(chat_id, user_id, :admin, dirty)
     end
 
     def has_permission?(chat_id, user_id, role, dirty = true)

@@ -157,7 +157,7 @@ module Policr
           hint =
             if t = Model::Template.enabled? chat_id
               u = FromUser.new member
-              vals = [u.fullname, u.markdown_link, u.user_id, title, t("units.sec", {n: torture_sec})]
+              vals = [u.fullname, u.markdown_link, u.user_id, title, " #{torture_sec} #{t("unit.sec")}"]
               _tmp_hint = render t.content, {{VERIFITION_HINT_VARS}}, vals
               escape_markdown(_tmp_hint) || default_hint.call
             else
@@ -215,7 +215,7 @@ module Policr
         end
       }
 
-      ban_timer = ->(message_id : Int32) { Schedule.after(torture_sec.seconds) { ban_task.call(message_id) } }
+      ban_timer = ->(message_id : Int32) { schedule(torture_sec.seconds) { ban_task.call(message_id) } }
       if sended_msg && (message_id = sended_msg.message_id)
         # 存在验证时间，定时任务调用
         ban_timer.call(message_id) if torture_sec > 0

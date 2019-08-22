@@ -17,6 +17,7 @@ module Policr
               text = t "add_to_group.no_right_to_invite", {user: FromUser.new(user).markdown_link}
               spawn { bot.send_message chat_id, text }
               bot.leave_chat chat_id
+              return
             end
             markup = Markup.new
             make_btn = ->(text : String, item : String) {
@@ -47,6 +48,8 @@ module Policr
                 end
               } unless is_admin
             end
+            # 发送快速入门
+            bot.send_message chat_id, t("getting_started")
           end
         end
       end
