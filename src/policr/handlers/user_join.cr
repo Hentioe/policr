@@ -31,7 +31,7 @@ module Policr
           end
 
           # 检测黑名单
-          is_blt = detect_blacklist(msg, member) unless Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::Blacklist)
+          is_blt = is_blacklist?(msg, member) unless Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::Blacklist)
           return if is_blt # 如果是黑名单则无需后续处理
           # 关联并标记入群消息
           Cache.carving_user_join_msg member.id, msg.chat.id, msg.message_id
@@ -58,15 +58,27 @@ module Policr
       markup
     end
 
-    def detect_blacklist(msg, member)
+    def is_blacklist?(msg, member)
       if report = Model::Report.first_valid(member.id) # 处于黑名单中
+        reply_msg_id = msg.message_id
+
+        link =
+          if report.reason == ReportReason::Adname.value
+            # 删除入群消息
+            spawn bot.delete_message msg.chat.id, msg.message_id
+            reply_msg_id = nil
+            # 匿名处理广告昵称
+            FromUser.new(member).markdown_link(t("report.anonymous_adname"))
+          else
+            FromUser.new(member).markdown_link
+          end
         text = t "blacklist.was_blocked", {
-          user:           FromUser.new(member).markdown_link,
+          user:           link,
           voting_channel: bot.voting_channel,
           post_id:        report.post_id,
         }
         spawn bot.kick_chat_member(msg.chat.id, member.id)
-        bot.send_message msg.chat.id, text, reply_to_message_id: msg.message_id
+        bot.send_message msg.chat.id, text, reply_to_message_id: reply_msg_id
         true
       else
         false

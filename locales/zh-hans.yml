@@ -346,6 +346,7 @@ report:
     accept: "被处理"
     unban: "通过申诉"
   none: "无"
+  anonymous_adname: "被匿名处理的广告昵称"
 language:
   desc: |
     选择机器人的工作语言，立即生效。
