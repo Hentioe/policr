@@ -149,11 +149,25 @@ module Policr
 
       torture_sec = KVStore.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
       locale = gen_locale chat_id
+      reuse_t = Time::Span.new(0, 0, 0)
       question =
         if torture_sec > 0 && torture_sec < MAX_COUNTDOWN
           default_hint = ->{
             t("torture.hint", {user_id: member_id, torture_sec: torture_sec, title: title}, locale: locale)
           }
+          # 从任务缓存中获取复用时间
+          torture_sec =
+            if done_t = Policr.cached_after?("#{chat_id}_#{member_id}")
+              now_t = Time.now
+              if done_t > now_t
+                reuse_t = done_t - now_t
+                reuse_t.total_seconds.to_i
+              else
+                torture_sec
+              end
+            else
+              torture_sec
+            end
           hint =
             if t = Model::Template.enabled? chat_id
               u = FromUser.new member
@@ -215,10 +229,17 @@ module Policr
         end
       }
 
-      ban_timer = ->(message_id : Int32) { schedule(torture_sec.seconds) { ban_task.call(message_id) } }
+      ban_timer = ->(message_id : Int32) do
+        Policr.cached_after("#{chat_id}_#{member_id}", torture_sec.seconds) { ban_task.call(message_id) }
+      end
       if sended_msg && (message_id = sended_msg.message_id)
         # 存在验证时间，定时任务调用
         ban_timer.call(message_id) if torture_sec > 0
+        # 如果来自复用任务则定时删除验证消息
+        if reuse_t.total_seconds > 0.0
+          _delete_msg_id = sended_msg.message_id
+          Policr.after(reuse_t) { bot.delete_message(chat_id, _delete_msg_id) }
+        end
       end
     end
 
