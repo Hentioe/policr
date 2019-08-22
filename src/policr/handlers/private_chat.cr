@@ -115,7 +115,7 @@ module Policr
         no
       end.select do
         i += 1
-        i > offset && i <= (offset + limit)
+        i > offset && i <= limit
       end
     end
   end
