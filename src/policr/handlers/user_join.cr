@@ -184,8 +184,7 @@ module Policr
             if t = Model::Template.enabled? chat_id
               u = FromUser.new member
               vals = [u.fullname, u.markdown_link, u.user_id, title, " #{torture_sec} #{t("unit.sec")}"]
-              _tmp_hint = render t.content, {{VERIFITION_HINT_VARS}}, vals
-              escape_markdown(_tmp_hint) || default_hint.call
+              render t.content, {{VERIFITION_HINT_VARS}}, vals
             else
               default_hint.call
             end

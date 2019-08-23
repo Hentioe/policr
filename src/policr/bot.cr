@@ -1,14 +1,9 @@
 require "telegram_bot"
 require "schedule"
+require "telegram_markdown"
 
 macro t(key, options = nil, locale = "zh-hans")
   I18n.translate({{key}}, {{options}}, {{locale}})
-end
-
-def escape_markdown(text)
-  if text
-    escape_all text, "\\\\", ["*", "_", "`"]
-  end
 end
 
 def schedule(time, &block)
@@ -284,6 +279,23 @@ module Policr
       {code, reason.to_s}
     end
 
+    private def parse_text(parse_mode : String?, text : String)
+      parse_mode, text =
+        if parse_mode
+          case parse_mode.downcase
+          when "markdown"
+            {"HTML", TelegramMarkdown.to_html text}
+          when "html"
+            {"HTML", text}
+          else
+            {nil, text}
+          end
+        else
+          {nil, text}
+        end
+      {parse_mode, text}
+    end
+
     def send_message(chat_id : Int | String,
                      text : String,
                      parse_mode : String? = "Markdown",
@@ -291,6 +303,7 @@ module Policr
                      disable_notification : Bool? = nil,
                      reply_to_message_id : Int32? = nil,
                      reply_markup : ReplyMarkup = nil) : TelegramBot::Message?
+      parse_mode, text = parse_text parse_mode, text
       super(
         chat_id: chat_id,
         text: text,
@@ -309,6 +322,7 @@ module Policr
                           parse_mode : String? = "Markdown",
                           disable_web_page_preview : Bool? = true,
                           reply_markup : TelegramBot::InlineKeyboardMarkup? = nil) : TelegramBot::Message | Bool | Nil
+      parse_mode, text = parse_text parse_mode, text || ""
       super(
         chat_id: chat_id,
         message_id: message_id,
@@ -316,6 +330,25 @@ module Policr
         text: text,
         parse_mode: parse_mode,
         disable_web_page_preview: disable_web_page_preview,
+        reply_markup: reply_markup
+      )
+    end
+
+    def send_photo(chat_id : Int | String,
+                   photo : ::File | String,
+                   caption : String? = nil,
+                   parse_mode : String? = "Markdown",
+                   disable_notification : Bool? = nil,
+                   reply_to_message_id : Int32? = nil,
+                   reply_markup : ReplyMarkup = nil) : TelegramBot::Message?
+      parse_mode, caption = parse_text parse_mode, caption
+      super(
+        chat_id: chat_id,
+        photo: photo,
+        caption: caption,
+        parse_mode: parse_mode,
+        disable_notification: disable_notification,
+        reply_to_message_id: reply_to_message_id,
         reply_markup: reply_markup
       )
     end
@@ -329,7 +362,7 @@ module Policr
       if welcome = KVStore.get_welcome(chat_id)
         disable_link_preview = KVStore.disabled_welcome_link_preview?(chat_id)
         text =
-          (escape_markdown(welcome) || "Empty welcome content")
+          welcome
         text =
           if from_user
             vals = [from_user.fullname, chat.title, from_user.markdown_link, from_user.user_id]
@@ -338,8 +371,6 @@ module Policr
             vals = [NONE_FROM_USER, chat.title, NONE_FROM_USER, NONE_FROM_USER]
             render text, {{ WELCOME_VARS }}, vals
           end
-
-        welcome = escape_markdown welcome
 
         spawn {
           sended_msg = send_message(

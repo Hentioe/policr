@@ -8,7 +8,7 @@ targets:
   policr:
     main: src/policr.cr
 
-crystal: 0.30.0
+crystal: 0.30.1
 
 license: MIT
 
@@ -16,6 +16,8 @@ dependencies:
   telegram_bot:
     github: Hentioe/telegram_bot
     branch: bugfix
+  telegram_markdown:
+    github: Hentioe/telegram_markdown.cr
   dotenv:
     github: gdotdesign/cr-dotenv
   admiral:

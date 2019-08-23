@@ -175,7 +175,7 @@ module Policr
         report.target_user_id,
         report.reason,
         report.status,
-        escape_markdown(report.detail)
+        report.detail
       )
 
       begin
@@ -247,7 +247,7 @@ module Policr
         report.target_user_id,
         report.reason,
         report.status,
-        escape_markdown(report.detail),
+        report.detail,
         report.appeal_post_id
       )
     end

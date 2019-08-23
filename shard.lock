@@ -18,7 +18,7 @@ shards:
 
   dotenv:
     github: gdotdesign/cr-dotenv
-    version: 0.2.0
+    version: 0.3.0
 
   exception_page:
     github: crystal-loot/exception_page
@@ -87,4 +87,8 @@ shards:
   telegram_bot:
     github: Hentioe/telegram_bot
     commit: 11014e817ba57582b75bc42fd8819950ff879d9b
+
+  telegram_markdown:
+    github: Hentioe/telegram_markdown.cr
+    commit: cfd9f31f7c369499b9e85bb3375dd28133209d0d
 
