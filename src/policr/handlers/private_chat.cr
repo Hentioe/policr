@@ -64,7 +64,7 @@ module Policr
           end
           str << "🆔 `#{chat_id}`|"
           if link.starts_with?("t.me") || link.starts_with?("https")
-            str << "[#{title}](#{link})"
+            str << "[#{escape_markdown title}](#{link})"
           else
             str << escape_markdown(title)
           end

@@ -14,6 +14,9 @@ module Policr
     end
 
     def markdown_link(pronoun = @fullname)
+      pronoun = pronoun
+        .gsub("[", "")
+        .gsub("]", "")
       "[#{pronoun}](tg://user?id=#{@user_id})"
     end
   end

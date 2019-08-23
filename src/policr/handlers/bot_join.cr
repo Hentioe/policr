@@ -13,20 +13,30 @@ module Policr
 
       if members = msg.new_chat_members
         members.select { |m| m.is_bot }.select { |m| m.id != bot.self_id }.each do |member|
+          conflict_check = ->{
+            if INCOMPATIBLE_BOTS.includes? member.id
+              midcall SelfJoinHandler do
+                _handler.conflict_warning msg.chat.id, member.id
+              end
+            end
+          }
           # 管理员拉入，放行
           if (user = msg.from) && bot.is_admin?(msg.chat.id, user.id)
             if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
               Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
-
               # 删除入群消息
               Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
                 bot.delete_message(chat_id, msg.message_id)
               end
+              # 检测冲突
+              conflict_check.call
             end
             return
           end
           # 限制机器人
-          restrict_bot(msg, member)
+          spawn restrict_bot(msg, member)
+          # 检测冲突
+          conflict_check.call
         end
       end
     end

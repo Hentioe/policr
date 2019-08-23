@@ -1,4 +1,12 @@
 module Policr
+  INCOMPATIBLE_BOTS = [
+    380207703, # AntiServiceMessageBot
+    201180152, # TGCN-群组频道索引
+    176365905, # Group Butler
+    261244309, # Group Butler [beta]
+    # @BabelFishBot => #config service off
+  ]
+
   handler SelfJoin do
     match do
       all_pass? [
@@ -49,7 +57,8 @@ module Policr
               } unless is_admin
             end
             # 发送快速入门
-            bot.send_message chat_id, t("getting_started")
+            spawn bot.send_message chat_id, t("getting_started")
+            spawn check_incompatible_bots chat_id
           end
         end
       end
@@ -68,6 +77,21 @@ module Policr
         text = t "add_to_group.no_creator"
         bot.send_message chat_id, text
       end
+    end
+
+    # 检查有冲突的机器人
+    def check_incompatible_bots(chat_id)
+      INCOMPATIBLE_BOTS.each do |id|
+        spawn conflict_warning chat_id, id
+      end
+    end
+
+    def conflict_warning(chat_id, id)
+      member = bot.get_chat_member(chat_id, id)
+      bot.send_message(
+        chat_id,
+        t("incompatible.id.#{id}", {mention: FromUser.new(member.user).markdown_link})
+      ) if member.status == "member" || member.status == "administrator"
     end
   end
 end
