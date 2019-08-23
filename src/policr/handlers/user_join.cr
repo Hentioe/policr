@@ -17,7 +17,7 @@ module Policr
           # 管理员拉入，放行
           if (user = msg.from) && (user.id != member.id) && bot.is_admin?(msg.chat.id, user.id)
             if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
-              Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
+              Policr.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
             end
             # 删除入群消息
             Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
@@ -234,24 +234,26 @@ module Policr
       if sended_msg
         verification.storage(sended_msg.message_id)
       end
-      ban_task = ->(message_id : Int32) {
-        if Cache.verification?(chat_id, member_id) == VerificationStatus::Init # 如果仍然是验证初步状态则判定超时
-          Cache.verification_slowed(chat_id, member_id)
-          failed(chat_id, message_id, member_id, timeout: true, photo: send_image, reply_id: msg_id)
+
+      # 验证结束调度的任务
+      result_task = ->(message_id : Int32) {
+        if status = Cache.verification?(chat_id, member_id)
+          case status
+          when VerificationStatus::Init, VerificationStatus::Next
+            Cache.verification_slowed(chat_id, member_id)
+            failed(chat_id, message_id, member_id, timeout: true, photo: send_image, reply_id: msg_id)
+          when VerificationStatus::Left # 退群直接删除消息
+            bot.delete_message chat_id, message_id
+          end
         end
       }
 
-      ban_timer = ->(message_id : Int32) do
-        Policr.cached_after("#{chat_id}_#{member_id}", torture_sec.seconds) { ban_task.call(message_id) }
+      result_timer = ->(message_id : Int32) do
+        Policr.cached_after("#{chat_id}_#{member_id}", torture_sec.seconds) { result_task.call(message_id) }
       end
       if sended_msg && (message_id = sended_msg.message_id)
         # 存在验证时间，定时任务调用
-        ban_timer.call(message_id) if torture_sec > 0
-        # 如果来自复用任务则定时删除验证消息
-        if reuse_t.total_seconds > 0.0
-          _delete_msg_id = sended_msg.message_id
-          Policr.after(reuse_t) { bot.delete_message(chat_id, _delete_msg_id) }
-        end
+        result_timer.call(message_id) if torture_sec > 0
       end
     end
 

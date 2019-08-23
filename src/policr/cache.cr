@@ -116,7 +116,7 @@ module Policr::Cache
     {% end %}
   end
 
-  def_verification_status ["passed", "init", "slowed", "next"]
+  def_verification_status ["passed", "init", "slowed", "next", "left"]
 
   def verification?(chat_id, user_id)
     @@verification_status["#{chat_id}_#{user_id}"]?
