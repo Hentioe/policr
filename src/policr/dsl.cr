@@ -59,7 +59,7 @@ end
 
 macro wrapper_title(text)
   if group_name
-    "__From #{group_name}__\n\n#{{{text}}}"
+    "_From #{group_name}_\n\n#{{{text}}}"
   else
     {{text}}
   end
