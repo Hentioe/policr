@@ -142,13 +142,14 @@ settings:
 
     刚刚进行的更改：%{last_change}
 
-    推荐设置：启用审核并信任管理，不使用记录模式。私信设置让机器人通过私聊发送设置菜单。
+    推荐设置：启用审核并信任管理，不使用记录模式。静音模式避免打扰其他人，私信设置让机器人通过私聊发送设置菜单。
   none: "暂无"
   enable_examine: "启用审核"
   trust_admin: "信任管理"
   privacy_setting: "私信设置"
   record_mode: "记录模式"
   fault_tolerance: "容错模式"
+  slient_mode: "静音模式"
   selected: "选中"
   unselected: "取消"
   fault_tolerance_not_supported: "容错模式暂时仅支持图片验证、算术验证和棋局验证。"
