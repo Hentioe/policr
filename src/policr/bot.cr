@@ -1,6 +1,6 @@
 require "telegram_bot"
-require "schedule"
 require "telegram_markdown"
+require "schedule"
 
 macro t(key, options = nil, locale = "zh-hans")
   I18n.translate({{key}}, {{options}}, {{locale}})
