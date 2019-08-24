@@ -1,4 +1,8 @@
 module Policr
+  enum ToggleTarget
+    SlientMode
+  end
+
   enum VerificationStatus
     Init; Passed; Slowed; Next; Left
   end

@@ -9,6 +9,7 @@ alias EnableStatus = Policr::EnableStatus
 alias DeleteTarget = Policr::CleanDeleteTarget
 alias SubfunctionType = Policr::SubfunctionType
 alias ServiceMessage = Policr::ServiceMessage
+alias ToggleTarget = Policr::ToggleTarget
 
 describe Policr do
   it "arabic characters match" do
@@ -205,5 +206,16 @@ describe Policr do
     Model::Template.disable from_chat_id
     Model::Template.enabled?(from_chat_id).should be_falsey
     Model::Template.delete(t1.id).should be_truthy
+
+    # 开关
+    Model::Toggle.enabled?(from_chat_id, ToggleTarget::SlientMode).should be_false
+    Model::Toggle.disabled?(from_chat_id, ToggleTarget::SlientMode).should be_false
+    t1 = Model::Toggle.enable! from_chat_id, ToggleTarget::SlientMode
+    Model::Toggle.enabled?(from_chat_id, ToggleTarget::SlientMode).should be_true
+    Model::Toggle.disabled?(from_chat_id, ToggleTarget::SlientMode).should be_false
+    Model::Toggle.disable! from_chat_id, ToggleTarget::SlientMode
+    Model::Toggle.enabled?(from_chat_id, ToggleTarget::SlientMode).should be_false
+    Model::Toggle.disabled?(from_chat_id, ToggleTarget::SlientMode).should be_true
+    Model::Toggle.delete(t1.id).should be_truthy
   end
 end
