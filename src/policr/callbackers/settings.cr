@@ -65,6 +65,17 @@ module Policr
             text: create_text(_group_id, def_change, _group_name),
             reply_markup: create_markup(_group_id)
           )
+        when "slient_mode" # 静音模式
+          args = {_group_id, ToggleTarget::SlientMode}
+          selected = Model::Toggle.enabled?(*args)
+          selected ? Model::Toggle.disable!(*args) : Model::Toggle.enable!(*args)
+          spawn bot.answer_callback_query(query.id)
+          bot.edit_message_text(
+            _chat_id,
+            message_id: msg.message_id,
+            text: create_text(_group_id, def_change, _group_name),
+            reply_markup: create_markup(_group_id)
+          )
         else # 失效键盘
           bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
         end

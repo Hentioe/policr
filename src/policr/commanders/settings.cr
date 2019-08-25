@@ -34,6 +34,8 @@ module Policr
           KVStore.enabled_record_mode?(group_id) ? SELECTED : UNSELECTED
         when "fault_tolerance"
           KVStore.enabled_fault_tolerance?(group_id) ? SELECTED : UNSELECTED
+        when "slient_mode"
+          Model::Toggle.enabled?(group_id, ToggleTarget::SlientMode) ? SELECTED : UNSELECTED
         else
           UNSELECTED
         end
@@ -45,6 +47,7 @@ module Policr
       markup << def_toggle "privacy_setting"
       markup << def_toggle "record_mode"
       markup << def_toggle "fault_tolerance"
+      markup << def_toggle "slient_mode"
 
       markup
     end

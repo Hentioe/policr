@@ -11,29 +11,29 @@ module Policr::Model
       updated_at: Time?
     )
 
-    def self.enabled?(chat_id : Int64, target : ToggleTarget) : Bool
-      if t = where { (_chat_id == chat_id) & (_target == target.value) }.first
+    def self.enabled?(chat_id : Int, target : ToggleTarget) : Bool
+      if t = where { (_chat_id == chat_id.to_i64) & (_target == target.value) }.first
         t.enabled
       else
         false
       end
     end
 
-    def self.disabled?(chat_id : Int64, target : ToggleTarget) : Bool
-      if t = where { (_chat_id == chat_id) & (_target == target.value) }.first
+    def self.disabled?(chat_id : Int, target : ToggleTarget) : Bool
+      if t = where { (_chat_id == chat_id.to_i64) & (_target == target.value) }.first
         !t.enabled
       else
         false
       end
     end
 
-    private def self.switch!(chat_id : Int64, target : ToggleTarget, enabled : Bool)
-      if t = where { (_chat_id == chat_id) & (_target == target.value) }.first
+    private def self.switch!(chat_id : Int, target : ToggleTarget, enabled : Bool)
+      if t = where { (_chat_id == chat_id.to_i64) & (_target == target.value) }.first
         t.update_column :enabled, enabled
         t
       else
         create!({
-          chat_id: chat_id,
+          chat_id: chat_id.to_i64,
           target:  target.value,
           enabled: enabled,
         })

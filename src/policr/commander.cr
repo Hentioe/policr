@@ -40,7 +40,7 @@ module Policr
           _reply_msg_id = nil
         end
 
-        unless _reply_msg_id
+        unless _reply_msg_id # 私信设置
           spawn bot.delete_message _group_id, msg.message_id
           spawn {
             %sended_msg =  bot.send_message _group_id, text: t("private_settings_sended")

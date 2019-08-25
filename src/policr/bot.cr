@@ -304,6 +304,14 @@ module Policr
                      reply_to_message_id : Int32? = nil,
                      reply_markup : ReplyMarkup = nil) : TelegramBot::Message?
       parse_mode, text = parse_text parse_mode, text
+      disable_notification =
+        if disable_notification == nil && chat_id.is_a?(Int32 | Int64)
+          if chat_id > 0 # 私聊开启声音
+            false
+          else
+            Model::Toggle.enabled? chat_id, ToggleTarget::SlientMode
+          end
+        end
       super(
         chat_id: chat_id,
         text: text,
@@ -342,6 +350,14 @@ module Policr
                    reply_to_message_id : Int32? = nil,
                    reply_markup : ReplyMarkup = nil) : TelegramBot::Message?
       parse_mode, caption = parse_text parse_mode, caption
+      disable_notification =
+        if disable_notification == nil && chat_id.is_a?(Int32 | Int64)
+          if chat_id > 0 # 私聊开启声音
+            false
+          else
+            Model::Toggle.enabled? chat_id, ToggleTarget::SlientMode
+          end
+        end
       super(
         chat_id: chat_id,
         photo: photo,
