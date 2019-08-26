@@ -2,8 +2,6 @@ module Policr
   callbacker Navigation do
     def handle(query, msg, data)
       target_group do
-        msg_id = msg.message_id
-        from_user_id = query.from.id
         name = data[0]
 
         case name

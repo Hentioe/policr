@@ -28,16 +28,23 @@ module Policr
       _reply_msg_id = msg.message_id
 
       if _chat_id > 0
-        bot.send_message _chat_id, text: t("only_group"), reply_to_message_id: _reply_msg_id
-        return
+        unless from_nav 
+          bot.send_message _chat_id, text: t("only_group"), reply_to_message_id: _reply_msg_id
+          return
+        else # 来自导航的私聊，获取 group_id
+          if %group_id = Model::PrivateMenu.find_group_id _chat_id, _reply_msg_id
+            _group_id = %group_id
+          end
+        end
       end
 
+
       %role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
-      if (%user = msg.from) && bot.has_permission?(_chat_id, %user.id, %role)
-        if KVStore.enabled_privacy_setting?(_group_id) && (%user = msg.from)
-          _chat_id = %user.id
+      if (%user = msg.from) && bot.has_permission?(_group_id, %user.id, %role)
+        if KVStore.enabled_privacy_setting?(_group_id)
+          _chat_id = %user.id unless from_nav # 私信导航已存在用户 chat_id
           _group_name = msg.chat.title
-          _reply_msg_id = nil
+          _reply_msg_id = nil unless from_nav # 私信导航不需要提示用户已私聊
         end
 
         unless _reply_msg_id # 私信设置
