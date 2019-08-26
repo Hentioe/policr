@@ -2,14 +2,12 @@ module Policr
   commander Language do
     alias Code = LanguageCode
 
-    def handle(msg)
+    def handle(msg, from_nav)
       reply_menu do
-        bot.send_message(
-          _chat_id,
-          text: create_text(_group_id, _group_name),
-          reply_to_message_id: _reply_msg_id,
-          reply_markup: create_markup(_group_id)
-        )
+        create_menu({
+          text:         paste_text,
+          reply_markup: paste_markup,
+        })
       end
     end
 
@@ -22,13 +20,13 @@ module Policr
       t("language.desc", locale: locale)
     end
 
-    def create_markup(group_id)
+    def_markup do
       toggle_btn = ->(text : String, name : String) {
         Button.new(text: text, callback_data: "Language:#{name}")
       }
 
-      lang = Model::Language.find_or_create(group_id, data: {
-        chat_id: group_id.to_i64,
+      lang = Model::Language.find_or_create(_group_id, data: {
+        chat_id: _group_id.to_i64,
         code:    Code::ZhHans.value,
         auto:    EnableStatus::TurnOff.value,
       })
@@ -46,12 +44,9 @@ module Policr
         end
       }
 
-      markup = Markup.new
-      markup << def_switch "zh_hans"
-      markup << def_switch "zh_hant"
-      markup << def_switch "english"
-
-      markup
+      _markup << def_switch "zh_hans"
+      _markup << def_switch "zh_hant"
+      _markup << def_switch "english"
     end
 
     private macro def_switch(name)

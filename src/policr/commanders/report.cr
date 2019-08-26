@@ -10,7 +10,7 @@ module Policr
         !FILE_EXCLUDES.includes?(File.extname(filename))
     end
 
-    def handle(msg)
+    def handle(msg, from_nav)
       if (user = msg.from) && (reply_msg = msg.reply_to_message) && (target_user = reply_msg.from)
         author_id = user.id
         target_user_id = target_user.id

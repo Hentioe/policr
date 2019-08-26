@@ -22,10 +22,14 @@ end
 macro def_markup(method_name = "create_markup", *args)
   {{ args_exp_s = args.join(", ") }}
 
-  def {{method_name.id}}(_group_id, {{args_exp_s.id}}{% if args.size > 0 %},{% end %} group_name : String? = nil)
+  def {{method_name.id}}(_group_id, {{args_exp_s.id}}{% if args.size > 0 %},{% end %} group_name : String? = nil, from_nav : Bool = false)
     _markup = Markup.new
 
     {{yield}}
+
+    if from_nav
+      _markup << [Button.new(text: "返回主导航", callback_data: "Navigation:main")]
+    end
 
     _markup
   end
@@ -155,6 +159,7 @@ module Policr
         AfterwardsCallbacker,
         TemplateCallbacker,
         ManageCallbacker,
+        NavigationCallbacker,
       ]
 
       # 注册指令模块
@@ -174,11 +179,12 @@ module Policr
         AntiServiceMsgCommander,
         TemplateCommander,
         AppealCommander,
+        NavigationCommander,
       ]
 
       commanders.each do |_, command|
         cmd command.name do |msg|
-          command.handle(msg)
+          command.handle(msg, from_nav: false)
         end
       end
     end

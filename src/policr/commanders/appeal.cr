@@ -1,6 +1,6 @@
 module Policr
   commander Appeal do
-    def handle(msg)
+    def handle(msg, from_nav)
       chat_id = msg.chat.id
 
       bot.delete_message(msg.chat.id, msg.message_id) if chat_id < 0

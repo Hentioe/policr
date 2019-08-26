@@ -1,8 +1,8 @@
 module Policr
   commander StrictMode do
-    def handle(msg)
+    def handle(msg, from_nav)
       reply_menu do
-        reply({
+        create_menu({
           text:         paste_text,
           reply_markup: paste_markup,
         })
