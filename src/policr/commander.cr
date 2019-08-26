@@ -15,7 +15,7 @@ module Policr
       end
     end
 
-    abstract def handle(msg)
+    abstract def handle(msg, from_nav : Bool = false)
 
     BOT_NOT_INIT = "Forbidden: bot can't initiate conversation with a user"
     BOT_BLOCKED  = "Forbidden: bot was blocked by the user"
@@ -82,11 +82,32 @@ module Policr
     end
 
     macro paste_markup
-      create_markup(_group_id, _group_name)
+      create_markup(_group_id, _group_name, from_nav: from_nav)
     end
 
     macro reply(args)
-      bot.send_message(_chat_id, reply_to_message_id: _reply_msg_id, {{**args}})
+      bot.send_message(
+        _chat_id,
+        reply_to_message_id: _reply_msg_id,
+        {{**args}}
+      )
+    end
+
+    macro jump(args)
+      bot.edit_message_text(
+        _chat_id,
+        message_id: msg.message_id,
+        {{**args}}
+      )
+      msg
+    end
+
+    macro create_menu(args)
+      if from_nav
+        jump({{args}})
+      else
+        reply({{args}})
+      end
     end
   end
 end

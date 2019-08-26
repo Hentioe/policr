@@ -1,6 +1,6 @@
 module Policr
   commander Start do
-    def handle(msg)
+    def handle(msg, from_nav)
       text = t "start"
       chat_id = msg.chat.id
 

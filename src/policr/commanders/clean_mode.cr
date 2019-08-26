@@ -2,14 +2,12 @@ module Policr
   commander CleanMode do
     alias DeleteTarget = CleanDeleteTarget
 
-    def handle(msg)
+    def handle(msg, from_nav)
       reply_menu do
-        bot.send_message(
-          _chat_id,
-          text: create_text(_group_id, _group_name),
-          reply_to_message_id: _reply_msg_id,
-          reply_markup: create_markup(_group_id, _group_name),
-        )
+        create_menu({
+          text:         paste_text,
+          reply_markup: paste_markup,
+        })
       end
     end
 

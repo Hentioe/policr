@@ -45,7 +45,10 @@ module Policr
 
     def updated_preview_settings(group_id, group_name)
       midcall TortureTimeCommander do
-        {_commander.create_text(group_id, group_name), _commander.create_markup}
+        {
+          _commander.create_text(group_id, group_name),
+          _commander.create_markup(group_id),
+        }
       end || {nil, nil}
     end
   end

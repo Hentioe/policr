@@ -1,13 +1,11 @@
 module Policr
   commander Custom do
-    def handle(msg)
+    def handle(msg, from_nav)
       reply_menu do
-        bot.send_message(
-          _chat_id,
-          text: create_text(_group_id, _group_name),
-          reply_to_message_id: _reply_msg_id,
-          reply_markup: create_markup(_group_id)
-        )
+        create_menu({
+          text:         create_text(_group_id, _group_name),
+          reply_markup: create_markup(_group_id, from_nav: from_nav),
+        })
       end
     end
 
@@ -18,30 +16,29 @@ module Policr
     CHECKED   = "●"
     UNCHECKED = "○"
 
-    def create_markup(group_id)
+    def_markup do
       checked_status = ->(way : Symbol) {
         case way
         when :custom
-          KVStore.custom(group_id) ? CHECKED : UNCHECKED
+          KVStore.custom(_group_id) ? CHECKED : UNCHECKED
         when :dynamic
-          KVStore.enabled_dynamic_captcha?(group_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_dynamic_captcha?(_group_id) ? CHECKED : UNCHECKED
         when :image
-          KVStore.enabled_image_captcha?(group_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_image_captcha?(_group_id) ? CHECKED : UNCHECKED
         when :chessboard
-          KVStore.enabled_chessboard_captcha?(group_id) ? CHECKED : UNCHECKED
+          KVStore.enabled_chessboard_captcha?(_group_id) ? CHECKED : UNCHECKED
         when :default
           (
-            !KVStore.custom(group_id) &&
-            !KVStore.enabled_dynamic_captcha?(group_id) &&
-            !KVStore.enabled_image_captcha?(group_id) &&
-            !KVStore.enabled_chessboard_captcha?(group_id)
+            !KVStore.custom(_group_id) &&
+            !KVStore.enabled_dynamic_captcha?(_group_id) &&
+            !KVStore.enabled_image_captcha?(_group_id) &&
+            !KVStore.enabled_chessboard_captcha?(_group_id)
           ) ? CHECKED : UNCHECKED
         else
           UNCHECKED
         end
       }
 
-      markup = Markup.new
       btn = ->(text : String, item : String) {
         Button.new(text: text, callback_data: "Custom:#{item}")
       }
@@ -55,12 +52,11 @@ module Policr
       image_text = make_text.call :image
       chessboard_text = make_text.call :chessboard
 
-      markup << [btn.call(default_text, "default")]
-      markup << [btn.call(custom_text, "custom")]
-      markup << [btn.call(dynamic_text, "dynamic")]
-      markup << [btn.call(image_text, "image")]
-      markup << [btn.call(chessboard_text, "chessboard")]
-      markup
+      _markup << [btn.call(default_text, "default")]
+      _markup << [btn.call(custom_text, "custom")]
+      _markup << [btn.call(dynamic_text, "dynamic")]
+      _markup << [btn.call(image_text, "image")]
+      _markup << [btn.call(chessboard_text, "chessboard")]
     end
 
     def_text custom_text do
