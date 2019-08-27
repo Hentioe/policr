@@ -28,16 +28,27 @@ module Policr
         begin
           args = text[1..].split(" ")
           case args[0]
-          when "manage" # 管理群组列表
+          when "group/manage", "gm" # 管理群组列表
             bot.send_message(
               bot.owner_id,
               text: create_manage_text(1),
               reply_markup: create_manage_markup(1)
             )
-          when "leave"
+          when "group/leave", "gl" # 退出群组
             group_id = args[1].to_i64
             bot.leave_chat group_id
             Cache.delete_group(group_id)
+          when "voting/apply_quiz_manage", "vaqm" # 申请测验管理
+            questions = Model::Question.all_voting_apply
+            list =
+              if questions.size > 0
+                questions.map_with_index do |q, i|
+                  "#{i + 1}. #{q.title}"
+                end.join("\n")
+              else
+                t "none"
+              end
+            bot.send_message bot.owner_id, t("voting.apply_quiz_manage", {list: list})
           else
             nil
           end
