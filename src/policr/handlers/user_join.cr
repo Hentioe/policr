@@ -108,7 +108,8 @@ module Policr
           msg.chat.id,
           text: t("after_event.tip"),
           reply_to_message_id: msg.message_id,
-          reply_markup: markup
+          reply_markup: markup,
+          disable_notification: false # 无视静音模式
         )
       else
         chat_id = msg.chat.id

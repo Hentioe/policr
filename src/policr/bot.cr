@@ -311,6 +311,8 @@ module Policr
           else
             Model::Toggle.enabled? chat_id, ToggleTarget::SlientMode
           end
+        else
+          disable_notification
         end
       super(
         chat_id: chat_id,
@@ -357,6 +359,8 @@ module Policr
           else
             Model::Toggle.enabled? chat_id, ToggleTarget::SlientMode
           end
+        else
+          disable_notification
         end
       super(
         chat_id: chat_id,
