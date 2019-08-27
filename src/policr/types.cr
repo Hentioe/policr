@@ -11,6 +11,11 @@ module Policr
     Sec; Min
   end
 
+  # 问题用途
+  enum QueUseFor
+    Unknown; Verification; VotingApplyQuiz; Appeal
+  end
+
   enum ReportReason
     Unknown; MassAd; Halal; Other; Hateful; Adname; VirusFile; PromoFile
   end

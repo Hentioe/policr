@@ -10,6 +10,15 @@ alias DeleteTarget = Policr::CleanDeleteTarget
 alias SubfunctionType = Policr::SubfunctionType
 alias ServiceMessage = Policr::ServiceMessage
 alias ToggleTarget = Policr::ToggleTarget
+alias QueUseFor = Policr::QueUseFor
+
+macro def_models_alias(models)
+  {% for model in models %}
+    alias {{model}} = Model::{{model}}
+  {% end %}
+end
+
+def_models_alias [Question, Answer]
 
 describe Policr do
   it "arabic characters match" do
@@ -217,5 +226,30 @@ describe Policr do
     Model::Toggle.enabled?(from_chat_id, ToggleTarget::SlientMode).should be_false
     Model::Toggle.disabled?(from_chat_id, ToggleTarget::SlientMode).should be_true
     Model::Toggle.delete(t1.id).should be_truthy
+
+    # 问题/答案
+    q1 = Question.create!({
+      chat_id: from_chat_id,
+      title:   "我是一个问题",
+      desc:    "我是问题描述",
+      note:    "我是答案注解",
+      use_for: QueUseFor::VotingApplyQuiz.value,
+      enabled: true,
+    })
+    q1.should be_truthy
+    q1.add_answers({:name => "正确答案", :corrected => true})
+    q1.add_answers({:name => "错误答案", :corrected => false})
+    q2 = Question.where {
+      (_use_for == QueUseFor::VotingApplyQuiz.value) & (_enabled == true)
+    }.first
+    q2.should be_truthy
+    if q2 && (answers = q2.answers)
+      answers = q2.answers
+      answers.size.should eq(2)
+      answers.each do |a|
+        Answer.delete(a.id).should be_truthy
+      end
+    end
+    Question.delete(q1.id).should be_truthy
   end
 end
