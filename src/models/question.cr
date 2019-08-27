@@ -15,5 +15,13 @@ module Policr::Model
     )
 
     has_many :answers, Answer
+
+    def self.all_voting_apply
+      where { _use_for == QueUseFor::VotingApplyQuiz.value }.to_a
+    end
+
+    def self.enabled_voting_apply
+      where { (_use_for == QueUseFor::VotingApplyQuiz.value) & (_enabled == true) }.to_a
+    end
   end
 end
