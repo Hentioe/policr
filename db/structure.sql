@@ -14,3 +14,5 @@ CREATE TABLE format_limits (id integer PRIMARY KEY AUTOINCREMENT, chat_id intege
 CREATE TABLE IF NOT EXISTS "appeals"(id integer PRIMARY KEY, author_id integer NOT NULL, done integer NOT NULL, report_id integer, created_at text NOT NULL, updated_at text NOT NULL,FOREIGN KEY (report_id) REFERENCES reports(id));
 CREATE TABLE templates (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, content text NOT NULL, enabled integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE toggles (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, target integer NOT NULL, enabled integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
+CREATE TABLE questions (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, title text NOT NULL, desc text, note text, use_for integer NOT NULL, enabled integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
+CREATE TABLE IF NOT EXISTS "answers"(id integer PRIMARY KEY, name text NOT NULL, corrected integer NOT NULL, question_id integer, created_at text NOT NULL, updated_at text NOT NULL,FOREIGN KEY (question_id) REFERENCES questions(id));
