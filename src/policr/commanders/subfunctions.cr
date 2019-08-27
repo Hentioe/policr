@@ -2,14 +2,12 @@ module Policr
   commander Subfunctions do
     alias FunctionType = SubfunctionType
 
-    def handle(msg)
+    def handle(msg, from_nav)
       reply_menu do
-        bot.send_message(
-          _chat_id,
-          text: paste_text,
-          reply_to_message_id: _reply_msg_id,
-          reply_markup: create_markup(_group_id)
-        )
+        create_menu({
+          text:         paste_text,
+          reply_markup: create_markup(_group_id, from_nav: from_nav),
+        })
       end
     end
 
@@ -20,23 +18,20 @@ module Policr
     SELECTED   = "■"
     UNSELECTED = "□"
 
-    def create_markup(group_id)
+    def_markup do
       toggle_btn = ->(text : String, type : FunctionType) {
         Button.new(text: text, callback_data: "Subfunctions:#{type.value}:toggle")
       }
 
-      markup = Markup.new
-      markup << def_toggle "user_join"
-      markup << def_toggle "bot_join"
-      markup << def_toggle "ban_halal"
-      markup << def_toggle "blacklist"
-
-      markup
+      _markup << def_toggle "user_join"
+      _markup << def_toggle "bot_join"
+      _markup << def_toggle "ban_halal"
+      _markup << def_toggle "blacklist"
     end
 
     private macro def_toggle(type_s)
       {% function_type = type_s.camelcase.id %}
-      %symbol = Model::Subfunction.disabled?(group_id, FunctionType::{{function_type.id}}) ? UNSELECTED : SELECTED
+      %symbol = Model::Subfunction.disabled?(_group_id, FunctionType::{{function_type.id}}) ? UNSELECTED : SELECTED
       [
         toggle_btn.call(%symbol + " " + t("subfunctions.{{type_s.id}}"), FunctionType::{{function_type.id}})
       ]

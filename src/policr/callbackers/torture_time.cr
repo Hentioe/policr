@@ -12,7 +12,7 @@ module Policr
           _chat_id,
           message_id: msg.message_id,
           text: create_text(_group_id, _group_name),
-          reply_markup: create_markup
+          reply_markup: create_markup(_group_id)
         )
         # 响应成功
         bot.answer_callback_query(query.id)
@@ -25,9 +25,9 @@ module Policr
       end
     end
 
-    def create_markup
+    def create_markup(group_id)
       midcall TortureTimeCommander do
-        _commander.create_markup
+        _commander.create_markup(group_id)
       end
     end
   end

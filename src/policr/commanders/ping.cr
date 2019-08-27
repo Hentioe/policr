@@ -1,6 +1,6 @@
 module Policr
   commander Ping do
-    def handle(msg)
+    def handle(msg, from_nav)
       spawn bot.delete_message msg.chat.id, msg.message_id
       sended_msg = bot.send_message msg.chat.id, "pong"
       if sended_msg

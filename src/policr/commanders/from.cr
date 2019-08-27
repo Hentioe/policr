@@ -1,8 +1,8 @@
 module Policr
   commander From do
-    def handle(msg)
+    def handle(msg, from_nav)
       reply_menu do
-        sended_msg = reply({
+        sended_msg = create_menu({
           text:         paste_text,
           reply_markup: paste_markup,
         })
