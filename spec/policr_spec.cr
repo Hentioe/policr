@@ -18,6 +18,13 @@ macro def_models_alias(models)
   {% end %}
 end
 
+macro def_types_alias(types)
+  {% for type in types %}
+    alias {{type}} = Policr::{{type}}
+  {% end %}
+end
+
+def_types_alias [VotingApplyParser]
 def_models_alias [Question, Answer]
 
 describe Policr do
@@ -38,6 +45,18 @@ describe Policr do
 
   it "scan" do
     Policr.scan "."
+  end
+
+  it "parsers" do
+    text =
+      <<-TEXT
+      -t 小红举报了小明对她的人身攻击言论，是否赞成？
+      -d 赞成举报可能会让小明进入黑名单，反对会避免小明进入黑名单。
+      -n 不应该赞成小红的举报，因为这是私人矛盾，应该交由群组内部解决。并且私人矛盾也不应该造成任何一方进入黑名单。
+      - 赞成
+      + 不赞成
+      TEXT
+    VotingApplyParser.parse!(text).should be_truthy
   end
 
   it "crud" do
