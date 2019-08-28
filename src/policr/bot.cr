@@ -127,6 +127,7 @@ module Policr
         TemplateSettingHandler,
         HalalCaptionHandler,
         AddVotingApplyQuizHandler,
+        UpdateVotingApplyQuizQuestionHandler,
         # 此 Handler 置底
         PrivateChatHandler,
       ]
@@ -161,6 +162,7 @@ module Policr
         TemplateCallbacker,
         ManageCallbacker,
         NavigationCallbacker,
+        VotingApplyQuizCallbacker,
       ]
 
       # 注册指令模块
