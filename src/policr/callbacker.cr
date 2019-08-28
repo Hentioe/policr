@@ -42,5 +42,9 @@ module Policr
 
       {{yield}}
     end
+
+    def invalid_callback(query)
+      bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
+    end
   end
 end

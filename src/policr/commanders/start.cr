@@ -27,34 +27,44 @@ module Policr
         when "vaqm"
           id = data.to_i
           if q = Model::Question.find(id)
-            answers_s = q.answers.map do |a|
-              make_icon = ->{
-                a.corrected ? "√" : "×"
-              }
-              "#{make_icon.call} #{a.name}"
-            end.join("\n")
-            text = t "voting.apply_quiz_question", {
-              title:   q.title,
-              desc:    q.desc,
-              note:    q.note,
-              answers: answers_s,
-            }
-            make_btn = ->(action : String) {
-              callback_data = "ApplyQuiz:questioan:#{action}:#{id}"
-              Button.new(text: t("voting.apply_quiz.question.#{action}"), callback_data: callback_data)
-            }
-            markup = Markup.new
-            buttons = Array(Button).new
-            buttons << make_btn.call("disable") if q.enabled
-            buttons << make_btn.call("enable") unless q.enabled
-            buttons << make_btn.call("delete")
-            markup << buttons
+            text = create_voting_apply_quiz_question_text q
+            markup = create_voting_apply_quiz_question_markup q
             if sended_msg = bot.send_message chat_id, text, reply_markup: markup
               Cache.carving_voting_apply_quiz_question_msg chat_id, sended_msg.message_id, id
             end
           end
         end
       end
+    end
+
+    def create_voting_apply_quiz_question_text(question : Model::Question)
+      answers_s = question.answers.map do |a|
+        make_icon = ->{
+          a.corrected ? "√" : "×"
+        }
+        "#{make_icon.call} #{a.name}"
+      end.join("\n")
+      t "voting.apply_quiz_question", {
+        title:   question.title,
+        desc:    question.desc,
+        note:    question.note,
+        answers: answers_s,
+      }
+    end
+
+    def create_voting_apply_quiz_question_markup(question : Model::Question)
+      make_btn = ->(action : String) {
+        callback_data = "VotingApplyQuiz:question:#{action}:#{question.id}"
+        Button.new(text: t("voting.apply_quiz.question.#{action}"), callback_data: callback_data)
+      }
+      markup = Markup.new
+      buttons = Array(Button).new
+      buttons << make_btn.call("disable") if question.enabled
+      buttons << make_btn.call("enable") unless question.enabled
+      buttons << make_btn.call("delete")
+      markup << buttons
+
+      markup
     end
   end
 end
