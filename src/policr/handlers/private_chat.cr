@@ -39,23 +39,27 @@ module Policr
             bot.leave_chat group_id
             Cache.delete_group(group_id)
           when "voting/apply_quiz_manage", "vaqm" # 申请测验管理
-            questions = Model::Question.all_voting_apply
-            list =
-              if questions.size > 0
-                questions.map_with_index do |q, i|
-                  "#{i + 1}. #{q.title}"
-                end.join("\n")
-              else
-                t "none"
-              end
-            bot.send_message bot.owner_id, t("voting.apply_quiz_manage", {list: list})
-          else
-            nil
+            if sended_msg = bot.send_message bot.owner_id, create_voting_apply_quiz_manage_text
+              Cache.carving_voting_apply_quiz_msg bot.owner_id, sended_msg.message_id
+            end
           end
         rescue ex : Exception
           bot.send_message bot.owner_id, ex.message || ex.to_s
         end
       end
+    end
+
+    def create_voting_apply_quiz_manage_text
+      questions = Model::Question.all_voting_apply
+      list =
+        if questions.size > 0
+          questions.map_with_index do |q, i|
+            "#{i + 1}. [#{q.title}](https://t.me/#{bot.username}?start=vaqm_#{q.id})"
+          end.join("\n")
+        else
+          t "none"
+        end
+      t("voting.apply_quiz_manage", {list: list})
     end
 
     SIZE        = 20
