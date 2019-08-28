@@ -71,6 +71,9 @@ module Policr::Cache
   # 标记长度限制设置消息
   def_carving "format_limit", conflicts: ["max_length", "blocked_content"]
 
+  # 标记申请投票测验管理
+  def_carving "voting_apply_quiz"
+
   # 标记举报详情消息
   def_carving_with_data "report_detail", TelegramBot::User
 
@@ -88,6 +91,9 @@ module Policr::Cache
 
   # 标记申诉流程消息
   def_carving_with_data "appeal_flow", Model::Appeal
+
+  # 投票申请测验问题（值：问题ID）
+  def_carving_with_data "voting_apply_quiz_question", Int32
 
   macro def_list(name, type)
     @@{{name.id}}_list = {{type.id}}.new

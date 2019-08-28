@@ -55,10 +55,10 @@ module Policr
           @parsed.note = text
           @last_token = VotingApplyToken::Note
         when "-"
-          @parsed.answers << VotingApplyAnswerParsed.new(name: text.strip, corrected: false)
+          @parsed.answers << VotingApplyAnswerParsed.new(name: text, corrected: false)
           @last_token = VotingApplyToken::Answer
         when "+"
-          @parsed.answers << VotingApplyAnswerParsed.new(name: text.strip, corrected: true)
+          @parsed.answers << VotingApplyAnswerParsed.new(name: text, corrected: true)
           @last_token = VotingApplyToken::Answer
         else
           normal_line text
