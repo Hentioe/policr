@@ -139,7 +139,6 @@ module Policr
         BotJoinCallbacker,
         SelfJoinCallbacker,
         FromCallbacker,
-        AfterEventCallbacker,
         TortureTimeCallbacker,
         CustomCallbacker,
         SettingsCallbacker,
