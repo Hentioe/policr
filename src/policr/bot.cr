@@ -183,6 +183,7 @@ module Policr
         TemplateCommander,
         AppealCommander,
         NavigationCommander,
+        VotingApplyCommander,
       ]
 
       commanders.each do |_, command|
