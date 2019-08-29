@@ -20,8 +20,16 @@ module Policr::Model
       where { _use_for == QueUseFor::VotingApplyQuiz.value }.to_a
     end
 
-    def self.enabled_voting_apply
-      where { (_use_for == QueUseFor::VotingApplyQuiz.value) & (_enabled == true) }.to_a
+    def self.enabled_voting_apply(limit : Int32? = nil, offset : Int32? = nil)
+      query = where { (_use_for == QueUseFor::VotingApplyQuiz.value) & (_enabled == true) }
+      if limit
+        query.limit limit
+      end
+      if offset
+        query.offset offset
+      end
+
+      query.to_a
     end
   end
 end
