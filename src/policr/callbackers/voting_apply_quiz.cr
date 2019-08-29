@@ -6,7 +6,7 @@ module Policr
 
       category = data[0]
 
-      unless chat_id == bot.owner_id.to_i32
+      if category == "question" && !(chat_id == bot.owner_id.to_i32)
         bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         return
       end
