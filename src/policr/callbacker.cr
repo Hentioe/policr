@@ -46,5 +46,9 @@ module Policr
     def invalid_callback(query)
       bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
     end
+
+    macro async_response
+      spawn bot.answer_callback_query(query.id)
+    end
   end
 end
