@@ -5,6 +5,8 @@ module Policr
     176365905, # Group Butler
     261244309, # Group Butler [beta]
     # @BabelFishBot => #config service off
+    609517172, # @MissRose_bot
+    389340481, # @BanhammerMarie_bot
   ]
 
   handler SelfJoin do
