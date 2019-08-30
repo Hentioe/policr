@@ -104,6 +104,13 @@ navigation:
 private_forward:
   desc: "您转发了一条消息给我，是想干嘛呢？"
   report: "举报来源用户"
+  view_userinfo: "查看用户信息"
+  userinfo: |
+    用户全名：%{fullname}
+    用户ID：`%{userid}` 
+    被举报 %{reported_times} 次，仍生效 %{valid_reported_total} 个（大于 0 则处入黑名单）
+    申诉 %{appeal_times} 次，产生过 %{report_times} 个举报
+
   report_reason_chooese: |
     您正在对一条自行转发的消息进行举报，转发源头将作为举报目标。请进一步选择举报原因。
 

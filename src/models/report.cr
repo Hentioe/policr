@@ -35,5 +35,17 @@ module Policr::Model
     def self.repeat?(chat_id : Int64, target_msg_id : Int32)
       where { (_from_chat_id == chat_id) & (_target_msg_id == target_msg_id) }.first
     end
+
+    def self.times_by_target_user(user_id : Int32)
+      where { _target_user_id == user_id }.count
+    end
+
+    def self.times_by_author(user_id : Int32)
+      where { _author_id == user_id }.count
+    end
+
+    def self.valid_reported_total(user_id : Int32)
+      where { (_target_user_id == user_id) & (_status == Status::Accept.value) }.count
+    end
   end
 end
