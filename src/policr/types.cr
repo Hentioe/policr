@@ -17,7 +17,7 @@ module Policr
   end
 
   enum ReportReason
-    Unknown; MassAd; Halal; Other; Hateful; Adname; VirusFile; PromoFile
+    Unknown; MassAd; Halal; Other; Hateful; Adname; VirusFile; PromoFile; Bocai
   end
 
   # 举报状态

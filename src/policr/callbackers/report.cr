@@ -285,6 +285,8 @@ module Policr
         t("report.reason.virus_file")
       when Reason::PromoFile
         t("report.reason.promo_file")
+      when Reason::Bocai
+        t "report.reason.bocai"
       end
     end
 

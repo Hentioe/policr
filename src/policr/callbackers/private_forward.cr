@@ -29,7 +29,7 @@ module Policr
         }
 
         unless is_file
-          put_item_list ["mass_ad", "halal", "hateful", "adname", "other"]
+          put_item_list ["mass_ad", "halal", "bocai", "adname", "other"]
         else
           put_item_list ["virus_file", "promo_file", "other"]
         end
