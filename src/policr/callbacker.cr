@@ -47,6 +47,10 @@ module Policr
       bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
     end
 
+    def invalid_keyboard(query)
+      invalid_callback query
+    end
+
     macro async_response
       spawn bot.answer_callback_query(query.id)
     end

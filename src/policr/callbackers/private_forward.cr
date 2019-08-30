@@ -35,12 +35,43 @@ module Policr
         end
 
         text = t "private_forward.report_reason_chooese"
+
+        async_response
+
         bot.edit_message_text(
           chat_id,
           message_id: message_id,
           text: text,
           reply_markup: markup
         )
+      when "view_userinfo"
+        if (from_user = query.from) && (reply_msg = msg.reply_to_message) && (target_user = reply_msg.forward_from)
+          fu = FromUser.new(target_user)
+          fullname = fu.fullname
+          userid = fu.user_id
+          reported_times = Model::Report.times_by_target_user userid
+          valid_reported_total = Model::Report.valid_reported_total userid
+          appeal_times = Model::Appeal.valid_times userid
+          report_times = Model::Report.times_by_author userid
+          text = t "private_forward.userinfo", {
+            fullname:             fullname,
+            userid:               userid,
+            reported_times:       reported_times,
+            valid_reported_total: valid_reported_total,
+            appeal_times:         appeal_times,
+            report_times:         report_times,
+          }
+
+          async_response
+
+          bot.edit_message_text(
+            chat_id,
+            message_id: message_id,
+            text: text
+          )
+        end
+      else
+        invalid_keyboard query
       end
     end
 

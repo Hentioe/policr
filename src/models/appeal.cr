@@ -12,5 +12,9 @@ module Policr::Model
     )
 
     belongs_to :report, Report
+
+    def self.valid_times(user_id : Int32)
+      where { (_author_id == user_id) & (_done == true) }.count
+    end
   end
 end

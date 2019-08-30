@@ -8,8 +8,14 @@ module Policr
     end
 
     handle do
+      make_btn = ->(action : String) {
+        Button.new(text: t("private_forward.#{action}"), callback_data: "PrivateForward:#{action}")
+      }
+
       markup = Markup.new
-      markup << [Button.new(text: t("private_forward.report"), callback_data: "PrivateForward:report")]
+
+      markup << [make_btn.call "report"]
+      markup << [make_btn.call "view_userinfo"]
       bot.send_message(
         msg.chat.id,
         text: t("private_forward.desc"),
