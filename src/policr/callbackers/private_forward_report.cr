@@ -11,6 +11,7 @@ module Policr
       when ReportReason::MassAd,
            ReportReason::Halal,
            ReportReason::Hateful,
+           ReportReason::Bocai,
            ReportReason::Adname,
            ReportReason::VirusFile,
            ReportReason::PromoFile

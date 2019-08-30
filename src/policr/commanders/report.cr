@@ -37,7 +37,7 @@ module Policr
             else
               markup << [btn.call(t("report.mass_ad"), Reason::MassAd)]
               markup << [btn.call(t("report.halal"), Reason::Halal)]
-              markup << [btn.call(t("report.hateful"), Reason::Hateful)]
+              markup << [btn.call(t("report.bocai"), Reason::Bocai)]
               markup << [btn.call(t("report.adname"), Reason::Adname)]
             end
 

@@ -162,6 +162,8 @@ module Policr
         t "appeal.reason.virus_file"
       when ReportReason::PromoFile
         t "appeal.reason.promo_file"
+      when ReportReason::Bocai
+        t "appeal.reason.bocai"
       else
         t "appeal.reason.unknown"
       end
