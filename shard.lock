@@ -54,7 +54,7 @@ shards:
 
   kemal-session:
     github: kemalcr/kemal-session
-    version: 0.11.1
+    version: 0.12.0
 
   kilt:
     github: jeromegn/kilt
@@ -74,7 +74,7 @@ shards:
 
   sam:
     github: imdrasil/sam.cr
-    version: 0.3.0
+    version: 0.3.1
 
   schedule:
     github: hugoabonizio/schedule.cr
@@ -86,7 +86,7 @@ shards:
 
   telegram_bot:
     github: Hentioe/telegram_bot
-    commit: 11014e817ba57582b75bc42fd8819950ff879d9b
+    commit: f36d378d69cf1d47f8ecdb3be89e6beed5831861
 
   telegram_markdown:
     github: Hentioe/telegram_markdown.cr
