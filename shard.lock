@@ -42,7 +42,7 @@ shards:
 
   jennifer:
     github: imdrasil/jennifer.cr
-    version: 0.8.0
+    version: 0.8.1
 
   jennifer_sqlite3_adapter:
     github: imdrasil/jennifer_sqlite3_adapter
