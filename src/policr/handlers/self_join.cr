@@ -70,7 +70,7 @@ module Policr
       admin_list = bot.get_chat_administrators chat_id
       has_creator = false
       admin_list.each do |admin|
-        has_creator = true if admin.status == "creator"
+        has_creator = true if admin.status == "creator" && admin.can_change_info
       end
 
       # 没有管理员，自动启用信任管理
