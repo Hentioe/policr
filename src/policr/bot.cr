@@ -193,8 +193,6 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
-      puts get_chat_administrators(msg.chat.id).inspect
-
       Cache.put_serve_group(msg.chat, self) if from_group_chat?(msg)
 
       super
