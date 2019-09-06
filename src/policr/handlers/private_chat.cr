@@ -38,7 +38,10 @@ module Policr
             group_id = args[1].to_i64
             bot.leave_chat group_id
             Cache.delete_group(group_id)
-          when "voting/apply_quiz_manage", "vaqm" # 申请测验管理
+          when "group/trust_admin", "gta"
+            group_id = args[1].to_i64
+            KVStore.enable_trust_admin group_id
+          when "voting/apply_quiz_manage", "vaq" # 申请测验管理
             if sended_msg = bot.send_message bot.owner_id, create_voting_apply_quiz_manage_text
               Cache.carving_voting_apply_quiz_msg bot.owner_id, sended_msg.message_id
             end
