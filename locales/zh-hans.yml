@@ -617,8 +617,7 @@ welcome:
   missing_content: "请先设置内容！"
   none: "无"
   hint: |
-    您正在设置欢迎消息，请回复欢迎内容，设置回复完成记得启用。
-    注意了，**只有回复本消息才会被认为是设置欢迎消息**，请尽快回复。
+    您正在设置欢迎消息，请**回复**欢迎内容，回复完成记得启用。
 
     当前设置：
 
@@ -634,6 +633,9 @@ welcome:
     附加教程：
     1. [在欢迎消息中嵌入链接](https://policr.bluerain.io#link_in_welcome)
     2. [在欢迎消息中插入变量](https://policr.bluerain.io#vars_in_welcome)
+    3. [在欢迎消息中添加按钮](https://policr.bluerain.io#buttons_in_welcome)
+
+    注意：**只有回复本消息才会被认为是设置欢迎内容，在 PC 客户端可能需要 <Ctrl+Enter> 组合键才能换行。**
   disable_link_preview: "禁用链接预览"
 from:
   question: "( ・∇・) 既然来了，就顺便告诉大家从哪个渠道进来的吧？"

@@ -20,18 +20,22 @@ module Policr
     handle do
       retrieve [(text = msg.text)] do
         chat_id = msg.chat.id
+        begin
+          WelcomeContentParser.parse! text
+          KVStore.set_welcome(_group_id, text)
 
-        KVStore.set_welcome(_group_id, text)
+          updated_text, updated_markup = updated_settings_preview(_group_id, _group_name)
+          spawn { bot.edit_message_text(
+            chat_id,
+            message_id: _reply_msg_id,
+            text: updated_text,
+            reply_markup: updated_markup
+          ) }
 
-        updated_text, updated_markup = updated_settings_preview(_group_id, _group_name)
-        spawn { bot.edit_message_text(
-          chat_id,
-          message_id: _reply_msg_id,
-          text: updated_text,
-          reply_markup: updated_markup
-        ) }
-
-        setting_complete_with_delay_delete msg
+          setting_complete_with_delay_delete msg
+        rescue e : Exception
+          bot.send_message chat_id, e.to_s
+        end
       end
     end
 
