@@ -217,6 +217,12 @@
                 <td align="center">功能</td>
                 <td align="center">略</td>
               </tr>
+              <tr>
+                <td align="left"><code>/voting_apply</code></td>
+                <td align="left">申请投票权</td>
+                <td align="center">权限</td>
+                <td align="center">略</td>
+              </tr>
             </tbody>
           </table>
           <h3 class="subtitle is-3">快速入门</h3>
@@ -577,49 +583,48 @@
                 <a class="anchor" name="advance_no_failure"></a>
                 <p>如何设置不可能验证错误的效果？</p>
                 <blockquote>
-                  很简单。定制验证问题时只设置一个正确的答案即可。例如问题为：<code>点击点我按钮</code>，答案为<code>点我！</code>。
-                  因为除了点击「点我！」按钮以外没有可能错误的答案，所以就变相的成为了一个纯主动验证，而非选择题。只要该用户是能交互的，便能通过验证。虽然这样做已经可以排除绝大部分垃圾帐号，但不排除未来出现能自动触发第一个按钮的机器人程序，所以默认验证仍然保留一个错误答案。
+                  很简单。定制验证问题时只设置一个正确的答案即可。例如问题为：<code>点击点我按钮</code>，答案为<code>点我</code>。
+                  因为除了点击「点我」按钮以外没有可能错误的答案，所以就变相的成为了一个纯主动验证，而非选择题。只要该用户是能交互的，便能通过验证。虽然这样做已经可以排除绝大部分垃圾帐号，但不排除未来出现能自动触发第一个按钮的机器人程序，所以默认验证仍然保留一个错误答案。
                 </blockquote>
               </li>
               <li>
                 <a class="anchor" name="link_in_welcome"></a>
                 <p>如何在欢迎消息中嵌入链接？</p>
-                <blockquote>
+                <p>
                   此处的链接并非单纯的可跳转的 URL
                   地址，而是指在显示上可以自定义文本类型的内联链接。没有什么黑魔法或自创标签，使用
                   Markdown 格式就够了。例如：
-                  <br />
-                  <br />
+                </p>
+                <blockquote>
                   <code>[访问 Google](https://www.google.com)</code>
                 </blockquote>
               </li>
               <li>
                 <a class="anchor" name="vars_in_welcome"></a>
                 <p>如何在欢迎消息中使用变量？</p>
-                <blockquote>
+                <p>
                   假设一名叫做「哆啦A梦」的用户通过了验证，我们可以这样在欢迎中显示他的名字：
-                  <br />
+                </p>
+                <blockquote>
                   欢迎<code>{{fullname}}</code>加入本群。
-                  <br />
-                  <br />
-                  其中<code>{{fullname}}</code>会被替换为「哆啦A梦」，所以欢迎内容实际为：欢迎多啦A梦加入本群。
-                  <br />
-                  其它变量的使用方法与之相同。
                 </blockquote>
+                其中<code>{{fullname}}</code>会被替换为「哆啦A梦」，所以欢迎内容实际为：欢迎多啦A梦加入本群。
+                其它变量的使用方法与之相同。
               </li>
               <li>
                 <a class="anchor" name="buttons_in_welcome"></a>
                 <p>如何在欢迎消息中添加按钮？</p>
+                <p>
+                  假设群规链接为<code>https://t.me/c/1244922484/10053</code>，我们添加一个阅读群规的按钮：
+                </p>
                 <blockquote>
-                  假设群规链接为 `https://t.me/c/1244922484/10053`，进行如下回复：
-                  热烈欢迎{{mention}}加入本群！
-                  -b [阅读群规](https://t.me/c/1244922484/10053)
+                  热烈欢迎 {{mention}} 加入本群！
                   <br />
-                  <br />
-                  其中 `-b` 开头的行表示生成一个按钮，在 -b 后面需要使用标准的 Markdown 链接语法。
-                  <br />
-                  按钮的数量不受限制，位置随意穿插（不会成为欢迎文本内容的一部分）。
+                  -b <code>[阅读群规](https://t.me/c/1244922484/10053)</code>
                 </blockquote>
+                其中<code>-b</code>开头的行表示生成一个按钮，在 -b
+                后面需要使用标准的 Markdown <strong>链接</strong>语法。
+                按钮的数量不仅没有限制，位置也可以随意穿插，因为它们并不会成为欢迎文本内容的一部分。
               </li>
             </ul>
           </div>
