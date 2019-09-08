@@ -388,10 +388,10 @@ module Policr
     def send_welcome(chat : TelegramBot::Chat, from_user : FromUser? = nil)
       chat_id = chat.id
 
-      if welcome = KVStore.get_welcome(chat_id)
+      if (welcome = KVStore.get_welcome(chat_id)) && (parsed = WelcomeContentParser.parse welcome)
         disable_link_preview = KVStore.disabled_welcome_link_preview?(chat_id)
         text =
-          welcome
+          parsed.content || "Warning: welcome content format is incorrect"
         text =
           if from_user
             vals = [from_user.fullname, chat.title, from_user.markdown_link, from_user.user_id]
@@ -401,11 +401,18 @@ module Policr
             render text, {{ WELCOME_VARS }}, vals
           end
 
+        markup = Markup.new
+        if parsed.buttons.size > 0
+          parsed.buttons.each do |button|
+            markup << [Button.new(text: button.text, url: button.link)]
+          end
+        end
+
         spawn {
           sended_msg = send_message(
             chat_id,
             text: text,
-            reply_markup: nil,
+            reply_markup: markup,
             disable_web_page_preview: disable_link_preview
           )
 
@@ -416,6 +423,8 @@ module Policr
             end
           end
         }
+      else
+        spawn send_message(chat_id, "Warning: welcome content format is incorrect")
       end
     end
   end

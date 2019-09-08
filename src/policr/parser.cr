@@ -18,6 +18,14 @@ module Policr
         instance.initialize
         instance.parse! text
       end
+
+      def self.parse(text)
+        begin 
+          parse! text
+        rescue e : Exception
+          nil
+        end
+      end
     end
 
     def missing_field!(name)
