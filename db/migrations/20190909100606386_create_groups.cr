@@ -4,9 +4,9 @@ class CreateGroups < Jennifer::Migration::Base
       # 群组ID
       t.integer :chat_id, {:null => false}
       # 名称
-      t.string :name, {:null => false}
+      t.string :title, {:null => false}
       # 链接
-      t.string :link, {:null => false}
+      t.string :link
 
       t.timestamps
     end
