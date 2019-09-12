@@ -132,17 +132,31 @@ module Policr::Cache
     @@verification_status.delete "#{chat_id}_#{user_id}"
   end
 
-  def put_serve_group(chat, bot)
+  def put_serve_group(msg : TelegramBot::Message, bot)
+    chat = msg.chat
     unless @@group_list[chat.id]?
       username = chat.username
       link = begin
-        username ? "t.me/#{username}" : bot.export_chat_invite_link(chat.id).to_s
+        username ? "https://t.me/#{username}" : bot.export_chat_invite_link(chat.id).to_s
       rescue e : TelegramBot::APIException
         _, reason = bot.parse_error(e)
         reason.to_s
       end
       @@group_no += 1
       @@group_list[chat.id] = {link, "#{chat.title}", @@group_no}
+      # 入库
+      link = nil unless link.starts_with?("https://")
+      group = Model::Group.fetch_by_chat_id!(chat.id, {title: chat.title, link: link})
+      admins =
+        begin
+          bot.get_chat_administrators chat.id
+        rescue
+          Array(TelegramBot::ChatMember).new
+        end
+      admins = admins.map do |a|
+        Model::Admin.fetch_by_user_id!(a.user.id, {fullname: FromUser.new(a.user).fullname})
+      end
+      group.reset_admins admins
     end
   end
 
