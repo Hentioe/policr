@@ -6,9 +6,6 @@ class CreateAdmins < Jennifer::Migration::Base
       # 群主？
       t.bool :is_owner, {:null => false}
 
-      # 引用群组
-      t.reference :group
-
       t.timestamps
     end
   end
