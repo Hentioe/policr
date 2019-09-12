@@ -12,12 +12,6 @@ alias ServiceMessage = Policr::ServiceMessage
 alias ToggleTarget = Policr::ToggleTarget
 alias QueUseFor = Policr::QueUseFor
 
-macro def_models_alias(models)
-  {% for model in models %}
-    alias {{model}} = Model::{{model}}
-  {% end %}
-end
-
 macro def_types_alias(types)
   {% for type in types %}
     alias {{type}} = Policr::{{type}}
@@ -26,10 +20,7 @@ end
 
 def_types_alias [VotingApplyParser]
 def_models_alias [
-  Question,
   Answer,
-  Group,
-  Admin,
 ]
 
 describe Policr do
@@ -207,108 +198,6 @@ describe Policr do
     r.should be_truthy
     if r
       r.rows_affected.should eq(1)
-    end
-
-    # 删除服务消息
-    Model::AntiMessage.enable!(from_chat_id, ServiceMessage::JoinGroup)
-    Model::AntiMessage.enabled?(from_chat_id, ServiceMessage::JoinGroup).should be_true
-    Model::AntiMessage.disabled?(from_chat_id, ServiceMessage::LeaveGroup).should be_false
-    Model::AntiMessage.disable!(from_chat_id, ServiceMessage::LeaveGroup)
-    Model::AntiMessage.disabled?(from_chat_id, ServiceMessage::LeaveGroup).should be_true
-
-    r = Model::AntiMessage.where { _chat_id == from_chat_id }.delete
-    r.should be_truthy
-    if r
-      r.rows_affected.should eq(2)
-    end
-
-    # 格式限制
-    Model::FormatLimit.put_list!(from_chat_id, ["mp4", "gif"])
-    Model::FormatLimit.includes?(from_chat_id, "mp4").should be_true
-    Model::FormatLimit.clear(from_chat_id)
-    Model::FormatLimit.includes?(from_chat_id, "mp4").should be_false
-    Model::FormatLimit.find(from_chat_id).should be_falsey
-
-    # 模板
-    Model::Template.enabled?(from_chat_id).should be_falsey
-    t1 = Model::Template.set_content! from_chat_id, "我是模板内容"
-    t1.should be_truthy
-    Model::Template.enabled?(from_chat_id).should be_falsey
-    Model::Template.enable from_chat_id
-    Model::Template.enabled?(from_chat_id).should be_truthy
-    Model::Template.disable from_chat_id
-    Model::Template.enabled?(from_chat_id).should be_falsey
-    Model::Template.delete(t1.id).should be_truthy
-
-    # 开关
-    Model::Toggle.enabled?(from_chat_id, ToggleTarget::SlientMode).should be_false
-    Model::Toggle.disabled?(from_chat_id, ToggleTarget::SlientMode).should be_false
-    t1 = Model::Toggle.enable! from_chat_id, ToggleTarget::SlientMode
-    Model::Toggle.enabled?(from_chat_id, ToggleTarget::SlientMode).should be_true
-    Model::Toggle.disabled?(from_chat_id, ToggleTarget::SlientMode).should be_false
-    Model::Toggle.disable! from_chat_id, ToggleTarget::SlientMode
-    Model::Toggle.enabled?(from_chat_id, ToggleTarget::SlientMode).should be_false
-    Model::Toggle.disabled?(from_chat_id, ToggleTarget::SlientMode).should be_true
-    Model::Toggle.delete(t1.id).should be_truthy
-
-    # 问题/答案
-    q1 = Question.create!({
-      chat_id: from_chat_id,
-      title:   "我是一个问题",
-      desc:    "我是问题描述",
-      note:    "我是答案注解",
-      use_for: QueUseFor::VotingApplyQuiz.value,
-      enabled: true,
-    })
-    q1.should be_truthy
-    q2 = Question.create!({
-      chat_id: from_chat_id,
-      title:   "我是一个没启用的问题",
-      desc:    "我是问题描述",
-      note:    "我是答案注解",
-      use_for: QueUseFor::VotingApplyQuiz.value,
-      enabled: false,
-    })
-    q2.should be_truthy
-    Question.all_voting_apply.size.should eq(2)
-    Question.enabled_voting_apply.size.should eq(1)
-    q1.add_answers({:name => "正确答案", :corrected => true})
-    q1.add_answers({:name => "错误答案", :corrected => false})
-    qq = Question.where {
-      (_use_for == QueUseFor::VotingApplyQuiz.value) & (_enabled == true)
-    }.first
-    qq.should be_truthy
-    if qq && (answers = qq.answers)
-      answers = qq.answers
-      answers.size.should eq(2)
-      answers.each do |a|
-        Answer.delete(a.id).should be_truthy
-      end
-    end
-    Question.delete(q1.id).should be_truthy
-    Question.delete(q2.id).should be_truthy
-
-    # 群组
-    g1 = Group.create!({chat_id: from_chat_id, title: "群组1"})
-    g1.should be_truthy
-    g1.add_admins({:user_id => author_id, :is_owner => false})
-    # 管理员
-    a1 = Admin.where { _user_id == author_id }.first
-    a1.should be_truthy
-    if a1
-      a1.add_groups({:chat_id => from_chat_id, :title => "群组2"})
-    end
-
-    g2 = Group.where { _chat_id == from_chat_id }.last
-    g2.should be_truthy
-    if g2
-      g2.title.should eq("群组2")
-    end
-
-    if g1 && g2 && a1
-      Group.delete(g1.id).should be_truthy
-      Group.delete(g2.id).should be_truthy
-      Admin.delete(a1.id).should be_truthy
     end
   end
 end
