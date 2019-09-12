@@ -25,7 +25,12 @@ macro def_types_alias(types)
 end
 
 def_types_alias [VotingApplyParser]
-def_models_alias [Question, Answer]
+def_models_alias [
+  Question,
+  Answer,
+  Group,
+  Admin,
+]
 
 describe Policr do
   it "arabic characters match" do
@@ -282,5 +287,18 @@ describe Policr do
     end
     Question.delete(q1.id).should be_truthy
     Question.delete(q2.id).should be_truthy
+
+    # 群组
+    g1 = Group.create!({chat_id: from_chat_id, title: "群组1"})
+    g1.should be_truthy
+    g1.add_admins({:user_id => author_id, :is_owner => false})
+    # 管理员
+    a1 = Admin.where { _user_id == author_id }.first
+    a1.should be_truthy
+
+    if g1 && a1
+      Group.delete(g1.id).should be_truthy
+      Admin.delete(a1.id).should be_truthy
+    end
   end
 end
