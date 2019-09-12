@@ -10,9 +10,12 @@ class CreateGroups < Jennifer::Migration::Base
 
       t.timestamps
     end
+
+    create_join_table :groups, :admins
   end
 
   def down
     drop_table :groups if table_exists? :groups
+    drop_join_table :groups, :admins
   end
 end

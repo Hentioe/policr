@@ -295,9 +295,19 @@ describe Policr do
     # 管理员
     a1 = Admin.where { _user_id == author_id }.first
     a1.should be_truthy
+    if a1
+      a1.add_groups({:chat_id => from_chat_id, :title => "群组2"})
+    end
 
-    if g1 && a1
+    g2 = Group.where { _chat_id == from_chat_id }.last
+    g2.should be_truthy
+    if g2
+      g2.title.should eq("群组2")
+    end
+
+    if g1 && g2 && a1
       Group.delete(g1.id).should be_truthy
+      Group.delete(g2.id).should be_truthy
       Admin.delete(a1.id).should be_truthy
     end
   end

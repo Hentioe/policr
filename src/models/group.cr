@@ -13,6 +13,6 @@ module Policr::Model
       updated_at: Time?
     )
 
-    has_many :admins, Admin
+    has_and_belongs_to_many :admins, Admin
   end
 end
