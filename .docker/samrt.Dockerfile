@@ -1,4 +1,4 @@
-rROM bluerain/crystal:runtime-slim
+FROM bluerain/crystal:runtime-slim
 
 
 RUN apt update && \
