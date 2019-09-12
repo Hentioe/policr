@@ -2,7 +2,7 @@ kind: pipeline
 name: default
 
 steps:
-  - name: test
+  - name: app-test
     image: bluerain/policr:build
     pull: true
     commands:
@@ -11,13 +11,13 @@ steps:
       - POLICR_ENV=test crystal sam.cr -- db:setup
       - POLICR_ENV=test crystal spec
 
-  - name: build
+  - name: app-build
     image: bluerain/policr:build
     pull: true
     commands:
-      - shards build --release --progress --production --warnings=all
+      - shards build policr --release --progress --production --warnings=all
 
-  - name: push-app-image
+  - name: app-image-push
     image: plugins/docker
     settings:
       repo: bluerain/policr
@@ -32,17 +32,28 @@ steps:
       event:
         - push
 
-  - name: push-migration-image
+  - name: sam-build
+    image: bluerain/policr:build
+    pull: true
+    commands:
+      - shards build sam --release --progress --production --warnings=all
+    when:
+      branch:
+        - sam/update
+      event:
+        - push
+
+  - name: sam-image-push
     image: plugins/docker
     settings:
       repo: bluerain/policr
       username: bluerain
       password:
         from_secret: docker_password
-      dockerfile: migration.Dockerfile
-      tags: migration
+      dockerfile: sam.Dockerfile
+      tags: sam
     when:
       branch:
-        - migration/update
+        - sam/update
       event:
         - push

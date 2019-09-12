@@ -7,6 +7,8 @@ authors:
 targets:
   policr:
     main: src/policr.cr
+  sam:
+    main: sam.cr
 
 crystal: 0.30.1
 
