@@ -14,10 +14,14 @@ module Policr
 
       if members = msg.new_chat_members
         members.select { |m| m.is_bot == false }.each do |member|
+          # 社区群查群组列表
+          spawn show_group_list(member) if chat_id == bot.community_group_id
           # 管理员拉入，放行
           if (user = msg.from) && (user.id != member.id) && bot.is_admin?(msg.chat.id, user.id)
             if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
-              Policr.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
+              Policr.after(5.seconds) {
+                bot.delete_message(chat_id, message_id)
+              } unless KVStore.enabled_record_mode?(chat_id)
             end
             # 删除入群消息
             Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
@@ -48,6 +52,29 @@ module Policr
             end
           end
         end
+      end
+    end
+
+    def show_group_list(user : TelegramBot::User)
+      if admin = Model::Admin.find_by_user_id user.id
+        header = "#查户口\n"
+        text =
+          if (groups = admin.groups) && groups.size > 0
+            sb = String.build do |str|
+              groups.each do |g|
+                if link = g.link
+                  str << "[#{g.title}](#{link})"
+                else
+                  str << "#{g.title}（快给我邀请权限！）"
+                end
+                str << "\n"
+              end
+            end
+            "#{header}#{FromUser.new(user).markdown_link} 管理的群组列表：\n\n#{sb}\n**快去围观！**"
+          else
+            "#{header}没有记录 #{FromUser.new(user).markdown_link} 所管理的群组管理。"
+          end
+        bot.send_message bot.community_group_id, text
       end
     end
 

@@ -18,4 +18,4 @@ CREATE TABLE questions (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NO
 CREATE TABLE IF NOT EXISTS "answers"(id integer PRIMARY KEY, name text NOT NULL, corrected integer NOT NULL, question_id integer, created_at text NOT NULL, updated_at text NOT NULL,FOREIGN KEY (question_id) REFERENCES questions(id));
 CREATE TABLE groups (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, title text NOT NULL, link text, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE admins_groups (group_id integer, admin_id integer);
-CREATE TABLE admins (id integer PRIMARY KEY AUTOINCREMENT, user_id integer NOT NULL, is_owner integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
+CREATE TABLE admins (id integer PRIMARY KEY AUTOINCREMENT, user_id integer NOT NULL, fullname text, created_at text NOT NULL, updated_at text NOT NULL);

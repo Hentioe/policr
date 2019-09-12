@@ -26,14 +26,16 @@ module Policr
     logger.level = config.prod ? Logger::INFO : Logger::DEBUG
     logger.info "ready to start"
 
-    bot = Bot.new(
-      from_env("username"),
-      from_env("token"),
-      from_env("owner_id"),
-      logger,
-      from_env("snapshot_channel"),
-      from_env("voting_channel")
-    )
+    data = {
+      username:           from_env("username"),
+      token:              from_env("token"),
+      owner_id:           from_env("owner_id"),
+      community_group_id: from_env("community_group_id"),
+      snapshot_channel:   from_env("snapshot_channel"),
+      voting_channel:     from_env("voting_channel"),
+      logger:             logger,
+    }
+    bot = Bot.new **data
     spawn do
       logger.info "start web"
       Web.start logger, bot

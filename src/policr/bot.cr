@@ -94,10 +94,12 @@ module Policr
     getter voting_channel : String
     getter username : String
     getter owner_id : String
+    getter community_group_id : Int64
 
-    def initialize(username, token, @owner_id, logger, @snapshot_channel, @voting_channel)
+    def initialize(username, token, @owner_id, community_group_id, logger, @snapshot_channel, @voting_channel)
       super(username, token, logger: logger)
       @username = username
+      @community_group_id = community_group_id.to_i64
 
       me = get_me || raise Exception.new("Failed to get bot data")
       @self_id = me["id"].as_i64
@@ -193,7 +195,7 @@ module Policr
     end
 
     def handle(msg : TelegramBot::Message)
-      Cache.put_serve_group(msg.chat, self) if from_group_chat?(msg)
+      Cache.put_serve_group(msg, self) if from_group_chat?(msg)
 
       super
 
