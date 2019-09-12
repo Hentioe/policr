@@ -132,6 +132,9 @@ module Policr
           voting_message_id: voting_msg.message_id,
           user_id:           from_user_id,
         }
+        text += "\n" + t("report.by_admin") if role == UserRole::Creator ||
+                                               role == UserRole::TrustedAdmin ||
+                                               role == UserRole::Admin
         begin
           bot.edit_message_text(
             chat_id: chat_id,

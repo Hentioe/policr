@@ -1,0 +1,60 @@
+report:
+  repeat_error: "这条消息已被举报过了，看[这里](%{voting_link})。"
+  admin_reply: |
+    举报开始，请选择具体原因。举报将在完成选择以后被创建，并进入[黑名单公投频道](https://t.me/%{voting_channel})进行投票。如果您决定放弃举报，则不需要做任何选择。
+
+    注意：在完成举报前请不要删除被举报消息。
+  mass_ad: "垃圾内容/广告"
+  halal: "垃圾内容/清真"
+  hateful: "恶意内容/仇恨"
+  bocai: "有害信息/菠菜"
+  adname: "垃圾昵称/广告"
+  other: "其它原因/补充"
+  virus_file: "有害文件/病毒"
+  promo_file: "有害文件/推广"
+  adname_detail: "全名：%{name}"
+  no_forward_success: "没有成功转发原消息"
+  author_cant_self: "你这么想送自己进去的话，明说就行了～"
+  target_user_cant_the_bot: "敢举报本大人？信不信先把你送进去了！"
+  target_user_invalid: "举报目标用户无效。它可能是个频道或其它的什么东西～"
+  forward_error: "举报发起失败，原因：%{reason}"
+  storage_error: "举报储存失败，请向社区反馈。"
+  generate_voting_error: "举报生成失败，原因：%{reason}"
+  update_result_error: "举报结果更新失败，原因：%{reason}"
+  message_not_exists: "举报目标消息已不存在"
+  message_invalid: "举报目标消息无效"
+  voting_message: |
+    举报发起人：[%{author_id}](tg://user?id=%{author_id})
+    举报人身份：%{role}
+    举报目标快照：%{snapshot}
+    被执行用户：[%{target_id}](tg://user?id=%{target_id})
+    举报原因：%{reason}
+    详细说明：%{detail}
+    申诉详情：%{appeal}
+    当前状态：%{status}
+  generated: "举报已经生成（[在这里](https://t.me/%{voting_channel}/%{voting_message_id})），具有投票权的用户会对举报内容进行表决。注意了，[您](tg://user?id=%{user_id})作为发起人不能进行投票。如果举报受理成功将会在本群通知`。"
+  by_admin: "**由于您具有权限，此用户已被立即封禁（这并不表示已进入黑名单）。**"
+  role:
+    unknown: "无"
+    creator: "群主"
+    trusted_admin: "受信管理员"
+    admin: "管理员"
+    member: "群成员"
+  reason:
+    unknown: "未记录"
+    spam: "散播广告消息"
+    halal: "发表清真消息"
+    hateful: "仇恨或恐怖主义"
+    bocai: "菠菜招人或广告"
+    virus_file: "传播病毒或恶意程序"
+    promo_file: "传播推广或恶意文件"
+    other: "其它"
+    adname: "广告昵称"
+  status:
+    unknown: "不明"
+    begin: "#表决中"
+    reject: "不受理"
+    accept: "被处理"
+    unban: "通过申诉"
+  none: "无"
+  anonymous_adname: "被匿名处理的广告昵称"
