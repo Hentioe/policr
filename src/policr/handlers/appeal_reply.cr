@@ -4,7 +4,10 @@ module Policr
     @flow_msg_id : Int32?
 
     match do
+      self_left = read_state :self_left { false }
+
       all_pass? [
+        !self_left,
         from_private_chat?(msg),
         (reply_msg = msg.reply_to_message),
         (@flow_msg_id = reply_msg.message_id),

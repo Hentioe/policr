@@ -9,9 +9,9 @@ module Policr
 
         all_pass? [
           from_group_chat?(msg),
-          msg.text,
           (@reply_msg_id = _reply_msg_id),
           Cache.blocked_content_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置屏蔽内容？
+          msg.text,
           (user = msg.from),
           bot.has_permission?(_group_id, user.id, role),
         ]

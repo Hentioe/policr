@@ -7,11 +7,11 @@ module Policr
 
     match do
       all_pass? [
-        msg.text,
         from_private_chat?(msg),
         (reply_msg = msg.reply_to_message),
         (@reply_msg_id = reply_msg.message_id),
         (@qid = Cache.voting_apply_quiz_question_msg?(msg.chat.id, @reply_msg_id)), # 回复目标为投票申请测验问题？
+        msg.text,
         (user = msg.from),
         user.id == bot.owner_id.to_i32,
       ]

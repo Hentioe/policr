@@ -1,14 +1,16 @@
 module Policr
   handler LeftGroup do
     match do
+      # 从群组列表缓存中移除
       all_pass? [
         KVStore.enabled_examine?(msg.chat.id),
-        msg.left_chat_member, # 离开聊天？
+        (user = msg.left_chat_member), # 离开聊天？
+        bot.self_id != user.id,        # 消息发送者非 Bot 自身
       ]
     end
 
     handle do
-      if (user = msg.from) && (user_id = user.id)
+      if (user = msg.left_chat_member) && (user_id = user.id)
         chat_id = msg.chat.id
         # 删除退群消息
         Model::AntiMessage.working chat_id, ServiceMessage::LeaveGroup do

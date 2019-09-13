@@ -2,9 +2,11 @@ module Policr
   handler FormatLimit do
     match do
       chat_id = msg.chat.id
-
       role = KVStore.enabled_trust_admin?(chat_id) ? :admin : :creator
+      self_left = read_state :self_left { false }
+
       all_pass? [
+        !self_left,
         from_group_chat?(msg),
         (document = msg.document),
         (file_name = document.file_name),

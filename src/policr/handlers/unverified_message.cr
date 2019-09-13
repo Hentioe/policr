@@ -4,11 +4,11 @@ module Policr
 
     match do
       all_pass? [
-        from_group_chat?(msg),
-        !msg.new_chat_members,
         (user = msg.from),
         (status = Cache.verification?(msg.chat.id, user.id)),
         status == VerificationStatus::Init,
+        from_group_chat?(msg),
+        !msg.new_chat_members,
       ]
     end
 

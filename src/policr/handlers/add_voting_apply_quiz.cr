@@ -6,8 +6,8 @@ module Policr
 
     match do
       all_pass? [
-        msg.text,
         from_private_chat?(msg),
+        msg.text,
         (reply_msg = msg.reply_to_message),
         (@reply_msg_id = reply_msg.message_id),
         Cache.voting_apply_quiz_msg?(msg.chat.id, @reply_msg_id), # 回复目标为投票申请测验？

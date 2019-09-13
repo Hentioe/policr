@@ -135,6 +135,7 @@ module Policr::Cache
   def put_serve_group(msg : TelegramBot::Message, bot)
     chat = msg.chat
     unless @@group_list[chat.id]?
+      return if msg.left_chat_member # 忽略离开聊天
       username = chat.username
       link = begin
         username ? "https://t.me/#{username}" : bot.export_chat_invite_link(chat.id).to_s

@@ -3,7 +3,10 @@ module Policr
     @length : Model::MaxLength?
 
     match do
+      self_left = read_state :self_left { false }
+
       all_pass? [
+        !self_left,
         from_group_chat?(msg),
         (@length = Model::MaxLength.find(msg.chat.id)), # 启用了相关设置？
       ]

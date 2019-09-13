@@ -52,7 +52,7 @@ module Policr
               Schedule.after((60*30).seconds) {
                 bot.refresh_admins chat_id # 强制刷新管理员缓存
 
-                unless bot.is_admin?(chat_id, bot.self_id.to_i32, dirty: false) # 仍然没有管理员权限
+                unless bot.is_admin?(chat_id, bot.self_id, dirty: false) # 仍然没有管理员权限
                   bot.delete_message chat_id, message_id
                   bot.leave_chat chat_id
                 end

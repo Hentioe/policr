@@ -10,11 +10,11 @@ module Policr
         role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
 
         all_pass? [
+          (@reply_msg_id = _reply_msg_id),
+          Cache.torture_time_msg?(msg.chat.id, @reply_msg_id), # 回复验证时间？
           msg.text,
           (user = msg.from),
           bot.has_permission?(_group_id, user.id, role),
-          (@reply_msg_id = _reply_msg_id),
-          Cache.torture_time_msg?(msg.chat.id, @reply_msg_id), # 回复验证时间？
         ]
       end
     end

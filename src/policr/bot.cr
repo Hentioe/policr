@@ -84,7 +84,7 @@ module Policr
 
     include TelegramBot::CmdHandler
 
-    getter self_id : Int64
+    getter self_id : Int32
     getter handlers = Hash(String, Handler).new
     getter callbackers = Hash(String, Callbacker).new
     getter commanders = Hash(String, Commander).new
@@ -102,10 +102,12 @@ module Policr
       @community_group_id = community_group_id.to_i64
 
       me = get_me || raise Exception.new("Failed to get bot data")
-      @self_id = me["id"].as_i64
+      @self_id = me["id"].as_i
 
       # 注册消息处理模块
       regall [
+        SelfLeftHandler,
+        # 置顶分割
         UserJoinHandler,
         BotJoinHandler,
         SelfJoinHandler,
@@ -130,7 +132,7 @@ module Policr
         HalalCaptionHandler,
         AddVotingApplyQuizHandler,
         UpdateVotingApplyQuizQuestionHandler,
-        # 此 Handler 置底
+        # 置底分割
         PrivateChatHandler,
       ]
 
