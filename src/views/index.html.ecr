@@ -736,7 +736,9 @@
           <h3 class="subtitle is-3">消息访问</h3>
           <div class="content">
             <blockquote>
-              所有将本项目实例提升为<code>admin</code>的群组产生的任何消息都会被机器人接收，但并不会转发或存储任何和功能无关的消息。为了提供人工服务，所有功能无关的机器人私聊消息将被转发给管理员。注意：仅是对机器人私聊。
+              所有将本项目实例提升为<code>admin</code>的群组产生的任何消息都会被机器人接收，但并不会转发或存储任何和功能无关的消息。为了提供人工服务，所有私聊机器人的功能无关消息将被转发给管理员。注意：<strong
+                >只针对私聊机器人消息。</strong
+              >
             </blockquote>
           </div>
           <article class="message is-warning" style="margin-top:1.5rem;">
@@ -751,12 +753,13 @@
               <ul>
                 <li>机器人相关设置，例如来源调查和定制验证涉及到的群组信息</li>
                 <li>白名单清真用户ID</li>
-                <li>受管群组ID和群主ID（此功能暂未开放）</li>
+                <li>受管的群组ID、名称和链接</li>
+                <li>受管群组的管理员用户ID、全名</li>
                 <li>举报人ID、所属群组ID、被举报消息ID和被举报用户ID</li>
               </ul>
               在机器人程序运行周期内缓存的数据包括有：
               <ul>
-                <li>服务中的群组ID、链接和名称</li>
+                <li>服务中的群组ID</li>
                 <li>新加入用户系统消息</li>
               </ul>
             </blockquote>
