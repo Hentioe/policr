@@ -75,7 +75,7 @@ module Policr
         groups = loading_groups offset, limit
         groups.each do |chat_id, info|
           link, title, _ = info
-          if link.starts_with? "t.me"
+          unless link.starts_with? "https://t.me/joinchat"
             str << "👥🌐|"
           else
             str << "👥🔒|"
