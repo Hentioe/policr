@@ -29,7 +29,7 @@ dependencies:
     github: hugoabonizio/schedule.cr
   rocksdb:
     github: maiha/rocksdb.cr
-    version: 0.5.1
+    version: ~> 0.5.0
   kemal:
     github: kemalcr/kemal
   kemal-session:
@@ -47,6 +47,9 @@ dependencies:
     github: imdrasil/jennifer_sqlite3_adapter
   gomoku:
     github: Hentioe/gomoku.cr
+  dispatch:
+    github: bmulvihill/dispatch
+    version: ~> 0.1.0
 development_dependencies:
   ameba:
     github: veelenga/ameba

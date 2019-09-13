@@ -16,9 +16,13 @@ shards:
     github: crystal-lang/crystal-db
     version: 0.6.0
 
+  dispatch:
+    github: bmulvihill/dispatch
+    version: 0.1.0
+
   dotenv:
     github: gdotdesign/cr-dotenv
-    version: 0.3.0
+    version: 0.3.1
 
   exception_page:
     github: crystal-loot/exception_page

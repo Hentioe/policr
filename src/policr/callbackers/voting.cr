@@ -1,12 +1,14 @@
+require "dispatch"
+
+Dispatch.configure do |config|
+  config.num_workers = 1
+  config.queue_size = 1
+end
+
 module Policr
   REPORT_RECEIPT_DEL_DELAY = 55
 
   callbacker Voting do
-    alias Reason = ReportReason
-    alias Status = ReportStatus
-    alias UserRole = ReportUserRole
-    alias VotingType = VoteType
-
     def handle(query, msg, data)
       chat_id = msg.chat.id
       from_user_id = query.from.id
@@ -15,7 +17,7 @@ module Policr
       report_id = report_id.to_i
 
       # 非管理员无权投票
-      unless bot.is_admin?(msg.chat.id, from_user_id)
+      unless bot.is_admin?(chat_id, from_user_id)
         bot.answer_callback_query(query.id, text: t("voting.no_permissions"), show_alert: true)
         return
       end
@@ -26,6 +28,25 @@ module Policr
         bot.answer_callback_query(query.id, text: t("voting.report_invalid"), show_alert: true)
         return
       end
+
+      VotingJob.dispatch bot, query, msg, data, report
+    end
+  end
+
+  class VotingJob
+    alias Reason = ReportReason
+    alias Status = ReportStatus
+    alias UserRole = ReportUserRole
+    alias VotingType = VoteType
+
+    include Dispatchable
+
+    def perform(bot, query, msg, data, report)
+      chat_id = msg.chat.id
+      from_user_id = query.from.id
+
+      _, voting_type = data
+
       if report && report.status != Status::Begin.value # 状态可能不正确，刷新状态
         spawn bot.answer_callback_query(query.id, text: t("voting.report_ended"), show_alert: true)
         midcall ReportCallbacker do
@@ -119,6 +140,9 @@ module Policr
           schedule(REPORT_RECEIPT_DEL_DELAY.seconds) { bot.delete_message(chat_id, _del_msg_id) }
         end
       end
+
+      # 延时
+      sleep 1.5.seconds
     end
   end
 end
