@@ -3,7 +3,11 @@ module Policr
     def handle(msg, from_nav)
       chat_id = msg.chat.id
 
-      bot.send_message chat_id, create_text, reply_markup: create_markup
+      if chat_id > 0
+        bot.send_message chat_id, create_text, reply_markup: create_markup
+      else
+        bot.delete_message(chat_id, msg.message_id)
+      end
     end
 
     def create_text
