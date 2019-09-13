@@ -58,5 +58,13 @@ module Policr::Model
 
       del_list.each { |a| remove_admins(a) }
     end
+
+    def self.load_list(offset : Int32, limit : Int32)
+      where { _managed == true }
+        .offset(offset)
+        .limit(limit)
+        .order({{@type}}._updated_at.asc)
+        .to_a
+    end
   end
 end

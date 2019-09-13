@@ -85,17 +85,6 @@ module Policr::Web
       VERSION
     end
 
-    get "/serving" do
-      groups = Cache.serving_groups
-      groups.each_with_index do |group, i|
-        _, data = group
-        link, name = data
-        i += 1
-        logger.info "Serving group[#{i}][#{name}]: #{link}"
-      end
-      "done!+#{groups.size}"
-    end
-
     error 404 do
       "瞎访问啥呢你……"
     end

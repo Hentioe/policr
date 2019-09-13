@@ -1,10 +1,6 @@
 module Policr::Cache
   extend self
 
-  @@group_no = 0
-  # 运行周期内服务的群组列表
-  @@group_list = Hash(Int64, Tuple(String, String, Int32)).new
-
   # 缓存管理员列表
   @@admins = Hash(Int64, Array(TelegramBot::ChatMember)).new
 
@@ -14,7 +10,7 @@ module Policr::Cache
 
     @@{{msg_type_name.id}} = Set(String).new
 
-    def carving_{{msg_type_name.id}}(key_1, key_2)
+    def carving_{{msg_type_name.id}}(key_1, key_2 = "")
       @@{{msg_type_name.id}} << "#{key_1}_#{key_2}"
 
       # 删除具有冲突的缓存设置标记
@@ -23,11 +19,11 @@ module Policr::Cache
       {% end %}
     end
 
-    def {{msg_type_name.id}}?(key_1, key_2)
+    def {{msg_type_name.id}}?(key_1, key_2 = "")
       @@{{msg_type_name.id}}.includes? "#{key_1}_#{key_2}"
     end
 
-    def delete_{{msg_type_s.id}}_carving(key_1, key_2)
+    def delete_{{msg_type_s.id}}_carving(key_1, key_2 = "")
       @@{{msg_type_name.id}}.delete "#{key_1}_#{key_2}"
     end
   end
@@ -46,6 +42,9 @@ module Policr::Cache
       @@{{msg_type_name.id}}["#{key_1}_#{key_2}"]?
     end
   end
+
+  # 标记群组
+  def_carving "group"
 
   # 标记来源调查设置消息
   def_carving "from_setting"
@@ -134,7 +133,7 @@ module Policr::Cache
 
   def put_serve_group(msg : TelegramBot::Message, bot)
     chat = msg.chat
-    unless @@group_list[chat.id]?
+    unless group_msg? chat.id
       return if msg.left_chat_member # 忽略离开聊天
       username = chat.username
       link = begin
@@ -143,8 +142,7 @@ module Policr::Cache
         _, reason = bot.parse_error(e)
         reason.to_s
       end
-      @@group_no += 1
-      @@group_list[chat.id] = {link, "#{chat.title}", @@group_no}
+      carving_group_msg chat.id # 缓存群组
       # 入库
       link = nil unless link.starts_with?("https://")
       group = Model::Group.fetch_by_chat_id!(chat.id,
@@ -161,14 +159,6 @@ module Policr::Cache
       end
       group.reset_admins admins
     end
-  end
-
-  def serving_groups
-    @@group_list
-  end
-
-  def delete_group(chat_id : Int64)
-    @@group_list.delete chat_id
   end
 
   def get_admins(chat_id)

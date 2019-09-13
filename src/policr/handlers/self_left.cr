@@ -11,7 +11,7 @@ module Policr
       read_state :self_left { true }
       chat_id = msg.chat.id
       # 从群组列表缓存中移除
-      Cache.delete_group(chat_id)
+      Cache.delete_group_carving chat_id
       # 更新受管状态
       Model::Group.cancel_manage chat_id
     end

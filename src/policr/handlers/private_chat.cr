@@ -37,7 +37,7 @@ module Policr
           when "group/leave", "gl" # 退出群组
             group_id = args[1].to_i64
             bot.leave_chat group_id
-            Cache.delete_group(group_id)
+            Cache.delete_group_carving group_id
           when "group/trust_admin", "gta"
             group_id = args[1].to_i64
             KVStore.enable_trust_admin group_id
@@ -72,16 +72,19 @@ module Policr
       offset, limit = gen_ranging page_n
 
       list_sb = String.build do |str|
-        groups = loading_groups offset, limit
-        groups.each do |chat_id, info|
-          link, title, _ = info
+        groups = load_groups offset, limit
+        groups.each do |group|
+          chat_id = group.chat_id
+          title = group.title
+          link = group.link || "[NoneLink]"
+
           unless link.starts_with? "https://t.me/joinchat"
             str << "👥🌐|"
           else
             str << "👥🔒|"
           end
           str << "🆔 `#{chat_id}`|"
-          if link.starts_with?("t.me") || link.starts_with?("https")
+          if link.starts_with?("https")
             str << "[#{title}](#{link})"
           else
             str << title
@@ -100,7 +103,7 @@ module Policr
 
     def create_manage_markup(page_n)
       offset, limit = gen_ranging page_n
-      groups = loading_groups offset, (limit + 1)
+      groups = load_groups offset, (limit + 1)
 
       make_btn = ->(text : String, n : Int32) {
         Button.new(text: text, callback_data: "Manage:jump:#{n}")
@@ -126,15 +129,8 @@ module Policr
       {offset, limit}
     end
 
-    def loading_groups(offset, limit)
-      i = 0
-      Cache.serving_groups.to_a.sort_by do |k, v|
-        _, _, no = v
-        no
-      end.select do
-        i += 1
-        i > offset && i <= limit
-      end
+    def load_groups(offset, limit)
+      Model::Group.load_list(offset, limit)
     end
   end
 end
