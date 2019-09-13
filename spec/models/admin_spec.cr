@@ -4,7 +4,7 @@ describe Policr::Model::Admin do
   it "manage groups" do
     a1 = Admin.create!({user_id: USER_ID})
     a1.should be_truthy
-    a1.add_groups({:chat_id => GROUP_ID, :title => GROUP_TITLE_1})
+    a1.add_groups({:chat_id => GROUP_ID, :title => GROUP_TITLE_1, :managed => true})
 
     g1 = Group.where { _chat_id == GROUP_ID }.first
     g1.should be_truthy

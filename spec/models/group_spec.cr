@@ -2,7 +2,7 @@ require "../spec_helper"
 
 describe Policr::Model::Group do
   it "add admins" do
-    g1 = Group.create!({chat_id: GROUP_ID, title: GROUP_TITLE_1})
+    g1 = Group.create!({chat_id: GROUP_ID, title: GROUP_TITLE_1, managed: true})
     g1.should be_truthy
     g1.add_admins({:user_id => USER_ID})
 
@@ -16,7 +16,7 @@ describe Policr::Model::Group do
   end
 
   it "reset admins" do
-    g1 = Group.create!({chat_id: GROUP_ID, title: GROUP_TITLE_1})
+    g1 = Group.create!({chat_id: GROUP_ID, title: GROUP_TITLE_1, managed: true})
     g1.should be_truthy
     a1 = g1.add_admins({:user_id => USER_ID})
     a1.should be_truthy
