@@ -57,22 +57,22 @@ module Policr
 
     def show_group_list(user : TelegramBot::User)
       if admin = Model::Admin.find_by_user_id user.id
-        header = "#查户口\n"
+        header = "#查户口 #{FromUser.new(user).markdown_link}\n"
         text =
           if (groups = admin.groups) && groups.size > 0
             sb = String.build do |str|
               groups.each do |g|
                 if link = g.link
-                  str << "[#{g.title}](#{link})"
+                  str << "👥|🆔 `#{g.chat_id}`|[#{g.title}](#{link})"
                 else
-                  str << "#{g.title}（快给我邀请权限！）"
+                  str << "👥|🆔 `#{g.chat_id}`|#{g.title}（没权限拿链接）"
                 end
                 str << "\n"
               end
             end
-            "#{header}#{FromUser.new(user).markdown_link} 管理的群组列表：\n\n#{sb}\n**快去围观！**"
+            "#{header}\n#{sb}\n**快去围观！**"
           else
-            "#{header}没有记录 #{FromUser.new(user).markdown_link} 所管理的群组管理。"
+            "#{header}\n没有记录。"
           end
         bot.send_message bot.community_group_id, text
       end

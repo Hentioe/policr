@@ -284,7 +284,7 @@ unrelated_warning: "(#`Д´)ﾉ 请无关人员不要来搞事"
 pass_alert: "✔ 验证通过"
 no_pass_alert: "✖ 未通过验证"
 pass_by_self: "(*´∀`)~♥ 恭喜[您](tg://user?id=%{user_id})通过了验证，逃过一劫。"
-pass_by_admin: "Σ(*ﾟдﾟﾉ)ﾉ [这家伙](tg://user?id=%{user_id})被 %{admin}  开了后门，大家快喷他！"
+pass_by_admin: "[这家伙](tg://user?id=%{user_id})被 %{admin}  开了后门，大家快喷他！"
 pass_slow_alert: "验证通过，但是晚了一点点，再去试试？"
 pass_slow_receipt: "(´ﾟдﾟ`) TA 通过了验证，但是手慢了那么一点点，再给 TA 一次机会……"
 template:
