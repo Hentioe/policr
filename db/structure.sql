@@ -16,6 +16,6 @@ CREATE TABLE templates (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NO
 CREATE TABLE toggles (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, target integer NOT NULL, enabled integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE questions (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, title text NOT NULL, desc text, note text, use_for integer NOT NULL, enabled integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE IF NOT EXISTS "answers"(id integer PRIMARY KEY, name text NOT NULL, corrected integer NOT NULL, question_id integer, created_at text NOT NULL, updated_at text NOT NULL,FOREIGN KEY (question_id) REFERENCES questions(id));
-CREATE TABLE groups (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, title text NOT NULL, link text, created_at text NOT NULL, updated_at text NOT NULL);
+CREATE TABLE groups (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, title text NOT NULL, link text, created_at text NOT NULL, updated_at text NOT NULL, managed integer NOT NULL DEFAULT false);
 CREATE TABLE admins_groups (group_id integer, admin_id integer);
 CREATE TABLE admins (id integer PRIMARY KEY AUTOINCREMENT, user_id integer NOT NULL, fullname text, created_at text NOT NULL, updated_at text NOT NULL);

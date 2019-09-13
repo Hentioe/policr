@@ -147,7 +147,9 @@ module Policr::Cache
       @@group_list[chat.id] = {link, "#{chat.title}", @@group_no}
       # 入库
       link = nil unless link.starts_with?("https://")
-      group = Model::Group.fetch_by_chat_id!(chat.id, {title: chat.title, link: link})
+      group = Model::Group.fetch_by_chat_id!(chat.id,
+        {title: chat.title, link: link, managed: true}
+      )
       admins =
         begin
           bot.get_chat_administrators chat.id

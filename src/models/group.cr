@@ -9,6 +9,7 @@ module Policr::Model
       chat_id: Int64,
       title: String,
       link: String?,
+      managed: Bool,
       created_at: Time?,
       updated_at: Time?
     )
@@ -20,14 +21,23 @@ module Policr::Model
         if data
           title = data[:title]?
           link = data[:link]?
+          managed = data[:managed]?
+
           g.update_column(:title, title) if title
           g.update_column(:link, link) if link
+          g.update_column(:managed, managed) if managed != nil
         end
         g
       else
         data ||= NamedTuple.new
         data = data.merge({chat_id: chat_id})
         create! data
+      end
+    end
+
+    def self.cancel_manage(chat_id : Int64)
+      if g = where { _chat_id == chat_id }.first
+        g.update_column :managed, false
       end
     end
 
