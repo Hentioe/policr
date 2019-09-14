@@ -94,5 +94,5 @@ shards:
 
   telegram_markd:
     github: Hentioe/telegram_markd
-    commit: deb80b0385c938596cf177d1295cd89f76bd6797
+    commit: ed5f9c30de853f81cba45dd4a5c331d083721867
 
