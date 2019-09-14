@@ -92,7 +92,7 @@ shards:
     github: Hentioe/telegram_bot
     commit: f36d378d69cf1d47f8ecdb3be89e6beed5831861
 
-  telegram_markdown:
-    github: Hentioe/telegram_markdown.cr
-    commit: cfd9f31f7c369499b9e85bb3375dd28133209d0d
+  telegram_markd:
+    github: Hentioe/telegram_markd
+    commit: deb80b0385c938596cf177d1295cd89f76bd6797
 

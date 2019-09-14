@@ -1,9 +1,15 @@
 require "telegram_bot"
-require "telegram_markdown"
+require "telegram_markd"
 require "schedule"
 
 macro t(key, options = nil, locale = "zh-hans")
   I18n.translate({{key}}, {{options}}, {{locale}})
+end
+
+def escape_markdown(text : String)
+  if text
+    escape_all text, "\\\\", ["[", "]", "*", "_", "`"]
+  end
 end
 
 def schedule(time, &block)
@@ -297,7 +303,7 @@ module Policr
         if parse_mode
           case parse_mode.downcase
           when "markdown"
-            {"HTML", TelegramMarkdown.to_html text}
+            {"HTML", TelegramMarkd.to_html text}
           when "html"
             {"HTML", text}
           else

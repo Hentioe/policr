@@ -18,8 +18,9 @@ dependencies:
   telegram_bot:
     github: Hentioe/telegram_bot
     branch: bugfix
-  telegram_markdown:
-    github: Hentioe/telegram_markdown.cr
+  telegram_markd:
+    github: Hentioe/telegram_markd
+    branch: compatible/telegram
   dotenv:
     github: gdotdesign/cr-dotenv
   admiral:
