@@ -1,6 +1,7 @@
 module Policr
   enum ToggleTarget
-    SlientMode
+    SlientMode     # 静音模式
+    ExamineEnabled # 启用审核
   end
 
   enum VerificationStatus
