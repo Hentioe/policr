@@ -78,10 +78,10 @@ module Policr
           title = group.title
           link = group.link || "[NoneLink]"
 
-          unless link.starts_with? "https://t.me/joinchat"
-            str << "👥🌐|"
-          else
+          if link == "[NoneLink]" || link.starts_with?("https://t.me/joinchat")
             str << "👥🔒|"
+          else
+            str << "👥🌐|"
           end
           str << "🆔 `#{chat_id}`|"
           if link.starts_with?("https")
