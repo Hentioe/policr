@@ -69,7 +69,7 @@ module Policr
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     def create_manage_text(page_n : Int32)
-      offset, limit = gen_ranging page_n
+      offset, limit = paging page_n
 
       list_sb = String.build do |str|
         groups = load_groups offset, limit
@@ -102,7 +102,7 @@ module Policr
     end
 
     def create_manage_markup(page_n)
-      offset, limit = gen_ranging page_n
+      offset, limit = paging page_n
       groups = load_groups offset, (limit + 1)
 
       make_btn = ->(text : String, n : Int32) {
@@ -123,10 +123,9 @@ module Policr
       markup
     end
 
-    def gen_ranging(n)
+    def paging(n)
       offset = SIZE * (n - 1)
-      limit = n * SIZE
-      {offset, limit}
+      {offset, SIZE}
     end
 
     def load_groups(offset, limit)
