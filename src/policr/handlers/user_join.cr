@@ -56,26 +56,29 @@ module Policr
     end
 
     def show_group_list(user : TelegramBot::User)
-      if admin = Model::Admin.find_by_user_id user.id
-        header = "#查户口 #{FromUser.new(user).markdown_link}\n"
-        text =
+      header = "#查户口 #{FromUser.new(user).markdown_link}\n"
+
+      text =
+        if admin = Model::Admin.find_by_user_id user.id
           if (groups = admin.groups) && groups.size > 0
             sb = String.build do |str|
               groups.each do |g|
                 if link = g.link
                   str << "👥|🆔 `#{g.chat_id}`|[#{g.title}](#{link})"
                 else
-                  str << "👥|🆔 `#{g.chat_id}`|#{g.title}（没权限拿链接）"
+                  str << "👥|🆔 `#{g.chat_id}`|#{g.title}"
                 end
                 str << "\n"
               end
             end
             "#{header}\n#{sb}\n**快去围观！**"
           else
-            "#{header}\n没有记录。"
+            "#{header}\n没有群组记录。"
           end
-        bot.send_message bot.community_group_id, text
-      end
+        else
+          "#{header}\n没有管理记录。"
+        end
+      bot.send_message bot.community_group_id, text
     end
 
     def add_banned_menu(user_id, is_halal = false)
