@@ -47,7 +47,7 @@ module Policr
       bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
     end
 
-    def invalid_keyboard(query)
+    macro invalid_keyboard
       invalid_callback query
     end
 

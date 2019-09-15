@@ -71,7 +71,7 @@ module Policr
           )
         end
       else
-        invalid_keyboard query
+        invalid_keyboard
       end
     end
 
