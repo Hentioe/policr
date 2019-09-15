@@ -138,7 +138,7 @@ module Policr
         UpdateVotingApplyQuizQuestionHandler,
         UpdateChatTitleHandler,
         UpdateChatPhotoHandler,
-        # PinnedMessageHandler,
+        PinnedMessageHandler,
         # 置底分割
         PrivateChatHandler,
       ]
