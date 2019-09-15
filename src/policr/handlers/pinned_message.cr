@@ -3,6 +3,7 @@ module Policr
     match do
       all_pass? [
         from_group_chat?(msg),
+        KVStore.enabled_examine?(msg.chat.id),
         msg.pinned_message, # 置顶消息？
       ]
     end
@@ -11,7 +12,7 @@ module Policr
       chat_id = msg.chat.id
       msg_id = msg.message_id
 
-      Model::AntiMessage.working chat_id, ServiceMessage::PinMessage do
+      Model::AntiMessage.working chat_id, ServiceMessage::PinnedMessage do
         spawn bot.delete_message(chat_id, msg_id)
       end
     end

@@ -47,10 +47,10 @@ module Policr
   # 服务消息类型
   enum ServiceMessage
     Unknown
-    JoinGroup  # 入群消息
-    LeaveGroup # 退群消息
-    DataChange # 资料变更
-    PinMessage # 置顶消息
+    JoinGroup     # 入群消息
+    LeaveGroup    # 退群消息
+    DataChange    # 资料变更
+    PinnedMessage # 置顶消息
   end
 
   # 时间单位

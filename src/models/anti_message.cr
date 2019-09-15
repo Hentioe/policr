@@ -57,7 +57,7 @@ module Policr::Model
         when ServiceMessage::LeaveGroup,
              ServiceMessage::JoinGroup,
              ServiceMessage::DataChange,
-             ServiceMessage::PinMessage
+             ServiceMessage::PinnedMessage
           true
         else
           false

@@ -11,8 +11,8 @@ module Policr
           def_toggle "leave_group", default: true
         when "data_change"
           def_toggle "data_change", default: true
-        when "pin_message"
-          def_toggle "pin_message", default: true
+        when "pinned_message"
+          def_toggle "pinned_message", default: true
         else # 失效键盘
           invalid_keyboard
         end

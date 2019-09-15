@@ -9,4 +9,4 @@ anti_service_msg:
   join_group: "入群消息"
   leave_group: "退群消息"
   data_change: "资料变更"
-  pin_message: "置顶消息"
+  pinned_message: "置顶消息"
