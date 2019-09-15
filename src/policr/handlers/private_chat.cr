@@ -34,17 +34,28 @@ module Policr
               text: create_manage_text(1),
               reply_markup: create_manage_markup(1)
             )
+            true
+          when "group/remove", "gr"
+            group_id = args[1].to_i64
+            Model::Group.cancel_manage group_id
+            Cache.delete_group_carving group_id
+            true
           when "group/leave", "gl" # 退出群组
             group_id = args[1].to_i64
             bot.leave_chat group_id
             Cache.delete_group_carving group_id
+            true
           when "group/trust_admin", "gta"
             group_id = args[1].to_i64
             KVStore.enable_trust_admin group_id
+            true
           when "voting/apply_quiz_manage", "vaq" # 申请测验管理
             if sended_msg = bot.send_message bot.owner_id, create_voting_apply_quiz_manage_text
               Cache.carving_voting_apply_quiz_msg bot.owner_id, sended_msg.message_id
+              true
             end
+          else
+            false
           end
         rescue ex : Exception
           bot.send_message bot.owner_id, ex.message || ex.to_s
@@ -91,14 +102,11 @@ module Policr
           end
           str << "\n"
         end
+        str << "#{t("none")}\n" if str.empty?
         str << "\n页码: #{page_n} 刷新于: #{Time.now.to_s(DATE_FORMAT)}"
       end
 
-      if list_sb.to_s.empty?
-        t "none"
-      else
-        list_sb.to_s
-      end
+      "**受管群组列表**\n\n#{list_sb.to_s}"
     end
 
     def create_manage_markup(page_n)

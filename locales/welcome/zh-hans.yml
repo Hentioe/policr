@@ -1,0 +1,26 @@
+welcome:
+  welcome: "启用欢迎消息"
+  missing_content: "请先设置内容！"
+  none: "无"
+  hint: |
+    您正在设置欢迎消息，请**回复**欢迎内容，回复完成记得启用。
+
+    当前设置：
+
+    ```
+    %{welcome_text}
+    ```
+    内置变量：
+    用户全名 => `{{fullname}}`
+    提及用户 => `{{mention}}`
+    群聊名称 => `{{chatname}}`
+    用户 ID    => `{{userid}}`
+
+    附加教程：
+    1. [在欢迎消息中嵌入链接](https://policr.bluerain.io#link_in_welcome)
+    2. [在欢迎消息中插入变量](https://policr.bluerain.io#vars_in_welcome)
+    3. [在欢迎消息中添加按钮](https://policr.bluerain.io#buttons_in_welcome)
+
+    **只有回复本消息才会被认为是设置欢迎内容，在 PC 客户端可能需要 <Ctrl+Enter> 组合键才能换行**。请尽快回复，本消息不保证时效性。
+
+  disable_link_preview: "禁用链接预览"

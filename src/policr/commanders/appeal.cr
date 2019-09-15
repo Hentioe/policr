@@ -3,7 +3,7 @@ module Policr
     def handle(msg, from_nav)
       chat_id = msg.chat.id
 
-      bot.delete_message(msg.chat.id, msg.message_id) if chat_id < 0
+      bot.delete_message(chat_id, msg.message_id) if chat_id < 0
 
       user_id =
         if user = msg.from
@@ -11,6 +11,11 @@ module Policr
         else
           0
         end
+
+      if Model::Appeal.valid_times(user_id) > 0
+        bot.send_message chat_id, "申诉请求被拒绝，因为您已达到申诉次数的上限。"
+        return
+      end
 
       count =
         if list = Model::Report.all_valid(user_id)
