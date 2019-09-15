@@ -19,6 +19,10 @@ module Policr
       "[#{pronoun}](tg://user?id=#{@user_id})"
     end
 
+    def mention(pronoun = @fullname)
+      markdown_link pronoun
+    end
+
     def fullname
       escape_markdown @fullname
     end

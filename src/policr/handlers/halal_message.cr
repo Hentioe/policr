@@ -43,9 +43,6 @@ module Policr
     end
 
     def kick_halal(msg, member)
-      name = fullname(member)
-      bot.log "Found a halal '#{name}'"
-
       chat_id = msg.chat.id
       text = t("halal.found")
       sended_msg = bot.reply msg, text
@@ -69,12 +66,10 @@ module Policr
               spawn bot.delete_message(chat_id, kick_msg_id)
               spawn bot.delete_message(chat_id, msg.message_id)
             end
-            bot.log "Halal '#{name}' has been banned"
           rescue ex : TelegramBot::APIException
             _, reason = bot.parse_error(ex)
             text = t("halal.kick_failed", {user_id: member.id, reason: reason})
             bot.edit_message_text sended_msg.chat.id, message_id: sended_msg.message_id, text: text
-            bot.log "Halal '#{name}' banned failure, reason: #{reason}"
           end
         end
       end
