@@ -1,7 +1,6 @@
 module Policr
   handler LeftGroup do
     match do
-      # 从群组列表缓存中移除
       all_pass? [
         KVStore.enabled_examine?(msg.chat.id),
         (user = msg.left_chat_member), # 离开聊天？

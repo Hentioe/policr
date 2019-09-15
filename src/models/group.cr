@@ -35,6 +35,11 @@ module Policr::Model
       end
     end
 
+    def self.update_title!(chat_id : Int64, title : String)
+      g = fetch_by_chat_id! chat_id, {title: title, managed: true}
+      g.update_column :title, title
+    end
+
     def self.cancel_manage(chat_id : Int64)
       if g = where { _chat_id == chat_id }.first
         g.update_column :managed, false

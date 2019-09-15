@@ -136,6 +136,7 @@ module Policr
         HalalCaptionHandler,
         AddVotingApplyQuizHandler,
         UpdateVotingApplyQuizQuestionHandler,
+        UpdateChatTitleHandler,
         # 置底分割
         PrivateChatHandler,
       ]
