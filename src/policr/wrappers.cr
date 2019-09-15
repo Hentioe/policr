@@ -18,5 +18,9 @@ module Policr
 
       "[#{pronoun}](tg://user?id=#{@user_id})"
     end
+
+    def fullname
+      escape_markdown @fullname
+    end
   end
 end

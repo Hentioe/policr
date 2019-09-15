@@ -6,10 +6,8 @@ macro t(key, options = nil, locale = "zh-hans")
   I18n.translate({{key}}, {{options}}, {{locale}})
 end
 
-def escape_markdown(text : String)
-  if text
-    escape_all text, "\\\\", ["[", "]", "*", "_", "`"]
-  end
+def escape_markdown(text : String) : String
+  escape_all text, "\\\\", ["[", "]", "*", "_", "`"]
 end
 
 def schedule(time, &block)
@@ -68,11 +66,11 @@ def from_private_chat?(msg)
   msg.chat.type == "private"
 end
 
-def fullname(user)
+def fullname(user) : String
   name = user.first_name
   last_name = user.last_name
   name = last_name ? "#{name} #{last_name}" : name
-  name
+  name || "[Unnamed]"
 end
 
 module Policr
@@ -402,12 +400,13 @@ module Policr
         disable_link_preview = KVStore.disabled_welcome_link_preview?(chat_id)
         text =
           parsed.content || "Warning: welcome content format is incorrect"
+        chat_title = escape_markdown chat.title || "[Untitled]"
         text =
           if from_user
-            vals = [from_user.fullname, chat.title, from_user.markdown_link, from_user.user_id]
+            vals = [from_user.fullname, chat_title, from_user.markdown_link, from_user.user_id]
             render text, {{ WELCOME_VARS }}, vals
           else
-            vals = [NONE_FROM_USER, chat.title, NONE_FROM_USER, NONE_FROM_USER]
+            vals = [NONE_FROM_USER, chat_title, NONE_FROM_USER, NONE_FROM_USER]
             render text, {{ WELCOME_VARS }}, vals
           end
 
