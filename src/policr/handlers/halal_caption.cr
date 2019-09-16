@@ -4,10 +4,8 @@ module Policr
 
     # 待优化：判断文件是否被触发格式限制而删除
     match do
-      self_left = fetch_state :self_left { false }
-
       all_pass? [
-        !self_left,
+        !self_left?,
         from_group_chat?(msg),
         (msg.document || msg.photo),
         (caption = msg.caption),

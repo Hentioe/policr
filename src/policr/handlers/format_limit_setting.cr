@@ -5,14 +5,12 @@ module Policr
 
     match do
       target :group do
-        role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
-
         all_pass? [
           (@reply_msg_id = _reply_msg_id),
           Cache.format_limit_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置屏蔽文件格式？
           msg.text,
           (user = msg.from),
-          bot.has_permission?(_group_id, user.id, role),
+          has_permission?(_group_id, user.id),
         ]
       end
     end

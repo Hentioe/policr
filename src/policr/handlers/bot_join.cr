@@ -3,7 +3,7 @@ module Policr
     match do
       all_pass? [
         msg.new_chat_members,
-        examine_enabled?(msg.chat.id),
+        examine_enabled?,
         !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BotJoin), # 未关闭子功能
       ]
     end

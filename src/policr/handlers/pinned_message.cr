@@ -3,7 +3,7 @@ module Policr
     match do
       all_pass? [
         from_group_chat?(msg),
-        KVStore.enabled_examine?(msg.chat.id),
+        examine_enabled?,
         msg.pinned_message, # 置顶消息？
       ]
     end

@@ -8,12 +8,10 @@ module Policr
     allow_edit # 处理编辑消息
 
     match do
-      self_left = fetch_state :self_left { false }
-
       all_pass? [
-        !self_left,
+        !self_left?,
         from_group_chat?(msg),
-        examine_enabled?(msg.chat.id),
+        examine_enabled?,
         !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal), # 未关闭子功能
         (text = msg.text),
         is_halal(text),

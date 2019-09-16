@@ -3,7 +3,7 @@ module Policr
     match do
       all_pass? [
         (user = msg.left_chat_member), # 离开聊天？
-        examine_enabled?(msg.chat.id),
+        examine_enabled?,
         bot.self_id != user.id, # 消息发送者非 Bot 自身
       ]
     end

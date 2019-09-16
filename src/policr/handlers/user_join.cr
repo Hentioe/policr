@@ -5,7 +5,7 @@ module Policr
     match do
       all_pass? [
         msg.new_chat_members,
-        examine_enabled?(msg.chat.id),
+        examine_enabled?,
       ]
     end
 

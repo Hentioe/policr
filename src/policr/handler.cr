@@ -105,5 +105,20 @@ module Policr
         Schedule.after(4.seconds) { bot.delete_message msg.chat.id, msg_id }
       end
     end
+
+    macro examine_enabled?
+      fetch_state :examine_enabled { KVStore.enabled_examine?(msg.chat.id) }
+    end
+
+    macro has_permission?(group_id, user_id)
+      fetch_state :has_permission do 
+        role = KVStore.enabled_trust_admin?({{group_id}}) ? :admin : :creator
+        bot.has_permission?({{group_id}}, {{user_id}}, role)
+      end
+    end
+
+    macro self_left?
+      fetch_state :self_left { false }
+    end
   end
 end
