@@ -9,8 +9,12 @@ module Policr
           def_toggle "join_group", default: true
         when "leave_group"
           def_toggle "leave_group", default: true
+        when "data_change"
+          def_toggle "data_change", default: true
+        when "pinned_message"
+          def_toggle "pinned_message", default: true
         else # 失效键盘
-          bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
+          invalid_keyboard
         end
       end
     end
@@ -41,7 +45,10 @@ module Policr
 
     def updated_preview_settings(group_id, group_name)
       midcall AntiServiceMsgCommander do
-        {_commander.create_text(group_id, group_name), _commander.create_markup(group_id)}
+        {
+          _commander.create_text(group_id, group_name),
+          _commander.create_markup(group_id),
+        }
       end || {nil, nil}
     end
   end

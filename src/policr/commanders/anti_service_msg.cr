@@ -19,9 +19,11 @@ module Policr
     def_markup do
       make_selected_status = ->(delete_target : ServiceMessage) {
         case delete_target
-        when ServiceMessage::JoinGroup
-          Model::AntiMessage.disabled?(_group_id, delete_target) ? UNSELECTED : SELECTED
-        when ServiceMessage::LeaveGroup
+        # 默认，调用 disabled? 方法
+        when ServiceMessage::LeaveGroup,
+             ServiceMessage::JoinGroup,
+             ServiceMessage::DataChange,
+             ServiceMessage::PinnedMessage
           Model::AntiMessage.disabled?(_group_id, delete_target) ? UNSELECTED : SELECTED
         else
           UNSELECTED
@@ -29,6 +31,8 @@ module Policr
       }
       put_item "join_group"
       put_item "leave_group"
+      put_item "data_change"
+      put_item "pinned_message"
     end
 
     macro put_item(name)

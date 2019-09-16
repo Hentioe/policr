@@ -21,6 +21,6 @@ welcome:
     2. [在欢迎消息中插入变量](https://policr.bluerain.io#vars_in_welcome)
     3. [在欢迎消息中添加按钮](https://policr.bluerain.io#buttons_in_welcome)
 
-    **只有回复本消息才会被认为是设置欢迎内容，在 PC 客户端可能需要 <Ctrl+Enter> 组合键才能换行**。请尽快回复，本消息不保证时效性。
+    **只有回复本消息才会被认为是设置欢迎内容**。在 PC 客户端可能需要 <Ctrl+Enter> 组合键才能换行。请尽快回复，本消息不保证时效性。
 
   disable_link_preview: "禁用链接预览"

@@ -13,7 +13,7 @@ module Policr
       chat_id = msg.chat.id
       from_user_id = query.from.id
 
-      report_id, voting_type = data
+      report_id, _ = data
       report_id = report_id.to_i
 
       # 非管理员无权投票

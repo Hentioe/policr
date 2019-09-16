@@ -54,7 +54,10 @@ module Policr::Model
     def self.working(group_id, delete_target)
       is_default =
         case delete_target
-        when ServiceMessage::LeaveGroup, ServiceMessage::JoinGroup
+        when ServiceMessage::LeaveGroup,
+             ServiceMessage::JoinGroup,
+             ServiceMessage::DataChange,
+             ServiceMessage::PinnedMessage
           true
         else
           false
