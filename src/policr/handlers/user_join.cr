@@ -4,8 +4,8 @@ module Policr
 
     match do
       all_pass? [
-        KVStore.enabled_examine?(msg.chat.id),
         msg.new_chat_members,
+        examine_enabled?(msg.chat.id),
       ]
     end
 

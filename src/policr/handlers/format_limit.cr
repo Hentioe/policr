@@ -3,7 +3,7 @@ module Policr
     match do
       chat_id = msg.chat.id
       role = KVStore.enabled_trust_admin?(chat_id) ? :admin : :creator
-      self_left = read_state :self_left { false }
+      self_left = fetch_state :self_left { false }
 
       all_pass? [
         !self_left,

@@ -29,8 +29,7 @@ module Policr::KVStore
         end
       end
 
-      def enabled_{{name.id}}?(chat_id)
-
+      def enabled_{{name.id}}?(chat_id) : Bool
         if (db = @@db) && (i = db.get?("{{key.id}}_#{chat_id}"))
           i.to_i == 1
         else

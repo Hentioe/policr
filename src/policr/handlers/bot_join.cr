@@ -2,8 +2,8 @@ module Policr
   handler BotJoin do
     match do
       all_pass? [
-        KVStore.enabled_examine?(msg.chat.id),
         msg.new_chat_members,
+        examine_enabled?(msg.chat.id),
         !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BotJoin), # 未关闭子功能
       ]
     end

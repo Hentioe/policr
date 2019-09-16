@@ -32,7 +32,7 @@ module Policr
 
     private def preprocess(msg, state)
       if (text = msg.text) && (text.starts_with?("/")) && bot.command_names.includes?(text)
-        read_state :done { true } # 如果是指令，直接 done => true
+        fetch_state :done { true } # 如果是指令，直接 done => true
         return
       end
       if match(msg, state)
@@ -54,7 +54,7 @@ module Policr
     macro handle
       def handle(msg, state)
         {{yield}}
-        read_state :done { true }
+        fetch_state :done { true }
       end
     end
 

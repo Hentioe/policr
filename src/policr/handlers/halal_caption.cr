@@ -4,7 +4,7 @@ module Policr
 
     # 待优化：判断文件是否被触发格式限制而删除
     match do
-      self_left = read_state :self_left { false }
+      self_left = fetch_state :self_left { false }
 
       all_pass? [
         !self_left,

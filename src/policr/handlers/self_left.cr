@@ -8,7 +8,7 @@ module Policr
     end
 
     handle do
-      read_state :self_left { true }
+      fetch_state :self_left { true }
       chat_id = msg.chat.id
       # 从群组列表缓存中移除
       Cache.delete_group_carving chat_id

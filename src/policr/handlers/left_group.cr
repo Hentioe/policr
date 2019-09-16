@@ -2,9 +2,9 @@ module Policr
   handler LeftGroup do
     match do
       all_pass? [
-        KVStore.enabled_examine?(msg.chat.id),
         (user = msg.left_chat_member), # 离开聊天？
-        bot.self_id != user.id,        # 消息发送者非 Bot 自身
+        examine_enabled?(msg.chat.id),
+        bot.self_id != user.id, # 消息发送者非 Bot 自身
       ]
     end
 

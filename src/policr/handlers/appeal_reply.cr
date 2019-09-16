@@ -4,7 +4,7 @@ module Policr
     @flow_msg_id : Int32?
 
     match do
-      self_left = read_state :self_left { false }
+      self_left = fetch_state :self_left { false }
 
       all_pass? [
         !self_left,
