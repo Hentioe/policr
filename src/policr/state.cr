@@ -7,7 +7,7 @@ STATE_TYPE_MAP = {
 
 macro read_state(name)
   {{ cls = STATE_TYPE_MAP[name] }}
-  if (val = state[{{name}}]?) && (val.is_a?({{cls}}))
+  if (val = state[{{name}}]? != nil) && (val.is_a?({{cls}}))
     val
   else
     bot.debug "Setting state {{name}} in " + {{ @type.stringify }}
