@@ -13,5 +13,9 @@ module Policr::Model
     )
 
     belongs_to :report, Report
+
+    def self.delete_by_report_id(report_id : Int32)
+      where { _report_id == report_id }.delete
+    end
   end
 end

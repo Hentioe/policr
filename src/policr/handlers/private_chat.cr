@@ -54,6 +54,28 @@ module Policr
               Cache.carving_voting_apply_quiz_msg bot.owner_id, sended_msg.message_id
               true
             end
+          when "report/remove", "rr"
+            post_link = args[1].strip
+            post_id =
+              if md = /(\d+)\/?$/.match post_link
+                md[1].to_i
+              else
+                0
+              end
+
+            if report = Model::Report.find_by_post_id post_id
+              # 删除举报
+              Model::Report.delete(report.id)
+              # 清空关联投票
+              Model::Vote.delete_by_report_id report.id.not_nil!
+              # 删除相关消息
+              spawn bot.delete_message "@#{bot.snapshot_channel}", report.target_snapshot_id
+              spawn bot.delete_message "@#{bot.voting_channel}", report.post_id
+              true
+            else
+              bot.send_message bot.owner_id, "Not Found"
+              true
+            end
           else
             false
           end

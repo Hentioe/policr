@@ -47,5 +47,9 @@ module Policr::Model
     def self.valid_reported_total(user_id : Int32)
       where { (_target_user_id == user_id) & (_status == Status::Accept.value) }.count
     end
+
+    def self.find_by_post_id(post_id : Int32)
+      where { _post_id == post_id }.first
+    end
   end
 end

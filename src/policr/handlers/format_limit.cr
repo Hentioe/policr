@@ -22,7 +22,6 @@ module Policr
     end
 
     def format_inclues?(chat_id, file_name)
-      puts 1
       extname = File.extname file_name
       extname = extname.gsub(/^\./, "")
       Model::FormatLimit.includes?(chat_id, extname)
