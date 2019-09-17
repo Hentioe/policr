@@ -32,7 +32,7 @@ report:
     详细说明：%{detail}
     申诉详情：%{appeal}
     当前状态：%{status}
-  generated: "举报已经生成（[在这里](https://t.me/%{voting_channel}/%{voting_message_id})），具有投票权的用户会对举报内容进行表决。注意了，[您](tg://user?id=%{user_id})作为发起人不能进行投票。如果举报受理成功将会在本群通知`。"
+  generated: "举报已经生成（[在这里](https://t.me/%{voting_channel}/%{voting_message_id})），具有投票权的用户会对举报内容进行表决。注意了，[您](tg://user?id=%{user_id})作为发起人不能进行投票。如果举报受理成功将会在本群通知。"
   by_admin: "**由于您具有权限，此用户已被立即封禁（这并不表示已进入黑名单）。**"
   role:
     unknown: "无"
