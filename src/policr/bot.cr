@@ -139,6 +139,7 @@ module Policr
         UpdateChatTitleHandler,
         UpdateChatPhotoHandler,
         PinnedMessageHandler,
+        UpdateRuleHandler,
         # 置底分割
         PrivateChatHandler,
       ]

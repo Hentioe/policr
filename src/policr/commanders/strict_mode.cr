@@ -26,7 +26,7 @@ module Policr
         when "max_length"
           Model::MaxLength.find(_group_id) ? SELECTED : UNSELECTED
         when "content_blocked"
-          Model::BlockContent.find(_group_id) ? SELECTED : UNSELECTED
+          Model::BlockContent.enabled?(_group_id) ? SELECTED : UNSELECTED
         when "format_limit"
           Model::FormatLimit.find(_group_id) ? SELECTED : UNSELECTED
         end

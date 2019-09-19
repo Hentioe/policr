@@ -13,6 +13,14 @@ module Policr::Model
       updated_at: Time?
     )
 
+    def self.enabled?(chat_id : Int64)
+      where { (_chat_id == chat_id) & (_is_enabled == true) }.count > 0
+    end
+
+    def self.disable_all(chat_id : Int64)
+      where { (_chat_id == chat_id) & (_is_enabled == true) }.update { {:is_enabled => false} }
+    end
+
     def self.update_expression(chat_id, expression)
       bc = where { (_chat_id == chat_id) }.first
       bc ||= create({

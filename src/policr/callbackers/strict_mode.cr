@@ -23,8 +23,8 @@ module Policr
             reply_markup: markup(_group_id)
           )
         when "content_blocked"
-          if bc = Model::BlockContent.find(_group_id) # 删除内容屏蔽规则
-            Model::BlockContent.delete(bc.id)
+          if Model::BlockContent.enabled?(_group_id) # 禁用全部内容屏蔽蔽规则
+            Model::BlockContent.disable_all(_group_id)
           else
             bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
             return
@@ -97,6 +97,7 @@ module Policr
 
     BACK_SYMBOL     = "«"
     BIG_BACK_SYMBOL = "返回"
+    DATE_FORMAT     = "%Y-%m-%d %H:%M:%S"
 
     def_text create_content_blocked_text do
       handler = "\n\n"
@@ -113,12 +114,13 @@ module Policr
         else
           t "none"
         end
-      t "content_blocked.desc", {rules_content: rules_content}
+      t "content_blocked.desc", {rules_content: rules_content, time: Time.now.to_s(DATE_FORMAT)}
     end
 
     def create_content_blocked_markup(group_id)
       markup = Markup.new
 
+      markup << [Button.new(text: "刷新", callback_data: "StrictMode:content_blocked_setting")]
       markup << [Button.new(text: BIG_BACK_SYMBOL, callback_data: "StrictMode:back")]
 
       markup
