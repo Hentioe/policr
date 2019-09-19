@@ -29,5 +29,12 @@ module Policr::Model
 
       bc.update_column(:expression, expression)
     end
+
+    def self.load_list(chat_id : Int64)
+      where { _chat_id == chat_id }
+        .offset(0)
+        .limit(5)
+        .to_a
+    end
   end
 end

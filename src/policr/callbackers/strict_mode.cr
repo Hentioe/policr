@@ -99,13 +99,21 @@ module Policr
     BIG_BACK_SYMBOL = "返回"
 
     def_text create_content_blocked_text do
-      rule =
-        if bc = Model::BlockContent.find(_group_id)
-          bc.expression
+      handler = "\n\n"
+      rules_content =
+        if (list = Model::BlockContent.load_list _group_id) && list.size > 0
+          sb = String.build do |str|
+            list.each_with_index do |bc, i|
+              str << "#{i + 1}."
+              str << " [已启用]" if bc.is_enabled
+              str << " [已禁用]" unless bc.is_enabled
+              str << "[#{bc.alias_s}](https://t.me/#{bot.username}?start=rule_#{bc.id})"
+            end
+          end
         else
-          t("content_blocked.none")
+          t "none"
         end
-      t "content_blocked.desc", {size: MAX_RULE_LENGTH, rule: rule}
+      t "content_blocked.desc", {rules_content: rules_content}
     end
 
     def create_content_blocked_markup(group_id)
