@@ -173,6 +173,7 @@ module Policr
         ManageCallbacker,
         NavigationCallbacker,
         VotingApplyQuizCallbacker,
+        RuleCallbacker,
       ]
 
       # 注册指令模块

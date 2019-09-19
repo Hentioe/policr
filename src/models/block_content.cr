@@ -13,12 +13,8 @@ module Policr::Model
       updated_at: Time?
     )
 
-    def self.find(chat_id)
-      where { (_chat_id == chat_id) }.first
-    end
-
     def self.update_expression(chat_id, expression)
-      bc = find(chat_id)
+      bc = where { (_chat_id == chat_id) }.first
       bc ||= create({
         chat_id:    chat_id.to_i64,
         version:    "v1",

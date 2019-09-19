@@ -94,6 +94,9 @@ module Policr::Cache
   # 投票申请测验问题（值：问题ID）
   def_carving_with_data "voting_apply_quiz_question", Int32
 
+  # 标记规则管理（值：规则ID）
+  def_carving_with_data "rule", Int32
+
   macro def_list(name, type)
     @@{{name.id}}_list = {{type.id}}.new
 

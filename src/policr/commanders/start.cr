@@ -33,6 +33,17 @@ module Policr
               Cache.carving_voting_apply_quiz_question_msg chat_id, sended_msg.message_id, id
             end
           end
+        when "rule"
+          id = data.to_i
+          if bc = Model::BlockContent.find(id)
+            text = create_rule_text bc
+            markup = create_rule_markup bc
+            if sended_msg = bot.send_message chat_id, text, reply_markup: markup
+              Cache.carving_rule_msg chat_id, sended_msg.message_id, id
+            end
+          else
+            bot.send_message chat_id, "Not Found"
+          end
         end
       end
     end
@@ -61,6 +72,26 @@ module Policr
       buttons = Array(Button).new
       buttons << make_btn.call("disable") if question.enabled
       buttons << make_btn.call("enable") unless question.enabled
+      buttons << make_btn.call("delete")
+      markup << buttons
+
+      markup
+    end
+
+    def create_rule_text(bc : Model::BlockContent)
+      rule_template = "-a #{bc.alias_s}\n#{bc.expression}"
+      t "content_blocked.rule.manage", {rule_name: bc.alias_s, rule_template: rule_template}
+    end
+
+    def create_rule_markup(bc : Model::BlockContent)
+      make_btn = ->(action : String) {
+        callback_data = "Rule:#{action}:#{bc.id}"
+        Button.new(text: t("content_blocked.rule.#{action}"), callback_data: callback_data)
+      }
+      markup = Markup.new
+      buttons = Array(Button).new
+      buttons << make_btn.call("disable") if bc.is_enabled
+      buttons << make_btn.call("enable") unless bc.is_enabled
       buttons << make_btn.call("delete")
       markup << buttons
 
