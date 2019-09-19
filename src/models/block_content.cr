@@ -6,6 +6,7 @@ module Policr::Model
       id: Primary32,
       chat_id: Int64,
       version: String,
+      alias_s: String,
       expression: String,
       is_enabled: Bool,
       created_at: Time?,
@@ -21,6 +22,7 @@ module Policr::Model
       bc ||= create({
         chat_id:    chat_id.to_i64,
         version:    "v1",
+        alias_s:    "未命名",
         expression: expression,
         is_enabled: false,
       })
