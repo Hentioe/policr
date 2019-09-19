@@ -7,6 +7,7 @@ module Policr::Model
       chat_id: Int64,
       version: String,
       expression: String,
+      is_enabled: Bool,
       created_at: Time?,
       updated_at: Time?
     )
@@ -21,6 +22,7 @@ module Policr::Model
         chat_id:    chat_id.to_i64,
         version:    "v1",
         expression: expression,
+        is_enabled: false,
       })
 
       bc.update_column(:expression, expression)
