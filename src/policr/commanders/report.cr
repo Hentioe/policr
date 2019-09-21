@@ -75,7 +75,7 @@ module Policr
     end
 
     def repeat?(chat_id, msg_id)
-      if r = Model::Report.repeat?(chat_id, msg_id)
+      if r = Model::Report.repeated_in_group?(chat_id, msg_id)
         "https://t.me/#{bot.voting_channel}/#{r.post_id}"
       end
     end

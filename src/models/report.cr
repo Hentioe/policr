@@ -32,8 +32,12 @@ module Policr::Model
       where { (_target_user_id == user_id) & (_status == Status::Accept.value) }.first
     end
 
-    def self.repeat?(chat_id : Int64, target_msg_id : Int32)
+    def self.repeated_in_group?(chat_id : Int64, target_msg_id : Int32)
       where { (_from_chat_id == chat_id) & (_target_msg_id == target_msg_id) }.first
+    end
+
+    def self.repeated_in_forward?(target_user_id : Int32)
+      where { (_target_user_id == target_user_id) & (_status == Status::Accept.value) }.count >= 3
     end
 
     def self.times_by_target_user(user_id : Int32)

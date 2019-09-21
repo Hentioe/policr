@@ -58,3 +58,4 @@ report:
     unban: "通过申诉"
   none: "无"
   anonymous_adname: "被匿名处理的广告昵称"
+  repeated_in_forward: "此用户已经多次进入黑名单，无需举报～" 

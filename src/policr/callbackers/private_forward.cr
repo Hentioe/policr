@@ -10,6 +10,7 @@ module Policr
       case chooese
       when "report"
         if (from_user = query.from) && (reply_msg = msg.reply_to_message) && (target_user = reply_msg.forward_from)
+          # 检测是否合法
           error_msg = midcall ReportCommander do
             author_id = from_user.id
             target_user_id = target_user.id
@@ -18,6 +19,12 @@ module Policr
 
           if error_msg # 如果举报不合法响应错误
             bot.answer_callback_query(query.id, text: error_msg, show_alert: true)
+            return
+          end
+
+          # 检测是否重复
+          if Model::Report.repeated_in_forward? target_user.id
+            bot.answer_callback_query(query.id, text: t("report.repeated_in_forward"), show_alert: true)
             return
           end
 
@@ -64,12 +71,28 @@ module Policr
 
           async_response
 
+          markup = Markup.new
+          markup << Button.new(text: "返回", callback_data: "PrivateForward:back")
           bot.edit_message_text(
             chat_id,
             message_id: message_id,
-            text: text
+            text: text,
+            reply_markup: markup
           )
         end
+      when "back"
+        text, markup = midcall PrivateForwardHandler do
+          {
+            _handler.create_text,
+            _handler.create_markup,
+          }
+        end || {nil, nil}
+        bot.edit_message_text(
+          chat_id,
+          message_id: message_id,
+          text: text,
+          reply_markup: markup
+        )
       else
         invalid_keyboard
       end
