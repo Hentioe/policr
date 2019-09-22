@@ -20,7 +20,7 @@ units:
   row: "%{n}行"
 unit:
   sec: "秒"
-return: "返回"
+back: "返回"
 refresh: "刷新"
 none: "无"
 add_to_group:
