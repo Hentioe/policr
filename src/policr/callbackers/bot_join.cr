@@ -32,7 +32,7 @@ module Policr
         reply_markup: nil
       )
       # 非记录模式自动删除消息
-      Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless KVStore.enabled_record_mode?(chat_id)
+      Schedule.after(5.seconds) { bot.delete_message(chat_id, message_id) } unless Model::Toggle.record_mode?(chat_id)
     end
   end
 end

@@ -21,7 +21,7 @@ module Policr
             if (sended_msg = bot.reply(msg, t("add_from_admin"))) && (message_id = sended_msg.message_id)
               Policr.after(5.seconds) {
                 bot.delete_message(chat_id, message_id)
-              } unless KVStore.enabled_record_mode?(chat_id)
+              } unless Model::Toggle.record_mode?(chat_id)
             end
             # 删除入群消息
             Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do

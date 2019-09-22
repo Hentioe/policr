@@ -62,7 +62,7 @@ module Policr
           }
           case status
           when VerificationStatus::Init
-            if KVStore.enabled_fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
+            if Model::Toggle.fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
               if Model::ErrorCount.counting(chat_id, target_user_id) > 0             # 继续验证
                 Cache.verification_next chat_id, target_user_id                      # 更新验证状态避免超时
                 Model::ErrorCount.destory chat_id, target_user_id                    # 销毁错误记录
@@ -93,7 +93,7 @@ module Policr
             slow_with_receipt(query, chat_id, target_user_id, message_id)
           end
         else                                                                       # 未通过验证
-          if KVStore.enabled_fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
+          if Model::Toggle.fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
             fault_tolerance chat_id, query.from, message_id, query.id, join_msg, is_photo
           else
             bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)
@@ -168,7 +168,7 @@ module Policr
             reply_to_message_id: reply_id
           )
 
-          if sended_msg && !KVStore.enabled_record_mode?(chat_id)
+          if sended_msg && !Model::Toggle.record_mode?(chat_id)
             msg_id = sended_msg.message_id
             Schedule.after(DELAY_SHORT.seconds) do
               spawn bot.delete_message(chat_id, msg_id)
@@ -184,7 +184,7 @@ module Policr
             text: text
           )
 
-          unless KVStore.enabled_record_mode?(chat_id)
+          unless Model::Toggle.record_mode?(chat_id)
             schedule(DELAY_SHORT.seconds) do
               spawn bot.delete_message(chat_id, message_id)
               destory_join_msg.call

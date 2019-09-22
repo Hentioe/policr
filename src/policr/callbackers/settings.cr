@@ -22,7 +22,7 @@ module Policr
           )
         when "trust_admin"
           args = {_group_id, ToggleTarget::TrustedAdmin}
-          selected = Model::Toggle.trusted_admin?(_group_id)
+          selected = Toggle.trusted_admin?(_group_id)
           selected ? Toggle.disable!(*args) : Toggle.enable!(*args)
           spawn bot.answer_callback_query(query.id)
           bot.edit_message_text(
@@ -32,8 +32,9 @@ module Policr
             reply_markup: create_markup(_group_id)
           )
         when "privacy_setting"
-          selected = KVStore.enabled_privacy_setting?(_group_id)
-          selected ? KVStore.disable_privacy_setting(_group_id) : KVStore.enable_privacy_setting(_group_id)
+          args = {_group_id, ToggleTarget::PrivacySetting}
+          selected = Toggle.privacy_setting?(_group_id)
+          selected ? Toggle.disable!(*args) : Toggle.enable!(*args)
           spawn bot.answer_callback_query(query.id)
           bot.edit_message_text(
             _chat_id,
@@ -42,8 +43,9 @@ module Policr
             reply_markup: create_markup(_group_id)
           )
         when "record_mode"
-          selected = KVStore.enabled_record_mode?(_group_id)
-          selected ? KVStore.disable_record_mode(_group_id) : KVStore.enable_record_mode(_group_id)
+          args = {_group_id, ToggleTarget::RecordMode}
+          selected = Toggle.record_mode?(_group_id)
+          selected ? Toggle.disable!(*args) : Toggle.enable!(*args)
           spawn bot.answer_callback_query(query.id)
           bot.edit_message_text(
             _chat_id,
@@ -52,7 +54,7 @@ module Policr
             reply_markup: create_markup(_group_id)
           )
         when "fault_tolerance"
-          selected = KVStore.enabled_fault_tolerance?(_group_id)
+          selected = Toggle.fault_tolerance?(_group_id)
 
           if !selected && !(KVStore.enabled_dynamic_captcha?(_group_id) ||
              KVStore.enabled_image_captcha?(_group_id) ||
@@ -61,7 +63,8 @@ module Policr
             return
           end
 
-          selected ? KVStore.disable_fault_tolerance(_group_id) : KVStore.enable_fault_tolerance(_group_id)
+          args = {_group_id, ToggleTarget::FaultTolerance}
+          selected ? Toggle.disable!(*args) : Toggle.enable!(*args)
           spawn bot.answer_callback_query(query.id)
           bot.edit_message_text(
             _chat_id,

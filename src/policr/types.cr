@@ -3,6 +3,9 @@ module Policr
     SlientMode     # 静音模式
     ExamineEnabled # 启用审核
     TrustedAdmin   # 信任管理
+    PrivacySetting # 隐私设置
+    RecordMode     # 记录模式
+    FaultTolerance # 容错模式
   end
 
   enum VerificationStatus

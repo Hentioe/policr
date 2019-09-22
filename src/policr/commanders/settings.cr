@@ -29,11 +29,11 @@ module Policr
         when "trust_admin"
           Toggle.trusted_admin?(_group_id) ? SELECTED : UNSELECTED
         when "privacy_setting"
-          KVStore.enabled_privacy_setting?(_group_id) ? SELECTED : UNSELECTED
+          Toggle.privacy_setting?(_group_id) ? SELECTED : UNSELECTED
         when "record_mode"
-          KVStore.enabled_record_mode?(_group_id) ? SELECTED : UNSELECTED
+          Toggle.record_mode?(_group_id) ? SELECTED : UNSELECTED
         when "fault_tolerance"
-          KVStore.enabled_fault_tolerance?(_group_id) ? SELECTED : UNSELECTED
+          Toggle.fault_tolerance?(_group_id) ? SELECTED : UNSELECTED
         when "slient_mode"
           Model::Toggle.enabled?(_group_id, ToggleTarget::SlientMode) ? SELECTED : UNSELECTED
         else

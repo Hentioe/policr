@@ -19,6 +19,9 @@ module Policr::Model
 
     def_is_enabled "examine_enabled"
     def_is_enabled "trusted_admin"
+    def_is_enabled "privacy_setting"
+    def_is_enabled "record_mode"
+    def_is_enabled "fault_tolerance"
 
     def self.enabled?(chat_id : Int, target : ToggleTarget) : Bool
       if t = where { (_chat_id == chat_id.to_i64) & (_target == target.value) }.first

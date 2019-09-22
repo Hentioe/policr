@@ -28,7 +28,7 @@ module Policr
       _chat_id = msg.chat.id
       if _chat_id > 0 &&
          (%menu = Model::PrivateMenu.find(_chat_id, msg.message_id)) &&
-         KVStore.enabled_privacy_setting?(%menu.group_id)
+         Model::Toggle.privacy_setting?(%menu.group_id)
         _group_id = %menu.group_id
         _group_name = %menu.group_name
       end
