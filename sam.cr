@@ -20,7 +20,7 @@ namespace "rocksdb" do
   # privacy_setting
   namespace "migrate" do
     desc "迁移主要开关设置"
-    task "toggle_settings" do
+    task "primary_toggle_settings" do
       migrate_toggle "trust_admin", Policr::ToggleTarget::TrustedAdmin
       migrate_toggle "privacy_setting", Policr::ToggleTarget::PrivacySetting
       migrate_toggle "record_mode", Policr::ToggleTarget::RecordMode
