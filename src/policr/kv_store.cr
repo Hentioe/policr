@@ -60,7 +60,7 @@ module Policr::KVStore
   end
 
   # 综合设置菜单
-  def_toggle "examine", key: enabled_examine, enable: 1
+  # def_toggle "examine", key: enabled_examine, enable: 1
   def_toggle "trust_admin", key: trust_admin, enable: 1
   def_toggle "privacy_setting", key: privacy_setting, enable: 1
   def_toggle "record_mode", key: record_mode, enable: 1

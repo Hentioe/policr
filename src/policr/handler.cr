@@ -107,7 +107,7 @@ module Policr
     end
 
     macro examine_enabled?
-      fetch_state :examine_enabled { KVStore.enabled_examine?(msg.chat.id) }
+      fetch_state :examine_enabled { Model::Toggle.examine_enabled?(msg.chat.id) }
     end
 
     macro has_permission?(group_id, user_id)

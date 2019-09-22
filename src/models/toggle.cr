@@ -11,6 +11,14 @@ module Policr::Model
       updated_at: Time?
     )
 
+    private macro def_is_enabled(target_s)
+      def self.{{target_s.id}}?(chat_id : Int64) : Bool
+        enabled? chat_id, ToggleTarget::{{target_s.id.camelcase}}
+      end
+    end
+
+    def_is_enabled "examine_enabled"
+
     def self.enabled?(chat_id : Int, target : ToggleTarget) : Bool
       if t = where { (_chat_id == chat_id.to_i64) & (_target == target.value) }.first
         t.enabled

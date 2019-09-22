@@ -1,5 +1,7 @@
 module Policr
   commander Settings do
+    alias Toggle = Model::Toggle
+
     def handle(msg, from_nav)
       reply_menu do
         create_menu({
@@ -23,7 +25,7 @@ module Policr
       make_status = ->(name : String) {
         case name
         when "enable_examine"
-          KVStore.enabled_examine?(_group_id) ? SELECTED : UNSELECTED
+          Toggle.examine_enabled?(_group_id) ? SELECTED : UNSELECTED
         when "trust_admin"
           KVStore.enabled_trust_admin?(_group_id) ? SELECTED : UNSELECTED
         when "privacy_setting"

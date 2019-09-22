@@ -1,5 +1,7 @@
 module Policr
   callbacker Settings do
+    alias Toggle = Model::Toggle
+
     NOT_MODIFIED = "Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message"
 
     def handle(query, msg, data)
@@ -8,8 +10,9 @@ module Policr
 
         case name
         when "enable_examine"
-          selected = KVStore.enabled_examine?(_group_id)
-          selected ? KVStore.disable_examine(_group_id) : KVStore.enable_examine(_group_id)
+          args = {_group_id, ToggleTarget::ExamineEnabled}
+          selected = Toggle.examine_enabled? _group_id
+          selected ? Toggle.disable!(*args) : Toggle.enable!(*args)
           spawn bot.answer_callback_query(query.id)
           bot.edit_message_text(
             _chat_id,
