@@ -19,3 +19,4 @@ CREATE TABLE IF NOT EXISTS "answers"(id integer PRIMARY KEY, name text NOT NULL,
 CREATE TABLE groups (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, title text NOT NULL, link text, created_at text NOT NULL, updated_at text NOT NULL, managed integer NOT NULL DEFAULT false);
 CREATE TABLE admins_groups (group_id integer, admin_id integer);
 CREATE TABLE admins (id integer PRIMARY KEY AUTOINCREMENT, user_id integer NOT NULL, fullname text, created_at text NOT NULL, updated_at text NOT NULL);
+CREATE TABLE froms (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, list text NOT NULL, enabled integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);

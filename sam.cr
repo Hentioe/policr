@@ -19,31 +19,28 @@ namespace "rocksdb" do
   end
   # privacy_setting
   namespace "migrate" do
-    desc "迁移主要开关设置"
-    task "primary_toggle_settings" do
-      migrate_toggle "trust_admin", Policr::ToggleTarget::TrustedAdmin
-      migrate_toggle "privacy_setting", Policr::ToggleTarget::PrivacySetting
-      migrate_toggle "record_mode", Policr::ToggleTarget::RecordMode
-      migrate_toggle "fault_tolerance", Policr::ToggleTarget::FaultTolerance
+    desc "迁移来源调查开关"
+    task "enabled_from" do
+      raise Exception.new "未实现"
     end
   end
 end
 
-def migrate_toggle(prefix, target)
-  puts "#{prefix} started."
-  query_by_prefix "#{prefix}_" do |key, value|
-    group_id, enabled =
-      if md = /(-\d+)$/.match key
-        {md[1].to_i64, value.to_i == 1}
-      else
-        {nil, nil}
-      end
-    if group_id && enabled
-      Policr::Model::Toggle.enable!(group_id, target)
-    end
-  end
-  puts "#{prefix} done."
-end
+# def migrate_toggle(prefix, target)
+#   puts "#{prefix} started."
+#   query_by_prefix "#{prefix}_" do |key, value|
+#     group_id, enabled =
+#       if md = /(-\d+)$/.match key
+#         {md[1].to_i64, value.to_i == 1}
+#       else
+#         {nil, nil}
+#       end
+#     if group_id && enabled
+#       Policr::Model::Toggle.enable!(group_id, target)
+#     end
+#   end
+#   puts "#{prefix} done."
+# end
 
 def query_by_prefix(prefix)
   db = RocksDB::DB.new(DEFAULT_DATA_DIR, readonly: true)
