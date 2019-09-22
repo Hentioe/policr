@@ -95,9 +95,8 @@ module Policr
       end
     end
 
-    BACK_SYMBOL     = "«"
-    BIG_BACK_SYMBOL = "返回"
-    DATE_FORMAT     = "%Y-%m-%d %H:%M:%S"
+    BACK_SYMBOL = "«"
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     def_text create_content_blocked_text do
       handler = "\n\n"
@@ -106,8 +105,8 @@ module Policr
           sb = String.build do |str|
             list.each_with_index do |bc, i|
               str << "#{i + 1}."
-              str << " [已启用]" if bc.is_enabled
-              str << " [已禁用]" unless bc.is_enabled
+              str << t("content_blocked.enabled_flag") if bc.is_enabled
+              str << t("content_blocked.disabled_flag") unless bc.is_enabled
               str << "[#{bc.alias_s}](https://t.me/#{bot.username}?start=rule_#{bc.id})"
             end
           end
@@ -120,8 +119,8 @@ module Policr
     def create_content_blocked_markup(group_id)
       markup = Markup.new
 
-      markup << [Button.new(text: "刷新", callback_data: "StrictMode:content_blocked_setting")]
-      markup << [Button.new(text: BIG_BACK_SYMBOL, callback_data: "StrictMode:back")]
+      markup << [Button.new(text: t("refresh"), callback_data: "StrictMode:content_blocked_setting")]
+      markup << [Button.new(text: t("back"), callback_data: "StrictMode:back")]
 
       markup
     end

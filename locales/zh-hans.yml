@@ -21,6 +21,7 @@ units:
 unit:
   sec: "秒"
 return: "返回"
+refresh: "刷新"
 none: "无"
 add_to_group:
   leave: "让我离开"
