@@ -47,7 +47,7 @@ module Policr
             true
           when "group/trust_admin", "gta"
             group_id = args[1].to_i64
-            KVStore.enable_trust_admin group_id
+            Model::Toggle.enable! group_id, ToggleTarget::TrustedAdmin
             true
           when "voting/apply_quiz_manage", "vaq" # 申请测验管理
             if sended_msg = bot.send_message bot.owner_id, create_voting_apply_quiz_manage_text

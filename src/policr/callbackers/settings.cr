@@ -21,8 +21,9 @@ module Policr
             reply_markup: create_markup(_group_id)
           )
         when "trust_admin"
-          selected = KVStore.enabled_trust_admin?(_group_id)
-          selected ? KVStore.disable_trust_admin(_group_id) : KVStore.enable_trust_admin(_group_id)
+          args = {_group_id, ToggleTarget::TrustedAdmin}
+          selected = Model::Toggle.trusted_admin?(_group_id)
+          selected ? Toggle.disable!(*args) : Toggle.enable!(*args)
           spawn bot.answer_callback_query(query.id)
           bot.edit_message_text(
             _chat_id,

@@ -33,7 +33,7 @@ module Policr
         _group_name = %menu.group_name
       end
 
-      %role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
+      %role = Model::Toggle.trusted_admin?(_group_id) ? :admin : :creator
 
       unless bot.has_permission?(_group_id, query.from.id, %role)
         bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)

@@ -112,7 +112,7 @@ module Policr
 
     macro has_permission?(group_id, user_id)
       fetch_state :has_permission do 
-        role = KVStore.enabled_trust_admin?({{group_id}}) ? :admin : :creator
+        role = Model::Toggle.trusted_admin?({{group_id}}) ? :admin : :creator
         bot.has_permission?({{group_id}}, {{user_id}}, role)
       end
     end

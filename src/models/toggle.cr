@@ -18,6 +18,7 @@ module Policr::Model
     end
 
     def_is_enabled "examine_enabled"
+    def_is_enabled "trusted_admin"
 
     def self.enabled?(chat_id : Int, target : ToggleTarget) : Bool
       if t = where { (_chat_id == chat_id.to_i64) & (_target == target.value) }.first

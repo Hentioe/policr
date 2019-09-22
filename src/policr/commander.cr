@@ -39,7 +39,7 @@ module Policr
       end
 
 
-      %role = KVStore.enabled_trust_admin?(_group_id) ? :admin : :creator
+      %role = Model::Toggle.trusted_admin?(_group_id) ? :admin : :creator
       if (%user = msg.from) && bot.has_permission?(_group_id, %user.id, %role)
         if KVStore.enabled_privacy_setting?(_group_id)
           _chat_id = %user.id unless from_nav # 私信导航已存在用户 chat_id

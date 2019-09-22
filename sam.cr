@@ -18,9 +18,9 @@ namespace "rocksdb" do
     end
   end
   namespace "migrate" do
-    desc "迁移审核功能启用状态"
-    task "enabled_examine" do
-      query_by_prefix "enabled_examine_" do |key, value|
+    desc "迁移信任管理状态"
+    task "trust_admin" do
+      query_by_prefix "trust_admin_" do |key, value|
         group_id, enabled =
           if md = /(-\d+)$/.match key
             {md[1].to_i64, value.to_i == 1}
@@ -28,7 +28,7 @@ namespace "rocksdb" do
             {nil, nil}
           end
         if group_id && enabled
-          Policr::Model::Toggle.enable!(group_id, Policr::ToggleTarget::ExamineEnabled)
+          Policr::Model::Toggle.enable!(group_id, Policr::ToggleTarget::TrustedAdmin)
         end
       end
     end

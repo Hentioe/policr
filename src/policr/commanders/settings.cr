@@ -27,7 +27,7 @@ module Policr
         when "enable_examine"
           Toggle.examine_enabled?(_group_id) ? SELECTED : UNSELECTED
         when "trust_admin"
-          KVStore.enabled_trust_admin?(_group_id) ? SELECTED : UNSELECTED
+          Toggle.trusted_admin?(_group_id) ? SELECTED : UNSELECTED
         when "privacy_setting"
           KVStore.enabled_privacy_setting?(_group_id) ? SELECTED : UNSELECTED
         when "record_mode"

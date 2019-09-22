@@ -2,6 +2,7 @@ module Policr
   enum ToggleTarget
     SlientMode     # 静音模式
     ExamineEnabled # 启用审核
+    TrustedAdmin   # 信任管理
   end
 
   enum VerificationStatus
