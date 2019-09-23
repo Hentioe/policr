@@ -19,28 +19,43 @@ namespace "rocksdb" do
   end
   # privacy_setting
   namespace "migrate" do
-    desc "迁移来源调查开关"
+    desc "迁移来源调查内容"
+    task "from" do
+      prefix = "from"
+      puts "#{prefix} started."
+      query_by_prefix "#{prefix}_" do |key, value|
+        group_id, content =
+          if md = /(-\d+)$/.match key
+            {md[1].to_i64, value}
+          else
+            {nil, nil}
+          end
+        if group_id && content
+          Policr::Model::From.set_list_content!(group_id, content)
+        end
+      end
+      puts "#{prefix} done."
+    end
+
+    desc "迁移来源调查启用状态"
     task "enabled_from" do
-      raise Exception.new "未实现"
+      prefix = "enabled_from"
+      puts "#{prefix} started."
+      query_by_prefix "#{prefix}_" do |key, value|
+        group_id, enabled =
+          if md = /(-\d+)$/.match key
+            {md[1].to_i64, value.to_i == 1}
+          else
+            {nil, nil}
+          end
+        if group_id && enabled
+          Policr::Model::From.enable!(group_id)
+        end
+      end
+      puts "#{prefix} done."
     end
   end
 end
-
-# def migrate_toggle(prefix, target)
-#   puts "#{prefix} started."
-#   query_by_prefix "#{prefix}_" do |key, value|
-#     group_id, enabled =
-#       if md = /(-\d+)$/.match key
-#         {md[1].to_i64, value.to_i == 1}
-#       else
-#         {nil, nil}
-#       end
-#     if group_id && enabled
-#       Policr::Model::Toggle.enable!(group_id, target)
-#     end
-#   end
-#   puts "#{prefix} done."
-# end
 
 def query_by_prefix(prefix)
   db = RocksDB::DB.new(DEFAULT_DATA_DIR, readonly: true)

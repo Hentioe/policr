@@ -15,6 +15,16 @@ module Policr::Model
       where { _chat_id == chat_id }.first
     end
 
+    alias FromList = Array(Array(String))
+
+    def gen_list : FromList
+      from_list = FromList.new
+      @list.split("\n") do |line|
+        from_list += [line.split("-").select { |s| s != "" }.map { |s| s.strip }]
+      end
+      from_list
+    end
+
     def self.set_list_content!(chat_id : Int64, content : String)
       if f = find_by_chat_id chat_id
         f.update_column :list, content

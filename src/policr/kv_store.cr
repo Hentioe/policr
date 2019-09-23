@@ -64,7 +64,7 @@ module Policr::KVStore
   # def_toggle "trust_admin", key: trust_admin, enable: 1
   # def_toggle "privacy_setting", key: privacy_setting, enable: 1
   # def_toggle "record_mode", key: record_mode, enable: 1
-  def_toggle "from", key: enabled_from, enable: 1
+  # def_toggle "from", key: enabled_from, enable: 1
   # def_toggle "fault_tolerance", key: fault_tolerance, enable: 1
 
   # 欢迎消息设置
@@ -82,21 +82,21 @@ module Policr::KVStore
     "custom_captcha", "chessboard_captcha", "dynamic_captcha",
   ]
 
-  def put_chat_from(chat_id, text)
-    if db = @@db
-      db.put("from_#{chat_id.to_s}", text)
-    end
-  end
+  # def put_chat_from(chat_id, text)
+  #   if db = @@db
+  #     db.put("from_#{chat_id.to_s}", text)
+  #   end
+  # end
 
-  def get_from(chat_id)
-    if (db = @@db) && (text = db.get?("from_#{chat_id.to_s}"))
-      list = Array(Array(String)).new
-      text.split("\n") do |line|
-        list += [line.split("-").select { |s| s != "" }.map { |s| s.strip }]
-      end
-      list
-    end
-  end
+  # def get_from(chat_id)
+  #   if (db = @@db) && (text = db.get?("from_#{chat_id.to_s}"))
+  #     list = Array(Array(String)).new
+  #     text.split("\n") do |line|
+  #       list += [line.split("-").select { |s| s != "" }.map { |s| s.strip }]
+  #     end
+  #     list
+  #   end
+  # end
 
   def set_torture_sec(chat_id, sec)
     if db = @@db

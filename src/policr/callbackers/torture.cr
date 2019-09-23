@@ -136,11 +136,11 @@ module Policr
         if reply_msg
           reply_msg.message_id
         end
-      is_enabled_from = KVStore.enabled_from? chat_id
+      from = Model::From.enabled? chat_id
 
       destory_join_msg = ->{
         # 立即删除入群消息（如果没有启用来源调查）
-        if !is_enabled_from && (_delete_msg_id = reply_id)
+        if !from && (_delete_msg_id = reply_id)
           Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
             spawn bot.delete_message(chat_id, _delete_msg_id)
           end
@@ -215,35 +215,34 @@ module Policr
       )
 
       # 来源调查
-      inform_from(chat_id, target_user_id) if is_enabled_from
+      inform_from(chat_id, target_user_id, from.not_nil!) if from
     end
 
-    def inform_from(chat_id : Int64, user_id : Int32)
-      if from_list = KVStore.get_from(chat_id)
-        index = -1
-        btn = ->(text : String) {
-          Button.new(text: text, callback_data: "From:#{user_id}:_:#{index += 1}")
-        }
-        markup = Markup.new
-        from_list.each do |btn_text_list|
-          markup << btn_text_list.map { |text| btn.call(text) }
-        end
-        join_msg_id = Cache.user_join_msg? user_id, chat_id
-        if sended_msg = bot.send_message(
-             chat_id,
-             text: t("from.question"),
-             reply_to_message_id: join_msg_id,
-             reply_markup: markup
-           )
-          # 根据干净模式数据延迟清理来源调查
-          _delete_from_msg_id = sended_msg.message_id
-          Model::CleanMode.working(chat_id, DeleteTarget::From) do
-            spawn bot.delete_message(chat_id, _delete_from_msg_id)
-            # 删除入群消息
-            if _delete_join_msg_id = join_msg_id
-              Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
-                spawn bot.delete_message(chat_id, _delete_join_msg_id)
-              end
+    def inform_from(chat_id : Int64, user_id : Int32, from : Model::From)
+      from_list = from.gen_list
+      index = -1
+      btn = ->(text : String) {
+        Button.new(text: text, callback_data: "From:#{user_id}:_:#{index += 1}")
+      }
+      markup = Markup.new
+      from_list.each do |btn_text_list|
+        markup << btn_text_list.map { |text| btn.call(text) }
+      end
+      join_msg_id = Cache.user_join_msg? user_id, chat_id
+      if sended_msg = bot.send_message(
+           chat_id,
+           text: t("from.question"),
+           reply_to_message_id: join_msg_id,
+           reply_markup: markup
+         )
+        # 根据干净模式数据延迟清理来源调查
+        _delete_from_msg_id = sended_msg.message_id
+        Model::CleanMode.working(chat_id, DeleteTarget::From) do
+          spawn bot.delete_message(chat_id, _delete_from_msg_id)
+          # 删除入群消息
+          if _delete_join_msg_id = join_msg_id
+            Model::AntiMessage.working chat_id, ServiceMessage::JoinGroup do
+              spawn bot.delete_message(chat_id, _delete_join_msg_id)
             end
           end
         end

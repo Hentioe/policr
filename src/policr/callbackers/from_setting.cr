@@ -1,5 +1,7 @@
 module Policr
   callbacker FromSetting do
+    alias From = Model::From
+
     def handle(query, msg, data)
       target_group do
         name, toggle = data
@@ -10,12 +12,12 @@ module Policr
 
         case name
         when "enable"
-          unless KVStore.get_from(_group_id)
+          unless From.find_by_chat_id(_group_id)
             bot.answer_callback_query(query.id, text: t("from.not_set"), show_alert: true)
             return
           end
-          selected = KVStore.enabled_from?(_group_id)
-          selected ? KVStore.disable_from(_group_id) : KVStore.enable_from(_group_id)
+          selected = From.enabled?(_group_id)
+          selected ? From.disable(_group_id) : From.enable!(_group_id)
           spawn bot.answer_callback_query(query.id)
 
           updated_text, updated_markup = updated_settings_preview _group_id, _group_name

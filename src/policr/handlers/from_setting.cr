@@ -1,5 +1,6 @@
 module Policr
   handler FromSetting do
+    alias From = Model::From
     allow_edit # 处理编辑消息
 
     target :fields
@@ -19,7 +20,7 @@ module Policr
       retrieve [(text = msg.text)] do
         chat_id = msg.chat.id
 
-        KVStore.put_chat_from(_group_id, text)
+        From.set_list_content!(_group_id, text)
 
         updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
         spawn {

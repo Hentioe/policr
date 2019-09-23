@@ -1,5 +1,7 @@
 module Policr
   callbacker From do
+    alias From = Model::From
+
     def handle(query, msg, data)
       chat_id = msg.chat.id
       from_user_id = query.from.id
@@ -15,7 +17,7 @@ module Policr
       end
 
       all_from = Array(String).new
-      if from_list = KVStore.get_from(chat_id)
+      if (from = From.find_by_chat_id(chat_id)) && (from_list = from.gen_list)
         from_list.each do |btn_list|
           btn_list.each { |btn_text| all_from << btn_text }
         end

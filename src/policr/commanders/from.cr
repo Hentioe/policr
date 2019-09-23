@@ -1,5 +1,7 @@
 module Policr
   commander From do
+    alias From = Model::From
+
     def handle(msg, from_nav)
       reply_menu do
         sended_msg = create_menu({
@@ -18,14 +20,14 @@ module Policr
     UNSELECTED = "□"
 
     def_markup do
-      selected_status = KVStore.enabled_from?(_group_id) ? SELECTED : UNSELECTED
+      selected_status = From.enabled?(_group_id) ? SELECTED : UNSELECTED
       text = selected_status + " " + t("from.enable")
       _markup << [Button.new(text: text, callback_data: "FromSetting:enable:toggle")]
     end
 
     def_text do
       from_text =
-        if list = KVStore.get_from(_group_id)
+        if (from = From.find_by_chat_id _group_id) && (list = from.gen_list)
           String.build do |str|
             list.each_with_index do |ls, i|
               str << ls.join(" | ")
