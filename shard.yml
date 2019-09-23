@@ -44,6 +44,9 @@ dependencies:
     version: ~> 0.8.0
   sam:
     github: imdrasil/sam.cr
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+    version: ~> 0.13.0
   jennifer_sqlite3_adapter:
     github: imdrasil/jennifer_sqlite3_adapter
   gomoku:
