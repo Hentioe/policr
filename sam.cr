@@ -17,7 +17,7 @@ namespace "rocksdb" do
       puts e.message
     end
   end
-  # privacy_setting
+
   namespace "migrate" do
     desc "迁移来源调查内容"
     task "from" do
