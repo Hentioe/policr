@@ -3,6 +3,7 @@ require "../spec_helper"
 describe Policr::Model::Welcome do
   it "set_content!/enabled?/disabled?/enable!/disable" do
     w1 = Welcome.set_content! GROUP_ID, "我是欢迎消息内容"
+    w1 = Welcome.set_sticker! GROUP_ID, "SJFDSLFJSAOIFASFNASLAEI"
     w2 = Welcome.set_content! GROUP_ID, "我是更新后的欢迎消息内容"
 
     w1.id.should eq(w2.id)
