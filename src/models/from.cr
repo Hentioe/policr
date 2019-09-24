@@ -55,8 +55,6 @@ module Policr::Model
     def self.enabled?(chat_id : Int64)
       if (f = find_by_chat_id chat_id) && f.enabled
         f
-      else
-        nil
       end
     end
   end

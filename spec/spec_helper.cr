@@ -23,4 +23,5 @@ def_models_alias [
   FormatLimit,
   AntiMessage,
   From,
+  Welcome,
 ]
