@@ -1,4 +1,5 @@
 welcome:
+  sticker_mode_btn: "请阅读群规"
   missing_content: "请先设置内容！"
   missing_sticker: "请先设置贴纸！"
   hint: |

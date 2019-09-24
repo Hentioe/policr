@@ -466,7 +466,8 @@ module Policr
         else # 贴纸模式
           if sticker = welcome.sticker_file_id
             markup = Markup.new
-            markup << [Button.new(text: "阅读群规", url: "https://t.me/#{username}?start=welcome_#{welcome.id}")]
+            btn_text = t "welcome.sticker_mode_btn"
+            markup << [Button.new(text: btn_text, url: "https://t.me/#{username}?start=welcome_#{welcome.id}")]
             spawn {
               sended_msg = send_sticker(
                 chat_id,
