@@ -395,48 +395,94 @@ module Policr
       )
     end
 
+    def send_sticker(chat_id : Int | String,
+                     sticker : ::File | String,
+                     disable_notification : Bool? = nil,
+                     reply_to_message_id : Int32? = nil,
+                     reply_markup : ReplyMarkup = nil) : TelegramBot::Message?
+      disable_notification =
+        if disable_notification == nil && chat_id.is_a?(Int32 | Int64)
+          if chat_id > 0 # 私聊开启声音
+            false
+          else
+            Model::Toggle.enabled? chat_id, ToggleTarget::SlientMode
+          end
+        else
+          disable_notification
+        end
+      super(
+        chat_id: chat_id,
+        sticker: sticker,
+        disable_notification: disable_notification,
+        reply_to_message_id: reply_to_message_id,
+        reply_markup: reply_markup
+      )
+    end
+
     NONE_FROM_USER = "Unknown"
     WELCOME_VARS   = ["fullname", "chatname", "mention", "userid"]
 
     def send_welcome(chat : TelegramBot::Chat, from_user : FromUser? = nil)
       chat_id = chat.id
 
-      if (welcome = Model::Welcome.find_by_chat_id(chat_id)) && (parsed = WelcomeContentParser.parse welcome.content)
-        disable_link_preview = Model::Welcome.link_preview_disabled?(chat_id)
-        text =
-          parsed.content || "Warning: welcome content format is incorrect"
-        chat_title = escape_markdown chat.title || "[Untitled]"
-        text =
-          if from_user
-            vals = [from_user.fullname, chat_title, from_user.markdown_link, from_user.user_id]
-            render text, {{ WELCOME_VARS }}, vals
-          else
-            vals = [NONE_FROM_USER, chat_title, NONE_FROM_USER, NONE_FROM_USER]
-            render text, {{ WELCOME_VARS }}, vals
-          end
+      if (welcome = Model::Welcome.find_by_chat_id(chat_id)) &&
+         (parsed = WelcomeContentParser.parse welcome.content)
+        unless welcome.is_sticker_mode
+          disable_link_preview = Model::Welcome.link_preview_disabled?(chat_id)
+          text =
+            parsed.content || "Warning: welcome content format is incorrect"
+          chat_title = escape_markdown chat.title || "[Untitled]"
+          text =
+            if from_user
+              vals = [from_user.fullname, chat_title, from_user.markdown_link, from_user.user_id]
+              render text, {{ WELCOME_VARS }}, vals
+            else
+              vals = [NONE_FROM_USER, chat_title, NONE_FROM_USER, NONE_FROM_USER]
+              render text, {{ WELCOME_VARS }}, vals
+            end
 
-        markup = Markup.new
-        if parsed.buttons.size > 0
-          parsed.buttons.each do |button|
-            markup << [Button.new(text: button.text, url: button.link)]
-          end
-        end
-
-        spawn {
-          sended_msg = send_message(
-            chat_id,
-            text: text,
-            reply_markup: markup,
-            disable_web_page_preview: disable_link_preview
-          )
-
-          if sended_msg # 根据设置延迟清理
-            _del_msg_id = sended_msg.message_id
-            Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) do
-              delete_message(chat_id, _del_msg_id)
+          markup = Markup.new
+          if parsed.buttons.size > 0
+            parsed.buttons.each do |button|
+              markup << [Button.new(text: button.text, url: button.link)]
             end
           end
-        }
+
+          spawn {
+            sended_msg = send_message(
+              chat_id,
+              text: text,
+              reply_markup: markup,
+              disable_web_page_preview: disable_link_preview
+            )
+
+            if sended_msg # 根据设置延迟清理
+              _del_msg_id = sended_msg.message_id
+              Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) do
+                delete_message(chat_id, _del_msg_id)
+              end
+            end
+          }
+        else # 贴纸模式
+          if sticker = welcome.sticker_file_id
+            markup = Markup.new
+            markup << [Button.new(text: "阅读群规", url: "https://t.me/#{username}?start=welcome_#{welcome.id}")]
+            spawn {
+              sended_msg = send_sticker(
+                chat_id,
+                sticker: sticker.not_nil!,
+                reply_markup: markup
+              )
+
+              if sended_msg # 根据设置延迟清理
+                _del_msg_id = sended_msg.message_id
+                Model::CleanMode.working(chat_id, CleanDeleteTarget::Welcome) do
+                  delete_message(chat_id, _del_msg_id)
+                end
+              end
+            }
+          end
+        end
       else
         spawn send_message(chat_id, "Warning: welcome content format is incorrect")
       end

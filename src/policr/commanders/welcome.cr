@@ -18,14 +18,14 @@ module Policr
     end
 
     def_text do
-      welcome_text =
+      welcome_text, sticker_file_id =
         if welcome = Welcome.find_by_chat_id(_group_id)
-          welcome.content
+          {welcome.content, welcome.sticker_file_id || t("none")}
         else
-          t "welcome.none"
+          {t("none"), t("none")}
         end
 
-      t("welcome.hint", {welcome_text: welcome_text})
+      t("welcome.hint", {welcome_text: welcome_text, sticker_file_id: sticker_file_id})
     end
 
     SELECTED   = "■"
@@ -34,9 +34,11 @@ module Policr
     def_markup do
       make_status = ->(name : String) {
         case name
-        when "disable_link_preview"
-          Welcome.link_preview_disabled?(_group_id) ? SELECTED : UNSELECTED
-        when "welcome"
+        when "link_preview"
+          Welcome.link_preview_enabled?(_group_id) ? SELECTED : UNSELECTED
+        when "sticker_mode"
+          Welcome.sticker_mode_enabled?(_group_id) ? SELECTED : UNSELECTED
+        when "enable"
           Welcome.enabled?(_group_id) ? SELECTED : UNSELECTED
         else
           UNSELECTED
@@ -46,7 +48,7 @@ module Policr
         Button.new(text: text, callback_data: "Welcome:#{name}")
       }
 
-      _markup << def_btn_list ["welcome", "disable_link_preview"]
+      _markup << def_btn_list ["enable", "sticker_mode", "link_preview"]
     end
 
     macro def_btn_list(list)

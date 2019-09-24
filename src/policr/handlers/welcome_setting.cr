@@ -10,6 +10,7 @@ module Policr
       target :group do
         all_pass? [
           (@reply_msg_id = _reply_msg_id),
+          (msg.text || msg.sticker),
           Cache.welcome_setting_msg?(msg.chat.id, @reply_msg_id), # 回复目标为设置欢迎消息指令？
           (user = msg.from),
           has_permission?(_group_id, user.id),
@@ -18,12 +19,16 @@ module Policr
     end
 
     handle do
-      retrieve [(text = msg.text)] do
+      retrieve [true] do
         chat_id = msg.chat.id
         begin
-          WelcomeContentParser.parse! text
-          Welcome.set_content!(_group_id, text)
-
+          if text = msg.text
+            WelcomeContentParser.parse! text
+            Welcome.set_content!(_group_id, text)
+          end
+          if sticker = msg.sticker
+            Welcome.set_sticker!(_group_id, sticker.file_id)
+          end
           updated_text, updated_markup = updated_settings_preview(_group_id, _group_name)
           spawn { bot.edit_message_text(
             chat_id,
@@ -34,7 +39,12 @@ module Policr
 
           setting_complete_with_delay_delete msg
         rescue e : Exception
-          bot.send_message chat_id, e.to_s
+          case e.message
+          when "Uncreated content"
+            bot.send_message chat_id, t "welcome.missing_content"
+          else
+            bot.send_message chat_id, e.to_s
+          end
         end
       end
     end

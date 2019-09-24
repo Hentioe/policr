@@ -74,8 +74,8 @@ module Policr
           )
         when "slient_mode" # 静音模式
           args = {_group_id, ToggleTarget::SlientMode}
-          selected = Model::Toggle.enabled?(*args)
-          selected ? Model::Toggle.disable!(*args) : Model::Toggle.enable!(*args)
+          selected = Toggle.enabled?(*args)
+          selected ? Toggle.disable!(*args) : Model::Toggle.enable!(*args)
           spawn bot.answer_callback_query(query.id)
           bot.edit_message_text(
             _chat_id,

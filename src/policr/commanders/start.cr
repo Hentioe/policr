@@ -1,7 +1,4 @@
 module Policr
-  enum PayloadTarget
-    Unknown; Vaqm
-  end
   commander Start do
     def handle(msg, from_nav)
       chat_id = msg.chat.id
@@ -41,6 +38,29 @@ module Policr
             if sended_msg = bot.send_message chat_id, text, reply_markup: markup
               Cache.carving_rule_msg chat_id, sended_msg.message_id, id
             end
+          else
+            bot.send_message chat_id, "Not Found"
+          end
+        when "welcome"
+          id = data.to_i
+          if (welcome = Model::Welcome.find(id)) &&
+             (parsed = WelcomeContentParser.parse welcome.content)
+            disable_link_preview = Model::Welcome.link_preview_disabled?(chat_id)
+            text =
+              parsed.content || "Warning: welcome content format is incorrect"
+
+            markup = Markup.new
+            if parsed.buttons.size > 0
+              parsed.buttons.each do |button|
+                markup << [Button.new(text: button.text, url: button.link)]
+              end
+            end
+            bot.send_message(
+              chat_id,
+              text: text,
+              reply_markup: markup,
+              disable_web_page_preview: disable_link_preview
+            )
           else
             bot.send_message chat_id, "Not Found"
           end

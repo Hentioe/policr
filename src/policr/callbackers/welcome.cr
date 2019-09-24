@@ -7,11 +7,11 @@ module Policr
         name = data[0]
 
         case name
-        when "disable_link_preview"
-          is_disable = Welcome.link_preview_disabled? _group_id
-          is_disable ? Welcome.enable_link_preview!(_group_id) : Welcome.disable_link_preview(_group_id)
+        when "link_preview"
+          is_enabled = Welcome.link_preview_enabled? _group_id
+          is_enabled ? Welcome.disable_link_preview(_group_id) : Welcome.enable_link_preview!(_group_id)
 
-          spawn bot.answer_callback_query(query.id)
+          async_response
 
           updated_text, updated_markup = updated_settings_preview _group_id, _group_name
 
@@ -21,7 +21,7 @@ module Policr
             text: updated_text,
             reply_markup: updated_markup
           )
-        when "welcome"
+        when "enable"
           unless Welcome.find_by_chat_id(_group_id)
             bot.answer_callback_query(query.id, text: t("welcome.missing_content"), show_alert: true)
             return
@@ -29,7 +29,7 @@ module Policr
           selected = Welcome.enabled?(_group_id)
           selected ? Welcome.disable(_group_id) : Welcome.enable!(_group_id)
 
-          spawn bot.answer_callback_query(query.id)
+          async_response
 
           updated_text, updated_markup = updated_settings_preview _group_id, _group_name
 
@@ -39,8 +39,33 @@ module Policr
             text: updated_text,
             reply_markup: updated_markup
           )
+        when "sticker_mode"
+          is_enabled = Welcome.sticker_mode_enabled? _group_id
+          begin
+            is_enabled ? Welcome.disable_sticker_mode(_group_id) : Welcome.enable_sticker_mode!(_group_id)
+
+            async_response
+
+            updated_text, updated_markup = updated_settings_preview _group_id, _group_name
+
+            bot.edit_message_text(
+              _chat_id,
+              message_id: msg.message_id,
+              text: updated_text,
+              reply_markup: updated_markup
+            )
+          rescue e : Exception
+            case e.message
+            when "Uncreated content"
+              bot.answer_callback_query(query.id, t "welcome.missing_content")
+            when "Missing sticker_file_id"
+              bot.answer_callback_query(query.id, t "welcome.missing_sticker")
+            else
+              bot.answer_callback_query(query.id, e.to_s)
+            end
+          end
         else # 失效键盘
-          bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
+          invalid_keyboard
         end
       end
     end
