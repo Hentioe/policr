@@ -25,7 +25,7 @@ namespace "rocksdb" do
       puts "#{prefix} started."
       query_by_prefix "#{prefix}_" do |key, value|
         group_id, content =
-          if md = /(-\d+)$/.match key
+          if md = /^welcome_(-\d+)$/.match key
             {md[1].to_i64, value}
           else
             {nil, nil}
