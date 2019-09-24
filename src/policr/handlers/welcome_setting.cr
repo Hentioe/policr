@@ -1,5 +1,7 @@
 module Policr
   handler WelcomeSetting do
+    alias Welcome = Model::Welcome
+
     allow_edit # 处理编辑消息
 
     target :fields
@@ -20,7 +22,7 @@ module Policr
         chat_id = msg.chat.id
         begin
           WelcomeContentParser.parse! text
-          KVStore.set_welcome(_group_id, text)
+          Welcome.set_content!(_group_id, text)
 
           updated_text, updated_markup = updated_settings_preview(_group_id, _group_name)
           spawn { bot.edit_message_text(

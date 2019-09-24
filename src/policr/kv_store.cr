@@ -68,8 +68,8 @@ module Policr::KVStore
   # def_toggle "fault_tolerance", key: fault_tolerance, enable: 1
 
   # 欢迎消息设置
-  def_toggle "welcome", key: enabled_welcome, enable: 1
-  def_toggle "welcome_link_preview", key: welcome_link_preview, disable: 1
+  # def_toggle "welcome", key: enabled_welcome, enable: 1
+  # def_toggle "welcome_link_preview", key: welcome_link_preview, disable: 1
 
   # 验证方式
   def_toggle "dynamic_captcha", key: dynamic, enable: 1, conflicts: [
@@ -182,17 +182,17 @@ module Policr::KVStore
     end
   end
 
-  WELCOME = "welcome"
+  # WELCOME = "welcome"
 
-  def set_welcome(chat_id, content)
-    if db = @@db
-      db.put "#{WELCOME}_#{chat_id}", content
-    end
-  end
+  # def set_welcome(chat_id, content)
+  #   if db = @@db
+  #     db.put "#{WELCOME}_#{chat_id}", content
+  #   end
+  # end
 
-  def get_welcome(chat_id)
-    if db = @@db
-      db.get? "#{WELCOME}_#{chat_id}"
-    end
-  end
+  # def get_welcome(chat_id)
+  #   if db = @@db
+  #     db.get? "#{WELCOME}_#{chat_id}"
+  #   end
+  # end
 end

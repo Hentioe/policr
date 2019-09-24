@@ -30,7 +30,7 @@ module Policr
             bot.send_welcome(
               msg.chat,
               FromUser.new(member)
-            ) if KVStore.enabled_welcome?(chat_id)
+            ) if Model::Welcome.enabled?(chat_id)
             return
           end
 

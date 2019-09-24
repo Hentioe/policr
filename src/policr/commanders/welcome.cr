@@ -1,5 +1,7 @@
 module Policr
   commander Welcome do
+    alias Welcome = Model::Welcome
+
     def handle(msg, from_nav)
       reply_menu do
         sended_msg = create_menu({
@@ -17,8 +19,8 @@ module Policr
 
     def_text do
       welcome_text =
-        if welcome = KVStore.get_welcome(_group_id)
-          welcome
+        if welcome = Welcome.find_by_chat_id(_group_id)
+          welcome.content
         else
           t "welcome.none"
         end
@@ -33,9 +35,9 @@ module Policr
       make_status = ->(name : String) {
         case name
         when "disable_link_preview"
-          KVStore.disabled_welcome_link_preview?(_group_id) ? SELECTED : UNSELECTED
+          Welcome.link_preview_disabled?(_group_id) ? SELECTED : UNSELECTED
         when "welcome"
-          KVStore.enabled_welcome?(_group_id) ? SELECTED : UNSELECTED
+          Welcome.enabled?(_group_id) ? SELECTED : UNSELECTED
         else
           UNSELECTED
         end

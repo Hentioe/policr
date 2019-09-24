@@ -19,9 +19,9 @@ namespace "rocksdb" do
   end
 
   namespace "migrate" do
-    desc "迁移来源调查内容"
-    task "from" do
-      prefix = "from"
+    desc "迁移欢迎消息内容"
+    task "welcome" do
+      prefix = "welcome"
       puts "#{prefix} started."
       query_by_prefix "#{prefix}_" do |key, value|
         group_id, content =
@@ -31,15 +31,15 @@ namespace "rocksdb" do
             {nil, nil}
           end
         if group_id && content
-          Policr::Model::From.set_list_content!(group_id, content)
+          Policr::Model::Welcome.set_content!(group_id, content)
         end
       end
       puts "#{prefix} done."
     end
 
-    desc "迁移来源调查启用状态"
-    task "enabled_from" do
-      prefix = "enabled_from"
+    desc "迁移欢迎消息启用状态"
+    task "enabled_welcome" do
+      prefix = "enabled_welcome"
       puts "#{prefix} started."
       query_by_prefix "#{prefix}_" do |key, value|
         group_id, enabled =
@@ -49,7 +49,25 @@ namespace "rocksdb" do
             {nil, nil}
           end
         if group_id && enabled
-          Policr::Model::From.enable!(group_id)
+          Policr::Model::Welcome.enable!(group_id)
+        end
+      end
+      puts "#{prefix} done."
+    end
+
+    desc "迁移欢迎消息链接预览禁用状态"
+    task "welcome_link_preview" do
+      prefix = "welcome_link_preview"
+      puts "#{prefix} started."
+      query_by_prefix "#{prefix}_" do |key, value|
+        group_id, disabled =
+          if md = /(-\d+)$/.match key
+            {md[1].to_i64, value.to_i == 1}
+          else
+            {nil, nil}
+          end
+        if group_id && disabled
+          Policr::Model::Welcome.disable_link_preview(group_id)
         end
       end
       puts "#{prefix} done."

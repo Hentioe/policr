@@ -1,13 +1,15 @@
 module Policr
   callbacker Welcome do
+    alias Welcome = Model::Welcome
+
     def handle(query, msg, data)
       target_group do
         name = data[0]
 
         case name
         when "disable_link_preview"
-          is_disable = KVStore.disabled_welcome_link_preview? _group_id
-          is_disable ? KVStore.enable_welcome_link_preview(_group_id) : KVStore.disable_welcome_link_preview(_group_id)
+          is_disable = Welcome.link_preview_disabled? _group_id
+          is_disable ? Welcome.enable_link_preview!(_group_id) : Welcome.disable_link_preview(_group_id)
 
           spawn bot.answer_callback_query(query.id)
 
@@ -20,12 +22,12 @@ module Policr
             reply_markup: updated_markup
           )
         when "welcome"
-          unless KVStore.get_welcome(_group_id)
+          unless Welcome.find_by_chat_id(_group_id)
             bot.answer_callback_query(query.id, text: t("welcome.missing_content"), show_alert: true)
             return
           end
-          selected = KVStore.enabled_welcome?(_group_id)
-          selected ? KVStore.disable_welcome(_group_id) : KVStore.enable_welcome(_group_id)
+          selected = Welcome.enabled?(_group_id)
+          selected ? Welcome.disable(_group_id) : Welcome.enable!(_group_id)
 
           spawn bot.answer_callback_query(query.id)
 

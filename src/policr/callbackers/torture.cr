@@ -193,7 +193,7 @@ module Policr
         }
       end
 
-      if KVStore.enabled_welcome? chat_id
+      if Model::Welcome.enabled? chat_id
         from_user =
           if admin
             if reply_msg
