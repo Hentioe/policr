@@ -10,7 +10,7 @@ module Policr::KVStore
     @@db = RocksDB::DB.new("#{path}/rocksdb")
   end
 
-  TRUE_INDEX = "true_index" # 已废弃，储存正确答案索引
+  # TRUE_INDEX = "true_index" # 已废弃，储存正确答案索引
 
   macro def_toggle(name, key = "none", disable = 0, enable = 0, conflicts = [] of String)
     {% if enable == 1 %}
