@@ -24,4 +24,5 @@ def_models_alias [
   AntiMessage,
   From,
   Welcome,
+  HalalWhiteList,
 ]

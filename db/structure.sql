@@ -21,3 +21,4 @@ CREATE TABLE admins_groups (group_id integer, admin_id integer);
 CREATE TABLE admins (id integer PRIMARY KEY AUTOINCREMENT, user_id integer NOT NULL, fullname text, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE froms (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, list text NOT NULL, enabled integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
 CREATE TABLE welcomes (id integer PRIMARY KEY AUTOINCREMENT, chat_id integer NOT NULL, content text NOT NULL, enabled integer NOT NULL, link_preview_enabled integer NOT NULL, is_sticker_mode integer NOT NULL, sticker_file_id text, created_at text NOT NULL, updated_at text NOT NULL);
+CREATE TABLE halal_white_lists (id integer PRIMARY KEY AUTOINCREMENT, user_id integer NOT NULL, creator_id integer NOT NULL, created_at text NOT NULL, updated_at text NOT NULL);
