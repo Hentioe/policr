@@ -16,7 +16,7 @@ module Policr
         (text = msg.text),
         is_halal(text),
         (user = msg.from),
-        !KVStore.halal_white?(user.id), # 非白名单
+        !Model::HalalWhiteList.contains?(user.id), # 非白名单
       ]
     end
 

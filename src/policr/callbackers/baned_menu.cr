@@ -9,7 +9,6 @@ module Policr
       message_id = msg.message_id
 
       unless bot.is_admin? chat_id, from_user_id
-        bot.log "User ID '#{from_user_id}' without permission click to unbanned button"
         bot.answer_callback_query(query.id, text: t("callback.no_permission"), show_alert: true)
         return
       end
@@ -35,7 +34,7 @@ module Policr
         msg = t("add_to_whitelist", {user_id: target_user_id}) if ope_count == 1
         bot.edit_message_text(chat_id, message_id: message_id, text: msg) if unban_r
         # 加入白名单
-        KVStore.add_to_whitelist(target_user_id) if ope_count == 1
+        Model::HalalWhiteList.add!(target_user_id, from_user_id) if ope_count == 1
       rescue ex : TelegramBot::APIException
         _, reason = bot.parse_error(ex)
         bot.answer_callback_query(query.id, text: "#{t("unban_error")}#{reason}")

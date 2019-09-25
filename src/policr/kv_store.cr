@@ -110,17 +110,17 @@ module Policr::KVStore
     end
   end
 
-  def add_to_whitelist(user_id)
-    if db = @@db
-      db.put("halal_white_#{user_id}", 1)
-    end
-  end
+  # def add_to_whitelist(user_id)
+  #   if db = @@db
+  #     db.put("halal_white_#{user_id}", 1)
+  #   end
+  # end
 
-  def halal_white?(user_id)
-    if (db = @@db) && (status = db.get?("halal_white_#{user_id}"))
-      status.to_i == 1
-    end
-  end
+  # def halal_white?(user_id)
+  #   if (db = @@db) && (status = db.get?("halal_white_#{user_id}"))
+  #     status.to_i == 1
+  #   end
+  # end
 
   CUSTOM_TEXT = "custom_text"
 

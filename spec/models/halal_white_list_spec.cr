@@ -2,6 +2,8 @@ require "../spec_helper"
 
 describe Policr::Model::HalalWhiteList do
   it "contains?" do
+    HalalWhiteList.contains?(USER_ID_1).should be_falsey
+
     h1 = HalalWhiteList.add!(USER_ID_1, USER_ID_2)
     h2 = HalalWhiteList.add!(USER_ID_1, USER_ID_2)
 
