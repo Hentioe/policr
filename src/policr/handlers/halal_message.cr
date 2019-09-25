@@ -15,6 +15,8 @@ module Policr
         !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal), # 未关闭子功能
         (text = msg.text),
         is_halal(text),
+        (user = msg.from),
+        !KVStore.halal_white?(user.id), # 非白名单
       ]
     end
 
