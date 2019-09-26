@@ -16,6 +16,9 @@ module Policr
             bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
             return
           end
+
+          async_response
+
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
@@ -29,6 +32,9 @@ module Policr
             bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
             return
           end
+
+          async_response
+
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
@@ -42,6 +48,9 @@ module Policr
             bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
             return
           end
+
+          async_response
+
           bot.edit_message_text(
             _chat_id,
             message_id: msg_id,
@@ -50,6 +59,9 @@ module Policr
           )
         when "max_length_setting"
           Cache.carving_max_length_msg _chat_id, msg.message_id
+
+          async_response
+
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
@@ -59,6 +71,9 @@ module Policr
         when "content_blocked_setting"
           # 标记设置消息
           Cache.carving_blocked_content_msg _chat_id, msg.message_id
+
+          async_response
+
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
@@ -67,6 +82,9 @@ module Policr
           )
         when "format_limit_setting"
           Cache.carving_format_limit_msg _chat_id, msg.message_id
+
+          async_response
+
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
@@ -74,8 +92,9 @@ module Policr
             reply_markup: create_format_limit_markup(_group_id)
           )
         when "back"
+          async_response
+
           midcall StrictModeCommander do
-            spawn bot.answer_callback_query(query.id)
             bot.edit_message_text(
               _chat_id,
               message_id: msg.message_id,
@@ -84,7 +103,7 @@ module Policr
             )
           end
         else # 失效键盘
-          bot.answer_callback_query(query.id, text: t("invalid_callback"), show_alert: true)
+          invalid_keyboard
         end
       end
     end
