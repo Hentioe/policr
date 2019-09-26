@@ -10,6 +10,7 @@ module Policr
         from_group_chat?(msg),
         (msg.document || msg.photo),
         (caption = msg.caption),
+        anti_halal_enabled?, # 未关闭子功能
         is_halal?(caption),
       ]
     end

@@ -39,11 +39,6 @@ namespace "rocksdb" do
   end
 end
 
-desc "清空内容屏蔽规则"
-task "clear_block_contents" do
-  Policr::Model::BlockContent.all.delete
-end
-
 def query_by_prefix(prefix)
   db = RocksDB::DB.new(DEFAULT_DATA_DIR, readonly: true)
   iter = db.new_iterator

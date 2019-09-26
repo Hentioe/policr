@@ -12,8 +12,8 @@ module Policr
         !self_left?,
         examine_enabled?,
         from_group_chat?(msg),
-        !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal), # 未关闭子功能
         (text = msg.text),
+        anti_halal_enabled?, # 未关闭子功能
         is_halal(text),
         (user = msg.from),
         !Model::HalalWhiteList.contains?(user.id), # 非白名单

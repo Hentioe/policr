@@ -43,7 +43,7 @@ module Policr
           name = fullname(member)
 
           midcall HalalMessageHandler do
-            if !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal) && # 未关闭封杀清真子功能
+            if anti_halal_enabled? && # 未关闭封杀清真子功能
                _handler.is_halal(name) &&
                !Model::HalalWhiteList.contains?(member.id) # 非白名单
               _handler.kick_halal(msg, member)

@@ -120,5 +120,11 @@ module Policr
     macro self_left?
       fetch_state :self_left { false }
     end
+
+    macro anti_halal_enabled?
+      fetch_state :anti_halal_enabled do
+        !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal)
+      end
+    end
   end
 end

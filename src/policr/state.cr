@@ -1,10 +1,11 @@
 alias StateValueType = Bool
 
 STATE_TYPE_MAP = {
-  :done            => Bool,
-  :self_left       => Bool,
-  :examine_enabled => Bool,
-  :has_permission  => Bool,
+  :done               => Bool,
+  :self_left          => Bool,
+  :examine_enabled    => Bool,
+  :has_permission     => Bool,
+  :anti_halal_enabled => Bool,
 }
 
 macro fetch_state(name)
