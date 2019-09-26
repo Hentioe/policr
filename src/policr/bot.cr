@@ -140,7 +140,7 @@ module Policr
         UpdateChatPhotoHandler,
         PinnedMessageHandler,
         UpdateRuleHandler,
-        BlockContentHandler,
+        BlockedContentHandler,
         # 置底分割
         PrivateChatHandler,
       ]

@@ -9,7 +9,10 @@ STATE_TYPE_MAP = {
 
 macro fetch_state(name)
   {{ cls = STATE_TYPE_MAP[name] }}
-  if (val = state[{{name}}]? != nil) && (val.is_a?({{cls}}))
+  val = state[{{name}}]?
+  if val != nil && (val.is_a?({{cls}}))
+    bot.debug "Getting state {{name}} => #{val} in " + {{ @type.stringify }}
+    
     val
   else
     val = {{yield}}

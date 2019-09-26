@@ -6,6 +6,7 @@ module Policr
     match do
       all_pass? [
         !self_left?,
+        examine_enabled?,
         from_group_chat?(msg),
         (msg.document || msg.photo),
         (caption = msg.caption),

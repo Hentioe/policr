@@ -108,6 +108,7 @@ module Policr
               str << t("content_blocked.enabled_flag") if bc.is_enabled
               str << t("content_blocked.disabled_flag") unless bc.is_enabled
               str << "[#{bc.alias_s}](https://t.me/#{bot.username}?start=rule_#{bc.id})"
+              str << "\n"
             end
           end
         else

@@ -5,6 +5,7 @@ module Policr
 
       all_pass? [
         !self_left?,
+        examine_enabled?,
         from_group_chat?(msg),
         (document = msg.document),
         (file_name = document.file_name),

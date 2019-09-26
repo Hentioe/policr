@@ -2,8 +2,8 @@ module Policr
   handler PinnedMessage do
     match do
       all_pass? [
-        from_group_chat?(msg),
         examine_enabled?,
+        from_group_chat?(msg),
         msg.pinned_message, # 置顶消息？
       ]
     end

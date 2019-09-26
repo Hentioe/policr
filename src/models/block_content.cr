@@ -46,5 +46,9 @@ module Policr::Model
     def self.load_list(chat_id : Int64)
       where { _chat_id == chat_id }.offset(0).limit(5).to_a
     end
+
+    def self.counts(chat_id : Int64) : Int
+      where { _chat_id == chat_id }.count
+    end
   end
 end

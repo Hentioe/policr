@@ -10,8 +10,8 @@ module Policr
     match do
       all_pass? [
         !self_left?,
-        from_group_chat?(msg),
         examine_enabled?,
+        from_group_chat?(msg),
         !Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::BanHalal), # 未关闭子功能
         (text = msg.text),
         is_halal(text),

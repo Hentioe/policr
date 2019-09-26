@@ -5,6 +5,7 @@ module Policr
     match do
       all_pass? [
         !self_left?,
+        examine_enabled?,
         from_group_chat?(msg),
         (@length = Model::MaxLength.find(msg.chat.id)), # 启用了相关设置？
       ]

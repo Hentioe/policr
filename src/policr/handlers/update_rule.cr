@@ -21,22 +21,26 @@ module Policr
          (id = @id)
         chat_id = msg.chat.id
 
-        begin
-          parsed = BlockContentParser.parse! text
+        if text.size > MAX_RULE_LENGTH
+          bot.send_message chat_id, t("content_blocked.too_long", {size: MAX_RULE_LENGTH})
+        else
+          begin
+            parsed = BlockContentParser.parse! text
 
-          rule = Model::BlockContent.update!(id, parsed.rule.not_nil!, parsed.alias_s.not_nil!)
+            rule = Model::BlockContent.update!(id, parsed.rule.not_nil!, parsed.alias_s.not_nil!)
 
-          updated_text, updated_markup = updated_preview_settings rule
-          spawn { bot.edit_message_text(
-            chat_id,
-            message_id: reply_msg_id,
-            text: updated_text,
-            reply_markup: updated_markup
-          ) }
+            updated_text, updated_markup = updated_preview_settings rule
+            spawn { bot.edit_message_text(
+              chat_id,
+              message_id: reply_msg_id,
+              text: updated_text,
+              reply_markup: updated_markup
+            ) }
 
-          setting_complete_with_delay_delete msg
-        rescue ex : Exception
-          bot.send_message chat_id, ex.to_s
+            setting_complete_with_delay_delete msg
+          rescue ex : Exception
+            bot.send_message chat_id, ex.to_s
+          end
         end
       end
     end

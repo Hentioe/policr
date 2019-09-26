@@ -30,6 +30,13 @@ module Policr
 
         bot.delete_message chat_id, msg_id
       when "enable"
+        # 检测规则合法性
+        begin
+          RuleEngine.parse! rule.expression
+        rescue e : Exception
+          bot.answer_callback_query(query.id, text: "规则不合法，启用失败～", show_alert: true)
+          return
+        end
         rule.update_column :is_enabled, true
         updated_text, updated_markup = updated_preview_settings rule
 
