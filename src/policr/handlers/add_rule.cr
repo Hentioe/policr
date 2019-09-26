@@ -8,7 +8,6 @@ module Policr
     match do
       target :group do
         all_pass? [
-          from_group_chat?(msg),
           (@reply_msg_id = _reply_msg_id),
           Cache.blocked_content_msg?(msg.chat.id, @reply_msg_id), # 回复目标为添加屏蔽内容？
           msg.text,
