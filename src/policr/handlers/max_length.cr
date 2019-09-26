@@ -13,22 +13,27 @@ module Policr
     end
 
     handle do
-      if (text = msg.text) && (length = @length)
+      if (text = msg.text) && (length = @length) && (user = msg.from)
         chat_id = msg.chat.id
         msg_id = msg.message_id
+        user_id = user.id
 
         delete_msg = ->{
-          spawn bot.delete_message chat_id, msg_id
+          unless has_permission?(chat_id, user_id)
+            spawn bot.delete_message chat_id, msg_id
 
-          deleted # 标记删除
+            deleted # 标记删除
+          end
         }
 
-        deleted = false
+        is_delete = false
+
         if (total = length.total) && (text.size >= total)
-          deleted = true
-          spawn delete_msg.call
+          delete_msg.call
+
+          is_delete = true
         end
-        if !deleted && (rows = length.rows) && (text.split("\n").size >= rows)
+        if !is_delete && (rows = length.rows) && (text.split("\n").size >= rows)
           delete_msg.call
         end
       end
