@@ -44,7 +44,7 @@ module Policr::Model
     end
 
     def self.load_list(chat_id : Int64)
-      where { _chat_id == chat_id }.offset(0).limit(5).to_a
+      where { (_chat_id == chat_id) & (_is_enabled == true) }.offset(0).limit(5).to_a
     end
 
     def self.counts(chat_id : Int64) : Int

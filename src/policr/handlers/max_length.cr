@@ -5,6 +5,7 @@ module Policr
     match do
       all_pass? [
         !self_left?,
+        !deleted?,
         examine_enabled?,
         from_group_chat?(msg),
         (@length = Model::MaxLength.find(msg.chat.id)), # 启用了相关设置？
@@ -17,7 +18,9 @@ module Policr
         msg_id = msg.message_id
 
         delete_msg = ->{
-          bot.delete_message chat_id, msg_id
+          spawn bot.delete_message chat_id, msg_id
+
+          deleted # 标记删除
         }
 
         deleted = false

@@ -5,6 +5,7 @@ module Policr
 
       all_pass? [
         !self_left?,
+        !deleted?,
         examine_enabled?,
         from_group_chat?(msg),
         (document = msg.document),
@@ -19,7 +20,9 @@ module Policr
       chat_id = msg.chat.id
       msg_id = msg.message_id
 
-      bot.delete_message(chat_id, msg_id)
+      spawn bot.delete_message(chat_id, msg_id)
+
+      deleted # 标记删除
     end
 
     def format_inclues?(chat_id, file_name)

@@ -4,6 +4,7 @@ module Policr
 
     match do
       all_pass? [
+        !deleted?,
         (user = msg.from),
         (status = Cache.verification?(msg.chat.id, user.id)),
         status == VerificationStatus::Init,
@@ -13,7 +14,9 @@ module Policr
     end
 
     handle do
-      bot.delete_message(msg.chat.id, msg.message_id)
+      spawn bot.delete_message(msg.chat.id, msg.message_id)
+
+      deleted # 标记删除
     end
   end
 end
