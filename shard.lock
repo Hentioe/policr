@@ -76,6 +76,10 @@ shards:
     github: maiha/rocksdb.cr
     version: 0.5.1
 
+  rule_engine:
+    github: policr-project/rule_engine
+    commit: 8012d4617178dff4474f3c1ee9313b64e1e52302
+
   sam:
     github: imdrasil/sam.cr
     version: 0.3.1

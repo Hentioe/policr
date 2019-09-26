@@ -21,24 +21,30 @@ module Policr::Model
       where { (_chat_id == chat_id) & (_is_enabled == true) }.update { {:is_enabled => false} }
     end
 
-    def self.update_expression(chat_id, expression)
-      bc = where { (_chat_id == chat_id) }.first
-      bc ||= create({
-        chat_id:    chat_id.to_i64,
-        version:    "v1",
-        alias_s:    "未命名",
+    def self.update!(id : Int32, expression : String, alias_s : String)
+      if bc = find id
+        bc.update_columns({
+          :expression => expression,
+          :alias_s    => alias_s,
+        })
+        bc
+      else
+        raise Exception.new "Not Found"
+      end
+    end
+
+    def self.add!(chat_id : Int64, expression : String, alias_s : String)
+      create!({
+        chat_id:    chat_id,
+        version:    "v2",
+        alias_s:    alias_s,
         expression: expression,
         is_enabled: false,
       })
-
-      bc.update_column(:expression, expression)
     end
 
     def self.load_list(chat_id : Int64)
-      where { _chat_id == chat_id }
-        .offset(0)
-        .limit(5)
-        .to_a
+      where { _chat_id == chat_id }.offset(0).limit(5).to_a
     end
   end
 end

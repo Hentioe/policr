@@ -124,7 +124,7 @@ module Policr
         HalalMessageHandler,
         PrivateForwardHandler,
         ReportDetailHandler,
-        BlockedContentHandler,
+        AddRuleHandler,
         MaxLengthHandler,
         MaxLengthSettingHandler,
         CleanModeTimeSettingHandler,
@@ -140,6 +140,7 @@ module Policr
         UpdateChatPhotoHandler,
         PinnedMessageHandler,
         UpdateRuleHandler,
+        BlockContentHandler,
         # 置底分割
         PrivateChatHandler,
       ]

@@ -2,6 +2,12 @@ module Policr
   commander Start do
     def handle(msg, from_nav)
       chat_id = msg.chat.id
+      user_id =
+        if user = msg.from
+          user.id
+        else
+          0
+        end
 
       payload =
         if (text = msg.text) && (args = text.split(" ")) && args.size > 1
@@ -9,14 +15,14 @@ module Policr
         end
       if payload
         spawn bot.delete_message chat_id, msg.message_id
-        forward_to payload, chat_id
+        forward_to payload, chat_id, user_id
       else
         text = t "start"
         bot.send_message chat_id, text
       end
     end
 
-    def forward_to(payload, chat_id)
+    def forward_to(payload, chat_id, user_id)
       if md = /^([^_]+)_(.+)$/.match payload
         key = md[1]
         data = md[2]
@@ -33,10 +39,17 @@ module Policr
         when "rule"
           id = data.to_i
           if bc = Model::BlockContent.find(id)
-            text = create_rule_text bc
-            markup = create_rule_markup bc
-            if sended_msg = bot.send_message chat_id, text, reply_markup: markup
-              Cache.carving_rule_msg chat_id, sended_msg.message_id, id
+            group_id = bc.chat_id
+            role = Model::Toggle.trusted_admin?(group_id) ? :admin : :creator
+
+            if bot.has_permission?(bc.chat_id, user_id, role)
+              text = create_rule_text bc
+              markup = create_rule_markup bc
+              if sended_msg = bot.send_message chat_id, text, reply_markup: markup
+                Cache.carving_rule_msg chat_id, sended_msg.message_id, id
+              end
+            else
+              bot.send_message chat_id, "您没有权限查看此内容。"
             end
           else
             bot.send_message chat_id, "Not Found"

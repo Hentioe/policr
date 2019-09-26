@@ -18,15 +18,13 @@ module Policr
     handle do
       if (text = msg.text) &&
          (reply_msg_id = @reply_msg_id) &&
-         (id = @id) &&
-         (rule = Model::BlockContent.find(id))
+         (id = @id)
         chat_id = msg.chat.id
 
         begin
-          rule.update_columns({
-            :alias_s    => "暂定别名",
-            :expression => text,
-          })
+          parsed = BlockContentParser.parse! text
+
+          rule = Model::BlockContent.update!(id, parsed.rule.not_nil!, parsed.alias_s.not_nil!)
 
           updated_text, updated_markup = updated_preview_settings rule
           spawn { bot.edit_message_text(

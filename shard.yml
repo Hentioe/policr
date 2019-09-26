@@ -21,6 +21,8 @@ dependencies:
   telegram_markd:
     github: Hentioe/telegram_markd
     branch: compatible/telegram
+  rule_engine:
+    github: policr-project/rule_engine
   dotenv:
     github: gdotdesign/cr-dotenv
   admiral:
