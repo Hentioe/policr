@@ -25,9 +25,9 @@ module Policr
             text: back_text(_group_id, _group_name),
             reply_markup: markup(_group_id)
           )
-        when "content_blocked"
-          if Model::BlockContent.enabled?(_group_id) # 禁用全部内容屏蔽蔽规则
-            Model::BlockContent.disable_all(_group_id)
+        when "blocked_content"
+          if Model::BlockRule.enabled?(_group_id) # 禁用全部内容屏蔽蔽规则
+            Model::BlockRule.disable_all(_group_id)
           else
             bot.answer_callback_query(query.id, text: t("strict_mode.missing_settings"))
             return
@@ -68,7 +68,7 @@ module Policr
             text: create_max_length_text(_group_id, _group_name),
             reply_markup: create_max_length_markup(_group_id)
           )
-        when "content_blocked_setting"
+        when "blocked_content_setting"
           # 标记设置消息
           Cache.carving_blocked_content_msg _chat_id, msg.message_id
 
@@ -77,8 +77,8 @@ module Policr
           bot.edit_message_text(
             _chat_id,
             message_id: msg.message_id,
-            text: create_content_blocked_text(_group_id, _group_name),
-            reply_markup: create_content_blocked_markup(_group_id)
+            text: create_blocked_content_text(_group_id, _group_name),
+            reply_markup: create_blocked_content_markup(_group_id)
           )
         when "format_limit_setting"
           Cache.carving_format_limit_msg _chat_id, msg.message_id
@@ -117,15 +117,15 @@ module Policr
     BACK_SYMBOL = "«"
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-    def_text create_content_blocked_text do
+    def_text create_blocked_content_text do
       handler = "\n\n"
       rules_content =
-        if (list = Model::BlockContent.load_list _group_id) && list.size > 0
+        if (list = Model::BlockRule.load_list _group_id) && list.size > 0
           sb = String.build do |str|
             list.each_with_index do |bc, i|
               str << "#{i + 1}. "
-              str << t("content_blocked.enabled_flag") if bc.is_enabled
-              str << t("content_blocked.disabled_flag") unless bc.is_enabled
+              str << t("blocked_content.enabled_flag") if bc.is_enabled
+              str << t("blocked_content.disabled_flag") unless bc.is_enabled
               str << "[#{bc.alias_s}](https://t.me/#{bot.username}?start=rule_#{bc.id})"
               str << "\n"
             end
@@ -133,13 +133,13 @@ module Policr
         else
           t "none"
         end
-      t "content_blocked.desc", {rules_content: rules_content, time: Time.now.to_s(DATE_FORMAT)}
+      t "blocked_content.desc", {rules_content: rules_content, time: Time.now.to_s(DATE_FORMAT)}
     end
 
-    def create_content_blocked_markup(group_id)
+    def create_blocked_content_markup(group_id)
       markup = Markup.new
 
-      markup << [Button.new(text: t("refresh"), callback_data: "StrictMode:content_blocked_setting")]
+      markup << [Button.new(text: t("refresh"), callback_data: "StrictMode:blocked_content_setting")]
       markup << [Button.new(text: t("back"), callback_data: "StrictMode:back")]
 
       markup

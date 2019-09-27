@@ -1,5 +1,5 @@
 module Policr::Model
-  class BlockContent < Jennifer::Model::Base
+  class BlockRule < Jennifer::Model::Base
     with_timestamps
 
     mapping(
@@ -43,8 +43,12 @@ module Policr::Model
       })
     end
 
-    def self.load_list(chat_id : Int64)
+    def self.load_enabled_list(chat_id : Int64)
       where { (_chat_id == chat_id) & (_is_enabled == true) }.offset(0).limit(5).to_a
+    end
+
+    def self.load_list(chat_id : Int64)
+      where { _chat_id == chat_id }.offset(0).limit(5).to_a
     end
 
     def self.counts(chat_id : Int64) : Int

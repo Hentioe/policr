@@ -38,13 +38,13 @@ module Policr
           end
         when "rule"
           id = data.to_i
-          if bc = Model::BlockContent.find(id)
+          if bc = Model::BlockRule.find(id)
             group_id = bc.chat_id
             role = Model::Toggle.trusted_admin?(group_id) ? :admin : :creator
 
             if bot.has_permission?(bc.chat_id, user_id, role)
-              text = create_rule_text bc
-              markup = create_rule_markup bc
+              text = create_block_rule_text bc
+              markup = create_block_rule_markup bc
               if sended_msg = bot.send_message chat_id, text, reply_markup: markup
                 Cache.carving_rule_msg chat_id, sended_msg.message_id, id
               end
@@ -111,15 +111,15 @@ module Policr
       markup
     end
 
-    def create_rule_text(bc : Model::BlockContent)
+    def create_block_rule_text(bc : Model::BlockRule)
       rule_template = "-a #{bc.alias_s}\n#{bc.expression}"
-      t "content_blocked.rule.manage", {rule_name: bc.alias_s, rule_template: rule_template}
+      t "blocked_content.rule.manage", {rule_name: bc.alias_s, rule_template: rule_template}
     end
 
-    def create_rule_markup(bc : Model::BlockContent)
+    def create_block_rule_markup(bc : Model::BlockRule)
       make_btn = ->(action : String) {
-        callback_data = "Rule:#{action}:#{bc.id}"
-        Button.new(text: t("content_blocked.rule.#{action}"), callback_data: callback_data)
+        callback_data = "BlockRule:#{action}:#{bc.id}"
+        Button.new(text: t("blocked_content.rule.#{action}"), callback_data: callback_data)
       }
       markup = Markup.new
       buttons = Array(Button).new

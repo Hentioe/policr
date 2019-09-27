@@ -25,13 +25,13 @@ module Policr
         case type
         when "max_length"
           Model::MaxLength.find(_group_id) ? SELECTED : UNSELECTED
-        when "content_blocked"
-          Model::BlockContent.enabled?(_group_id) ? SELECTED : UNSELECTED
+        when "blocked_content"
+          Model::BlockRule.enabled?(_group_id) ? SELECTED : UNSELECTED
         when "format_limit"
           Model::FormatLimit.find(_group_id) ? SELECTED : UNSELECTED
         end
       }
-      def_button_list ["max_length", "content_blocked", "format_limit"]
+      def_button_list ["max_length", "blocked_content", "format_limit"]
     end
 
     macro def_button_list(item_list)

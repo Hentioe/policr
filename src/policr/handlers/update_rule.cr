@@ -22,12 +22,12 @@ module Policr
         chat_id = msg.chat.id
 
         if text.size > MAX_RULE_LENGTH
-          bot.send_message chat_id, t("content_blocked.too_long", {size: MAX_RULE_LENGTH})
+          bot.send_message chat_id, t("blocked_content.too_long", {size: MAX_RULE_LENGTH})
         else
           begin
             parsed = BlockContentParser.parse! text
 
-            rule = Model::BlockContent.update!(id, parsed.rule.not_nil!, parsed.alias_s.not_nil!)
+            rule = Model::BlockRule.update!(id, parsed.rule.not_nil!, parsed.alias_s.not_nil!)
 
             updated_text, updated_markup = updated_preview_settings rule
             spawn { bot.edit_message_text(
@@ -48,8 +48,8 @@ module Policr
     def updated_preview_settings(rule)
       midcall StartCommander do
         {
-          _commander.create_rule_text(rule),
-          _commander.create_rule_markup(rule),
+          _commander.create_block_rule_text(rule),
+          _commander.create_block_rule_markup(rule),
         }
       end || {nil, nil}
     end

@@ -377,8 +377,8 @@ strict_mode:
     注意：通常来讲，如非必要，不建议配置此指令。
   max_length: "禁止霸屏消息"
   max_length_setting: "定制长度"
-  content_blocked: "启用内容屏蔽"
-  content_blocked_setting: "管理规则"
+  blocked_content: "启用内容屏蔽"
+  blocked_content_setting: "管理规则"
   format_limit: "删除可疑文件"
   format_limit_setting: "指定格式"
   missing_settings: "请先使用右边的按钮进行设置"

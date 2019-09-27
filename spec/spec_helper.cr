@@ -25,4 +25,5 @@ def_models_alias [
   From,
   Welcome,
   HalalWhiteList,
+  BlockRule,
 ]

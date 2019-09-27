@@ -1,5 +1,5 @@
 module Policr
-  callbacker Rule do
+  callbacker BlockRule do
     def handle(query, msg, data)
       chat_id = msg.chat.id
       msg_id = msg.message_id
@@ -7,7 +7,7 @@ module Policr
       action, id = data
       id = id.to_i
 
-      rule = Model::BlockContent.find id
+      rule = Model::BlockRule.find id
 
       if rule == nil
         bot.answer_callback_query(query.id, text: "没有找到这条规则～", show_alert: true)
@@ -24,7 +24,7 @@ module Policr
 
       case action
       when "delete"
-        Model::BlockContent.delete id
+        Model::BlockRule.delete id
 
         async_response
 
@@ -68,8 +68,8 @@ module Policr
     def updated_preview_settings(block_content)
       midcall StartCommander do
         {
-          _commander.create_rule_text(block_content),
-          _commander.create_rule_markup(block_content),
+          _commander.create_block_rule_text(block_content),
+          _commander.create_block_rule_markup(block_content),
         }
       end || {nil, nil}
     end

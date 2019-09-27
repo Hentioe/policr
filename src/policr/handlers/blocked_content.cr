@@ -26,8 +26,8 @@ module Policr
       deleted # 标记删除
     end
 
-    def hit?(chat_id, text) : Model::BlockContent | Nil
-      Model::BlockContent.load_list(chat_id).each do |rule|
+    def hit?(chat_id, text) : Model::BlockRule | Nil
+      Model::BlockRule.load_enabled_list(chat_id).each do |rule|
         rule_e = RuleEngine.parse! rule.expression
         return rule if rule_e.match? text
       end

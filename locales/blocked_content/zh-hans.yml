@@ -1,4 +1,4 @@
-content_blocked:
+blocked_content:
   back_hint: "返回严格模式设定"
   desc: |
     **管理屏蔽规则**
