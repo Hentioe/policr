@@ -9,6 +9,8 @@ module Policr::Model
       alias_s: String,
       expression: String,
       is_enabled: Bool,
+      in_message: Bool,
+      in_nickname: Bool,
       created_at: Time?,
       updated_at: Time?
     )
@@ -35,19 +37,63 @@ module Policr::Model
 
     def self.add!(chat_id : Int64, expression : String, alias_s : String)
       create!({
-        chat_id:    chat_id,
-        version:    "v2",
-        alias_s:    alias_s,
-        expression: expression,
-        is_enabled: false,
+        chat_id:     chat_id,
+        version:     "v2",
+        alias_s:     alias_s,
+        expression:  expression,
+        is_enabled:  false,
+        in_message:  true,
+        in_nickname: false,
       })
     end
 
-    def self.load_enabled_list(chat_id : Int64)
-      where { (_chat_id == chat_id) & (_is_enabled == true) }.offset(0).limit(5).to_a
+    macro def_apply(name, column)
+      def self.apply_{{name.id}}!(id : Int32)
+        if br = find id
+          br.update_column {{column}}, true
+        else
+          raise Exception.new "Not Found"
+        end
+      end
+
+      def self.disapply_{{name.id}}(id : Int32)
+        if br = find id
+          br.update_column {{column}}, false
+        end
+      end
     end
 
-    def self.load_list(chat_id : Int64)
+    def_apply "message", :in_message
+    def_apply "nickname", :in_nickname
+
+    macro def_apply_list(name, column)
+      def self.apply_{{name.id}}_list(chat_id : Int64)
+        where { 
+          (_chat_id == chat_id) & 
+          (_is_enabled == true) &
+          (_{{column.id}} == true)
+        }.offset(0).limit(5).to_a
+      end
+    end
+
+    def_apply_list "message", :in_message
+    def_apply_list "nickname", :in_nickname
+
+    def self.enable!(id : Int32)
+      if br = find id
+        br.update_column :is_enabled, true
+      else
+        raise Exception.new "Not Found"
+      end
+    end
+
+    def self.disable(id : Int32)
+      if br = find id
+        br.update_column :is_enabled, false
+      end
+    end
+
+    def self.all_list(chat_id : Int64)
       where { _chat_id == chat_id }.offset(0).limit(5).to_a
     end
 

@@ -1,17 +1,24 @@
 require "../spec_helper"
 
 describe Policr::Model::BlockRule do
-  it "enabled?/disable_all/update!/add!/load_list/load_enabled_list" do
+  it "enabled?/disable/enable!/update!/add!/list/apply/disapply" do
     b1 = BlockRule.add! GROUP_ID, "[规则1]", "别名1"
     b2 = BlockRule.add! GROUP_ID, "[规则2]", "别名2"
 
     BlockRule.enabled?(GROUP_ID).should be_falsey
 
-    BlockRule.load_list(GROUP_ID).size.should eq(2)
-    BlockRule.load_enabled_list(GROUP_ID).size.should eq(0)
+    BlockRule.all_list(GROUP_ID).size.should eq(2)
+    BlockRule.apply_message_list(GROUP_ID).size.should eq(0)
 
-    b1.update_column :is_enabled, true
-    b1.update_column :is_enabled, true
+    BlockRule.enable!(b1.id.not_nil!)
+    BlockRule.enable!(b2.id.not_nil!)
+    BlockRule.apply_nickname!(b1.id.not_nil!)
+
+    BlockRule.apply_message_list(GROUP_ID).size.should eq(2)
+    BlockRule.apply_nickname_list(GROUP_ID).size.should eq(1)
+
+    BlockRule.disapply_message(b1.id.not_nil!)
+    BlockRule.apply_message_list(GROUP_ID).size.should eq(1)
 
     BlockRule.enabled?(GROUP_ID).should be_truthy
 
