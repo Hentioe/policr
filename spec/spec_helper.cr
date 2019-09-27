@@ -26,4 +26,5 @@ def_models_alias [
   Welcome,
   HalalWhiteList,
   BlockRule,
+  GlobalRuleFlag,
 ]
