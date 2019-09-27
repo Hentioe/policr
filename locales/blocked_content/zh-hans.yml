@@ -55,6 +55,19 @@ blocked_content:
     enable: "启用"
     disable: "禁用"
     delete: "删除"
+    not_found: "没有找到这条规则～"
   enabled_flag: "【已启用】"
   disabled_flag: "【已禁用】"
   too_long: "规则过长，请不要超过 %{size} 个字符"
+  global_rules:
+    desc: |
+      **管理全局规则**
+
+      当前规则列表：
+
+      %{rules_content}
+
+      通过回复本消息添加全局规则，点击规则链接操作单个规则。**全局规则风险很高，请谨慎操作**。
+
+      刷新于：%{time}
+    refresh: "刷新"

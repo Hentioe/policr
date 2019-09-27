@@ -118,7 +118,6 @@ module Policr
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     def_text create_blocked_content_text do
-      handler = "\n\n"
       rules_content =
         if (list = Model::BlockRule.all_list _group_id) && list.size > 0
           sb = String.build do |str|

@@ -6,21 +6,29 @@ module Policr
       chat_id = msg.chat.id
       msg_id = msg.message_id
 
+      user_id = query.from.id
+
       action, id = data
       id = id.to_i
 
       rule = BlockRule.find id
 
       if rule == nil
-        bot.answer_callback_query(query.id, text: "没有找到这条规则～", show_alert: true)
+        bot.answer_callback_query(query.id, text: t("blocked_content.rule.not_found"), show_alert: true)
         return
       end
 
       rule = rule.not_nil!
 
-      role = Model::Toggle.trusted_admin?(rule.chat_id) ? :admin : :creator
-      unless bot.has_permission?(rule.chat_id, query.from.id, role)
-        bot.answer_callback_query(query.id, text: "您没有权限操作此内容～", show_alert: true)
+      has_permission =
+        if rule.chat_id == bot.self_id # 全局规则
+          user_id == bot.owner_id.to_i # 是否为管理员操作
+        else                           # 私有规则
+          role = Model::Toggle.trusted_admin?(rule.chat_id) ? :admin : :creator
+          bot.has_permission?(rule.chat_id, query.from.id, role)
+        end
+      unless has_permission
+        bot.answer_callback_query(query.id, text: "您没有权限操作此内容～")
         return
       end
 

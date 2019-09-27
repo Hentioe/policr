@@ -38,13 +38,13 @@ module Policr
           end
         when "rule"
           id = data.to_i
-          if bc = Model::BlockRule.find(id)
-            group_id = bc.chat_id
-            role = Model::Toggle.trusted_admin?(group_id) ? :admin : :creator
+          if br = Model::BlockRule.find(id)
+            role = Model::Toggle.trusted_admin?(br.chat_id) ? :admin : :creator
 
-            if bot.has_permission?(bc.chat_id, user_id, role)
-              text = create_block_rule_text bc
-              markup = create_block_rule_markup bc
+            if (br.chat_id == bot.self_id && user_id == bot.owner_id.to_i) || # 拥有者操作全局规则
+               bot.has_permission?(br.chat_id, user_id, role)                 # 具有权限的管理员操作私有规则
+              text = create_block_rule_text br
+              markup = create_block_rule_markup br
               if sended_msg = bot.send_message chat_id, text, reply_markup: markup
                 Cache.carving_rule_msg chat_id, sended_msg.message_id, id
               end

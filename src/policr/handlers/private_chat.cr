@@ -76,6 +76,14 @@ module Policr
               bot.send_message bot.owner_id, "Not Found"
               true
             end
+          when "!global/rules/manage", "grm" # 管理全局规则
+            if sended_msg = bot.send_message(
+                 bot.owner_id,
+                 text: create_global_rules_text,
+                 reply_markup: create_global_rules_markup)
+              Cache.carving_global_rules_msg bot.owner_id, sended_msg.message_id
+              true
+            end
           else
             false
           end
@@ -83,6 +91,37 @@ module Policr
           bot.send_message bot.owner_id, ex.message || ex.to_s
         end
       end
+    end
+
+    def create_global_rules_text
+      rules_content =
+        if (list = Model::BlockRule.all_list bot.self_id.to_i64) && list.size > 0
+          sb = String.build do |str|
+            list.each_with_index do |br, i|
+              str << "#{i + 1}. "
+              str << t("blocked_content.enabled_flag") if br.enabled
+              str << t("blocked_content.disabled_flag") unless br.enabled
+              str << "[#{br.alias_s}](https://t.me/#{bot.username}?start=rule_#{br.id})"
+              str << "\n" if i < list.size - 1
+            end
+          end
+        else
+          t "none"
+        end
+      t "blocked_content.global_rules.desc", {rules_content: rules_content, time: Time.now.to_s(DATE_FORMAT)}
+    end
+
+    def create_global_rules_markup
+      markup = Markup.new
+      make_btn = ->(action : String) {
+        Button.new(
+          text: t("blocked_content.global_rules.#{action}"),
+          callback_data: "GlobalBlockRule:#{action}"
+        )
+      }
+      markup << [make_btn.call("refresh")]
+
+      markup
     end
 
     def create_voting_apply_quiz_manage_text

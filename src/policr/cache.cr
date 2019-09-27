@@ -73,6 +73,9 @@ module Policr::Cache
   # 标记申请投票测验管理
   def_carving "voting_apply_quiz"
 
+  # 标记全局规则管理消息
+  def_carving "global_rules"
+
   # 标记举报详情消息
   def_carving_with_data "report_detail", TelegramBot::User
 

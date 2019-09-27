@@ -141,6 +141,7 @@ module Policr
         PinnedMessageHandler,
         UpdateRuleHandler,
         BlockedContentHandler,
+        AddGlobalRuleHandler,
         # 置底分割
         PrivateChatHandler,
       ]
@@ -176,6 +177,7 @@ module Policr
         NavigationCallbacker,
         VotingApplyQuizCallbacker,
         BlockRuleCallbacker,
+        GlobalBlockRuleCallbacker,
       ]
 
       # 注册指令模块
@@ -247,7 +249,7 @@ module Policr
       has_permission?(chat_id, user_id, :admin, dirty)
     end
 
-    def has_permission?(chat_id, user_id, role, dirty = true)
+    def has_permission?(chat_id, user_id, role, dirty = true) : Bool
       return false if chat_id > 0          # 私聊无权限
       if admins = Cache.get_admins chat_id # 从缓存中获取管理员列表
         tmp_filter_users = admins.select { |m| m.user.id == user_id }
