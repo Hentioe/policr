@@ -120,12 +120,12 @@ module Policr
     def_text create_blocked_content_text do
       handler = "\n\n"
       rules_content =
-        if (list = Model::BlockRule.load_list _group_id) && list.size > 0
+        if (list = Model::BlockRule.all_list _group_id) && list.size > 0
           sb = String.build do |str|
             list.each_with_index do |bc, i|
               str << "#{i + 1}. "
-              str << t("blocked_content.enabled_flag") if bc.is_enabled
-              str << t("blocked_content.disabled_flag") unless bc.is_enabled
+              str << t("blocked_content.enabled_flag") if bc.enabled
+              str << t("blocked_content.disabled_flag") unless bc.enabled
               str << "[#{bc.alias_s}](https://t.me/#{bot.username}?start=rule_#{bc.id})"
               str << "\n"
             end

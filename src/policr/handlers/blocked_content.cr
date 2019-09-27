@@ -27,9 +27,9 @@ module Policr
     end
 
     def hit?(chat_id, text) : Model::BlockRule | Nil
-      Model::BlockRule.load_enabled_list(chat_id).each do |rule|
-        rule_e = RuleEngine.compile! rule.expression
-        return rule if rule_e.match? text
+      Model::BlockRule.apply_message_list(chat_id).each do |rule|
+        ru = RuleEngine.compile! rule.expression
+        return rule if ru.match? text
       end
     end
   end

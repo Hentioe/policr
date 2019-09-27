@@ -1,5 +1,7 @@
 module Policr
   callbacker BlockRule do
+    alias BlockRule = Model::BlockRule
+
     def handle(query, msg, data)
       chat_id = msg.chat.id
       msg_id = msg.message_id
@@ -7,7 +9,7 @@ module Policr
       action, id = data
       id = id.to_i
 
-      rule = Model::BlockRule.find id
+      rule = BlockRule.find id
 
       if rule == nil
         bot.answer_callback_query(query.id, text: "没有找到这条规则～", show_alert: true)
@@ -24,7 +26,7 @@ module Policr
 
       case action
       when "delete"
-        Model::BlockRule.delete id
+        BlockRule.delete id
 
         async_response
 
@@ -37,8 +39,8 @@ module Policr
           bot.answer_callback_query(query.id, text: "规则不合法，启用失败～", show_alert: true)
           return
         end
-        rule.update_column :is_enabled, true
-        updated_text, updated_markup = updated_preview_settings rule
+        BlockRule.enable! rule.id
+        updated_text, updated_markup = updated_preview_settings rule.reload
 
         async_response
 
@@ -49,8 +51,8 @@ module Policr
           reply_markup: updated_markup
         )
       when "disable"
-        rule.update_column :is_enabled, false
-        updated_text, updated_markup = updated_preview_settings rule
+        BlockRule.disable rule.id
+        updated_text, updated_markup = updated_preview_settings rule.reload
 
         async_response
 
