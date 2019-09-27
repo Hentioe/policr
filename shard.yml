@@ -16,13 +16,15 @@ license: MIT
 
 dependencies:
   telegram_bot:
-    github: Hentioe/telegram_bot
+    github: policr-community/telegram_bot
     branch: bugfix
   telegram_markd:
-    github: Hentioe/telegram_markd
+    github: policr-community/telegram_markd
     branch: compatible/telegram
+  gomoku:
+    github: policr-community/gomoku.cr
   rule_engine:
-    github: policr-project/rule_engine
+    github: policr-community/rule_engine
   dotenv:
     github: gdotdesign/cr-dotenv
   admiral:
@@ -51,8 +53,6 @@ dependencies:
     version: ~> 0.13.0
   jennifer_sqlite3_adapter:
     github: imdrasil/jennifer_sqlite3_adapter
-  gomoku:
-    github: Hentioe/gomoku.cr
   dispatch:
     github: bmulvihill/dispatch
     version: ~> 0.1.0
