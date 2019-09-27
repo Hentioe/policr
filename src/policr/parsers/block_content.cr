@@ -21,7 +21,7 @@ module Policr
     def check_validity!
       missing_field! "alias" unless @parsed.alias_s
       missing_field! "rule" unless @parsed.rule
-      RuleEngine.parse! @parsed.rule.not_nil!
+      RuleEngine.compile! @parsed.rule.not_nil!
     end
 
     RE_STARTS_FLAG = /^((-|\+)[a-z]?)(.+)/

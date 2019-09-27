@@ -29,7 +29,7 @@ shards:
     version: 0.1.2
 
   gomoku:
-    github: Hentioe/gomoku.cr
+    github: policr-community/gomoku.cr
     commit: 1b6bde9146f421b97b1b84a1aa48121f3ef87017
 
   i18n:
@@ -77,8 +77,8 @@ shards:
     version: 0.5.1
 
   rule_engine:
-    github: policr-project/rule_engine
-    commit: 8012d4617178dff4474f3c1ee9313b64e1e52302
+    github: policr-community/rule_engine
+    commit: 9ee675f1f1c3eb466a5b483136cb427fecade22b
 
   sam:
     github: imdrasil/sam.cr
@@ -93,10 +93,10 @@ shards:
     version: 0.13.0
 
   telegram_bot:
-    github: Hentioe/telegram_bot
+    github: policr-community/telegram_bot
     commit: 2aa8feba7b94d822a5b4af39b2228c068bca69a3
 
   telegram_markd:
-    github: Hentioe/telegram_markd
+    github: policr-community/telegram_markd
     commit: ed5f9c30de853f81cba45dd4a5c331d083721867
 
