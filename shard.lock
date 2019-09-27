@@ -78,7 +78,7 @@ shards:
 
   rule_engine:
     github: policr-community/rule_engine
-    commit: cf9171e3be82fbbafb811183709f4abccdfb6de3
+    commit: bb7df1bd1db56657b2c97a56d434b79356476eed
 
   sam:
     github: imdrasil/sam.cr
