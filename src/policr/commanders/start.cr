@@ -123,8 +123,8 @@ module Policr
       }
       markup = Markup.new
       buttons = Array(Button).new
-      buttons << make_btn.call("disable") if bc.is_enabled
-      buttons << make_btn.call("enable") unless bc.is_enabled
+      buttons << make_btn.call("disable") if bc.enabled
+      buttons << make_btn.call("enable") unless bc.enabled
       buttons << make_btn.call("delete")
       markup << buttons
 

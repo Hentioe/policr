@@ -10,21 +10,21 @@ describe Policr::Model::BlockRule do
     BlockRule.all_list(GROUP_ID).size.should eq(2)
     BlockRule.apply_message_list(GROUP_ID).size.should eq(0)
 
-    BlockRule.enable!(b1.id.not_nil!)
-    BlockRule.enable!(b2.id.not_nil!)
-    BlockRule.apply_nickname!(b1.id.not_nil!)
+    BlockRule.enable!(b1.id)
+    BlockRule.enable!(b2.id)
+    BlockRule.apply_nickname!(b1.id)
 
     BlockRule.apply_message_list(GROUP_ID).size.should eq(2)
     BlockRule.apply_nickname_list(GROUP_ID).size.should eq(1)
 
-    BlockRule.disapply_message(b1.id.not_nil!)
+    BlockRule.disapply_message(b1.id)
     BlockRule.apply_message_list(GROUP_ID).size.should eq(1)
 
     BlockRule.enabled?(GROUP_ID).should be_truthy
 
     BlockRule.disable_all(GROUP_ID).should be_truthy
 
-    BlockRule.update! b1.id.not_nil!, "[规则1.1]", "别名1"
+    BlockRule.update! b1.id, "[规则1.1]", "别名1"
 
     b1.reload
 

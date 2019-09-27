@@ -124,8 +124,8 @@ module Policr
           sb = String.build do |str|
             list.each_with_index do |bc, i|
               str << "#{i + 1}. "
-              str << t("blocked_content.enabled_flag") if bc.is_enabled
-              str << t("blocked_content.disabled_flag") unless bc.is_enabled
+              str << t("blocked_content.enabled_flag") if bc.enabled
+              str << t("blocked_content.disabled_flag") unless bc.enabled
               str << "[#{bc.alias_s}](https://t.me/#{bot.username}?start=rule_#{bc.id})"
               str << "\n"
             end
