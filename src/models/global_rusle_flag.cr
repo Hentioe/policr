@@ -56,6 +56,10 @@ module Policr::Model
       end
     end
 
+    def self.reported?(chat_id : Int64)
+      where { (_chat_id == chat_id) & (_reported == true) }.first
+    end
+
     def self.switch_action!(chat_id : Int64, action : HitAction)
       if flag = enabled? chat_id
         flag.update_column :action, action.value

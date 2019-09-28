@@ -178,6 +178,7 @@ module Policr
         VotingApplyQuizCallbacker,
         BlockRuleCallbacker,
         GlobalBlockRuleCallbacker,
+        GlobalRuleFlagsCallbacker,
       ]
 
       # 注册指令模块
@@ -199,6 +200,7 @@ module Policr
         AppealCommander,
         NavigationCommander,
         VotingApplyCommander,
+        GlobalRuleFlagsCommander,
       ]
 
       commanders.each do |_, command|
