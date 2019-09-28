@@ -25,9 +25,23 @@ module Policr
       chat_id = msg.chat.id
       msg_id = msg.message_id
 
-      spawn bot.delete_message(chat_id, msg_id)
-
       if (result = @result) && (user = msg.from) && (user_id = user.id)
+        # 先处理上报
+        if result.is_a?(Model::GlobalRuleFlag) && result.reported
+          midcall ReportCallbacker do
+            _callbacker.make_report(
+              chat_id: chat_id,
+              msg_id: 0, # 无需回复
+              target_msg_id: msg_id,
+              target_user_id: user_id,
+              from_user_id: bot.self_id,
+              reason_value: ReportReason::HitGlobalRule.value
+            )
+          end
+        end
+
+        spawn bot.delete_message(chat_id, msg_id)
+
         make_text = ->(action : String) {
           header = t("global_rule_flags.hit_hint.header", {
             mention: FromUser.new(user).mention(user_id.to_s),
@@ -56,7 +70,7 @@ module Policr
         markup = Markup.new
 
         case result
-        when Model::GlobalRuleFlag
+        when Model::GlobalRuleFlag # 命中全局规则
           action = HitAction.new(result.action)
           markup << make_operate.call(action)
 
@@ -74,7 +88,8 @@ module Policr
               bot.send_message chat_id, make_text.call("ban"), reply_markup: markup
             }
           end
-        else
+        else # 命中私有规则
+          # 留空
         end
         deleted # 标记删除
       end

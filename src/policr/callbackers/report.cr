@@ -55,14 +55,16 @@ module Policr
           if query
             bot.answer_callback_query(query.id, text: err_msg)
           else
-            bot.send_message chat_id, err_msg, reply_to_message_id: msg_id
+            bot.send_message chat_id, err_msg, reply_to_message_id: msg_id if msg_id > 0
           end
           return
         end
 
       # 并获得举报人角色
       role =
-        if bot.is_admin?(chat_id, from_user_id)
+        if from_user_id == bot.self_id
+          UserRole::System
+        elsif bot.is_admin?(chat_id, from_user_id)
           if bot.has_permission?(chat_id, from_user_id, :creator, dirty: false)
             UserRole::Creator
           elsif Model::Toggle.trusted_admin?(chat_id) # 受信管理员
@@ -89,7 +91,7 @@ module Policr
         else
           0
         end
-      if need_forward && snapshot_message_id == 0
+      if need_forward && snapshot_message_id == 0 && query
         bot.answer_callback_query(query.id, text: t("report.no_forward_success"))
         return
       end
@@ -122,7 +124,12 @@ module Policr
         end
       # 生成投票
       if r
-        return unless voting_msg = create_report_voting(chat_id: chat_id, report: r, answer_query_id: query.id)
+        answer_query_id =
+          if query
+            query.id
+          end
+        voting_msg = create_report_voting(chat_id: chat_id, report: r, answer_query_id: answer_query_id)
+        return unless voting_msg
       end
 
       # 响应举报生成结果
@@ -139,10 +146,8 @@ module Policr
           bot.edit_message_text(
             chat_id: chat_id,
             message_id: msg_id,
-            text: text,
-            disable_web_page_preview: true,
-            parse_mode: "markdown"
-          )
+            text: text
+          ) unless bot.self_id == from_user_id
         rescue e : TelegramBot::APIException
           # 回滚已入库的举报
           Model::Report.delete(r.id)
@@ -267,6 +272,8 @@ module Policr
         t("report.role.admin")
       when UserRole::Member
         t("report.role.member")
+      when UserRole::System
+        t("report.role.system")
       end
     end
 
@@ -290,6 +297,8 @@ module Policr
         t("report.reason.promo_file")
       when Reason::Bocai
         t "report.reason.bocai"
+      when Reason::HitGlobalRule
+        t "report.reason.hit_global_rule"
       end
     end
 

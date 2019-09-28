@@ -6,7 +6,7 @@ Dispatch.configure do |config|
 end
 
 module Policr
-  REPORT_RECEIPT_DEL_DELAY = 55
+  REPORT_RECEIPT_DEL_DELAY = 25
 
   callbacker Voting do
     def handle(query, msg, data)

@@ -40,6 +40,7 @@ report:
     trusted_admin: "受信管理员"
     admin: "管理员"
     member: "群成员"
+    system: "系统"
   reason:
     unknown: "未记录"
     spam: "散播广告消息"
@@ -48,6 +49,7 @@ report:
     bocai: "菠菜招人或广告"
     virus_file: "传播病毒或恶意程序"
     promo_file: "传播推广或恶意文件"
+    hit_global_rule: "命中全局规则"
     other: "其它"
     adname: "广告昵称"
   status:

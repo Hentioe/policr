@@ -28,7 +28,16 @@ module Policr
   end
 
   enum ReportReason
-    Unknown; MassAd; Halal; Other; Hateful; Adname; VirusFile; PromoFile; Bocai
+    Unknown
+    MassAd
+    Halal
+    Other
+    Hateful
+    Adname
+    VirusFile
+    PromoFile
+    Bocai
+    HitGlobalRule
   end
 
   # 举报状态
@@ -37,7 +46,12 @@ module Policr
   end
 
   enum ReportUserRole
-    Unknown; Creator; Admin; TrustedAdmin; Member
+    Unknown
+    Creator
+    Admin
+    TrustedAdmin
+    Member
+    System
   end
 
   enum VoteType
