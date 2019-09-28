@@ -37,9 +37,11 @@ module Policr
         end
 
         rule = rule.not_nil!
+        is_global_rule = false
 
         has_permission =
           if rule.chat_id == bot.self_id # 全局规则
+            is_global_rule = true
             user_id == bot.owner_id.to_i # 是否为管理员操作
           else                           # 私有规则
             role = Model::Toggle.trusted_admin?(rule.chat_id) ? :admin : :creator
@@ -63,6 +65,9 @@ module Policr
                 text: updated_text,
                 reply_markup: updated_markup
               ) }
+
+              # 如果是全局规则更新则重新编译
+              Cache.recompile_global_rules bot if is_global_rule
 
               setting_complete_with_delay_delete msg
             rescue ex : Exception

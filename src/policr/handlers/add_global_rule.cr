@@ -33,6 +33,9 @@ module Policr
             reply_markup: updated_markup
           ) }
 
+          # 重新编译全局规则
+          Cache.recompile_global_rules bot
+
           setting_complete_with_delay_delete msg
         rescue e : Exception
           bot.send_message chat_id, e.to_s

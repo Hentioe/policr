@@ -41,6 +41,7 @@ module Policr
       Web.start logger, bot
     end
     logger.info "start bot"
+    Cache.recompile_global_rules bot
 
     bot.polling
   end

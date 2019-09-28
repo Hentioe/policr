@@ -1,5 +1,39 @@
+require "rule_engine"
+
 module Policr::Cache
   extend self
+  alias RuleList = Array(RuleEngine::Rule)
+
+  @@global_message_rules = RuleList.new
+  @@global_nickname_rules = RuleList.new
+
+  def self.recompile_global_rules(bot : Bot)
+    bot.debug "The global rules are being recompiled..."
+    bot_id = bot.self_id
+
+    @@global_message_rules = RuleList.new # 清空全局消息规则
+    if message_rules = Model::BlockRule.apply_message_list bot_id.to_i64
+      message_rules.map do |block_rule|
+        @@global_message_rules << RuleEngine.compile! block_rule.expression
+      end
+    end
+
+    @@global_message_rules = RuleList.new # 清空全局昵称规则
+    if nickname_rules = Model::BlockRule.apply_nickname_list bot_id.to_i64
+      nickname_rules.map do |block_rule|
+        @@global_nickname_rules << RuleEngine.compile! block_rule.expression
+      end
+    end
+  end
+
+  macro def_global_rules(applied_to_s)
+    def self.get_global_{{applied_to_s}}_rules
+      @@global_{{applied_to_s}}_rules
+    end
+  end
+
+  def_global_rules message
+  def_global_rules nickname
 
   # 缓存管理员列表
   @@admins = Hash(Int64, Array(TelegramBot::ChatMember)).new
