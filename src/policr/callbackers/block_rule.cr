@@ -35,6 +35,10 @@ module Policr
       end
 
       case action
+      when "apply_to_message"
+        def_toggle_apply message
+      when "apply_to_nickname"
+        def_toggle_apply nickname
       when "delete"
         BlockRule.delete id
 
@@ -79,6 +83,26 @@ module Policr
 
       # 如果是全局规则更新则重新编译
       Cache.recompile_global_rules bot if is_global_rule
+    end
+
+    macro def_toggle_apply(target_s)
+        selected = rule.in_{{target_s}}
+        begin
+          selected ? BlockRule.disapply_{{target_s}}(rule.id) : BlockRule.apply_{{target_s}}!(rule.id)
+
+          updated_text, updated_markup = updated_preview_settings rule.reload
+
+          async_response
+
+          bot.edit_message_text(
+            chat_id,
+            message_id: msg_id,
+            text: updated_text,
+            reply_markup: updated_markup
+          )
+        rescue e : Exception
+          bot.answer_callback_query(query.id, text: e.to_s, show_alert: true)
+        end
     end
 
     def updated_preview_settings(block_content)

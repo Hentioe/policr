@@ -116,16 +116,35 @@ module Policr
       t "blocked_content.rule.manage", {rule_name: bc.alias_s, rule_template: rule_template}
     end
 
-    def create_block_rule_markup(bc : Model::BlockRule)
-      make_btn = ->(action : String) {
-        callback_data = "BlockRule:#{action}:#{bc.id}"
-        Button.new(text: t("blocked_content.rule.#{action}"), callback_data: callback_data)
+    SELECTED   = "■"
+    UNSELECTED = "□"
+
+    def create_block_rule_markup(br : Model::BlockRule)
+      make_status = ->(action : String) {
+        case action
+        when "apply_to_message"
+          br.in_message ? SELECTED : UNSELECTED
+        when "apply_to_nickname"
+          br.in_nickname ? SELECTED : UNSELECTED
+        else
+          UNSELECTED
+        end
       }
+      make_btn = ->(action : String, has_select_status : Bool) {
+        sb = String.build do |str|
+          str << make_status.call(action) + " " if has_select_status
+          str << t("blocked_content.rule.#{action}")
+        end
+        callback_data = "BlockRule:#{action}:#{br.id}"
+        Button.new(text: sb.to_s, callback_data: callback_data)
+      }
+
       markup = Markup.new
+      markup << [make_btn.call("apply_to_message", true), make_btn.call("apply_to_nickname", true)]
       buttons = Array(Button).new
-      buttons << make_btn.call("disable") if bc.enabled
-      buttons << make_btn.call("enable") unless bc.enabled
-      buttons << make_btn.call("delete")
+      buttons << make_btn.call("disable", false) if br.enabled
+      buttons << make_btn.call("enable", false) unless br.enabled
+      buttons << make_btn.call("delete", false)
       markup << buttons
 
       markup

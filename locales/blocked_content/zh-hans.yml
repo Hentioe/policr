@@ -55,6 +55,8 @@ blocked_content:
     enable: "启用"
     disable: "禁用"
     delete: "删除"
+    apply_to_message: "作用于消息"
+    apply_to_nickname: "作用于昵称"
     not_found: "没有找到这条规则～"
   enabled_flag: "【已启用】"
   disabled_flag: "【已禁用】"
