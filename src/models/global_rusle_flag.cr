@@ -60,6 +60,12 @@ module Policr::Model
       where { (_chat_id == chat_id) & (_reported == true) }.first
     end
 
+    def self.action_is?(chat_id : Int64, action : HitAction)
+      if flag = find_by_chat_id chat_id
+        flag.action == action.value
+      end
+    end
+
     def self.switch_action!(chat_id : Int64, action : HitAction)
       if flag = enabled? chat_id
         flag.update_column :action, action.value
