@@ -26,7 +26,15 @@ module Policr
       deleted # 标记删除
     end
 
-    def hit?(chat_id, text) : Model::BlockRule | Nil
+    def hit?(chat_id, text) : Model::BlockRule | Model::GlobalRuleFlag | Nil
+      # 全局规则
+      if flag = Model::GlobalRuleFlag.enabled?(chat_id)
+        Cache.get_global_message_rules.each do |block_rule, engine_rule|
+          return flag if engine_rule.match? text
+        end
+      end
+
+      # 私有规则
       Model::BlockRule.apply_message_list(chat_id).each do |rule|
         ru = RuleEngine.compile! rule.expression
         return rule if ru.match? text

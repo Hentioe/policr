@@ -2,28 +2,31 @@ require "rule_engine"
 
 module Policr::Cache
   extend self
-  alias RuleList = Array(RuleEngine::Rule)
 
-  @@global_message_rules = RuleList.new
-  @@global_nickname_rules = RuleList.new
+  @@global_message_rules = Array(Tuple(Model::BlockRule, RuleEngine::Rule)).new
+  @@global_nickname_rules = Array(Tuple(Model::BlockRule, RuleEngine::Rule)).new
 
   def self.recompile_global_rules(bot : Bot)
-    bot.debug "The global rules are being recompiled..."
-    bot_id = bot.self_id
+    bot.debug "the global rules are being recompiled..."
+    bot_id = bot.self_id.to_i64
 
-    @@global_message_rules = RuleList.new # 清空全局消息规则
-    if message_rules = Model::BlockRule.apply_message_list bot_id.to_i64
+    @@global_message_rules.clear # 清空全局昵称规则
+    @@global_message_rules.clear # 清空全局消息规则
+
+    if message_rules = Model::BlockRule.apply_message_list bot_id
       message_rules.map do |block_rule|
-        @@global_message_rules << RuleEngine.compile! block_rule.expression
+        @@global_message_rules << {block_rule, RuleEngine.compile! block_rule.expression}
       end
     end
 
-    @@global_message_rules = RuleList.new # 清空全局昵称规则
-    if nickname_rules = Model::BlockRule.apply_nickname_list bot_id.to_i64
+    if nickname_rules = Model::BlockRule.apply_nickname_list bot_id
       nickname_rules.map do |block_rule|
-        @@global_nickname_rules << RuleEngine.compile! block_rule.expression
+        @@global_nickname_rules << {block_rule, RuleEngine.compile! block_rule.expression}
       end
     end
+
+    bot.debug "there are #{@@global_message_rules.size} rules applied to message"
+    bot.debug "there are #{@@global_nickname_rules.size} rules applied to nickname"
   end
 
   macro def_global_rules(applied_to_s)
