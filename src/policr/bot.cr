@@ -179,6 +179,7 @@ module Policr
         BlockRuleCallbacker,
         GlobalBlockRuleCallbacker,
         GlobalRuleFlagsCallbacker,
+        HitRuleCallbacker,
       ]
 
       # 注册指令模块
@@ -293,6 +294,25 @@ module Policr
 
     def token
       @token
+    end
+
+    def derestrict(chat_id : Int64, user_id : Int32)
+      restrict_chat_member(
+        chat_id,
+        user_id,
+        can_send_messages: true,
+        can_send_media_messages: true,
+        can_send_other_messages: true,
+        can_add_web_page_previews: true
+      )
+    end
+
+    def restrict(chat_id : Int64, user_id : Int32)
+      restrict_chat_member(
+        chat_id,
+        user_id,
+        can_send_messages: false
+      )
     end
 
     def parse_error(ex : TelegramBot::APIException)

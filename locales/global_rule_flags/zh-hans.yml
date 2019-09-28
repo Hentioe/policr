@@ -15,4 +15,17 @@ global_rule_flags:
     ban: "封禁"
   enable_first: "请先订阅～"
   action_hint: "↓ 选择命中动作 ↓"
+  hit_hint:
+    header: |
+      **本群已订阅全局屏蔽规则**
+      
+      来自 %{mention} 的用户消息， 
+    delete: "已遭**删除**。"
+    restrict: "已遭**删除并禁言**。"
+    ban: "已遭**删除并封禁**。"
+  operation:
+    restrict: "立即禁言"
+    derestrict: "解除禁言"
+    ban: "立即封禁"
+    unban: "解除封禁"
 
