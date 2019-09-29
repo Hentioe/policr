@@ -43,10 +43,12 @@ module Policr
         spawn bot.delete_message(chat_id, msg_id)
 
         make_text = ->(action : String) {
-          header = t("global_rule_flags.hit_hint.header", {
+          t("global_rule_flags.hit_hint.desc", {
             mention: FromUser.new(user).mention(user_id.to_s),
+            type:    t("global_rule_flags.hit_hint.type.message"),
+            result:  t("global_rule_flags.hit_hint.#{action}"),
+            tags:    "#GLOBAL_RULES #MESSAGE",
           })
-          header + t("global_rule_flags.hit_hint.#{action}") + " #GLOBAL_RULES #MESSAGE"
         }
 
         make_btn = ->(operation : String) {

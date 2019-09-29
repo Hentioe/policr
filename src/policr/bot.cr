@@ -142,6 +142,7 @@ module Policr
         UpdateRuleHandler,
         BlockedContentHandler,
         AddGlobalRuleHandler,
+        BlockedNicknameHandler,
         # 置底分割
         PrivateChatHandler,
       ]

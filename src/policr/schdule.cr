@@ -26,7 +26,7 @@ module Policr
   def self.schedule_immediately(key : String,
                                 before = Proc(Nil),
                                 after = Proc(Nil),
-                                delete : Bool? = true)
+                                delete : Bool = true)
     if task = @@tasks[key]?
       @@tasks.delete(key) if delete
       before.call

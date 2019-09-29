@@ -32,7 +32,8 @@ module Policr
                     from_user_id : Int32,
                     reason_value : Int32,
                     query : TelegramBot::CallbackQuery? = nil)
-      need_forward = reason_value != Reason::Adname.value
+      need_forward = reason_value != Reason::Adname.value &&
+                     reason_value != Reason::HitGlobalRuleNickname.value
 
       # 转发举报消息
       snapshot_message =
@@ -80,7 +81,7 @@ module Policr
 
       # 生成举报并入库
       detail =
-        if (reason_value == Reason::Adname.value) &&
+        if !need_forward &&
            (target_user = Cache.report_target_msg?(chat_id, target_msg_id))
           t "report.adname_detail", {name: escape_markdown fullname(target_user)}
         end
@@ -299,6 +300,8 @@ module Policr
         t "report.reason.bocai"
       when Reason::HitGlobalRule
         t "report.reason.hit_global_rule"
+      when Reason::HitGlobalRuleNickname
+        t "report.reason.hit_global_rule_nickname"
       end
     end
 

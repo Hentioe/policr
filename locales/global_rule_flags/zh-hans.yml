@@ -16,16 +16,20 @@ global_rule_flags:
   enable_first: "请先订阅～"
   action_hint: "↓ 选择命中动作 ↓"
   hit_hint:
-    header: |
+    type:
+      message: "消息"
+      nickname: "昵称"
+    desc: |
       **本群已订阅全局屏蔽规则**
       
-      来自 %{mention} 的用户消息， 
-    delete: "已遭**删除**。"
-    restrict: "已遭**删除并禁言**。"
-    ban: "已遭**删除并封禁**。"
+      命中来自 %{mention} 的用户%{type}，%{result}。 %{tags}
+    delete: "已被**删除**"
+    restrict: "已被**禁言**"
+    ban: "已被**封禁**"
   operation:
     restrict: "立即禁言"
     derestrict: "解除禁言"
     ban: "立即封禁"
     unban: "解除封禁"
+    pass: "立即放行"
 

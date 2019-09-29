@@ -38,6 +38,7 @@ module Policr
     PromoFile
     Bocai
     HitGlobalRule
+    HitGlobalRuleNickname
   end
 
   # 举报状态

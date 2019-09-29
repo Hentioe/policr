@@ -1,5 +1,7 @@
 module Policr
   callbacker HitRule do
+    LEAVED = "Bad Request: bots can't add new chat members"
+
     def handle(query, msg, data)
       chat_id = msg.chat.id
       msg_id = msg.message_id
@@ -14,20 +16,30 @@ module Policr
         return
       end
 
-      case operate
-      when "restrict"
-        bot.restrict chat_id, target_user_id
-      when "derestrict"
-        bot.derestrict chat_id, target_user_id
-      when "ban"
-        bot.kick_chat_member chat_id, target_user_id
-      when "unban"
-        bot.unban_chat_member chat_id, target_user_id
-      else # 失效键盘
-        invalid_keyboard
-        return
+      begin
+        case operate
+        when "restrict"
+          bot.restrict chat_id, target_user_id
+        when "derestrict", "pass"
+          bot.derestrict chat_id, target_user_id
+        when "ban"
+          bot.kick_chat_member chat_id, target_user_id
+        when "unban"
+          bot.unban_chat_member chat_id, target_user_id
+        else # 失效键盘
+          invalid_keyboard
+          return
+        end
+        bot.delete_message chat_id, msg_id
+      rescue e : TelegramBot::APIException
+        _, reason = bot.parse_error e
+        case reason
+        when LEAVED
+          bot.answer_callback_query(query.id, text: "TA 可能已被气走啦～", show_alert: true)
+        else
+          bot.answer_callback_query(query.id, text: reason, show_alert: true)
+        end
       end
-      bot.delete_message chat_id, msg_id
     end
   end
 end
