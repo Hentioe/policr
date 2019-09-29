@@ -4,6 +4,8 @@ report:
     举报开始，请选择具体原因。举报将在完成选择以后被创建，并进入[黑名单公投频道](https://t.me/%{voting_channel})进行投票。如果您决定放弃举报，则不需要做任何选择。
 
     注意：在完成举报前请不要删除被举报消息。
+
+    附加：你知道吗？通过 `/global_rule_flags` 指令订阅全局屏蔽规则能自动将可疑内容或用户上报到投票中～
   mass_ad: "垃圾内容/广告"
   halal: "垃圾内容/清真"
   hateful: "恶意内容/仇恨"
@@ -60,4 +62,4 @@ report:
     unban: "通过申诉"
   none: "无"
   anonymous_adname: "被匿名处理的广告昵称"
-  repeated_in_forward: "此用户已经多次进入黑名单，无需举报～" 
+  repeated_in_forward: "此用户已经多次进入黑名单，无需举报～"
