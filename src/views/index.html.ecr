@@ -694,40 +694,66 @@
             </div>
           </div>
           <hr />
-          <h3 class="subtitle is-3">高级教程</h3>
-          <div class="content">
-            <ul>
-              <li>
-                <a class="anchor" name="advance_no_time_limit"></a>
-                <p>如何只限制未验证用户而不移除用户？</p>
-                <blockquote>
+          <h3 class="subtitle is-3">
+            <a class="anchor" name="advice_guide"></a>
+            高级教程
+          </h3>
+          <div>
+            <div>
+              <hr />
+              <h5 class="subtitle is-5">
+                <a class="anchor" name="advance_no_time_divmit"></a>
+                如何只限制未验证用户而不移除用户？
+              </h5>
+              <div class="content">
+                <p class="subtitle is-6">
                   使用<code>/torture_time</code>指令，选择<code>无验证倒计时</code>即可。附加阅读请看常见问题中的不限时验证危害。
-                </blockquote>
-              </li>
-              <li>
+                </p>
+              </div>
+            </div>
+            <div>
+              <hr />
+              <h5 class="subtitle is-5">
                 <a class="anchor" name="advance_no_failure"></a>
-                <p>如何设置不可能验证错误的效果？</p>
-                <blockquote>
+                如何设置不可能验证错误的效果？
+              </h5>
+              <div class="content">
+                <p class="subtitle is-6">
                   很简单。定制验证问题时只设置一个正确的答案即可。例如问题为：<code>点击点我按钮</code>，答案为<code>点我</code>。
+                </p>
+                <p class="subtitle is-6">
                   因为除了点击「点我」按钮以外没有可能错误的答案，所以就变相的成为了一个纯主动验证，而非选择题。只要该用户是能交互的，便能通过验证。虽然这样做已经可以排除绝大部分垃圾帐号，但不排除未来出现能自动触发第一个按钮的机器人程序，所以默认验证仍然保留一个错误答案。
-                </blockquote>
-              </li>
-              <li>
+                </p>
+              </div>
+            </div>
+            <div>
+              <hr />
+              <h5 class="subtitle is-5">
                 <a class="anchor" name="sticker_mode"></a>
-                <p>什么是欢迎消息-贴纸模式？</p>
-                <p>
+                什么是欢迎消息-贴纸模式？
+              </h5>
+              <div class="content">
+                <p class="subtitle is-6">
                   启用「贴纸模式」以后的欢迎消息内容将不再直接发送到群组中，而是发送一个预设好的贴纸图片。贴纸消息附带一个「请阅读规则」的按钮，通过此按钮可以私聊机器人获取并阅读真实的欢迎消息内容（一般用作群规）。
+                </p>
+                <p class="subtitle is-6">
                   这样避免了使用某个历史消息作为群规以及大量重复显示同一段长文字的尴尬（毕竟赏心悦目的图片总比文字要耐看），又可以让新群成员查看欢迎内容。
-                  <br />
+                </p>
+                <p class="subtitle is-6">
                   注意：<strong
                     >贴纸模式下的欢迎内容不支持变量，变量的模板语法将以原始文本显示。</strong
                   >
                 </p>
-              </li>
-              <li>
-                <a class="anchor" name="link_in_welcome"></a>
-                <p>如何在欢迎消息中嵌入链接？</p>
-                <p>
+              </div>
+            </div>
+            <div>
+              <hr />
+              <h5 class="subtitle is-5">
+                <a class="anchor" name="divnk_in_welcome"></a>
+                如何在欢迎消息中嵌入链接？
+              </h5>
+              <div class="content">
+                <p class="subtitle is-6">
                   此处的链接并非单纯的可跳转的 URL
                   地址，而是指在显示上可以自定义文本类型的内联链接。没有什么黑魔法或自创标签，使用
                   Markdown 格式就够了。例如：
@@ -735,91 +761,122 @@
                 <blockquote>
                   <code>[访问 Google](https://www.google.com)</code>
                 </blockquote>
-              </li>
-              <li>
+              </div>
+            </div>
+            <div>
+              <hr />
+              <h5 class="subtitle is-5">
                 <a class="anchor" name="vars_in_welcome"></a>
-                <p>如何在欢迎消息中使用变量？</p>
-                <p>
+                如何在欢迎消息中使用变量？
+              </h5>
+              <div class="content">
+                <p class="subtitle is-6">
                   假设一名叫做「哆啦A梦」的用户通过了验证，我们可以这样在欢迎中显示他的名字：
                 </p>
                 <blockquote>
-                  欢迎<code>{{fullname}}</code>加入本群。
+                  欢迎<code>{{fullname}}</code>加入本群
                 </blockquote>
-                其中<code>{{fullname}}</code>会被替换为「哆啦A梦」，所以欢迎内容实际为：欢迎多啦A梦加入本群。
-                其它变量的使用方法与之相同。
-              </li>
-              <li>
+                <p class="subtitle is-6">
+                  其中<code>{{fullname}}</code>会被替换为「哆啦A梦」，所以欢迎内容实际为：<code>欢迎多啦A梦加入本群</code>。
+                  其它变量的使用方法与之相同。
+                </p>
+                记住，双大括号<code>{{}}</code>并非变量名的一部分，而是引用变量的语法。
+              </div>
+            </div>
+            <div>
+              <hr />
+              <h5 class="subtitle is-5">
                 <a class="anchor" name="buttons_in_welcome"></a>
-                <p>如何在欢迎消息中添加按钮？</p>
-                <p>
-                  假设有关联频道链接为<code>https://t.me/policr_changelog</code>，我们添加一个「订阅频道」的按钮：
+                如何在欢迎消息中添加按钮？
+              </h5>
+              <div class="content">
+                <p class="subtitle is-6">
+                  假设关联频道链接为<code>https://t.me/podivcr_changelog</code>，我们添加一个「订阅频道」的按钮：
                 </p>
                 <blockquote>
-                  热烈欢迎 {{mention}} 加入本群！
+                  热烈欢迎<code>{{mention}}</code>加入本群！
                   <br />
-                  -b <code>[订阅频道](https://t.me/policr_changelog)</code>
+                  -b <code>[订阅频道](https://t.me/podivcr_changelog)</code>
                 </blockquote>
-                其中<code>-b</code>开头的行表示生成一个按钮，在 -b
-                后面需要使用标准的 Markdown <strong>链接</strong>语法。
-                按钮的数量不仅没有限制，位置也可以随意穿插，因为它们并不会成为欢迎文本内容的一部分。
-              </li>
-            </ul>
+                <p class="subtitle is-6">
+                  其中<code>-b</code>开头的行表示生成一个按钮，在<code>-b</code>后面需要使用标准的
+                  Markdown
+                  <strong>链接</strong
+                  >语法（<code>[链接文本](链接地址)</code>）。
+                </p>
+                <p class="subtitle is-6">
+                  按钮的数量没有限制，位置也可以随意穿插，因为它们并不会成为欢迎文本内容的一部分。
+                </p>
+              </div>
+            </div>
           </div>
+          <hr />
           <h3 class="subtitle is-3">未来计划</h3>
-          <div class="content">
-            <ul>
-              <li>
-                <p>目前有什么正在实现但还未开放的功能？</p>
-                <blockquote>
-                  <ul>
-                    <li>
-                      <a
-                        target="_blank"
-                        href="https://github.com/Hentioe/policr/issues/129"
-                        >新验证方式：旋转图片</a
-                      >
-                    </li>
-                    <li>
-                      <a
-                        target="_blank"
-                        href="https://github.com/Hentioe/policr/issues/49"
-                        >定制容错模式</a
-                      >
-                    </li>
-                    <li>
-                      <a
-                        target="_blank"
-                        href="https://github.com/Hentioe/policr/issues/48"
-                        >多套自定义验证</a
-                      >
-                    </li>
-                    <li>
-                      <a
-                        target="_blank"
-                        href="https://github.com/Hentioe/policr/issues/10"
-                        >后台管理</a
-                      >
-                    </li>
-                    <li>
-                      <a
-                        target="_blank"
-                        href="https://github.com/Hentioe/policr/issues/158"
-                        >警告系统</a
-                      >
-                    </li>
-                  </ul>
-                </blockquote>
-              </li>
-              <li>
+          <div>
+            <div>
+              <hr />
+              <h5 class="subtitle is-5">
+                目前有什么正在实现但还未开放的功能？
+              </h5>
+              <div class="content">
+                <ul>
+                  <li>
+                    <a
+                      target="_blank"
+                      href="https://github.com/Hentioe/policr/issues/129"
+                      >新验证方式：旋转图片</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      target="_blank"
+                      href="https://github.com/Hentioe/policr/issues/49"
+                      >定制容错模式</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      target="_blank"
+                      href="https://github.com/Hentioe/policr/issues/48"
+                      >多套自定义验证</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      target="_blank"
+                      href="https://github.com/Hentioe/policr/issues/158"
+                      >警告系统</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      target="_blank"
+                      href="https://github.com/Hentioe/policr/issues/10"
+                      >后台管理</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <hr />
+              <h5 class="subtitle is-5">
                 <a class="anchor" name="verification_code"></a>
-                <p>会支持图片验证码吗？</p>
-                <blockquote>
+                会支持图片验证码吗？
+              </h5>
+              <div class="content">
+                <p class="subtitle is-6">
                   众所周知，验证码在网页上曾经非常流行，但是现在则逐渐被例如
-                  Google
-                  一键验证、滑动滑块等方式的淘汰掉了。原因是验证码是一种不人道的验证方式，体验极差。如果生成的图片质量过低，会让人觉得无比痛苦。我个人认为即便是随机生成简单计算公式都比验证码高明很多。所以基本永不考虑。值得重复一提的是，屏蔽广告等行为机器人只需要一个主动验证就行了，甚至简单到要求点击一个按钮即可。即验证码目前也是大材小用了。
-                </blockquote>
-              </li>
-            </ul>
+                  Google 一键验证、滑动滑块等方式的淘汰掉了。
+                </p>
+              </div>
+              <p class="subtitle is-6">
+                原因是验证码是一种不人道的验证方式，体验极差。如果生成图片质量过低，会让人觉得无比痛苦。但图片内容太工整，又能被极其轻易的机器识别。
+              </p>
+              <p class="subtitle is-6">
+                我个人认为即便是随机生成简单计算公式都比验证码高明很多。所以基本永不考虑。值得重复一提的是，屏蔽机器人用户只需要一个主动验证就行了，也就是简单到要求点击一个按钮即可（多数机器人程序不会尝试进行任何交互）。即验证码目前也是大材小用了。
+              </p>
+            </div>
           </div>
         </div>
         <hr />
@@ -830,23 +887,26 @@
           <h3 class="subtitle is-3">需知</h3>
           <article class="message is-warning" style="margin-top:1.5rem;">
             <div class="message-body">
-              本项目主要使用<code>Crystal</code>语言编写，利用嵌入式数据库<code>RocksDB</code>和<code
-                >Sqlite3</code
-              >
-              储存数据。所以它能非常方便的进行部署。但在本项目<code>1.0</code>
-              版本释出之前并不准备发布预编译安装包或者容器镜像。
-              <br />
-              <br />
-              这主要是因为目前项目处在快速功能迭代的阶段，不适合规划具体版本。所以，这个阶段都使用官方实例才能满足快速的版本更替。并且会促进项目的进步和稳定。
-              <br />
-              <br />
-              当然，你可以自主编译和部署项目。但仍需强调的是不建议这么做。目前的源代码没有彻底分离官方实例和第三方构建，可能会存在功能异常，例如引用的各种链接。
-              <br />
-              <br />
-              <strong
-                >并且在此阶段部署的公开服务的
-                <code>PolicrBot</code> 实例将不被本项目承认。</strong
-              >
+              <p class="subtitle is-6">
+                本项目主要使用<code>Crystal</code>语言编写，利用嵌入式数据库<code>RocksDB</code>和<code
+                  >Sqlite3</code
+                >
+                储存数据。所以它能非常方便的进行部署。但在本项目<code>1.0</code>
+                版本释出之前并不准备发布预编译安装包或者容器镜像。
+              </p>
+              <p class="subtitle is-6">
+                这主要是因为目前项目处在快速功能迭代的阶段，不适合规划具体版本。所以，这个阶段都使用官方实例才能满足快速的版本更替。并且会促进项目的进步和稳定。
+              </p>
+
+              <p class="subtitle is-6">
+                当然，你可以自主编译和部署项目。但仍需强调的是不建议这么做。目前的源代码没有彻底分离官方实例和第三方构建，可能会存在功能异常，例如引用的各种链接。
+              </p>
+              <p class="subtitle is-6">
+                <strong
+                  >注意了，由于作者认为项目本身不够完善，所以在此阶段部署的公开服务的
+                  <code>PolicrBot</code> 实例将不被本项目承认。</strong
+                >
+              </p>
             </div>
           </article>
         </div>
@@ -863,7 +923,7 @@
               >
             </blockquote>
           </div>
-          <article class="message is-warning" style="margin-top:1.5rem;">
+          <article class="message is-success" style="margin-top:1.5rem;">
             <div class="message-body">
               所谓「功能无关」消息指的是并非指令，也并非设置内容（例如回复欢迎消息或自定义问题）。此类消息机器人不会有任何响应，但若在私聊时发送此类消息将可能收到管理员的回复：）
             </div>
