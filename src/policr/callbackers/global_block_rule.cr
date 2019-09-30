@@ -16,6 +16,18 @@ module Policr
       end
 
       case action
+      when "disable_all"
+        Model::BlockRule.disable_all bot.self_id.to_i64
+        updated_text, updated_markup = update_preview_settings
+
+        async_response
+
+        bot.edit_message_text(
+          chat_id,
+          message_id: msg_id,
+          text: updated_text,
+          reply_markup: updated_markup
+        )
       when "refresh"
         Cache.carving_global_rules_msg bot.owner_id, msg_id
         updated_text, updated_makrup = update_preview_settings

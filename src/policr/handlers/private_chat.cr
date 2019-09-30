@@ -119,7 +119,7 @@ module Policr
           callback_data: "GlobalBlockRule:#{action}"
         )
       }
-      markup << [make_btn.call("refresh")]
+      markup << [make_btn.call("refresh"), make_btn.call("disable_all")]
 
       markup
     end
