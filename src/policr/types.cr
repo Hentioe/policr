@@ -14,6 +14,14 @@ module Policr
     FaultTolerance  # 容错模式
   end
 
+  enum VeriMode # 验证方式
+    Default     # 默认验证
+    Custom      # 自定义验证（定制验证）
+    Arithmetic  # 算术验证
+    Image       # 图片验证
+    Chessboard  # 棋局验证
+  end
+
   enum VerificationStatus
     Init; Passed; Slowed; Next; Left
   end

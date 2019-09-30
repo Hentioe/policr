@@ -27,4 +27,6 @@ def_models_alias [
   HalalWhiteList,
   BlockRule,
   GlobalRuleFlag,
+  VerificationMode,
+  QASuite,
 ]

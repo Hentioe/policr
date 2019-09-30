@@ -160,28 +160,6 @@ module Policr::KVStore
     end
   end
 
-  MANGA_GROUPS = "manage_groups"
-
-  def push_managed_group(user_id, chat_id)
-    if (db = @@db) && (groups = managed_groups(user_id) || Array(String).new)
-      groups << chat_id.to_s unless groups.includes?(chat_id.to_s)
-      db.put "#{MANGA_GROUPS}_#{user_id}", groups.join(",")
-    end
-  end
-
-  def delete_managed_group(user_id, chat_id)
-    if (db = @@db) && (groups = managed_groups(user_id))
-      removed_groups = groups.select { |g| g != chat_id.to_s }.join(",")
-      db.put "#{MANGA_GROUPS}_#{user_id}", removed_groups
-    end
-  end
-
-  def managed_groups(user_id)
-    if (db = @@db) && (groups_s = db.get?("#{MANGA_GROUPS}_#{user_id}"))
-      groups_s.split(",").select { |g| g.strip != "" }
-    end
-  end
-
   # WELCOME = "welcome"
 
   # def set_welcome(chat_id, content)
