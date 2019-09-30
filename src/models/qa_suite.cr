@@ -28,6 +28,7 @@ module Policr::Model
     def self.update!(id : Int32 | Nil, title : String, answers : String)
       if qa = find id
         qa.update_columns({:title => title, :answers => answers})
+        qa
       else
         raise Exception.new "Not Found"
       end
