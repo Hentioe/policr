@@ -94,6 +94,24 @@ namespace "rocksdb" do
       end
       puts "#{prefix} done."
     end
+
+    desc "迁移验证倒计时"
+    task "verification_torture_time" do
+      prefix = "torture_sec"
+      puts "#{prefix} started."
+      query_by_prefix "#{prefix}_" do |key, value|
+        group_id, sec =
+          if md = /(-\d+)$/.match key
+            {md[1].to_i64, value.to_i}
+          else
+            {nil, nil}
+          end
+        if group_id && sec
+          Policr::Model::VerificationMode.set_torture_sec! group_id, sec
+        end
+      end
+      puts "#{prefix} done."
+    end
   end
 end
 
