@@ -20,9 +20,11 @@ module Policr
         chat_id = msg.chat.id
         if valid?(text) # 内容合法？
 
-          KVStore.custom_text(_group_id, text)
+          lines = text.split "\n", remove_empty: true
+          Model::QASuite.add! _group_id, lines[0], lines[1..].join("\n")
+          Model::VerificationMode.update_mode! _group_id, VeriMode::Custom
 
-          updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
+          updated_text, updated_markup = update_preview_settings(_group_id, _group_name)
 
           spawn { bot.edit_message_text(
             chat_id,
@@ -38,9 +40,12 @@ module Policr
       end
     end
 
-    def updated_preview_settings(group_id, group_name)
+    def update_preview_settings(group_id, group_name)
       midcall CustomCommander do
-        {_commander.custom_text(group_id, group_name), _commander.create_markup(group_id)}
+        {
+          _commander.custom_text(group_id, group_name),
+          _commander.create_markup(group_id),
+        }
       end || {nil, nil}
     end
 

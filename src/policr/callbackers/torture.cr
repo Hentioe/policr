@@ -5,6 +5,8 @@ module Policr
 
   callbacker Torture do
     alias DeleteTarget = CleanDeleteTarget
+    alias Toggle = Model::Toggle
+    alias VerificationMode = Model::VerificationMode
 
     def handle(query, msg, data)
       chat_id = msg.chat.id
@@ -62,10 +64,12 @@ module Policr
           }
           case status
           when VerificationStatus::Init
-            if Model::Toggle.fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
-              if Model::ErrorCount.counting(chat_id, target_user_id) > 0           # 继续验证
-                Cache.verification_next chat_id, target_user_id                    # 更新验证状态避免超时
-                Model::ErrorCount.destory chat_id, target_user_id                  # 销毁错误记录
+            if Toggle.fault_tolerance?(chat_id) &&
+               !VerificationMode.is?(chat_id, VeriMode::Custom) # 容错模式处理
+
+              if Model::ErrorCount.counting(chat_id, target_user_id) > 0 # 继续验证
+                Cache.verification_next chat_id, target_user_id          # 更新验证状态避免超时
+                Model::ErrorCount.destory chat_id, target_user_id        # 销毁错误记录
                 midcall UserJoinHandler do
                   spawn bot.delete_message chat_id, message_id
                   _handler.promptly_torture chat_id, join_msg_id, query.from, re: true
@@ -92,8 +96,9 @@ module Policr
           when VerificationStatus::Slowed
             slow_with_receipt(query, chat_id, target_user_id, message_id)
           end
-        else                                                                     # 未通过验证
-          if Model::Toggle.fault_tolerance?(chat_id) && !KVStore.custom(chat_id) # 容错模式处理
+        else # 未通过验证
+          if Model::Toggle.fault_tolerance?(chat_id) &&
+             !VerificationMode.is?(chat_id, VeriMode::Custom) # 容错模式处理
             fault_tolerance chat_id, query.from, message_id, query.id, join_msg, is_photo
           else
             bot.answer_callback_query(query.id, text: t("no_pass_alert"), show_alert: true)

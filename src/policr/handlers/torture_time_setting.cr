@@ -26,7 +26,7 @@ module Policr
         else
           chat_id = msg.chat.id
 
-          KVStore.set_torture_sec(_group_id, sec)
+          Model::VerificationMode.set_torture_sec! _group_id, sec
 
           updated_text, updated_markup = updated_preview_settings(_group_id, _group_name)
           spawn { bot.edit_message_text(

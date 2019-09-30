@@ -3,10 +3,10 @@ module Policr
     @indeces = Array(Int32).new
 
     make do
-      content = KVStore.custom(@chat_id) || raise not_conent
-      @indeces, title, answers = content
+      suite = Model::QASuite.find_by_chat_id(@chat_id) || raise not_conent
+      @indeces, answers = suite.gen_answers
       answers = answers.map { |answer| [answer] }
-      Question.normal_build(title, answers).discord
+      Question.normal_build(suite.title, answers).discord
     end
 
     def indeces

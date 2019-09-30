@@ -1,6 +1,7 @@
 module Policr
   handler UserJoin do
     alias DeleteTarget = CleanDeleteTarget
+    alias VerificationMode = Model::VerificationMode
 
     match do
       all_pass? [
@@ -157,23 +158,30 @@ module Policr
 
       params = {chat_id: chat_id}
 
+      vm = VerificationMode.fetch_by_chat_id chat_id
+      mode = VeriMode.from_value?(vm.mode) || VeriMode::Default
+
       send_image = false
       verification =
-        if KVStore.custom chat_id
+        case mode
+        when VeriMode::Custom
           # 自定义验证
           CustomVerification.new(**params)
-        elsif KVStore.enabled_dynamic_captcha? chat_id
-          # 动态验证
+        when VeriMode::Arithmetic
+          # 动态验证（算术验证）
           DynamicVerification.new(**params)
-        elsif Cache.get_images.size >= 3 && KVStore.enabled_image_captcha?(chat_id)
-          send_image = true
+        when VeriMode::Image
           # 图片验证
-          ImageVerification.new(**params)
-        elsif KVStore.enabled_chessboard_captcha? chat_id
+          if Cache.get_images.size > 3
+            send_image = true
+            ImageVerification.new(**params)
+          else
+            DefaultVerification.new(**params)
+          end
+        when VeriMode::Chessboard
           # 棋局验证
           GomokuVerification.new(**params)
-        else
-          # 默认验证
+        else # 默认验证
           DefaultVerification.new(**params)
         end
 
@@ -190,7 +198,7 @@ module Policr
       # 禁言用户/异步调用
       spawn bot.restrict_chat_member(chat_id, member_id, can_send_messages: false)
 
-      torture_sec = KVStore.get_torture_sec(chat_id) || DEFAULT_TORTURE_SEC
+      torture_sec = VerificationMode.get_torture_sec chat_id, DEFAULT_TORTURE_SEC
       locale = gen_locale chat_id
       reuse_t = Time::Span.new(0, 0, 0)
       question =

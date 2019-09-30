@@ -1,5 +1,7 @@
 module Policr
   callbacker Custom do
+    alias VerificationMode = Model::VerificationMode
+
     NOT_MODIFIED = "Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message"
 
     def handle(query, msg, data)
@@ -8,7 +10,7 @@ module Policr
 
         case way
         when "default"
-          KVStore.default _group_id
+          VerificationMode.update_mode! _group_id, VeriMode::Default
           text = t "captcha.default"
           bot.edit_message_text(
             _chat_id,
@@ -18,7 +20,7 @@ module Policr
           )
           bot.answer_callback_query(query.id)
         when "dynamic"
-          KVStore.enable_dynamic_captcha _group_id
+          VerificationMode.update_mode! _group_id, VeriMode::Arithmetic
           text = t "captcha.dynamic"
           bot.edit_message_text(
             _chat_id,
@@ -28,38 +30,20 @@ module Policr
           )
           bot.answer_callback_query(query.id)
         when "image"
-          back_to_default = ->{
-            KVStore.disable_image_captcha _group_id
-            text = t "captcha.switch_image_failed"
-            spawn {
-              bot.edit_message_text(
-                _chat_id,
-                message_id: msg.message_id,
-                text: text(_group_id, text, group_name: _group_name),
-                reply_markup: create_markup(_group_id)
-              )
-            }
-          }
           # 前提1：数据集数量大于等于3
           if Cache.get_images.size < 3
-            back_to_default.call
             bot.answer_callback_query query.id, text: "服务器没有足够的图片数据集，已被禁用", show_alert: true
             return
           end
           # 前提2：验证时间要大于1分半钟
-          torture_sec =
-            if sec = KVStore.get_torture_sec _group_id
-              sec
-            else
-              DEFAULT_TORTURE_SEC
-            end
+          torture_sec = VerificationMode.get_torture_sec _group_id, DEFAULT_TORTURE_SEC
+
           if torture_sec > 0 && torture_sec < 90
-            back_to_default.call
             bot.answer_callback_query query.id, text: "验证时间必须大于1分半钟", show_alert: true
             return
           end
 
-          KVStore.enable_image_captcha _group_id
+          VerificationMode.update_mode! _group_id, VeriMode::Image
           text = t "captcha.image"
           bot.edit_message_text(
             _chat_id,
@@ -69,7 +53,7 @@ module Policr
           )
           bot.answer_callback_query(query.id)
         when "chessboard"
-          KVStore.enable_chessboard_captcha _group_id
+          VerificationMode.update_mode! _group_id, VeriMode::Chessboard
           text = t "captcha.chessboard"
           bot.edit_message_text(
             _chat_id,
@@ -81,6 +65,10 @@ module Policr
         when "custom"
           # 缓存此消息
           Cache.carving_custom_setting_msg _chat_id, msg.message_id
+
+          if Model::QASuite.find_by_chat_id _group_id
+            VerificationMode.update_mode! _group_id, VeriMode::Custom
+          end
 
           begin
             bot.edit_message_text(

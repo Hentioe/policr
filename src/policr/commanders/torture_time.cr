@@ -36,7 +36,8 @@ module Policr
 
     def_text do
       current = t "torture.default_set", {seconds: DEFAULT_TORTURE_SEC}
-      if sec = KVStore.get_torture_sec _group_id
+      if (sec = Model::VerificationMode.get_torture_sec _group_id, DEFAULT_TORTURE_SEC) &&
+         sec != DEFAULT_TORTURE_SEC
         time_len = sec > 0 ? t("units.sec", {n: sec}) : t("units.inf")
         current = t("torture.exists_set", {time_len: time_len})
       end

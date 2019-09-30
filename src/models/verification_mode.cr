@@ -11,6 +11,21 @@ module Policr::Model
       updated_at: Time?
     )
 
+    def self.is?(chat_id : Int64, mode : VeriMode)
+      if v = find_by_chat_id chat_id
+        v.mode == mode.value
+        v
+      end
+    end
+
+    def self.get_mode(chat_id : Int64, default : VeriMode)
+      if v = find_by_chat_id chat_id
+        VeriMode.from_value?(v.mode) || default
+      else
+        default
+      end
+    end
+
     def self.find_by_chat_id(chat_id : Int64)
       where { _chat_id == chat_id }.first
     end

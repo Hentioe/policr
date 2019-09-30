@@ -1,6 +1,7 @@
 module Policr
   callbacker Settings do
     alias Toggle = Model::Toggle
+    alias VerificationMode = Model::VerificationMode
 
     NOT_MODIFIED = "Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message"
 
@@ -56,9 +57,9 @@ module Policr
         when "fault_tolerance"
           selected = Toggle.fault_tolerance?(_group_id)
 
-          if !selected && !(KVStore.enabled_dynamic_captcha?(_group_id) ||
-             KVStore.enabled_image_captcha?(_group_id) ||
-             KVStore.enabled_chessboard_captcha?(_group_id))
+          mode = VerificationMode.get_mode _group_id, VeriMode::Default
+
+          if !selected && (mode == VeriMode::Default || mode == VeriMode::Custom)
             bot.answer_callback_query(query.id, text: t("settings.fault_tolerance_not_supported"), show_alert: true)
             return
           end

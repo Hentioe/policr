@@ -36,5 +36,16 @@ module Policr::Model
     def self.find_by_chat_id(chat_id : Int64)
       where { _chat_id == chat_id }.first
     end
+
+    def gen_answers : Tuple(Array(Int32), Array(String))
+      lines = self.answers.split("\n", remove_empty: true)
+
+      true_indices = Array(Int32).new
+      answers = lines.map_with_index do |line, index|
+        true_indices.push(index + 1) if line.starts_with?("+")
+        line[1..]
+      end
+      {true_indices, answers}
+    end
   end
 end

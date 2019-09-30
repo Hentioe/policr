@@ -1,5 +1,7 @@
 module Policr
   commander Custom do
+    alias VerificationMode = Model::VerificationMode
+
     def handle(msg, from_nav)
       reply_menu do
         create_menu({
@@ -17,23 +19,21 @@ module Policr
     UNCHECKED = "○"
 
     def_markup do
+      mode = VerificationMode.get_mode _group_id, VeriMode::Default
+      puts mode.inspect
+
       checked_status = ->(way : Symbol) {
         case way
         when :custom
-          KVStore.custom(_group_id) ? CHECKED : UNCHECKED
+          mode == VeriMode::Custom ? CHECKED : UNCHECKED
         when :dynamic
-          KVStore.enabled_dynamic_captcha?(_group_id) ? CHECKED : UNCHECKED
+          mode == VeriMode::Arithmetic ? CHECKED : UNCHECKED
         when :image
-          KVStore.enabled_image_captcha?(_group_id) ? CHECKED : UNCHECKED
+          mode == VeriMode::Image ? CHECKED : UNCHECKED
         when :chessboard
-          KVStore.enabled_chessboard_captcha?(_group_id) ? CHECKED : UNCHECKED
+          mode == VeriMode::Chessboard ? CHECKED : UNCHECKED
         when :default
-          (
-            !KVStore.custom(_group_id) &&
-            !KVStore.enabled_dynamic_captcha?(_group_id) &&
-            !KVStore.enabled_image_captcha?(_group_id) &&
-            !KVStore.enabled_chessboard_captcha?(_group_id)
-          ) ? CHECKED : UNCHECKED
+          mode == VeriMode::Default ? CHECKED : UNCHECKED
         else
           UNCHECKED
         end
@@ -61,8 +61,10 @@ module Policr
 
     def_text custom_text do
       custom_text =
-        if custom = custom_tup = KVStore.custom(_group_id)
-          true_indices, title, answers = custom_tup
+        if Model::VerificationMode.is?(_group_id, VeriMode::Custom) &&
+           (suite = Model::QASuite.find_by_chat_id _group_id)
+          title = suite.title
+          true_indices, answers = suite.gen_answers
           String.build do |str|
             str << title
             str << "\n"

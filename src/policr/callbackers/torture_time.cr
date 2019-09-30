@@ -6,7 +6,7 @@ module Policr
 
         Cache.carving_torture_time_msg _chat_id, msg.message_id
         # 储存设置
-        KVStore.set_torture_sec(_group_id, sec.to_i)
+        Model::VerificationMode.set_torture_sec!(_group_id, sec.to_i)
         # 更新设置时间消息文本
         bot.edit_message_text(
           _chat_id,
