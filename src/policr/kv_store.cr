@@ -1,5 +1,4 @@
 require "rocksdb"
-require "ksuid"
 
 module Policr::KVStore
   # extend self
