@@ -19,23 +19,81 @@ namespace "rocksdb" do
   end
 
   namespace "migrate" do
-    # desc "迁移清真白名单"
-    # task "halal_white" do
-    #   prefix = "halal_white"
-    #   puts "#{prefix} started."
-    #   query_by_prefix "#{prefix}_" do |key, value|
-    #     user_id, is_contains =
-    #       if md = /(\d+)$/.match key
-    #         {md[1].to_i, value.to_i == 1}
-    #       else
-    #         {nil, nil}
-    #       end
-    #     if user_id && is_contains
-    #       Policr::Model::HalalWhiteList.add!(user_id, -1)
-    #     end
-    #   end
-    #   puts "#{prefix} done."
-    # end
+    desc "迁移验证方式（自定义验证）"
+    task "verification_mode_custom" do
+      prefix = "custom_text"
+      puts "#{prefix} started."
+      query_by_prefix "#{prefix}_" do |key, value|
+        group_id, content =
+          if md = /(\d+)$/.match key
+            {md[1].to_i64, value}
+          else
+            {nil, nil}
+          end
+        if group_id && content
+          lines = content.split("\n", remove_empty: true)
+          title = lines[0]
+          answers = lines[1..].join "\n"
+          Policr::Model::VerificationMode.update_mode! group_id, Policr::VeriMode::Custom
+          Policr::Model::QASuite.add! group_id, title, answers
+        end
+      end
+      puts "#{prefix} done."
+    end
+
+    desc "迁移验证方式（算术验证）"
+    task "verification_mode_arithmetic" do
+      prefix = "dynamic"
+      puts "#{prefix} started."
+      query_by_prefix "#{prefix}_" do |key, value|
+        group_id, enabled =
+          if md = /(\d+)$/.match key
+            {md[1].to_i64, value.to_i == 1}
+          else
+            {nil, nil}
+          end
+        if group_id && enabled
+          Policr::Model::VerificationMode.update_mode! group_id, Policr::VeriMode::Arithmetic
+        end
+      end
+      puts "#{prefix} done."
+    end
+
+    desc "迁移验证方式（图片验证）"
+    task "verification_mode_image" do
+      prefix = "image_captcha"
+      puts "#{prefix} started."
+      query_by_prefix "#{prefix}_" do |key, value|
+        group_id, enabled =
+          if md = /(\d+)$/.match key
+            {md[1].to_i64, value.to_i == 1}
+          else
+            {nil, nil}
+          end
+        if group_id && enabled
+          Policr::Model::VerificationMode.update_mode! group_id, Policr::VeriMode::Image
+        end
+      end
+      puts "#{prefix} done."
+    end
+
+    desc "迁移验证方式（棋局验证）"
+    task "verification_mode_chessboard" do
+      prefix = "chessboard"
+      puts "#{prefix} started."
+      query_by_prefix "#{prefix}_" do |key, value|
+        group_id, enabled =
+          if md = /(\d+)$/.match key
+            {md[1].to_i64, value.to_i == 1}
+          else
+            {nil, nil}
+          end
+        if group_id && enabled
+          Policr::Model::VerificationMode.update_mode! group_id, Policr::VeriMode::Chessboard
+        end
+      end
+      puts "#{prefix} done."
+    end
   end
 end
 

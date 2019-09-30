@@ -13,12 +13,16 @@ module Policr::Model
     )
 
     def self.add!(chat_id : Int64, title : String, answers : String)
-      create!({
-        chat_id: chat_id,
-        title:   title,
-        answers: answers,
-        enabled: true,
-      })
+      if v = find_by_chat_id chat_id # 临时性，支持多套问答以后将删除
+        update! v.id, title, answers
+      else
+        create!({
+          chat_id: chat_id,
+          title:   title,
+          answers: answers,
+          enabled: true,
+        })
+      end
     end
 
     def self.update!(id : Int32 | Nil, title : String, answers : String)
