@@ -72,10 +72,6 @@ shards:
     github: luislavena/radix
     version: 0.3.9
 
-  rocksdb:
-    github: maiha/rocksdb.cr
-    version: 0.5.1
-
   rule_engine:
     github: policr-community/rule_engine
     commit: bb7df1bd1db56657b2c97a56d434b79356476eed

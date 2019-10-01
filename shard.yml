@@ -32,9 +32,6 @@ dependencies:
     version: ~> 1.8.0
   schedule:
     github: hugoabonizio/schedule.cr
-  rocksdb:
-    github: maiha/rocksdb.cr
-    version: ~> 0.5.0
   kemal:
     github: kemalcr/kemal
   kemal-session:
