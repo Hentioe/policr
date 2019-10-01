@@ -84,6 +84,12 @@ module Policr
               Cache.carving_global_rules_msg bot.owner_id, sended_msg.message_id
               true
             end
+          when "unban" # 解封群成员
+            group_id = args[1].strip.to_i64
+            target_user_id = args[2].strip.to_i
+
+            bot.unban_chat_member group_id, target_user_id
+            true
           else
             false
           end
