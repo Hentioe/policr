@@ -20,7 +20,6 @@ module Policr
 
     def_markup do
       mode = VerificationMode.get_mode _group_id, VeriMode::Default
-      puts mode.inspect
 
       checked_status = ->(way : Symbol) {
         case way

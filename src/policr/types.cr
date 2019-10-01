@@ -23,7 +23,12 @@ module Policr
   end
 
   enum VerificationStatus
-    Init; Passed; Slowed; Next; Left
+    Init
+    Passed
+    Slowed
+    Next
+    Left
+    Wrong
   end
 
   enum TortureTimeType

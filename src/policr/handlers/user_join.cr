@@ -298,8 +298,18 @@ module Policr
     KICK_ISSUE_IS_ADMIN   = "Bad Request: user is an administrator of the chat"
     KICK_ISSUE_NOT_RIGHTS = "Bad Request: not enough rights to restrict/unrestrict chat member"
 
-    def failed(chat_id, message_id, user_id, admin : FromUser? = nil, timeout = false, photo = false, reply_id : Int32? = nil)
-      Cache.verification_status_clear chat_id, user_id
+    def failed(chat_id : Int64,
+               message_id : Int32,
+               user_id : Int32,
+               admin : FromUser? = nil,
+               timeout = false,
+               photo = false,
+               reply_id : Int32? = nil)
+      if timeout || admin
+        Cache.verification_status_clear chat_id, user_id
+      else
+        Cache.verification_wrong chat_id, user_id
+      end
       begin
         bot.kick_chat_member(chat_id, user_id)
       rescue ex : TelegramBot::APIException

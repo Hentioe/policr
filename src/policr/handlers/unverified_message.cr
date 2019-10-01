@@ -5,6 +5,7 @@ module Policr
     match do
       all_pass? [
         !deleted?,
+        !msg.left_chat_member,
         (user = msg.from),
         (status = Cache.verification?(msg.chat.id, user.id)),
         status == VerificationStatus::Init,
