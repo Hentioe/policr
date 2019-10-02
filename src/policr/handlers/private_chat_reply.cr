@@ -53,7 +53,7 @@ module Policr
             end
           when "unban"
             group_id = args[1].to_i64
-            bot.unban_chat_member group_id, user_id
+            bot.unban_chat_member group_id, user_id.to_i32
             true
           else
             false
