@@ -49,9 +49,14 @@ module Policr
               else
                 bot.send_message bot.owner_id, t("appeal.human.illegal_id")
               end
+              true
             end
+          when "unban"
+            group_id = args[1].to_i64
+            bot.unban_chat_member group_id, user_id
+            true
           else
-            nil
+            false
           end
         rescue ex : Exception
           bot.send_message bot.owner_id, ex.message || ex.to_s
