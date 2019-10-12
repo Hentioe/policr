@@ -70,7 +70,7 @@ private_forward:
   view_userinfo: "查看用户信息"
   userinfo: |
     用户全名：%{fullname}
-    用户ID：`%{userid}` 
+    用户ID：`%{userid}`
     被举报 %{reported_times} 次，仍生效 %{valid_reported_total} 个（大于 0 则处入黑名单）
     申诉 %{appeal_times} 次，产生过 %{report_times} 个举报
 
@@ -206,8 +206,8 @@ captcha_result:
     is_admin: "他！有！权！限！"
     not_rights: "我！没！权！限！"
   admin_ban: "(|||ﾟдﾟ) 好吓人～ [他](tg://user?id=%{user_id})还没来得及验证就被 %{admin} 直接干掉了。"
-  timeout: "(〒︿〒) [他](tg://user?id=%{user_id})验证超时[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久的离开了我们[⁽²⁾](https://policr.bluerain.io#failure_result)。 #FAILURE #TIMEOUT"
-  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久的离开了我们[⁽²⁾](https://policr.bluerain.io#failure_result)。 #FAILURE #MISTAKE"
+  timeout: "(〒︿〒) [他](tg://user?id=%{user_id})验证超时[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久地离开了我们[⁽²⁾](https://policr.bluerain.io#failure_result)。 #FAILURE #TIMEOUT"
+  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久地离开了我们[⁽²⁾](https://policr.bluerain.io#failure_result)。 #FAILURE #MISTAKE"
 restrict_bot_menu:
   derestrict: "解除限制"
   remove: "直接移除"
@@ -266,7 +266,7 @@ language:
   desc: |
     选择机器人的工作语言，立即生效。
 
-    很遗憾的告诉大家，由于国际化的进程才刚开始，目前只有最基本的句子被翻译。强烈建议您加入我们，贡献翻译。
+    很遗憾地告诉大家，由于国际化的进程才刚开始，目前只有最基本的句子被翻译。强烈建议您加入我们，贡献翻译。
   code:
     zh_hans: "简体中文 🇨🇳"
     zh_hant: "繁體中文 🇭🇰"
@@ -325,7 +325,7 @@ voting:
     start: |
       即将开始进行投票申请小测验。本测验的最终目的是设立投票准则，并强制保证相关准则被任何一个申请通过的人熟知。
 
-      我们的强制手段是通过回答一系列的以场景预设为主的题目做到的，只有全部通过才能获得权限。当然，这不是过滤手段，所以你可以无限次的重新测验，直到每一个都能通过为止。
+      我们的强制手段是通过回答一系列的以场景预设为主的题目做到的，只有全部通过才能获得权限。当然，这不是过滤手段，所以你可以无限次地重新测验，直到每一个都能通过为止。
       注意，申请投票权可能还有一些硬门槛作为前提，例如举报数量以及有效举报率。这个门槛可能随时调整，但通常不高。如果您没有达到申请条件，请多使用举报功能（但切记不要滥用）。
     verification: |
       **请回答**
@@ -371,7 +371,7 @@ max_length:
     行数： `%{rows}`
 
     如果您想自定义以上限制，可以回复本消息用空格分隔的两个数字。前一个表示字数，后一个表示行数。
-    若您只回复一个数字，机器人则会根据数字的大小智能的决定设置的是字数限制还是行数限制。
+    若您只回复一个数字，机器人则会根据数字的大小智能地决定设置的是字数限制还是行数限制。
 
     注意：此功能随时可能不继续开放，后续会另行通知。
   invalid_value: "无效的值：%{size}"
@@ -389,7 +389,7 @@ gomoku:
   start: |
     这是一个临时存在的用以测试五子棋算法是否稳定的玩具指令。您可以在随机生成的棋局落下一子以赢得游戏。它将来会应用于新的验证方式中。如果你发现问题，请向社区反馈，顺便感谢您的贡献。
 
-    注意了，您是执 ● 子的一方，而 ○ 子是您的对手，它并不是用来暗示您落子的位置。
+    注意了，您是执 ● 子的一方，而 ○ 子是您的对手，它并不是用来暗示您落子的位置的。
 after_event:
   tip: "事后审核[⁽¹⁾](https://policr.bluerain.io#afterwards)，您已被禁言。请主动完成验证以解除限制。"
   torture: "开始验证"
