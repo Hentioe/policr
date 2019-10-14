@@ -11,6 +11,12 @@ steps:
       - POLICR_ENV=test crystal sam.cr -- db:setup
       - POLICR_ENV=test crystal spec
 
+  - name: assets-build
+    image: node:stretch
+    commands:
+      - npm install --prefix ./assets
+      - npm run deploy --prefix ./assets
+
   - name: app-build
     image: bluerain/policr:build
     pull: true
