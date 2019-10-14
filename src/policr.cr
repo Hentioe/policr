@@ -5,6 +5,7 @@ Policr::CLI::Parser.run
 require "../config/*"
 require "dotenv"
 require "i18n"
+require "digests"
 
 module Policr
   ENV_PREFIX = "POLICR_BOT"
@@ -24,6 +25,12 @@ module Policr
     logger = Logger.new(STDOUT)
     logger.level = config.prod ? Logger::INFO : Logger::DEBUG
     logger.info "ready to start"
+
+    unless config.prod
+      ENV["DIGESTS_ENV"] = "dev"
+    else
+      Digests.init # Default "static"
+    end
 
     data = {
       username:           from_env("username"),

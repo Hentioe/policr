@@ -16,6 +16,10 @@ shards:
     github: crystal-lang/crystal-db
     version: 0.6.0
 
+  digests:
+    github: Hentioe/digests.cr
+    commit: b62d1272fd204e1c72be58f8a8338c77a66e1e5c
+
   dispatch:
     github: bmulvihill/dispatch
     version: 0.1.0

@@ -1,0 +1,11 @@
+@import "../node_modules/bulma/bulma.sass";
+
+.pol-describe {
+  .section {
+    padding: 1rem 0.5rem;
+  }
+  img {
+    box-shadow: 0 0 15px #c0c0c0;
+    border-radius: 5px;
+  }
+}

@@ -7,7 +7,7 @@ module Policr::Web
   def start(logger, bot)
     config = CLI::Config.instance
     serve_static({"gzip" => false})
-    public_folder "public"
+    public_folder "static"
     Kemal.config.logger = LoggerHandler.new(logger)
 
     Kemal::Session.config do |config|

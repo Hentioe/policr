@@ -7,10 +7,7 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"
     />
     <title>Policr · <%= title %></title>
-    <link rel="stylesheet" href="/lib/bulma-0.7.4/bulma.min.css" />
-    <link rel="stylesheet" href="/css/index.css" />
-    <script defer src="/js/index.js"></script>
-    <script defer src="/lib/fontawesome-5.8.1/all.min.js"></script>
+    <link rel="stylesheet" href="<%= Digests.logical_path("/css/app.css") %>"/>
   </head>
 
   <body>
@@ -23,7 +20,7 @@
         <div class="container">
           <div class="navbar-brand">
             <a class="navbar-item" href="/">
-              <img src="/logo3.png" />
+              <img src="<%= Digests.logical_path("/logo3.png") %>" />
             </a>
 
             <a
@@ -120,6 +117,7 @@
       </nav>
     </div>
     <%= content %>
+    <script type="text/javascript" src="<%= Digests.logical_path("/js/app.js") %>"></script>
     <footer class="footer">
       <div class="content has-text-centered">
         <p>

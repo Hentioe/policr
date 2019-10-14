@@ -10,4 +10,6 @@
 /dev
 /config/*.secret.env
 
-/data
+/data/
+/assets/node_modules/
+/static/

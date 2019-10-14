@@ -53,6 +53,8 @@ dependencies:
   dispatch:
     github: bmulvihill/dispatch
     version: ~> 0.1.0
+  digests:
+    github: Hentioe/digests.cr
 development_dependencies:
   ameba:
     github: veelenga/ameba
