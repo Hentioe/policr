@@ -11,7 +11,7 @@ RUN mkdir "$APP_HOME" && \
 
 
 COPY bin $APP_HOME
-COPY public "$APP_HOME/static"
+COPY static "$APP_HOME/static"
 COPY locales "$APP_HOME/locales"
 
 
