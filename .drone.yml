@@ -22,6 +22,8 @@ steps:
     pull: true
     commands:
       - shards build policr --release --progress --production --warnings=all
+      - crystal sam.cr -- digests:make
+      - crystal sam.cr -- digests:clean_undigested
 
   - name: app-image-push
     image: plugins/docker
