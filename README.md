@@ -1,5 +1,8 @@
 # Policr Bot
+
 [![Build Status](https://cloud.drone.io/api/badges/Hentioe/policr/status.svg)](https://cloud.drone.io/Hentioe/policr)
+[![GitHub issues](https://img.shields.io/github/issues/Hentioe/policr)](https://github.com/Hentioe/policr/issues)
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 大概是 Telegram 平台最强大的审核机器人
 
