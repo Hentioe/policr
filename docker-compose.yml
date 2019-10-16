@@ -6,7 +6,6 @@ services:
     stdin_open: true
     ports:
       - 8090:8080
-      - 8091:8081
     environment:
       POLICR_BOT_TOKEN: "${POLICR_BOT_TOKEN}"
       POLICR_BOT_USERNAME: "${POLICR_BOT_USERNAME}"

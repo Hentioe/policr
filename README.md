@@ -1,4 +1,5 @@
-# Policr Bot [![Build Status](https://github-ci.bluerain.io/api/badges/Hentioe/policr/status.svg)](https://github-ci.bluerain.io/Hentioe/policr)
+# Policr Bot
+[![Build Status](https://cloud.drone.io/api/badges/Hentioe/policr/status.svg)](https://cloud.drone.io/Hentioe/policr)
 
 大概是 Telegram 平台最强大的审核机器人
 
