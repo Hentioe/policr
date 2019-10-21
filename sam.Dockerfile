@@ -1,4 +1,4 @@
-FROM bluerain/policr:samrt
+FROM bluerain/policr:sam-runtime
 
 
 ARG APP_HOME=/policr
