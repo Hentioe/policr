@@ -22,10 +22,10 @@ VOLUME ["/data"]
 
 
 EXPOSE 8080
-EXPOSE 8081
 
 
 ENV POLICR_ENV=prod
+ENV POLICR_DATABASE_HOST=/data
 
 
-ENTRYPOINT policr --prod --dpath /data -p 8080
+ENTRYPOINT policr --prod dpath=/data port=8080

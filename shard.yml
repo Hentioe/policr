@@ -53,6 +53,8 @@ dependencies:
     branch: master
   digests:
     github: Hentioe/digests.cr
+  clicr:
+    github: j8r/clicr
 development_dependencies:
   ameba:
     github: veelenga/ameba

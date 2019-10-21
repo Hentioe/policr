@@ -12,6 +12,10 @@ shards:
     github: Sija/base62.cr
     version: 0.1.2
 
+  clicr:
+    github: j8r/clicr
+    version: 0.7.0
+
   db:
     github: crystal-lang/crystal-db
     version: 0.7.0

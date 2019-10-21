@@ -100,8 +100,8 @@ module Policr
     getter owner_id : String
     getter community_group_id : Int64
 
-    def initialize(username, token, @owner_id, community_group_id, logger, @snapshot_channel, @voting_channel)
-      super(username, token, logger: logger)
+    def initialize(username, token, @owner_id, community_group_id, @snapshot_channel, @voting_channel)
+      super(username, token, logger: Logging.get_logger)
       @username = username
       @community_group_id = community_group_id.to_i64
 

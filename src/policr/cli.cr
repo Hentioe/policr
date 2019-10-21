@@ -1,60 +1,42 @@
-require "admiral"
+require "clicr"
 
 module Policr::CLI
-  DEFAULT_DPATH = "data"
-  DEFAULT_PROD  = false
-  DEFAULT_PORT  = 8080
-
-  class Config
-    @@instance = Config.new
-
-    getter prod = DEFAULT_PROD
-    getter dpath = DEFAULT_DPATH
-    getter port = DEFAULT_PORT
-
-    def initialize
-    end
-
-    private def initialize(@prod, @dpath, @port)
-    end
-
-    def self.init(flags)
-      @@instance = self.new(
-        flags.prod,
-        flags.dpath,
-        flags.port
+  macro def_action(action, exclude = false)
+    def cli_run
+      Clicr.create(
+        name: "policr",
+        info: "A Telegram bot",
+        action: {{action}},
+        variables: {
+          port: {
+            info:     "Web server port",
+            default:  8080,
+          },
+          llevel: {
+            info:     "Log level",
+            default:  "info",
+          },
+          dpath: {
+            info:     "Data directory path",
+            default:  "./data",
+          }
+        },
+        options: {
+          prod: {
+            info:     "Running in prod mode",
+          },
+        }
       )
     end
 
-    def self.instance
-      @@instance
-    end
-  end
-
-  class Parser < Admiral::Command
-    define_help description: "Telegram bot focused on reviewing group members"
-
-    define_flag prod : Bool,
-      description: "Running in production mode",
-      default: DEFAULT_PROD,
-      long: prod,
-      required: true
-
-    define_flag dpath : String,
-      description: "Data path (does not contain data directory)",
-      default: DEFAULT_DPATH,
-      long: dpath,
-      required: true
-
-    define_flag port : Int32,
-      description: "Web server listening port",
-      default: DEFAULT_PORT,
-      long: port,
-      short: p,
-      required: true
-
-    def run
-      Config.init(flags)
+    begin
+      cli_run unless {{exclude}}
+    rescue ex : Clicr::Help
+      puts ex; exit 0
+    rescue ex : Clicr::ArgumentRequired | Clicr::UnknownCommand | Clicr::UnknownOption | Clicr::UnknownVariable
+      abort ex
+    rescue ex
+      raise ex
     end
   end
 end

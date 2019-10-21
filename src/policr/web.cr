@@ -4,11 +4,10 @@ require "kemal-session"
 module Policr::Web
   extend self
 
-  def start(logger, bot)
-    config = CLI::Config.instance
+  def start(port : Int, prod : Bool, bot)
     serve_static({"gzip" => false})
     public_folder "static"
-    Kemal.config.logger = LoggerHandler.new(logger)
+    Kemal.config.logger = LoggerHandler.new(Logging.get_logger)
 
     Kemal::Session.config do |config|
       config.secret = "demo_sec"
@@ -79,8 +78,8 @@ module Policr::Web
       "瞎访问啥呢你……"
     end
 
-    Kemal.config.env = "production" if config.prod
-    Kemal.run(args: nil, port: config.port)
+    Kemal.config.env = "production" if prod
+    Kemal.run(args: nil, port: port)
   end
 
   def find_token(env)

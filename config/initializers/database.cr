@@ -1,7 +1,5 @@
-require "json" # 下一个 Sqlite3 适配器将会移除
 require "jennifer"
 require "jennifer_sqlite3_adapter"
-require "../../src/policr/cli"
 
 Jennifer::Config.configure do |conf|
   conf.host = "."
@@ -9,11 +7,11 @@ Jennifer::Config.configure do |conf|
   conf.local_time_zone_name = "UTC"
 
   env = ENV["POLICR_ENV"]? || "dev"
-  conf.host = Policr::CLI::Config.instance.dpath
+  conf.host = ENV["POLICR_DATABASE_HOST"]? || "./data"
   conf.db = "#{env}.db"
 
   level = env == "prod" ? Logger::INFO : Logger::DEBUG
   conf.logger.level = level
 end
 
-Jennifer::Config.from_uri(ENV["DATABASE_URI"]) if ENV.has_key?("DATABASE_URI")
+Jennifer::Config.from_uri(ENV["POLICR_DATABASE_URI"]) if ENV.has_key?("POLICR_DATABASE_URI")
