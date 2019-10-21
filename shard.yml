@@ -42,17 +42,15 @@ dependencies:
     github: TechMagister/i18n.cr
   jennifer:
     github: imdrasil/jennifer.cr
-    version: ~> 0.8.0
+    version: ~> 0.8.3
   sam:
     github: imdrasil/sam.cr
-  sqlite3:
-    github: crystal-lang/crystal-sqlite3
-    version: ~> 0.13.0
   jennifer_sqlite3_adapter:
     github: imdrasil/jennifer_sqlite3_adapter
+    branch: master
   dispatch:
     github: bmulvihill/dispatch
-    version: ~> 0.1.0
+    branch: master
   digests:
     github: Hentioe/digests.cr
 development_dependencies:
