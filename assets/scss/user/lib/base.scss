@@ -1,0 +1,14 @@
+// 定义变量
+
+// 重写 Bulma 变量
+$primary: #29D1ED;
+$danger: #ed6129;
+$footer-background-color: #502f79;
+$footer-color: white;
+
+// 扩展
+%josefin-font {
+  font-family: "Josefin Sans", -apple-system, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    "Helvetica", "Arial", sans-serif;
+}

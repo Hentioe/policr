@@ -1,10 +1,9 @@
-@import "./user/base.scss";
+@import "./user/lib/base.scss";
 @import "../node_modules/bulma/bulma.sass";
+@import "./user/page.scss";
 
 footer.footer {
-  font-family: "Josefin Sans", -apple-system, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    "Helvetica", "Arial", sans-serif;
+  @extend %josefin-font;
   strong {
     color: white;
   }
