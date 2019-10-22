@@ -1,14 +1,16 @@
 // 定义变量
+$default-main-color: #f5f5f5;
 
 // 重写 Bulma 变量
-$primary: #29D1ED;
+$navbar-background-color: $default-main-color;
+$navbar-item-hover-background-color: darken($navbar-background-color, 5%);
 $danger: #ed6129;
-$footer-background-color: #502f79;
+$footer-background-color: #412662;
 $footer-color: white;
 
 // 扩展
-%josefin-font {
-  font-family: "Josefin Sans", -apple-system, "Segoe UI", "Roboto", "Oxygen",
+%aleo-font {
+  font-family: "Aleo", -apple-system, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     "Helvetica", "Arial", sans-serif;
 }

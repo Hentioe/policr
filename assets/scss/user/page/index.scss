@@ -1,5 +1,6 @@
 @import "../lib/base.scss";
 
 #IndexPage {
-  @extend %josefin-font;
+  background-color: $navbar-background-color;
+  @extend %aleo-font;
 }

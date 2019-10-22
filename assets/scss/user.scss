@@ -2,12 +2,24 @@
 @import "../node_modules/bulma/bulma.sass";
 @import "./user/page.scss";
 
+nav.navbar {
+  a.navbar-item,
+  .navbar-item.has-dropdown .navbar-link,
+  .navbar-dropdown a.navbar-item {
+    &:focus,
+    &:hover,
+    &.is-active {
+      background-color: darken($navbar-background-color, 5%);
+      color: $navbar-item-color;
+    }
+  }
+}
 footer.footer {
-  @extend %josefin-font;
+  @extend %aleo-font;
   strong {
     color: white;
   }
   a {
-    color: darken(white, 35%);
+    color: darken(white, 25%);
   }
 }
