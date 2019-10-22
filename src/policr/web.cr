@@ -18,6 +18,11 @@ module Policr::Web
       render "src/views2/index.html.ecr", "src/views2/layout.html.ecr"
     end
 
+    get "/getting-started" do
+      title = "快速入门"
+      render "src/views2/getting-started.html.ecr", "src/views2/layout.html.ecr"
+    end
+
     get "/" do
       title = "专注于审核的 Telegram 机器人"
       render "src/views/index.html.ecr", "src/views/layout.html.ecr"
