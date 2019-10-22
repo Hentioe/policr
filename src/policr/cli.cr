@@ -25,6 +25,9 @@ module Policr::CLI
           prod: {
             info:     "Running in prod mode",
           },
+          oweb: {
+            info:     "Only web server"
+          }
         }
       )
     end

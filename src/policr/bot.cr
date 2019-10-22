@@ -100,14 +100,24 @@ module Policr
     getter owner_id : String
     getter community_group_id : Int64
 
-    def initialize(username, token, @owner_id, community_group_id, @snapshot_channel, @voting_channel)
+    def initialize(username,
+                   token,
+                   @owner_id,
+                   community_group_id,
+                   @snapshot_channel,
+                   @voting_channel,
+                   only_web : Bool = false)
       super(username, token, logger: Logging.get_logger)
       @username = username
       @community_group_id = community_group_id.to_i64
 
-      me = get_me || raise Exception.new("Failed to get bot data")
-      @self_id = me["id"].as_i
-
+      @self_id =
+        unless only_web
+          me = get_me || raise Exception.new("Failed to get bot data")
+          me["id"].as_i
+        else
+          -1
+        end
       # 注册消息处理模块
       regall [
         SelfLeftHandler,

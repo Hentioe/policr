@@ -1,0 +1,132 @@
+<html class="has-navbar-fixed-top">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#ED6129" />
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#ED6129" />
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#ED6129" />
+    <title>PolicrBot</title>
+    <link
+      rel="stylesheet"
+      href='<%= Digests.logical_path("/css/user.css") %>'
+    />
+  </head>
+  <body>
+    <header>
+      <nav
+        class="navbar is-primary is-fixed-top pr-nav"
+        role="navigation"
+        aria-label="main navigation"
+      >
+        <div class="container">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+              首页
+            </a>
+            <a href="/getting-started" class="navbar-item">
+              入门
+            </a>
+            <a
+              class="navbar-item"
+              target="_blank"
+              href="https://policr.bluerain.io/community"
+            >
+              社区
+            </a>
+            <a
+              role="button"
+              class="navbar-burger burger"
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarBasicExample"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-end">
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                  教程导航
+                </a>
+                <div class="navbar-dropdown is-boxed">
+                  <a class="navbar-item">
+                    功能指南
+                  </a>
+                  <a class="navbar-item">
+                    常见问题
+                  </a>
+                  <a class="navbar-item">
+                    私有部署
+                  </a>
+                  <hr class="navbar-divider" />
+                  <a class="navbar-item">
+                    版本变化
+                  </a>
+                </div>
+              </div>
+              <div class="navbar-item">
+                <div class="field is-grouped">
+                  <p class="control">
+                    <a
+                      class="button has-text-white has-background-info"
+                      target="_blank"
+                      style="border:none;"
+                      href="https://t.me/policr_bot"
+                    >
+                      <span class="icon">
+                        <i class="fas fa-robot"></i>
+                      </span>
+                      <span>
+                        领取机器人
+                      </span>
+                    </a>
+                  </p>
+                  <p class="control">
+                    <a
+                      class="button has-text-white has-background-black"
+                      style="border:none;"
+                      href="https://github.com/Hentioe/policr"
+                      target="_blank"
+                    >
+                      <span class="icon">
+                        <i class="fab fa-github-alt"></i>
+                      </span>
+                      <span>GitHub</span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <%= content %>
+    </main>
+    <footer class="footer has-text-white">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Policr</strong> 项目由
+          <a href="https://github.com/Hentioe">Hentioe</a>
+          创建，采用
+          <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
+          许可证开放源代码
+        </p>
+      </div>
+    </footer>
+    <script
+      type="text/javascript"
+      src='<%= Digests.logical_path("/js/user.js") %>'
+    ></script>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
+  </body>
+</html>

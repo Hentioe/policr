@@ -4,13 +4,18 @@ require "kemal-session"
 module Policr::Web
   extend self
 
-  def start(port : Int, prod : Bool, bot)
+  def start(port : Int, prod : Bool, bot : Bot)
     serve_static({"gzip" => false})
     public_folder "static"
     Kemal.config.logger = LoggerHandler.new(Logging.get_logger)
 
     Kemal::Session.config do |config|
       config.secret = "demo_sec"
+    end
+
+    get "/beta" do
+      title = "专注于审核的 Telegram 机器人"
+      render "src/views2/index.html.ecr", "src/views2/layout.html.ecr"
     end
 
     get "/" do
