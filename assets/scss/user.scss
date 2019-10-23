@@ -23,3 +23,8 @@ footer.footer {
     color: darken(white, 25%);
   }
 }
+
+.pr-sidebar {
+  position: sticky;
+  top: $navbar-height;
+}

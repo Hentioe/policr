@@ -1,4 +1,7 @@
-<html class="has-navbar-fixed-top">
+<% is_home_path = home_page?(env) %>
+
+
+<html<%= is_home_path ? " class=\"has-navbar-fixed-top\"" : "" %>>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -18,13 +21,13 @@
   <body>
     <header>
       <nav
-        class="navbar is-fixed-top pr-nav"
+        class="navbar pr-nav <%= is_home_path ? "is-fixed-top" : "is-info" %>"
         role="navigation"
         aria-label="main navigation"
       >
         <div class="container">
           <div class="navbar-brand">
-            <a class="navbar-item" href="/">
+            <a class="navbar-item" href="/beta">
               首页
             </a>
             <a href="/getting-started" class="navbar-item">
@@ -60,7 +63,7 @@
                   <a class="navbar-item">
                     功能指南
                   </a>
-                  <a class="navbar-item">
+                  <a class="navbar-item" href="/qa">
                     常见问题
                   </a>
                   <a class="navbar-item">
@@ -76,7 +79,7 @@
                 <div class="field is-grouped">
                   <p class="control">
                     <a
-                      class="button has-text-white has-background-info"
+                      class="button has-text-white has-background-primary"
                       target="_blank"
                       style="border:none;"
                       href="https://t.me/policr_bot"

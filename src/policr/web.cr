@@ -4,6 +4,10 @@ require "kemal-session"
 module Policr::Web
   extend self
 
+  def home_page?(env : HTTP::Server::Context)
+    env.request.path == "/beta"
+  end
+
   def start(port : Int, prod : Bool, bot : Bot)
     serve_static({"gzip" => false})
     public_folder "static"
@@ -13,14 +17,19 @@ module Policr::Web
       config.secret = "demo_sec"
     end
 
-    get "/beta" do
+    get "/beta" do |env|
       title = "专注于审核的 Telegram 机器人"
       render "src/views2/index.html.ecr", "src/views2/layout.html.ecr"
     end
 
-    get "/getting-started" do
+    get "/getting-started" do |env|
       title = "快速入门"
       render "src/views2/getting-started.html.ecr", "src/views2/layout.html.ecr"
+    end
+
+    get "/qa" do |env|
+      title = "常见问题"
+      render "src/views2/qa.html.ecr", "src/views2/layout.html.ecr"
     end
 
     get "/" do
