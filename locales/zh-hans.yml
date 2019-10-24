@@ -30,13 +30,13 @@ add_to_group:
 
     毕竟做机器人呐也得有尊严！
 
-    附加阅读：[如何使用我？](https://policr.bluerain.io)"
+    附加阅读：[快速入门](https://policr.bluerain.io/getting_started)"
   from_admin: |
     请把我弄过来的变态（%{mention}）负起责任，进行基本设置以让我工作起来。
 
     注意了，如果你不是群主，你需要先通过群主启用信任管理，不然你也是无法控制我的～ 如果你们决定不使用我，请点击下方的按钮让我自己离开，做机器人呐也得有尊严！
 
-    附加阅读：[快速入门](https://policr.bluerain.io)
+    附加阅读：[快速入门](https://policr.bluerain.io/getting_started)"
   no_permission: "请联系管理员使用此按钮！"
   subscription_update: "订阅更新"
   no_right_to_invite: |
@@ -206,8 +206,8 @@ captcha_result:
     is_admin: "他！有！权！限！"
     not_rights: "我！没！权！限！"
   admin_ban: "(|||ﾟдﾟ) 好吓人～ [他](tg://user?id=%{user_id})还没来得及验证就被 %{admin} 直接干掉了。"
-  timeout: "(〒︿〒) [他](tg://user?id=%{user_id})验证超时[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久地离开了我们[⁽²⁾](https://policr.bluerain.io#failure_result)。 #FAILURE #TIMEOUT"
-  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久地离开了我们[⁽²⁾](https://policr.bluerain.io#failure_result)。 #FAILURE #MISTAKE"
+  timeout: "(〒︿〒) [他](tg://user?id=%{user_id})验证超时[⁽¹⁾](https://policr.bluerain.io/qa#verification_failure)，永久地离开了我们[⁽²⁾](https://policr.bluerain.io/qa#verification_failure_result)。 #FAILURE #TIMEOUT"
+  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久地离开了我们[⁽²⁾](https://policr.bluerain.io#verification_failure_result)。 #FAILURE #MISTAKE"
 restrict_bot_menu:
   derestrict: "解除限制"
   remove: "直接移除"
@@ -220,11 +220,11 @@ only_private: "此指令仅在私聊中可用。"
 private_settings_sended: "已私聊设置。"
 no_managed_groups: "无受管群组，无法申请后台令牌。"
 unban_message: "o(￣▽￣)ｄ [TA](tg://user?id=%{user_id}) 被善良的 %{admin} 解封了，随时可以重新回来。"
-add_to_whitelist: "o(￣▽￣)ｄ 已被解封并加入到[白名单](https://policr.bluerain.io#whitelist)，下次不会再干[TA](tg://user?id=%{user_id})了。"
+add_to_whitelist: "o(￣▽￣)ｄ 已被解封并加入到[白名单](https://policr.bluerain.io/qa#whitelist)，下次不会再干[TA](tg://user?id=%{user_id})了。"
 unban_error: "解封失败，"
 unban_bot: "已解除限制，希望是个有用的机器人。"
 remove_bot: "已经被移除啦~ 安全危机解除！"
-obsolete_btn: "此消息的[内联键盘功能已经过时了](https://policr.bluerain.io#inline_keyboard)，没有进行任何操作~"
+obsolete_btn: "此消息的[内联键盘功能已经过时了](https://policr.bluerain.io/qa#inline_keyboard_invalid)，没有进行任何操作~"
 unrelated_click: "又不是问你，自作多情！"
 unrelated_warning: "(#`Д´)ﾉ 请无关人员不要来搞事"
 pass_alert: "✔ 验证通过"
@@ -254,8 +254,8 @@ template:
     %{content}
     ```
     附加教程：
-    1. [在问题模板中嵌入链接](https://policr.bluerain.io#link_in_template)
-    2. [在问题模板中插入变量](https://policr.bluerain.io#vars_in_template)
+    1. [在问题模板中嵌入链接](https://policr.bluerain.io/traditional#link_in_template)
+    2. [在问题模板中插入变量](https://policr.bluerain.io/traditional#vars_in_template)
 
     **只有回复本消息才会被认为是设置验证提示模板**。请尽快回复，本消息不保证时效性。回复完成记得启用。
 
@@ -391,7 +391,7 @@ gomoku:
 
     注意了，您是执 ● 子的一方，而 ○ 子是您的对手，它并不是用来暗示您落子的位置。
 after_event:
-  tip: "事后审核[⁽¹⁾](https://policr.bluerain.io#afterwards)，您已被禁言。请主动完成验证以解除限制。"
+  tip: "事后审核[⁽¹⁾](https://policr.bluerain.io/qa#afterwards)，您已被禁言。请主动完成验证以解除限制。"
   torture: "开始验证"
   unban: "解除禁言"
   kick: "直接移除"
@@ -407,7 +407,7 @@ torture:
 
     如果您决定通过回复自定义时间，请即时回复，避免机器人重启让本消息失效。如果回复的数字过大，可能会被视作无倒计时。
 
-    附加阅读：[不限时验证的危害](https://policr.bluerain.io#no_time_limit)
+    附加阅读：[不限时验证的危害](https://policr.bluerain.io/qa#no_time_limit)
   inf_time: "无验证倒计时（不推荐）"
 custom:
   wrong_format: "不合法的格式。注意至少需要存在一个正确（即前缀+的行）答案。"
@@ -431,4 +431,4 @@ custom:
     ```
     注意：**只有回复本消息才会被认为是自定义验证问题**。请尽快回复，本消息不保证时效性。
 
-    附加教程：[推荐设置](https://policr.bluerain.io#custom)
+    附加教程：[推荐设置](https://policr.bluerain.io/qa#best_custom)

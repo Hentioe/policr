@@ -20,59 +20,28 @@
               常见问题
             </p>
             <ul class="menu-list">
-              <li><a>审核具体指的什么？</a></li>
-              <li><a>为什么加群要验证？</a></li>
-              <li><a>哪种验证方式最好？</a></li>
-              <li><a>为什么要针对清真？</a></li>
-              <li><a>举报能有什么益处？</a></li>
-              <li><a>验证失败不是真人？</a></li>
-              <li><a>验证失有什么后果？</a></li>
-              <li><a>不限时验证的害处？</a></li>
-              <li><a>解释何为记录模式？</a></li>
-              <li><a>解释何为干净模式？</a></li>
-              <li><a>定制验证最佳实践？</a></li>
-              <li><a>为啥建议信任管理？</a></li>
-              <li><a>不信任能使用按钮？</a></li>
-              <li><a>来源调查功能意义？</a></li>
-              <li><a>内联键盘干嘛失效？</a></li>
-              <li><a>为何突然事后审核？</a></li>
-              <li><a>订阅全局规则好处？</a></li>
+              <%- QA_LIST.each do |qa| -%>
+              <li>
+                <a href="#<%= qa.anchor %>"><%= qa.title %></a>
+              </li>
+              <%- end -%>
             </ul>
           </aside>
         </div>
       </div>
       <div class="column is9">
+        <%- QA_LIST.each do |qa| -%>
         <div class="section">
-          <h5 class="title is-3">
-            <a name="examine" class="anchor"></a>
-            审核具体指的什么？
+          <h5 class="subtitle is-3">
+            <a name="<%= qa.anchor %>" class="anchor"></a>
+            <%= qa.title %>
           </h5>
           <hr />
           <div class="content">
-            <p>当前的版本<code>0.2.0-dev (3c8553f)</code>包括以下子功能：</p>
-            <ul>
-              <li>新入群用户验证</li>
-              <li>入群机器人限制</li>
-              <li>封杀清真及消息</li>
-              <li>预封禁问题用户</li>
-            </ul>
-            <p class="subtitle is-6">
-              注意：每一个子功能都能单独关闭。
-            </p>
+            <%= qa.content %>
           </div>
         </div>
-        <div class="section">
-          <h5 class="title is-3">
-            <a name="verification" class="anchor"></a>
-            为什么加群要验证？
-          </h5>
-          <hr />
-          <div>
-            <p class="subtitle is-6">
-              大部分广告等垃圾内容发布者都是由程序运营的，它们虽然是普通用户类型但实质是机器人。这些广告机器人通过广泛加群以达到批量散播广告的目的。由于它们无法像人类一样解答验证问题，所以在入群发言之前就将其限制，验证超时或错误则将其移除，便达到了屏蔽的效果。
-            </p>
-          </div>
-        </div>
+        <%- end -%>
       </div>
     </div>
   </div>

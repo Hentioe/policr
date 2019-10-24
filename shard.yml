@@ -10,7 +10,7 @@ targets:
   sam:
     main: sam.cr
 
-crystal: 0.30.1
+crystal: 0.31.1
 
 license: MIT
 
@@ -27,9 +27,6 @@ dependencies:
     github: policr-community/rule_engine
   dotenv:
     github: gdotdesign/cr-dotenv
-  admiral:
-    github: jwaldrip/admiral.cr
-    version: ~> 1.8.0
   schedule:
     github: hugoabonizio/schedule.cr
   kemal:
@@ -55,6 +52,8 @@ dependencies:
     github: Hentioe/digests.cr
   clicr:
     github: j8r/clicr
+  markd:
+    github: icyleaf/markd
 development_dependencies:
   ameba:
     github: veelenga/ameba

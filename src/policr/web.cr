@@ -1,8 +1,42 @@
 require "kemal"
 require "kemal-session"
+require "markd"
 
 module Policr::Web
   extend self
+
+  class QA
+    getter title : String
+    getter anchor : String
+    getter content : String
+
+    def initialize(@title, @anchor)
+      content = File.read("texts/qa_#{anchor}.md")
+      content = render content, ["version", "torture_sec"], [VERSION, DEFAULT_TORTURE_SEC]
+      @content = Markd.to_html content
+    end
+  end
+
+  QA_LIST = [
+    QA.new("审核具体指的什么？", "examine"),
+    QA.new("为什么加群要验证？", "verification"),
+    QA.new("哪种验证方式最好？", "best_verification"),
+    QA.new("为什么要针对清真？", "halal"),
+    QA.new("举报的益处有什么？", "report"),
+    QA.new("验证失败不是真人？", "verification_failure"),
+    QA.new("验证失有什么后果？", "verification_failure_result"),
+    QA.new("不限时验证的害处？", "no_time_limit"),
+    QA.new("解释何为记录模式？", "record_mode"),
+    QA.new("解释何为干净模式？", "clean_mode"),
+    QA.new("定制验证最佳实践？", "best_custom"),
+    QA.new("为何建议信任管理？", "trust_admin"),
+    QA.new("不信任能使用按钮？", "distrust_button_use"),
+    QA.new("来源调查功能意义？", "from"),
+    QA.new("白名单范围有多大？", "whitelist"),
+    QA.new("内联键盘干嘛失效？", "inline_keyboard_invalid"),
+    QA.new("为何突然事后审核？", "afterwards"),
+    QA.new("订阅全局规则好处？", "global_rules"),
+  ]
 
   def home_page?(env : HTTP::Server::Context)
     env.request.path == "/beta"
@@ -17,7 +51,7 @@ module Policr::Web
       config.secret = "demo_sec"
     end
 
-    get "/beta" do |env|
+    get "/" do |env|
       title = "专注于审核的 Telegram 机器人"
       render "src/views2/index.html.ecr", "src/views2/layout.html.ecr"
     end
@@ -32,8 +66,8 @@ module Policr::Web
       render "src/views2/qa.html.ecr", "src/views2/layout.html.ecr"
     end
 
-    get "/" do
-      title = "专注于审核的 Telegram 机器人"
+    get "/traditional" do
+      title = "专注于审核的 Telegram 机器人（已过时页面）"
       render "src/views/index.html.ecr", "src/views/layout.html.ecr"
     end
 
