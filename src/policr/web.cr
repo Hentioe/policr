@@ -39,7 +39,7 @@ module Policr::Web
   ]
 
   def home_page?(env : HTTP::Server::Context)
-    env.request.path == "/beta"
+    env.request.path == "/"
   end
 
   def start(port : Int, prod : Bool, bot : Bot)
