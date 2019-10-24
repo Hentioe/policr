@@ -13,6 +13,7 @@ RUN mkdir "$APP_HOME" && \
 COPY bin $APP_HOME
 COPY static "$APP_HOME/static"
 COPY locales "$APP_HOME/locales"
+COPY texts "$APP_HOME/texts"
 
 
 WORKDIR $APP_HOME
