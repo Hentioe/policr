@@ -5,38 +5,58 @@ require "markd"
 module Policr::Web
   extend self
 
-  class QA
+  class Section
+    getter prefix : String
     getter title : String
     getter anchor : String
     getter content : String
 
-    def initialize(@title, @anchor)
-      content = File.read("texts/qa_#{anchor}.md")
+    def initialize(@prefix, @title, @anchor)
+      content = File.read("texts/#{@prefix}_#{anchor}.md")
       content = render content, ["version", "torture_sec"], [VERSION, DEFAULT_TORTURE_SEC]
       @content = Markd.to_html content
     end
   end
 
-  QA_LIST = [
-    QA.new("审核具体指的什么？", "examine"),
-    QA.new("为什么加群要验证？", "verification"),
-    QA.new("哪种验证方式最好？", "best_verification"),
-    QA.new("为什么要针对清真？", "halal"),
-    QA.new("举报的益处有什么？", "report"),
-    QA.new("验证失败不是真人？", "verification_failure"),
-    QA.new("验证失有什么后果？", "verification_failure_result"),
-    QA.new("不限时验证的害处？", "no_time_limit"),
-    QA.new("解释何为记录模式？", "record_mode"),
-    QA.new("解释何为干净模式？", "clean_mode"),
-    QA.new("定制验证最佳实践？", "best_custom"),
-    QA.new("为何建议信任管理？", "trust_admin"),
-    QA.new("不信任能使用按钮？", "distrust_button_use"),
-    QA.new("来源调查功能意义？", "from"),
-    QA.new("白名单范围有多大？", "whitelist"),
-    QA.new("内联键盘干嘛失效？", "inline_keyboard_invalid"),
-    QA.new("为何突然事后审核？", "afterwards"),
-    QA.new("订阅全局规则好处？", "global_rules"),
-  ]
+  class PageContent
+    getter prefix : String
+    getter title : String
+    getter subtitle : String
+    getter sections : Array(Section)
+
+    def initialize(@prefix, @title, @subtitle, @sections = Array(Section).new)
+    end
+
+    def <<(title : String, anchor : String)
+      sections << Section.new @prefix, title, anchor
+      self
+    end
+  end
+
+  QA_PAGE = PageContent.new("qa", "快速入门", "通过本页，让机器人工作起来")
+    .<<("审核具体指的什么？", "examine")
+    .<<("为什么加群要验证？", "verification")
+    .<<("哪种验证方式最好？", "best_verification")
+    .<<("为什么要针对清真？", "halal")
+    .<<("举报的益处有什么？", "report")
+    .<<("验证失败不是真人？", "verification_failure")
+    .<<("验证失有什么后果？", "verification_failure_result")
+    .<<("不限时验证的害处？", "no_time_limit")
+    .<<("解释何为记录模式？", "record_mode")
+    .<<("解释何为干净模式？", "clean_mode")
+    .<<("定制验证最佳实践？", "best_custom")
+    .<<("为何建议信任管理？", "trust_admin")
+    .<<("不信任能使用按钮？", "distrust_button_use")
+    .<<("来源调查功能意义？", "from")
+    .<<("白名单范围有多大？", "whitelist")
+    .<<("内联键盘干嘛失效？", "inline_keyboard_invalid")
+    .<<("为何突然事后审核？", "afterwards")
+    .<<("订阅全局规则好处？", "global_rules")
+
+  ADVANCED_PAGE = PageContent.new("adv", "高级教程", "通过本页，了解更深层的使用方式")
+    .<<("仅限制而不封禁用户", "only_restriction")
+    .<<("无错验证的设置方式", "unable_error")
+    .<<("欢迎消息，贴纸模式", "sticker_mode")
 
   def home_page?(env : HTTP::Server::Context)
     env.request.path == "/"
@@ -62,8 +82,15 @@ module Policr::Web
     end
 
     get "/qa" do |env|
-      title = "常见问题"
-      render "src/views2/qa.html.ecr", "src/views2/layout.html.ecr"
+      page = QA_PAGE
+      title = page.title
+      render "src/views2/doc.html.ecr", "src/views2/layout.html.ecr"
+    end
+
+    get "/advanced" do |env|
+      page = ADVANCED_PAGE
+      title = page.title
+      render "src/views2/doc.html.ecr", "src/views2/layout.html.ecr"
     end
 
     get "/traditional" do

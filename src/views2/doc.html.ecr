@@ -2,10 +2,10 @@
   <div class="hero-body">
     <div class="container">
       <h1 class="title is-spaced">
-        常见问题
+        <%= page.title %>
       </h1>
       <h2 class="subtitle">
-        通过本页，解答各种疑惑
+        <%= page.subtitle %>
       </h2>
     </div>
   </div>
@@ -17,10 +17,10 @@
         <div class="pr-sidebar">
           <aside class="menu">
             <p class="menu-label">
-              常见问题
+              <%= page.title %>
             </p>
             <ul class="menu-list">
-              <%- QA_LIST.each do |qa| -%>
+              <%- page.sections.each do |qa| -%>
               <li>
                 <a href="#<%= qa.anchor %>"><%= qa.title %></a>
               </li>
@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="column is9">
-        <%- QA_LIST.each do |qa| -%>
+        <%- page.sections.each do |qa| -%>
         <div class="section">
           <h5 class="subtitle is-3">
             <a name="<%= qa.anchor %>" class="anchor"></a>

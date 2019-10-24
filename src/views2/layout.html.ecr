@@ -1,6 +1,4 @@
 <% is_home_path = home_page?(env) %>
-
-
 <html<%= is_home_path ? " class=\"has-navbar-fixed-top\"" : "" %>>
   <head>
     <meta charset="utf-8" />
@@ -57,11 +55,11 @@
             <div class="navbar-end">
               <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">
-                  教程导航
+                  文档指南
                 </a>
                 <div class="navbar-dropdown is-boxed">
-                  <a class="navbar-item">
-                    功能指南
+                  <a class="navbar-item" href="/advanced">
+                    高级教程
                   </a>
                   <a class="navbar-item" href="/qa">
                     常见问题
