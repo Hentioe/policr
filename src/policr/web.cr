@@ -33,7 +33,7 @@ module Policr::Web
     end
   end
 
-  QA_PAGE = PageContent.new("qa", "快速入门", "通过本页，让机器人工作起来")
+  QA_PAGE = PageContent.new("qa", "常见问题", "通过本页，解答各种疑惑")
     .<<("审核具体指的什么？", "examine")
     .<<("为什么加群要验证？", "verification")
     .<<("哪种验证方式最好？", "best_verification")
@@ -53,10 +53,15 @@ module Policr::Web
     .<<("为何突然事后审核？", "afterwards")
     .<<("订阅全局规则好处？", "global_rules")
 
-  ADVANCED_PAGE = PageContent.new("adv", "高级教程", "通过本页，了解更深层的使用方式")
+  ADVANCED_PAGE = PageContent.new("adv", "高级教程", "通过本页，更好的使用")
     .<<("仅限制而不封禁用户", "only_restriction")
     .<<("无错验证的设置方式", "unable_error")
-    .<<("欢迎消息，贴纸模式", "sticker_mode")
+    .<<("欢迎消息的贴纸模式", "sticker_mode")
+    .<<("欢迎内容中嵌入链接", "welcome_embed_links")
+    .<<("欢迎内容中使用变量", "welcome_embed_vars")
+    .<<("给欢迎消息添加按钮", "welcome_add_button")
+    .<<("问题模板中嵌入链接", "template_embed_links")
+    .<<("问题模板中使用变量", "template_embed_vars")
 
   def home_page?(env : HTTP::Server::Context)
     env.request.path == "/"

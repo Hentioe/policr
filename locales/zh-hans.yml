@@ -254,8 +254,8 @@ template:
     %{content}
     ```
     附加教程：
-    1. [在问题模板中嵌入链接](https://policr.bluerain.io/traditional#link_in_template)
-    2. [在问题模板中插入变量](https://policr.bluerain.io/traditional#vars_in_template)
+    1. [在问题模板中嵌入链接](https://policr.bluerain.io/advanced#template_embed_links)
+    2. [在问题模板中插入变量](https://policr.bluerain.io/advanced#template_embed_vars)
 
     **只有回复本消息才会被认为是设置验证提示模板**。请尽快回复，本消息不保证时效性。回复完成记得启用。
 

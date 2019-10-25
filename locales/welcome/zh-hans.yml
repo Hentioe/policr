@@ -23,10 +23,10 @@ welcome:
     用户 ID    => `{{userid}}`
 
     附加教程：
-    0. [贴纸模式是什么？](https://policr.bluerain.io/traditional#sticker_mode)
-    1. [在欢迎消息中嵌入链接](https://policr.bluerain.io/traditional#link_in_welcome)
-    2. [在欢迎消息中插入变量](https://policr.bluerain.io/traditional#vars_in_welcome)
-    3. [在欢迎消息中添加按钮](https://policr.bluerain.io/traditional#buttons_in_welcome)
+    0. [什么是贴纸模式？](https://policr.bluerain.io/advanced#sticker_mode)
+    1. [在欢迎消息中嵌入链接](https://policr.bluerain.io/advanced#welcome_embed_links)
+    2. [在欢迎消息中插入变量](https://policr.bluerain.io/advanced#welcome_embed_vars)
+    3. [在欢迎消息中添加按钮](https://policr.bluerain.io/advanced#welcome_add_button)
 
     **只有回复本消息才会被认为是设置欢迎内容**。在 PC 客户端可能需要 <Ctrl+Enter> 组合键才能换行。请尽快回复，本消息不保证时效性。
 
