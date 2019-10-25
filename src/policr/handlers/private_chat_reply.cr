@@ -36,12 +36,12 @@ module Policr
             if (appeal = Model::Appeal.find(args[1].to_i)) &&
                (report = appeal.report)
               if appeal.author_id == user_id
-                # 删除举报
-                Model::Report.delete report.id
                 # 清空关联投票
                 Model::Vote.delete_by_report_id report.id.not_nil!
                 # 删除申诉记录
                 Model::Appeal.delete appeal.id
+                # 删除举报
+                Model::Report.delete report.id
                 bot.send_message user_id, t("appeal.human.removed_report", {appeal_id: appeal.id})
                 # 删除相关消息
                 spawn bot.delete_message "@#{bot.snapshot_channel}", report.target_snapshot_id

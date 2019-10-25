@@ -64,10 +64,10 @@ module Policr
               end
 
             if report = Model::Report.find_by_post_id post_id
-              # 删除举报
-              Model::Report.delete(report.id)
               # 清空关联投票
               Model::Vote.delete_by_report_id report.id.not_nil!
+              # 删除举报
+              Model::Report.delete(report.id)
               # 删除相关消息
               spawn bot.delete_message "@#{bot.snapshot_channel}", report.target_snapshot_id
               spawn bot.delete_message "@#{bot.voting_channel}", report.post_id
