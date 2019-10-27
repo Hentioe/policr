@@ -1,0 +1,35 @@
+welcome:
+  sticker_mode_btn: "請閱讀規則"
+  missing_content: "請先設置內容！"
+  missing_sticker: "請先設置貼紙！"
+  hint: |
+    您正在設置歡迎消息，請**回復**歡迎文字或貼紙，回復完成記得啓用。回復文字將設置內容，回復貼紙將設置貼紙。
+
+    當前內容設置：
+
+    ```
+    %{welcome_text}
+    ```
+
+    當前貼紙設置（ID）：
+
+    ```
+    %{sticker_file_id}
+    ```
+    內置變量（**貼紙模式中不要使用變量**）：
+    用戶全名 => `{{fullname}}`
+    提及用戶 => `{{mention}}`
+    群聊名稱 => `{{chatname}}`
+    用戶 ID    => `{{userid}}`
+
+    附加教程：
+    0. [什麼是貼紙模式？](https://policr.bluerain.io/advanced#sticker_mode)
+    1. [在歡迎消息中嵌入鏈接](https://policr.bluerain.io/advanced#welcome_embed_links)
+    2. [在歡迎消息中插入變量](https://policr.bluerain.io/advanced#welcome_embed_vars)
+    3. [在歡迎消息中添加按鈕](https://policr.bluerain.io/advanced#welcome_add_button)
+
+    **只有回復本消息才會被認為是設置歡迎內容**。在 PC 客戶端可能需要 <Ctrl+Enter> 組合鍵才能換行。請盡快回復，本消息不保證時效性。
+
+  enable: "啓用"
+  link_preview: "預覽鏈接"
+  sticker_mode: "貼紙模式"
