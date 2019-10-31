@@ -30,13 +30,13 @@ add_to_group:
 
     毕竟做机器人呐也得有尊严！
 
-    附加阅读：[快速入门](https://policr.bluerain.io/getting_started)"
+    附加阅读：[快速入门](https://policr.bluerain.io/getting-started)"
   from_admin: |
     请把我弄过来的变态（%{mention}）负起责任，进行基本设置以让我工作起来。
 
     注意了，如果你不是群主，你需要先通过群主启用信任管理，不然你也是无法控制我的～ 如果你们决定不使用我，请点击下方的按钮让我自己离开，做机器人呐也得有尊严！
 
-    附加阅读：[快速入门](https://policr.bluerain.io/getting_started)"
+    附加阅读：[快速入门](https://policr.bluerain.io/getting-started)"
   no_permission: "请联系管理员使用此按钮！"
   subscription_update: "订阅更新"
   no_right_to_invite: |
@@ -207,7 +207,7 @@ captcha_result:
     not_rights: "我！没！权！限！"
   admin_ban: "(|||ﾟдﾟ) 好吓人～ [他](tg://user?id=%{user_id})还没来得及验证就被 %{admin} 直接干掉了。"
   timeout: "(〒︿〒) [他](tg://user?id=%{user_id})验证超时[⁽¹⁾](https://policr.bluerain.io/qa#verification_failure)，永久地离开了我们[⁽²⁾](https://policr.bluerain.io/qa#verification_failure_result)。 #FAILURE #TIMEOUT"
-  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久地离开了我们[⁽²⁾](https://policr.bluerain.io#verification_failure_result)。 #FAILURE #MISTAKE"
+  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})验证错误[⁽¹⁾](https://policr.bluerain.io/qa#verification_failure)，永久地离开了我们[⁽²⁾](https://policr.bluerain.io/qa#verification_failure_result)。 #FAILURE #MISTAKE"
 restrict_bot_menu:
   derestrict: "解除限制"
   remove: "直接移除"
