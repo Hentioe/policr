@@ -28,3 +28,8 @@ footer.footer {
   position: sticky;
   top: $navbar-height;
 }
+
+.anchor {
+  display: block;
+  padding-top: $navbar-height;
+}

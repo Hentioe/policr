@@ -1,25 +1,81 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const borderNoneStyle = {
   border: "none"
+};
+
+function burgerToggle(el, always_close = false) {
+  // Get the target from the "data-target" attribute
+  const target = el.dataset.target;
+  const $target = document.getElementById(target);
+
+  if (!always_close) {
+    // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+    el.classList.toggle("is-active");
+    $target.classList.toggle("is-active");
+  } else {
+    el.classList.remove("is-active");
+    $target.classList.remove("is-active");
+  }
 }
 
+const initialNavClass = ["navbar", "is-fixed-top", "pr-nav"];
+const allIs = ["is-info", "is-success"];
+
 function Header() {
+  const header = useSelector(state => state.header);
+  const { is } = header;
+
+  let navClass = [...initialNavClass];
+  if (is) {
+    navClass.push(is);
+  } else {
+    navClass = navClass.filter(c => !allIs.includes(c));
+  }
+
+  // 初始化导航栏事件
+  useEffect(() => {
+    const $navbarBurgers = document.querySelectorAll(".navbar-burger");
+    const $navbarItems = document.querySelectorAll(".navbar-item");
+
+    // Check if there are any navbar burgers
+    if ($navbarBurgers.length > 0) {
+      // Add a click event on each of them
+      $navbarBurgers.forEach(el => {
+        el.addEventListener("click", () => {
+          burgerToggle(el);
+        });
+      });
+    }
+
+    if ($navbarItems.length > 0) {
+      $navbarItems.forEach(el => {
+        el.addEventListener("click", () => {
+          $navbarBurgers.forEach(el => {
+            burgerToggle(el, true);
+          });
+        });
+      });
+    }
+  }, []);
+
   return (
     <header>
       <nav
-        className="navbar is-fixed-top pr-nav"
+        className={navClass.join(" ")}
         role="navigation"
         aria-label="main navigation"
       >
         <div className="container">
           <div className="navbar-brand">
-            <a className="navbar-item" href="/">
+            <Link className="navbar-item" to="/beta">
               首页
-            </a>
-            <a href="/getting-started" className="navbar-item">
+            </Link>
+            <Link to="/beta/getting-started" className="navbar-item">
               入门
-            </a>
+            </Link>
             <a
               className="navbar-item"
               target="_blank"
@@ -45,12 +101,12 @@ function Header() {
               <div className="navbar-item has-dropdown is-hoverable">
                 <a className="navbar-link">文档指南</a>
                 <div className="navbar-dropdown is-boxed">
-                  <a className="navbar-item" href="/advanced">
+                  <Link className="navbar-item" to="/beta/advanced">
                     高级教程
-                  </a>
-                  <a className="navbar-item" href="/qa">
+                  </Link>
+                  <Link className="navbar-item" to="/beta/qa">
                     常见问题
-                  </a>
+                  </Link>
                   <a className="navbar-item">私有部署</a>
                   <hr className="navbar-divider" />
                   <a className="navbar-item">版本变化</a>

@@ -1,11 +1,15 @@
 require "kemal"
 require "kemal-session"
 require "markd"
+require "json"
 
 module Policr::Web
   extend self
 
   class Section
+    include JSON::Serializable
+
+    @[JSON::Field(ignore: true)]
     getter prefix : String
     getter title : String
     getter anchor : String
@@ -19,6 +23,9 @@ module Policr::Web
   end
 
   class PageContent
+    include JSON::Serializable
+
+    @[JSON::Field(ignore: true)]
     getter prefix : String
     getter title : String
     getter subtitle : String
@@ -76,6 +83,10 @@ module Policr::Web
       config.secret = "demo_sec"
     end
 
+    after_all "/api/*" do |env|
+      env.response.content_type = "application/json"
+    end
+
     get "/" do |env|
       title = "专注于审核的 Telegram 机器人"
       render "src/views2/index.html.ecr", "src/views2/layout.html.ecr"
@@ -103,12 +114,20 @@ module Policr::Web
       render "src/views/index.html.ecr", "src/views/layout.html.ecr"
     end
 
-    get "/beta" do
+    get "/api/advanced" do
+      ADVANCED_PAGE.to_json
+    end
+
+    get "/api/qa" do
+      QA_PAGE.to_json
+    end
+
+    get "/beta/*" do
       render "src/views3/user.html.ecr"
     end
 
     error 404 do
-      "瞎访问啥呢你……"
+      "Not Found"
     end
 
     Kemal.config.env = "production" if prod
