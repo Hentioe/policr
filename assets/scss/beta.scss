@@ -1,0 +1,30 @@
+@import "./user/lib/base.scss";
+@import "bulma";
+@import "./user/page.scss";
+
+nav.navbar {
+  a.navbar-item,
+  .navbar-item.has-dropdown .navbar-link,
+  .navbar-dropdown a.navbar-item {
+    &:focus,
+    &:hover,
+    &.is-active {
+      background-color: darken($navbar-background-color, 5%);
+      color: $navbar-item-color;
+    }
+  }
+}
+footer.footer {
+  @extend %aleo-font;
+  strong {
+    color: white;
+  }
+  a {
+    color: darken(white, 25%);
+  }
+}
+
+.pr-sidebar {
+  position: sticky;
+  top: $navbar-height;
+}

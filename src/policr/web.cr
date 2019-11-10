@@ -103,60 +103,8 @@ module Policr::Web
       render "src/views/index.html.ecr", "src/views/layout.html.ecr"
     end
 
-    get "/demo" do
-      title = "演示"
-      render "src/views/demo.html.ecr", "src/views/layout.html.ecr"
-    end
-
-    get "/login" do |env|
-      token = find_token env
-      if token
-        env.redirect "/admin"
-      else
-        title = "登录后台"
-        error_msg = nil
-        render "src/views/login.html.ecr", "src/views/layout.html.ecr"
-      end
-    end
-
-    post "/login" do |env|
-      if token = env.params.body["token"]?
-        if user_id = nil || token == bot.token
-          remember = env.params.body["remember"]?
-          env.session.string("token", token) unless remember
-          if remember
-            token_c = HTTP::Cookie.new(
-              name: "token",
-              value: token,
-              http_only: true,
-              secure: true,
-              expires: Time.new + Time::Span.new(24*30, 0, 0)
-            )
-            env.response.cookies << token_c
-          end
-          env.redirect "/admin"
-        else
-          title = "登录失败，无效的令牌"
-          error_msg = "Invalid token"
-          render "src/views/login.html.ecr", "src/views/layout.html.ecr"
-        end
-      else
-        title = "登录失败，请提供令牌"
-        error_msg = "Missing token"
-        render "src/views/login.html.ecr", "src/views/layout.html.ecr"
-      end
-    end
-
-    get "/admin" do |env|
-      if token = find_token(env)
-        "???"
-      else
-        env.redirect "/login"
-      end
-    end
-
-    get "/version" do
-      VERSION
+    get "/beta" do
+      render "src/views3/user.html.ecr"
     end
 
     error 404 do

@@ -19,7 +19,8 @@ module.exports = (env, options) => ({
   },
   entry: {
     app: glob.sync("./vendor/**/*.js").concat(["./js/app.js"]),
-    user: glob.sync("./vendor/**/*.js").concat(["./js/user.js"])
+    user: glob.sync("./vendor/**/*.js").concat(["./js/user.js"]),
+    beta: glob.sync("./vendor/**/*.js").concat(["./js/beta.js"])
   },
   output: {
     filename: "[name].js",
@@ -35,7 +36,7 @@ module.exports = (env, options) => ({
         }
       },
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.(s[ac]|c)ss$/i,
         use: [
           "style-loader",
           MiniCssExtractPlugin.loader,
