@@ -1,6 +1,6 @@
 module Policr
   class ImageVerification < Verification
-    @indeces = [3]
+    @indeces : Array(Int32) = [Random.rand(1..3)]
 
     make do
       temp_images = Cache.get_images.clone
@@ -11,11 +11,17 @@ module Policr
       e2_img = temp_images.delete_at Random.rand(0...temp_images.size)
 
       title = "上图中的内容"
-      answers = [
-        [e1_img.name],
-        [e2_img.name],
-        [true_image.name],
-      ]
+
+      wrong_ans = [e1_img.name, e2_img.name]
+
+      answers = (1..3).map do |i|
+        if i == @indeces[0]
+          [true_image.name]
+        else
+          [wrong_ans.delete_at 0]
+        end
+      end
+
       file_path = true_image.random_file
       Question.image_build(title, answers, file_path).discord
     end
