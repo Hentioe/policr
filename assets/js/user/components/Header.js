@@ -70,10 +70,10 @@ function Header() {
       >
         <div className="container">
           <div className="navbar-brand">
-            <Link className="navbar-item" to="/beta">
+            <Link className="navbar-item" to="/">
               首页
             </Link>
-            <Link to="/beta/getting-started" className="navbar-item">
+            <Link to="/getting-started" className="navbar-item">
               入门
             </Link>
             <a
@@ -101,10 +101,10 @@ function Header() {
               <div className="navbar-item has-dropdown is-hoverable">
                 <a className="navbar-link">文档指南</a>
                 <div className="navbar-dropdown is-boxed">
-                  <Link className="navbar-item" to="/beta/advanced">
+                  <Link className="navbar-item" to="/advanced">
                     高级教程
                   </Link>
-                  <Link className="navbar-item" to="/beta/qa">
+                  <Link className="navbar-item" to="/qa">
                     常见问题
                   </Link>
                   <a className="navbar-item">私有部署</a>

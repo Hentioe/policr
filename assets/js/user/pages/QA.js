@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch } from "react-redux";
 import useSWR from "swr";
 import fetch from "unfetch";
+import Loading from "../components/Loading";
 import { settingNavIs } from "../actions";
 
 const title = "POLICR · 常见问题";
@@ -14,7 +15,7 @@ export default () => {
   const { data, error } = useSWR("/api/qa", fetcher);
 
   useEffect(() => {
-    dispatch(settingNavIs("success"));
+    dispatch(settingNavIs("info"));
   }, []);
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export default () => {
   }, [data]);
 
   if (error) return <div>载入数据失败，请刷新。</div>;
-  if (!data) return <div>加载中……</div>;
+  if (!data) return <Loading />;
 
   return (
     <>
@@ -42,7 +43,7 @@ export default () => {
         <title>{title}</title>
       </Helmet>
 
-      <section className="hero is-success">
+      <section className="hero is-info">
         <div className="hero-body">
           <div className="container">
             <h1 className="title is-spaced">{data.title}</h1>

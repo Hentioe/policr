@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useDispatch } from "react-redux";
 import useSWR from "swr";
 import fetch from "unfetch";
+import Loading from "../components/Loading";
 import { settingNavIs } from "../actions";
 
 const title = "POLICR · 高级教程";
@@ -34,7 +35,7 @@ export default () => {
   }, [data]);
 
   if (error) return <div>载入数据失败，请刷新。</div>;
-  if (!data) return <div>加载中……</div>;
+  if (!data) return <Loading />;
 
   return (
     <>

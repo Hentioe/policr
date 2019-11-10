@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useDispatch } from "react-redux";
 import { settingNavIs } from "../actions";
 
+const title = "POLICR · 快速入门";
 const articleMaiginStyle = {
   marginTop: "1.5rem"
 };
@@ -13,8 +15,28 @@ export default () => {
     dispatch(settingNavIs("primary"));
   }, []);
 
+  useEffect(() => {
+    window.location.hash = window.decodeURIComponent(window.location.hash);
+    const scrollToAnchor = () => {
+      const hashParts = window.location.hash.split("#");
+      if (hashParts.length >= 2) {
+        const hash = hashParts[1];
+        const $anchor = document.querySelector(`a.anchor[name="${hash}"]`);
+        if ($anchor) {
+          $anchor.scrollIntoView();
+        }
+      }
+    };
+    scrollToAnchor();
+    window.onhashchange = scrollToAnchor;
+  }, []);
+
   return (
     <>
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
+
       <section className="hero is-primary">
         <div className="hero-body">
           <div className="container">

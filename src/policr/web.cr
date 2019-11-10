@@ -80,33 +80,11 @@ module Policr::Web
     Kemal.config.logger = LoggerHandler.new(Logging.get_logger)
 
     Kemal::Session.config do |config|
-      config.secret = "demo_sec"
+      config.secret = "demo_123"
     end
 
     after_all "/api/*" do |env|
       env.response.content_type = "application/json"
-    end
-
-    get "/" do |env|
-      title = "专注于审核的 Telegram 机器人"
-      render "src/views2/index.html.ecr", "src/views2/layout.html.ecr"
-    end
-
-    get "/getting-started" do |env|
-      title = "快速入门"
-      render "src/views2/getting-started.html.ecr", "src/views2/layout.html.ecr"
-    end
-
-    get "/qa" do |env|
-      page = QA_PAGE
-      title = page.title
-      render "src/views2/doc.html.ecr", "src/views2/layout.html.ecr"
-    end
-
-    get "/advanced" do |env|
-      page = ADVANCED_PAGE
-      title = page.title
-      render "src/views2/doc.html.ecr", "src/views2/layout.html.ecr"
     end
 
     get "/traditional" do
@@ -122,7 +100,11 @@ module Policr::Web
       QA_PAGE.to_json
     end
 
-    get "/beta/*" do
+    get "/" do
+      render "src/views3/user.html.ecr"
+    end
+
+    get "/*" do
       render "src/views3/user.html.ecr"
     end
 
