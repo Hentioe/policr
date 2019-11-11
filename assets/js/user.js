@@ -70,4 +70,6 @@ function App() {
   );
 }
 
-ReactDOM.render(<App />, document.getElementById("app"));
+setTimeout(() => {
+  ReactDOM.render(<App />, document.getElementById("app"));
+}, 600);
