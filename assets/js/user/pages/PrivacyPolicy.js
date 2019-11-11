@@ -6,13 +6,13 @@ import fetch from "unfetch";
 import Loading from "../components/Loading";
 import { unfixedNav, settingNavIs } from "../actions";
 
-const title = "POLICR · 常见问题";
+const title = "POLICR · 隐私政策";
 const fetcher = url => fetch(url).then(r => r.json());
 
 export default _props => {
   const dispatch = useDispatch();
 
-  const { data, error } = useSWR("/api/qa", fetcher);
+  const { data, error } = useSWR("/api/privacy", fetcher);
 
   useEffect(() => {
     dispatch(settingNavIs("info"));
@@ -83,6 +83,19 @@ export default _props => {
                   />
                 </div>
               ))}
+              <div>
+                <article className="message is-success">
+                  <div className="message-body">
+                    本项目当前版本<code>{VERSION}</code>
+                    没有持久化储存任何用户普通消息，请安心。
+                  </div>
+                </article>
+                <article className="message is-danger">
+                  <div className="message-body">
+                    以上内容由源代码保证，接受任何组织或个人的监督。
+                  </div>
+                </article>
+              </div>
             </div>
           </div>
         </div>

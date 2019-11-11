@@ -9,7 +9,7 @@ import { settingNavIs, unfixedNav } from "../actions";
 const title = "POLICR · 高级教程";
 const fetcher = url => fetch(url).then(r => r.json());
 
-export default () => {
+export default _props => {
   const dispatch = useDispatch();
 
   const { data, error } = useSWR("/api/advanced", fetcher);

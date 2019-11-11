@@ -26,6 +26,9 @@ import Index from "./user/pages/Index";
 import Advanced from "./user/pages/Advanced";
 import QA from "./user/pages/QA";
 import GettingStarted from "./user/pages/GettingStarted";
+import Deployment from "./user/pages/Deployment";
+import Chagelog from "./user/pages/Chagelog";
+import PrivacyPolicy from "./user/pages/PrivacyPolicy";
 
 // 创建 Redux store
 import Reducers from "./user/reducers";
@@ -57,6 +60,15 @@ function App() {
               </Route>
               <Route path="/getting-started">
                 <GettingStarted />
+              </Route>
+              <Route path="/deployment">
+                <Deployment />
+              </Route>
+              <Route path="/changelog">
+                <Chagelog />
+              </Route>
+              <Route path="/privacy-policy">
+                <PrivacyPolicy />
               </Route>
               <Route path="/">
                 <Index />

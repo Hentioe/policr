@@ -26,7 +26,7 @@ const allIs = ["is-info", "is-success"];
 
 const $html = document.getElementsByTagName("html")[0];
 
-function Header() {
+export default _props => {
   const header = useSelector(state => state.header);
   const { is, isTop } = header;
 
@@ -117,9 +117,16 @@ function Header() {
                   <Link className="navbar-item" to="/qa">
                     常见问题
                   </Link>
-                  <a className="navbar-item">私有部署</a>
+                  <Link className="navbar-item" to="deployment">
+                    私有部署
+                  </Link>
                   <hr className="navbar-divider" />
-                  <a className="navbar-item">版本变化</a>
+                  <Link className="navbar-item" to="changelog">
+                    版本变化
+                  </Link>
+                  <Link className="navbar-item" to="privacy-policy">
+                    隐私政策
+                  </Link>
                 </div>
               </div>
               <div className="navbar-item">
@@ -158,6 +165,4 @@ function Header() {
       </nav>
     </header>
   );
-}
-
-export default Header;
+};

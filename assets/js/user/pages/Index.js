@@ -9,7 +9,7 @@ const descStyle = {
   backgroundColor: "#ed6129"
 };
 
-function Index() {
+export default _props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,7 +32,7 @@ function Index() {
                     POLICR
                   </span>
                   <span className="has-text-danger has-text-weight-bold">
-                    :
+                    {" "}:{" "}
                   </span>
                   <span className="has-text-grey-dark has-text-weight-light">
                     专注于审核群成员的机器人
@@ -115,6 +115,4 @@ function Index() {
       </section>
     </>
   );
-}
-
-export default Index;
+};

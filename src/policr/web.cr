@@ -70,6 +70,11 @@ module Policr::Web
     .<<("问题模板中嵌入链接", "template_embed_links")
     .<<("问题模板中使用变量", "template_embed_vars")
 
+  PRIVACY_PAGE = PageContent.new("pri", "隐私政策", "通过本页，了解隐私条款")
+    .<<("政策说明", "term_desc")
+    .<<("消息访问", "message_access")
+    .<<("数据存储", "data_storage")
+
   def home_page?(env : HTTP::Server::Context)
     env.request.path == "/"
   end
@@ -100,6 +105,10 @@ module Policr::Web
       QA_PAGE.to_json
     end
 
+    get "/api/privacy" do
+      PRIVACY_PAGE.to_json
+    end
+
     get "/" do
       render "src/views3/user.html.ecr"
     end
@@ -114,16 +123,5 @@ module Policr::Web
 
     Kemal.config.env = "production" if prod
     Kemal.run(args: nil, port: port)
-  end
-
-  def find_token(env)
-    token = env.session.string?("token")
-    unless token
-      if token_c = env.request.cookies["token"]?
-        token_c.value
-      end
-    else
-      token
-    end
   end
 end

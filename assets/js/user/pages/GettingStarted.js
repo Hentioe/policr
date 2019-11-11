@@ -8,7 +8,7 @@ const articleMaiginStyle = {
   marginTop: "1.5rem"
 };
 
-export default () => {
+export default _props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
