@@ -32,7 +32,8 @@ export default _props => {
                     POLICR
                   </span>
                   <span className="has-text-danger has-text-weight-bold">
-                    {" "}:{" "}
+                    {" "}
+                    :{" "}
                   </span>
                   <span className="has-text-grey-dark has-text-weight-light">
                     专注于审核群成员的机器人

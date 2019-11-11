@@ -5,6 +5,7 @@ import useSWR from "swr";
 import fetch from "unfetch";
 import Loading from "../components/Loading";
 import { unfixedNav, settingNavIs } from "../actions";
+import jumpAnchor from "../lib/jump-anchor";
 
 const title = "POLICR · 隐私政策";
 const fetcher = url => fetch(url).then(r => r.json());
@@ -20,19 +21,7 @@ export default _props => {
   }, []);
 
   useEffect(() => {
-    window.location.hash = window.decodeURIComponent(window.location.hash);
-    const scrollToAnchor = () => {
-      const hashParts = window.location.hash.split("#");
-      if (hashParts.length >= 2) {
-        const hash = hashParts[1];
-        const $anchor = document.querySelector(`a.anchor[name="${hash}"]`);
-        if ($anchor) {
-          $anchor.scrollIntoView();
-        }
-      }
-    };
-    scrollToAnchor();
-    window.onhashchange = scrollToAnchor;
+    jumpAnchor()
   }, [data]);
 
   if (error) return <div>载入数据失败，请刷新。</div>;
