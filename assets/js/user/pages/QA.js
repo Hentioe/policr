@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
 import useSWR from "swr";
 import fetch from "unfetch";
+import ScrollToTop from "../components/ScrollToTop";
 import Loading from "../components/Loading";
 import { unfixedNav, settingNavIs } from "../actions";
 import jumpAnchor from "../lib/jump-anchor";
@@ -13,12 +13,6 @@ const fetcher = url => fetch(url).then(r => r.json());
 
 export default _props => {
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
 
   const { data, error } = useSWR("/api/qa", fetcher);
 
@@ -39,6 +33,8 @@ export default _props => {
       <Helmet>
         <title>{title}</title>
       </Helmet>
+
+      <ScrollToTop />
 
       <section className="hero is-info">
         <div className="hero-body">

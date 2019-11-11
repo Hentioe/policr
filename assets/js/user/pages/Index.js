@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
+import ScrollToTop from "../components/ScrollToTop";
 import { clearNavIs, fixedNav } from "../actions";
 
 const title = "POLICR · 首页";
@@ -12,11 +12,6 @@ const descStyle = {
 
 export default _props => {
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
 
   useEffect(() => {
     dispatch(fixedNav());
@@ -28,6 +23,9 @@ export default _props => {
       <Helmet>
         <title>{title}</title>
       </Helmet>
+
+      <ScrollToTop />
+
       <section id="IndexPage" className="section hero is-fullheight is-medium">
         <div className="hero-body">
           <div className="container">
