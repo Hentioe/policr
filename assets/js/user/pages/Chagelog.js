@@ -1,12 +1,18 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { unfixedNav, settingNavIs } from "../actions";
 
 const title = "POLICR · 版本变化";
 
 export default _props => {
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   useEffect(() => {
     dispatch(unfixedNav());

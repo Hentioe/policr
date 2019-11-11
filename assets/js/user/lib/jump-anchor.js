@@ -6,7 +6,7 @@ export default () => {
       const hash = hashParts[1];
       const $anchor = document.querySelector(`a.anchor[name="${hash}"]`);
       if ($anchor) {
-        $anchor.scrollIntoView();
+        $anchor.scrollIntoView({ behavior: "smooth" });
       }
     }
   };
