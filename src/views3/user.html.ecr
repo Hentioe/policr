@@ -1,4 +1,4 @@
-<html class="has-navbar-fixed-top">
+<html>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -10,14 +10,36 @@
     <!-- iOS Safari -->
     <meta name="apple-mobile-web-app-status-bar-style" content="#29D1ED" />
     <title>POLICR</title>
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+      }
+      #loading {
+        background-color: #29d1ed;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 100vh;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="loading">
+      <div>POLICR · 在线启动中</div>
+    </div>
+    <div id="app"></div>
     <link
       rel="stylesheet"
       href="<%= Digests.logical_path(%{/css/user.css}) %>"
     />
-  </head>
-
-  <body>
-    <div id="app"></div>
     <script>
       var BOT_USERNAME = "<%= bot.username %>";
     </script>

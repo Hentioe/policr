@@ -21,14 +21,24 @@ function burgerToggle(el, always_close = false) {
   }
 }
 
-const initialNavClass = ["navbar", "is-fixed-top", "pr-nav"];
+const initialNavClass = ["navbar", "pr-nav"];
 const allIs = ["is-info", "is-success"];
+
+const $html = document.getElementsByTagName("html")[0];
 
 function Header() {
   const header = useSelector(state => state.header);
-  const { is } = header;
+  const { is, isTop } = header;
 
   let navClass = [...initialNavClass];
+
+  if (isTop) {
+    $html.classList.add("has-navbar-fixed-top");
+    navClass.push("is-fixed-top");
+  } else {
+    $html.classList.remove("has-navbar-fixed-top");
+  }
+
   if (is) {
     navClass.push(is);
   } else {

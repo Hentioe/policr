@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch } from "react-redux";
-import { clearNavIs } from "../actions";
+import { clearNavIs, fixedNav } from "../actions";
 
 const title = "POLICR · 首页";
 
@@ -12,7 +12,10 @@ const descStyle = {
 function Index() {
   const dispatch = useDispatch();
 
-  dispatch(clearNavIs());
+  useEffect(() => {
+    dispatch(fixedNav());
+    dispatch(clearNavIs());
+  }, []);
 
   return (
     <>

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import useSWR from "swr";
 import fetch from "unfetch";
 import Loading from "../components/Loading";
-import { settingNavIs } from "../actions";
+import { settingNavIs, unfixedNav } from "../actions";
 
 const title = "POLICR · 高级教程";
 const fetcher = url => fetch(url).then(r => r.json());
@@ -16,6 +16,7 @@ export default () => {
 
   useEffect(() => {
     dispatch(settingNavIs("info"));
+    dispatch(unfixedNav());
   }, []);
 
   useEffect(() => {

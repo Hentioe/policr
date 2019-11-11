@@ -26,12 +26,7 @@ footer.footer {
 
 .pr-sidebar {
   position: sticky;
-  top: $navbar-height;
-}
-
-.anchor {
-  display: block;
-  padding-top: $navbar-height;
+  top: 0;
 }
 
 // 加载动画

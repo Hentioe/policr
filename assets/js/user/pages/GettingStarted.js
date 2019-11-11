@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useDispatch } from "react-redux";
-import { settingNavIs } from "../actions";
+import { unfixedNav, settingNavIs } from "../actions";
 
 const title = "POLICR · 快速入门";
 const articleMaiginStyle = {
@@ -13,6 +13,7 @@ export default () => {
 
   useEffect(() => {
     dispatch(settingNavIs("primary"));
+    dispatch(unfixedNav());
   }, []);
 
   useEffect(() => {

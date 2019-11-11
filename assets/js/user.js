@@ -3,13 +3,14 @@ import "../scss/user.scss";
 // Icons
 import "@fortawesome/fontawesome-free/js/all";
 // Polyfills
-import "mdn-polyfills/CustomEvent";
-import "mdn-polyfills/String.prototype.startsWith";
-import "mdn-polyfills/NodeList.prototype.forEach";
 import "mdn-polyfills/Object.assign";
+import "mdn-polyfills/Array.prototype.includes";
+import "mdn-polyfills/String.prototype.startsWith";
+import "mdn-polyfills/String.prototype.includes";
+import "mdn-polyfills/NodeList.prototype.forEach";
 import "mdn-polyfills/Element.prototype.classList";
 
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Provider as ReduxProvider } from "react-redux";
 import reduxLogger from "redux-logger";
@@ -35,35 +36,38 @@ const store = configureStore({
   middleware: middlewares
 });
 
-class App extends React.Component {
-  render() {
-    return (
-      <ReduxProvider store={store}>
-        <HelmetProvider>
-          <Router>
-            <Header />
-            <main>
-              <Switch>
-                <Route path="/advanced">
-                  <Advanced />
-                </Route>
-                <Route path="/qa">
-                  <QA />
-                </Route>
-                <Route path="/getting-started">
-                  <GettingStarted />
-                </Route>
-                <Route path="/">
-                  <Index />
-                </Route>
-              </Switch>
-            </main>
-            <Footer />
-          </Router>
-        </HelmetProvider>
-      </ReduxProvider>
-    );
-  }
+function App() {
+  useEffect(() => {
+    const $loading = document.getElementById("loading");
+    if ($loading) $loading.outerHTML = "";
+  }, []);
+
+  return (
+    <ReduxProvider store={store}>
+      <HelmetProvider>
+        <Router>
+          <Header />
+          <main>
+            <Switch>
+              <Route path="/advanced">
+                <Advanced />
+              </Route>
+              <Route path="/qa">
+                <QA />
+              </Route>
+              <Route path="/getting-started">
+                <GettingStarted />
+              </Route>
+              <Route path="/">
+                <Index />
+              </Route>
+            </Switch>
+          </main>
+          <Footer />
+        </Router>
+      </HelmetProvider>
+    </ReduxProvider>
+  );
 }
 
 ReactDOM.render(<App />, document.getElementById("app"));
