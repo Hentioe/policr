@@ -17,7 +17,7 @@
         margin: 0;
       }
       #loading {
-        background-color: #29d1ed;
+        background-color: #f1f1f1;
         margin: 0;
         padding: 0;
         display: flex;
@@ -26,14 +26,17 @@
         align-items: center;
         text-align: center;
         min-height: 100vh;
-        color: white;
       }
     </style>
   </head>
 
   <body>
     <div id="loading">
-      <div>POLICR · 在线启动中</div>
+      <div style="height:85px; width:85px;">
+        <img
+          src="<%= Digests.logical_path(%{/images/pure-logo-85x85.png}) %>"
+        />
+      </div>
     </div>
     <div id="app"></div>
     <link
