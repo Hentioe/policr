@@ -41,7 +41,7 @@ const store = configureStore({
 
 function App() {
   useEffect(() => {
-    const $loading = document.getElementById("loading");
+    const $loading = document.getElementById("loading-wrapper");
     if ($loading) $loading.outerHTML = "";
   }, []);
 
