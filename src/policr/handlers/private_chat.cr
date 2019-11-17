@@ -66,6 +66,8 @@ module Policr
             if report = Model::Report.find_by_post_id post_id
               # 清空关联投票
               Model::Vote.delete_by_report_id report.id.not_nil!
+              # 清空关联申诉
+              Model::Appeal.delete_by_report_id report.id.not_nil!
               # 删除举报
               Model::Report.delete(report.id)
               # 删除相关消息

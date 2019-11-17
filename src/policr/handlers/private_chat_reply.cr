@@ -38,8 +38,8 @@ module Policr
               if appeal.author_id == user_id
                 # 清空关联投票
                 Model::Vote.delete_by_report_id report.id.not_nil!
-                # 删除申诉记录
-                Model::Appeal.delete appeal.id
+                # 清空关联申诉
+                Model::Appeal.delete_by_report_id report.id.not_nil!
                 # 删除举报
                 Model::Report.delete report.id
                 bot.send_message user_id, t("appeal.human.removed_report", {appeal_id: appeal.id})

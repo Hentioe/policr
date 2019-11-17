@@ -16,5 +16,9 @@ module Policr::Model
     def self.valid_times(user_id : Int32)
       where { (_author_id == user_id) & (_done == true) }.count
     end
+
+    def self.delete_by_report_id(report_id : Int32)
+      where { (_report_id == report_id) }.delete
+    end
   end
 end
