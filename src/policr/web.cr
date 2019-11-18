@@ -1,5 +1,4 @@
 require "kemal"
-require "kemal-session"
 require "markd"
 require "json"
 
@@ -84,17 +83,8 @@ module Policr::Web
     public_folder "static"
     Kemal.config.logger = LoggerHandler.new(Logging.get_logger)
 
-    Kemal::Session.config do |config|
-      config.secret = "demo_123"
-    end
-
     after_all "/api/*" do |env|
       env.response.content_type = "application/json"
-    end
-
-    get "/traditional" do
-      title = "专注于审核的 Telegram 机器人（已过时页面）"
-      render "src/views/index.html.ecr", "src/views/layout.html.ecr"
     end
 
     get "/api/advanced" do
@@ -110,11 +100,11 @@ module Policr::Web
     end
 
     get "/" do
-      render "src/views3/user.html.ecr"
+      render "src/views/user.html.ecr"
     end
 
     get "/*" do
-      render "src/views3/user.html.ecr"
+      render "src/views/user.html.ecr"
     end
 
     error 404 do

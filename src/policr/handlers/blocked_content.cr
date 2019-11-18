@@ -14,7 +14,7 @@ module Policr
         !deleted?,
         examine_enabled?,
         from_group_chat?(msg),
-        (text = msg.text),
+        (text = (msg.text || msg.caption)),
         (@result = hit?(chat_id, text)), # 命中规则？
         (user = msg.from),
         !has_permission?(chat_id, user.id),
