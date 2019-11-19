@@ -86,11 +86,7 @@ export default _props => {
             <Link to="/getting-started" className="navbar-item">
               入门
             </Link>
-            <a
-              className="navbar-item"
-              target="_blank"
-              href="https://policr.bluerain.io/community"
-            >
+            <a className="navbar-item" target="_blank" href="/community">
               社区
             </a>
             <a
