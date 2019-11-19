@@ -48,8 +48,15 @@ module Policr
                _handler.is_halal(name) &&
                !Model::HalalWhiteList.contains?(member.id) # 非白名单
               _handler.kick_halal(msg, member)
-            else
-              start_torture(msg, member)
+            else                                                                          # 开始验证
+              unless Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::UserJoin) # 未关闭相关功能
+                start_torture(msg, member)
+              else # 功能关闭，直接发送欢迎消息
+                bot.send_welcome(
+                  msg.chat,
+                  FromUser.new(member)
+                ) if Model::Welcome.enabled?(chat_id)
+              end
             end
           end
         end
@@ -120,9 +127,6 @@ module Policr
     MAX_COUNTDOWN   = 60*60*24*3 # 最大倒计时 3 天
 
     def start_torture(msg, member)
-      if Model::Subfunction.disabled?(msg.chat.id, SubfunctionType::UserJoin) # 已关闭子功能
-        return
-      end
       if (Time.utc.to_unix - msg.date) > AFTER_EVENT_SEC
         # 事后审核不立即验证，采取人工处理
         # 禁言用户/异步调用
