@@ -16,9 +16,8 @@ module Policr
       if payload
         spawn bot.delete_message chat_id, msg.message_id
         forward_to payload, chat_id, user_id
-      else
-        text = t "start"
-        bot.send_message chat_id, text
+      else                                                                 # 没有负载数据
+        bot.send_message(chat_id, t("start")) unless from_group_chat?(msg) # 仅响应私聊
       end
     end
 
