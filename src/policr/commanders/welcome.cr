@@ -40,6 +40,20 @@ module Policr
           Welcome.sticker_mode_enabled?(_group_id) ? SELECTED : UNSELECTED
         when "enable"
           Welcome.enabled?(_group_id) ? SELECTED : UNSELECTED
+        when "timing_delete"
+          cm = Model::CleanMode.where {
+            (_chat_id == _group_id) &
+              (_delete_target == CleanDeleteTarget::Welcome.value)
+          }.first
+
+          if cm
+            cm.status == EnableStatus::TurnOn.value ? SELECTED : UNSELECTED
+          else
+            UNSELECTED
+          end
+        when "intelligent_delete"
+          # 待检测状态
+          UNSELECTED
         else
           UNSELECTED
         end
@@ -49,6 +63,7 @@ module Policr
       }
 
       _markup << def_btn_list ["enable", "sticker_mode", "link_preview"]
+      _markup << def_btn_list ["timing_delete", "intelligent_delete"]
     end
 
     macro def_btn_list(list)

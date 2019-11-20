@@ -3,7 +3,7 @@ welcome:
   missing_content: "请先设置内容！"
   missing_sticker: "请先设置贴纸！"
   hint: |
-    您正在设置欢迎消息，请**回复**欢迎文字或贴纸，回复完成记得启用。回复文字将设置内容，回复贴纸将设置贴纸。
+    您正在设置欢迎消息，请**右键回复**文字或贴纸，回复完成记得启用。
 
     当前内容设置：
 
@@ -11,25 +11,22 @@ welcome:
     %{welcome_text}
     ```
 
-    当前贴纸设置（ID）：
+    当前贴纸设置（显示为 ID）：
 
     ```
     %{sticker_file_id}
     ```
-    内置变量（**贴纸模式中不要使用变量**）：
-    用户全名 => `{{fullname}}`
-    提及用户 => `{{mention}}`
-    群聊名称 => `{{chatname}}`
-    用户 ID    => `{{userid}}`
 
-    附加教程：
-    0. [什么是贴纸模式？](https://policr.telestd.me/advanced#sticker_mode)
+    更多教程：
     1. [在欢迎消息中嵌入链接](https://policr.telestd.me/advanced#welcome_embed_links)
     2. [在欢迎消息中插入变量](https://policr.telestd.me/advanced#welcome_embed_vars)
     3. [在欢迎消息中添加按钮](https://policr.telestd.me/advanced#welcome_add_button)
+    4. [对贴纸模式的具体解释](https://policr.telestd.me/advanced#sticker_mode)
 
-    **只有回复本消息才会被认为是设置欢迎内容**。在 PC 客户端可能需要 <Ctrl+Enter> 组合键才能换行。请尽快回复，本消息不保证时效性。
+    **只有回复本消息才会被认为是设置欢迎内容**。在 PC 客户端可能需要 <Ctrl+Enter> 组合键才能换行，移动端单击或左滑消息回复。请尽快回复，本消息不保证时效性。
 
   enable: "启用"
-  link_preview: "预览链接"
+  link_preview: "链接预览"
   sticker_mode: "贴纸模式"
+  timing_delete: "定时销毁"
+  intelligent_delete: "智能销毁"
