@@ -2,7 +2,7 @@ version: 1.0
 shards:
   ameba:
     github: veelenga/ameba
-    version: 0.10.1
+    version: 0.11.0
 
   base62:
     github: Sija/base62.cr
@@ -14,11 +14,11 @@ shards:
 
   db:
     github: crystal-lang/crystal-db
-    version: 0.7.0
+    version: 0.8.0
 
   digests:
     github: Hentioe/digests.cr
-    commit: b62d1272fd204e1c72be58f8a8338c77a66e1e5c
+    commit: b8b4a505dc0232388b51667d5b4b4a872ce9cf79
 
   dispatch:
     github: bmulvihill/dispatch
@@ -26,11 +26,11 @@ shards:
 
   dotenv:
     github: gdotdesign/cr-dotenv
-    version: 0.3.1
+    version: 0.6.0
 
   exception_page:
     github: crystal-loot/exception_page
-    version: 0.1.2
+    version: 0.1.4
 
   gomoku:
     github: policr-community/gomoku.cr
@@ -50,15 +50,15 @@ shards:
 
   jennifer:
     github: imdrasil/jennifer.cr
-    version: 0.8.3
+    version: 0.8.4
 
   jennifer_sqlite3_adapter:
     github: imdrasil/jennifer_sqlite3_adapter
-    commit: bfe4deda12c288642ac3d6415d65bcc2b79a3fe9
+    commit: 3bb0cffc886cdaad570cba093af0f0c331b97375
 
   kemal:
     github: kemalcr/kemal
-    version: 0.26.0
+    version: 0.26.1
 
   kemal-session:
     github: kemalcr/kemal-session
@@ -70,7 +70,7 @@ shards:
 
   ksuid:
     github: Sija/ksuid.cr
-    version: 0.5.0
+    version: 0.5.1
 
   markd:
     github: icyleaf/markd
@@ -86,7 +86,7 @@ shards:
 
   sam:
     github: imdrasil/sam.cr
-    version: 0.3.1
+    version: 0.3.2
 
   schedule:
     github: hugoabonizio/schedule.cr
@@ -94,7 +94,7 @@ shards:
 
   sqlite3:
     github: crystal-lang/crystal-sqlite3
-    version: 0.14.0
+    version: 0.15.0
 
   telegram_bot:
     github: policr-community/telegram_bot
