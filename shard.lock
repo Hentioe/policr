@@ -14,7 +14,7 @@ shards:
 
   db:
     github: crystal-lang/crystal-db
-    version: 0.8.0
+    version: 0.7.0
 
   digests:
     github: Hentioe/digests.cr
@@ -50,11 +50,11 @@ shards:
 
   jennifer:
     github: imdrasil/jennifer.cr
-    version: 0.8.4
+    version: 0.8.3
 
   jennifer_sqlite3_adapter:
     github: imdrasil/jennifer_sqlite3_adapter
-    commit: 3bb0cffc886cdaad570cba093af0f0c331b97375
+    commit: bfe4deda12c288642ac3d6415d65bcc2b79a3fe9
 
   kemal:
     github: kemalcr/kemal
@@ -94,7 +94,7 @@ shards:
 
   sqlite3:
     github: crystal-lang/crystal-sqlite3
-    version: 0.15.0
+    version: 0.14.0
 
   telegram_bot:
     github: policr-community/telegram_bot

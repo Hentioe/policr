@@ -39,12 +39,12 @@ dependencies:
     github: TechMagister/i18n.cr
   jennifer:
     github: imdrasil/jennifer.cr
-    version: ~> 0.8.3
+    version: 0.8.3
   sam:
     github: imdrasil/sam.cr
   jennifer_sqlite3_adapter:
     github: imdrasil/jennifer_sqlite3_adapter
-    branch: master
+    commit: bfe4deda12c288642ac3d6415d65bcc2b79a3fe9
   dispatch:
     github: bmulvihill/dispatch
     branch: master
