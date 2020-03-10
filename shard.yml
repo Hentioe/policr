@@ -27,6 +27,7 @@ dependencies:
     github: policr-community/rule_engine
   dotenv:
     github: gdotdesign/cr-dotenv
+    version: 0.3.1
   schedule:
     github: hugoabonizio/schedule.cr
   kemal:
