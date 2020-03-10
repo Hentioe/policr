@@ -1,3 +1,5 @@
+**注意，本项目当前处于不积极维护的阶段。虽然这可能是暂时性的，但在考虑使用前请慎重**
+
 # Policr Bot
 
 [![Build Status](https://cloud.drone.io/api/badges/Hentioe/policr/status.svg)](https://cloud.drone.io/Hentioe/policr)
