@@ -215,49 +215,53 @@ module Policr
         GlobalRuleFlagsCommander,
       ]
 
-      commanders.each do |_, command|
-        cmd command.name do |msg|
-          command.handle(msg, from_nav: false)
-        end
-      end
+      # TODO: 临时取消对命令的响应
+      # commanders.each do |_, command|
+      #   cmd command.name do |msg|
+      #     command.handle(msg, from_nav: false)
+      #   end
+      # end
     end
 
-    def handle(msg : TelegramBot::Message)
-      Cache.put_serve_group(msg, self) if from_group_chat?(msg)
+    # TODO: 临时取消对消息的处理
+    # def handle(msg : TelegramBot::Message)
+    #   Cache.put_serve_group(msg, self) if from_group_chat?(msg)
 
-      super
+    #   super
 
-      state = Hash(Symbol, StateValueType).new
-      handlers.each do |_, handler|
-        handler.registry(msg, state)
-      end
-    end
+    #   state = Hash(Symbol, StateValueType).new
+    #   handlers.each do |_, handler|
+    #     handler.registry(msg, state)
+    #   end
+    # end
 
-    def handle_edited(msg : TelegramBot::Message)
-      state = Hash(Symbol, StateValueType).new
-      handlers.each do |_, handler|
-        handler.registry(msg, state, from_edit: true)
-      end
-    end
+    # TODO: 临时取消对被编辑消息的处理
+    # def handle_edited(msg : TelegramBot::Message)
+    #   state = Hash(Symbol, StateValueType).new
+    #   handlers.each do |_, handler|
+    #     handler.registry(msg, state, from_edit: true)
+    #   end
+    # end
 
-    def handle(query : TelegramBot::CallbackQuery)
-      _handle = ->(data : String, message : TelegramBot::Message) {
-        args = data.split(":")
-        if args.size < 2
-          answer_callback_query(query.id, text: t("invalid_callback"))
-          return
-        end
+    # TODO: 临时取消对回调的响应
+    # def handle(query : TelegramBot::CallbackQuery)
+    #   _handle = ->(data : String, message : TelegramBot::Message) {
+    #     args = data.split(":")
+    #     if args.size < 2
+    #       answer_callback_query(query.id, text: t("invalid_callback"))
+    #       return
+    #     end
 
-        call_name = args[0]
+    #     call_name = args[0]
 
-        callbackers.each do |_, cb|
-          cb.handle(query, message, args[1..]) if cb.match?(call_name)
-        end
-      }
-      if (data = query.data) && (message = query.message)
-        _handle.call(data, message)
-      end
-    end
+    #     callbackers.each do |_, cb|
+    #       cb.handle(query, message, args[1..]) if cb.match?(call_name)
+    #     end
+    #   }
+    #   if (data = query.data) && (message = query.message)
+    #     _handle.call(data, message)
+    #   end
+    # end
 
     def is_admin?(chat_id, user_id, dirty = true)
       has_permission?(chat_id, user_id, :admin, dirty)
