@@ -100,13 +100,17 @@ module Policr
     getter owner_id : String
     getter community_group_id : Int64
 
+    getter empty : Bool
+    getter ignored_counter : Int64
+
     def initialize(username,
                    token,
                    @owner_id,
                    community_group_id,
                    @snapshot_channel,
                    @voting_channel,
-                   only_web : Bool = false)
+                   only_web : Bool = false,
+                   @empty : Bool = false)
       super(username, token, logger: Logging.get_logger)
       @username = username
       @community_group_id = community_group_id.to_i64
@@ -118,111 +122,124 @@ module Policr
         else
           -1
         end
-      # 注册消息处理模块
-      regall [
-        SelfLeftHandler,
-        # 置顶分割
-        UserJoinHandler,
-        BotJoinHandler,
-        SelfJoinHandler,
-        LeftGroupHandler,
-        UnverifiedMessageHandler,
-        FromSettingHandler,
-        WelcomeSettingHandler,
-        TortureTimeSettingHandler,
-        CustomHandler,
-        HalalMessageHandler,
-        PrivateForwardHandler,
-        ReportDetailHandler,
-        AddRuleHandler,
-        MaxLengthHandler,
-        MaxLengthSettingHandler,
-        CleanModeTimeSettingHandler,
-        FormatLimitHandler,
-        FormatLimitSettingHandler,
-        PrivateChatReplyHandler,
-        AppealReplyHandler,
-        TemplateSettingHandler,
-        HalalCaptionHandler,
-        AddVotingApplyQuizHandler,
-        UpdateVotingApplyQuizQuestionHandler,
-        UpdateChatTitleHandler,
-        UpdateChatPhotoHandler,
-        PinnedMessageHandler,
-        UpdateRuleHandler,
-        BlockedContentHandler,
-        AddGlobalRuleHandler,
-        BlockedNicknameHandler,
-        # 置底分割
-        PrivateChatHandler,
-      ]
+      if @empty
+        @ignored_counter = 0
+      else
+        @ignored_counter = -1
+        # 注册消息处理模块
+        regall [
+          SelfLeftHandler,
+          # 置顶分割
+          UserJoinHandler,
+          BotJoinHandler,
+          SelfJoinHandler,
+          LeftGroupHandler,
+          UnverifiedMessageHandler,
+          FromSettingHandler,
+          WelcomeSettingHandler,
+          TortureTimeSettingHandler,
+          CustomHandler,
+          HalalMessageHandler,
+          PrivateForwardHandler,
+          ReportDetailHandler,
+          AddRuleHandler,
+          MaxLengthHandler,
+          MaxLengthSettingHandler,
+          CleanModeTimeSettingHandler,
+          FormatLimitHandler,
+          FormatLimitSettingHandler,
+          PrivateChatReplyHandler,
+          AppealReplyHandler,
+          TemplateSettingHandler,
+          HalalCaptionHandler,
+          AddVotingApplyQuizHandler,
+          UpdateVotingApplyQuizQuestionHandler,
+          UpdateChatTitleHandler,
+          UpdateChatPhotoHandler,
+          PinnedMessageHandler,
+          UpdateRuleHandler,
+          BlockedContentHandler,
+          AddGlobalRuleHandler,
+          BlockedNicknameHandler,
+          # 置底分割
+          PrivateChatHandler,
+        ]
 
-      # 注册回调模块
-      regall [
-        TortureCallbacker,
-        BanedMenuCallbacker,
-        BotJoinCallbacker,
-        SelfJoinCallbacker,
-        FromCallbacker,
-        TortureTimeCallbacker,
-        CustomCallbacker,
-        SettingsCallbacker,
-        ReportCallbacker,
-        VotingCallbacker,
-        CleanModeCallbacker,
-        DelayTimeCallbacker,
-        SubfunctionsCallbacker,
-        PrivateForwardCallbacker,
-        PrivateForwardReportCallbacker,
-        StrictModeCallbacker,
-        MaxLengthCallbacker,
-        WelcomeCallbacker,
-        LanguageCallbacker,
-        AntiServiceMsgCallbacker,
-        FormatLimitCallbacker,
-        FromSettingCallbacker,
-        AppealCallbacker,
-        AfterwardsCallbacker,
-        TemplateCallbacker,
-        ManageCallbacker,
-        NavigationCallbacker,
-        VotingApplyQuizCallbacker,
-        BlockRuleCallbacker,
-        GlobalBlockRuleCallbacker,
-        GlobalRuleFlagsCallbacker,
-        HitRuleCallbacker,
-      ]
+        # 注册回调模块
+        regall [
+          TortureCallbacker,
+          BanedMenuCallbacker,
+          BotJoinCallbacker,
+          SelfJoinCallbacker,
+          FromCallbacker,
+          TortureTimeCallbacker,
+          CustomCallbacker,
+          SettingsCallbacker,
+          ReportCallbacker,
+          VotingCallbacker,
+          CleanModeCallbacker,
+          DelayTimeCallbacker,
+          SubfunctionsCallbacker,
+          PrivateForwardCallbacker,
+          PrivateForwardReportCallbacker,
+          StrictModeCallbacker,
+          MaxLengthCallbacker,
+          WelcomeCallbacker,
+          LanguageCallbacker,
+          AntiServiceMsgCallbacker,
+          FormatLimitCallbacker,
+          FromSettingCallbacker,
+          AppealCallbacker,
+          AfterwardsCallbacker,
+          TemplateCallbacker,
+          ManageCallbacker,
+          NavigationCallbacker,
+          VotingApplyQuizCallbacker,
+          BlockRuleCallbacker,
+          GlobalBlockRuleCallbacker,
+          GlobalRuleFlagsCallbacker,
+          HitRuleCallbacker,
+        ]
 
-      # 注册指令模块
-      regall [
-        StartCommander,
-        PingCommander,
-        FromCommander,
-        WelcomeCommander,
-        TortureTimeCommander,
-        CustomCommander,
-        ReportCommander,
-        SettingsCommander,
-        CleanModeCommander,
-        SubfunctionsCommander,
-        StrictModeCommander,
-        LanguageCommander,
-        AntiServiceMsgCommander,
-        TemplateCommander,
-        AppealCommander,
-        NavigationCommander,
-        VotingApplyCommander,
-        GlobalRuleFlagsCommander,
-      ]
+        # 注册指令模块
+        regall [
+          StartCommander,
+          PingCommander,
+          FromCommander,
+          WelcomeCommander,
+          TortureTimeCommander,
+          CustomCommander,
+          ReportCommander,
+          SettingsCommander,
+          CleanModeCommander,
+          SubfunctionsCommander,
+          StrictModeCommander,
+          LanguageCommander,
+          AntiServiceMsgCommander,
+          TemplateCommander,
+          AppealCommander,
+          NavigationCommander,
+          VotingApplyCommander,
+          GlobalRuleFlagsCommander,
+        ]
+      end
 
       commanders.each do |_, command|
-        cmd command.name do |msg|
-          command.handle(msg, from_nav: false)
+        if @empty
+          @ignored_counter += 1
+        else
+          cmd command.name do |msg|
+            command.handle(msg, from_nav: false)
+          end
         end
       end
     end
 
     def handle(msg : TelegramBot::Message)
+      if @empty
+        @ignored_counter += 1
+        return
+      end
       Cache.put_serve_group(msg, self) if from_group_chat?(msg)
 
       super
@@ -234,6 +251,10 @@ module Policr
     end
 
     def handle_edited(msg : TelegramBot::Message)
+      if @empty
+        @ignored_counter += 1
+        return
+      end
       state = Hash(Symbol, StateValueType).new
       handlers.each do |_, handler|
         handler.registry(msg, state, from_edit: true)
@@ -241,6 +262,10 @@ module Policr
     end
 
     def handle(query : TelegramBot::CallbackQuery)
+      if @empty
+        @ignored_counter += 1
+        return
+      end
       _handle = ->(data : String, message : TelegramBot::Message) {
         args = data.split(":")
         if args.size < 2

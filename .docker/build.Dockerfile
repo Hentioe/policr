@@ -1,4 +1,4 @@
-FROM bluerain/crystal:0.33.0-build
+FROM bluerain/crystal:0.31.1-build
 
 
 RUN apt update && \

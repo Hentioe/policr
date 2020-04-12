@@ -9,7 +9,7 @@ Policr::CLI.def_action "Policr.start", exclude: ENV["POLICR_ENV"]? == "test"
 module Policr
   ENV_PREFIX = "POLICR_BOT"
 
-  def self.start(port, llevel, dpath, prod, oweb)
+  def self.start(port, llevel, dpath, prod, oweb, empty)
     # 扫描图片集
     scan dpath
 
@@ -38,6 +38,7 @@ module Policr
       snapshot_channel:   from_env("snapshot_channel"),
       voting_channel:     from_env("voting_channel"),
       only_web:           oweb,
+      empty:              empty,
     }
     bot = Bot.new **data
     unless oweb

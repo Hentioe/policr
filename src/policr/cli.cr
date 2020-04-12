@@ -27,6 +27,9 @@ module Policr::CLI
           },
           oweb: {
             info:     "Only web server"
+          },
+          empty: {
+            info:     "Consume messages but don't process it."
           }
         }
       )

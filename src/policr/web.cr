@@ -99,6 +99,10 @@ module Policr::Web
       PRIVACY_PAGE.to_json
     end
 
+    get "/ignored_count" do
+      bot.ignored_counter.to_s
+    end
+
     get "/" do
       render "src/views/user.html.ecr"
     end
