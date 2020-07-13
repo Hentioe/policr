@@ -1,4 +1,4 @@
-**注意，本项目当前处于不积极维护的阶段。虽然这是暂时性的，但在考虑使用前请慎重。**
+**注意，本项目当前处于暂停运营、离线维修的阶段。这个时间可能很长，请使用 [policr-mini](https://github.com/Hentioe/policr-mini) 项目替代。**
 
 # PolicrBot
 
@@ -78,5 +78,5 @@
 
 ## 加入我们
 
-- [POLICR · 中文社区](https://policr.bluerain.io/community)
+- [POLICR · 中文社区](https://mini.telestd.me/community)
 - [POLICR · 更新通知](https://t.me/policr_changelog)
