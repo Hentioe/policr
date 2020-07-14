@@ -1,0 +1,66 @@
+report:
+  repeat_error: "這條消息已被舉報過了，看[這裡](%{voting_link})。"
+  admin_reply: |
+    舉報開始，請選擇具體原因。舉報將在完成選擇以後被創建，並進入[黑名單公投頻道](https://t.me/%{voting_channel})進行投票。如果您決定放棄舉報，則不需要做任何選擇。
+
+    注意：在完成舉報前請不要刪除被舉報消息。
+
+    附加：你知道嗎？通過 `/global_rule_flags` 指令訂閱全局屏蔽規則能自動將可疑內容或用戶上報到投票中～
+  mass_ad: "垃圾內容/廣告"
+  halal: "垃圾內容/清真"
+  hateful: "惡意內容/仇恨"
+  bocai: "有害信息/菠菜"
+  adname: "垃圾暱稱/廣告"
+  other: "其它原因/補充"
+  virus_file: "有害文件/病毒"
+  promo_file: "有害文件/推廣"
+  adname_detail: "全名：%{name}"
+  no_forward_success: "沒有成功轉發原消息"
+  author_cant_self: "你這麼想送自己進去的話，明說就行了～"
+  target_user_cant_the_bot: "敢舉報本大人？信不信先把你送進去了！"
+  target_user_invalid: "舉報目標用戶無效。它可能是個頻道或其它的什麼東西～"
+  forward_error: "舉報發起失敗，原因：%{reason}"
+  storage_error: "舉報儲存失敗，請向社區反饋。"
+  generate_voting_error: "舉報生成失敗，原因：%{reason}"
+  update_result_error: "舉報結果更新失敗，原因：%{reason}"
+  message_not_exists: "舉報目標消息已不存在"
+  message_invalid: "舉報目標消息無效"
+  voting_message: |
+    舉報發起人：[%{author_id}](tg://user?id=%{author_id})
+    舉報人身份：%{role}
+    舉報目標快照：%{snapshot}
+    被執行用戶：[%{target_id}](tg://user?id=%{target_id})
+    舉報原因：%{reason}
+    詳細說明：%{detail}
+    申訴詳情：%{appeal}
+    當前狀態：%{status}
+  generated: "舉報已經生成（[在這裡](https://t.me/%{voting_channel}/%{voting_message_id})），具有投票權的用戶會對舉報內容進行表決。注意了，[您](tg://user?id=%{user_id})作為發起人不能進行投票。如果舉報受理成功將會在本群通知。"
+  by_admin: "**由於您具有權限，此用戶已被立即封禁（這並不表示已進入黑名單）。**"
+  role:
+    unknown: "無"
+    creator: "群主"
+    trusted_admin: "受信管理員"
+    admin: "管理員"
+    member: "群成員"
+    system: "系統"
+  reason:
+    unknown: "未記錄"
+    spam: "散播廣告消息"
+    halal: "發表清真消息"
+    hateful: "仇恨或恐怖主義"
+    bocai: "菠菜招人或廣告"
+    virus_file: "傳播病毒或惡意程序"
+    promo_file: "傳播推廣或惡意文件"
+    hit_global_rule: "命中全局規則"
+    hit_global_rule_nickname: "命中全局規則（暱稱）"
+    other: "其它"
+    adname: "廣告暱稱"
+  status:
+    unknown: "不明"
+    begin: "#表決中"
+    reject: "不受理"
+    accept: "被處理"
+    unban: "通過申訴"
+  none: "無"
+  anonymous_adname: "被匿名處理的廣告暱稱"
+  repeated_in_forward: "此用戶已經多次進入黑名單，無需舉報～"

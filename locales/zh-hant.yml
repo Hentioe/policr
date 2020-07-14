@@ -1,8 +1,434 @@
+start: "ε٩(๑> ₃ <)۶з 我那麼複雜，你為什麼不來我的[官網](https://policr.bluerain.io)看看呢～\n看完以後，有什麼其它想說的，也可以直接跟我說～"
+getting_started: |
+  在您決定使用本機器人的時候，仍需要強調一些必要的對功能的認知。雖然在首頁有相關說明，但是為了避免誤會，在此專門進行簡短的說明。
+
+  1. 存在倒計時的驗證超時以後將封禁用戶，並在驗證失敗的結果消息上附帶一個解封按鈕。注意，封禁的後果是不進行解封便再也無法加入，跟管理員手動 × 掉用戶是一樣的效果。
+  2. 如果您認為加入本群的連驗證都不知道是什麼「概念」的純小白用戶很多，不應該都封禁，可以將驗證倒計時取消。這樣驗證將永久存在，並且只會禁言用戶而不會封禁或踢出。
+
+  正常情況下本機器人不建議使用第二種方式，但不見得符合每一個群的實際情況。
+
+  3. 本機器人的強大之處在於高度的訂製性，訂製的體現還包括在驗證方式上。不要將預設的傻瓜式驗證當作全部，它可能連九牛一毛都算不上。
+  4. 如果本群有使用任何自動刪除服務消息的機器人請關閉相關功能或移除相關機器人（如果不能關閉）。因為對服務消息的刪除會造成嚴重衝突。下面會有衝突檢測，如果沒有發現請務必人工確認。
+
+  想充分發揮訂製能力，必須過一遍官網首頁的快速入門部分。錯誤使用可能導致機器人生氣而自行離開！
+units:
+  sec: "%{n}秒"
+  min: "%{n}分鐘"
+  hor: "%{n}小時"
+  inf: "無限"
+  wor: "%{n}字"
+  row: "%{n}行"
+unit:
+  sec: "秒"
+back: "返回"
+refresh: "刷新"
+none: "無"
+add_to_group:
+  leave: "讓我離開"
+  from_user: |
+    誒？你都沒權限瞎邀啥啊！不管了，既然如此那就請把我弄過來的變態（%{mention}）負起責任，盡快聯繫群主進行設置以讓我工作起來，不然我過 30 分鐘就會自己溜掉哦～
+
+    畢竟做機器人吶也得有尊嚴！
+
+    附加閱讀：[快速入門](https://policr.bluerain.io/getting_started)"
+  from_admin: |
+    請把我弄過來的變態（%{mention}）負起責任，進行基本設置以讓我工作起來。
+
+    注意了，如果你不是群主，你需要先通過群主啓用信任管理，不然你也是無法控制我的～ 如果你們決定不使用我，請點擊下方的按鈕讓我自己離開，做機器人吶也得有尊嚴！
+
+    附加閱讀：[快速入門](https://policr.bluerain.io/getting_started)"
+  no_permission: "請聯繫管理員使用此按鈕！"
+  subscription_update: "訂閱更新"
+  no_right_to_invite: |
+    很遺憾，你（%{user}）已被取消本機器人的使用權。再見。
+
+    注意：創建小號繼續拉入，會導致更多的帳號被列入黑名單。
+  no_creator: "檢測到本群沒有群主（或群主已被銷號），我自作主張的啓用了「信任管理」。應該解決了你們的麻煩吧？不用謝！"
+private_setting:
+  contact_me: "暫時性的我通過群聊發送設置。因為我需要您私聊我一次，不然我無法主動發給您發送消息。"
+  unknown_reason: "因為未意料的原因我嘗試給您發送消息失敗，所以暫時性的我通過群聊發送設置。也許您可以主動私聊我一次打破這個限制。"
+navigation:
+  desc: |
+    通過功能設置導航可以預覽所有獨立的設置指令並在它們之間跳轉。
+
+    您應該使用具體的指令調整設置，因為此功能當前處於未完全實現的狀態。設置導航的誕生可能意味著將來獨立的設置指令會被移除。
+  feature:
+    base_setting: "基礎功能開關"
+    subfunctions: "訂製審核功能"
+    custom: "訂製驗證方式"
+    torture_time: "更新驗證時間"
+    from: "設置來源調查"
+    welcome: "設置歡迎消息"
+    clean_mode: "乾淨模式設定"
+    strict_mode: "嚴格模式設定"
+    anti_service_msg: "刪除服務消息"
+    template: "訂製驗證提示"
+    language: "切換工作語言"
+private_forward:
+  desc: "您轉發了一條消息給我，是想幹嘛呢？"
+  report: "舉報來源用戶"
+  view_userinfo: "查看用戶信息"
+  userinfo: |
+    用戶全名：%{fullname}
+    用戶ID：`%{userid}`
+    被舉報 %{reported_times} 次，仍生效 %{valid_reported_total} 個（大於 0 則處入黑名單）
+    申訴 %{appeal_times} 次，產生過 %{report_times} 個舉報
+
+  report_reason_chooese: |
+    您正在對一條自行轉發的消息進行舉報，轉發源頭將作為舉報目標。請進一步選擇舉報原因。
+
+    注意：如果您選擇其它原因，還會更進一步進入一個提供舉報理由的階段。
+private_forward_report:
+  other: |
+    由於您選擇了其它原因，請回復本消息告訴我們詳情。舉例：
+
+    ```
+    批量拉人、惡意測試機器人。相關鏈接：https://t.me/policr_changelog/94
+    ```
+
+    請盡快回復，以免過有效期。
+  success_for_other: "舉報成功。如果你想更新舉報原因，可以編輯上述回復內容，亦可重新回復。"
+  update_success_for_other: "舉報更新成功。注意了，在兩天內你都可以持續更新此舉報詳情，過後將無法再更新。"
+  failure_for_other: "舉報更新失敗，原因：%{reason}"
+captcha:
+  desc: |
+    你知道嗎？本機器人同時支持多種驗證方式。下面分別為您簡短介紹：
+
+    預設驗證：
+    傻瓜式的問題，並存在一個正確和一個錯誤答案。
+
+    訂製驗證：
+    通過此方式自定義屬於群組自己的驗證問題，您需要點擊下方的按鈕，再按照變化後的說明文字進行回復。
+
+    算術驗證：
+    求解隨機生成的計算公式。
+
+    圖片驗證：
+    讓入群用戶識別圖片內容。與 Google reCAPTCHA 識別圖片類似，但與之相反。它提供一張圖片而附帶多個候選詞彙。
+
+    棋局驗證：
+    讓新來的下五子棋吧，只需要一步就能獲勝的那種！
+
+    注意：以上驗證方式只可選其一，訂製驗證需要得到回復以後才會刷新下方單選狀態。
+  default: |
+    已恢復預設驗證。
+
+    注意：預設驗證並不是永久固定的，它會隨著機器人的不斷更新而改進。
+  dynamic: |
+    已切換到算術驗證。它會要求解答隨機生成結果為 100 以內的兩位數加法題目。
+
+    注意：算術驗證的難度和運算方式以及數字範圍並不會永久固定，它會隨著機器人的不斷更新而改進。
+  image: |
+    已切換到圖片驗證。如果你發現不太易分辨的圖片可以去交流群建議刪除或替換。
+
+    注意：假若服務端數據集不滿足條件將會自動使用預設驗證。
+  chessboard: |
+    已切換到棋局驗證。它當前會隨機產生一個 6×6 的五子棋棋局，只需要一步即可獲勝。獲勝的位置僅存在一個，且非常明顯。
+
+    注意：棋局驗證的難度並不會永久固定，它會隨著相關算法改進而變化。
+  switch_image_failed: "不滿足圖片驗證條件。此驗證方式經過嚴苛的測試，強制要求某些條件是為了安全考慮，請理解。"
+  names:
+    default: "預設驗證"
+    custom: "訂製驗證"
+    dynamic: "算術驗證"
+    image: "圖片驗證"
+    chessboard: "棋局驗證"
+settings:
+  desc: |
+    通過復選按鈕，調整設置。提醒：建議看官網首頁對相關功能的更詳細說明。
+
+    剛剛進行的更改：%{last_change}
+
+    推薦設置：啓用審核並信任管理，不使用記錄模式。靜音模式避免打擾其他人，私信設置讓機器人通過私聊發送設置菜單。
+  none: "暫無"
+  enable_examine: "啓用審核"
+  trust_admin: "信任管理"
+  privacy_setting: "私信設置"
+  record_mode: "記錄模式"
+  fault_tolerance: "容錯模式"
+  slient_mode: "靜音模式"
+  selected: "選中"
+  unselected: "取消"
+  fault_tolerance_not_supported: "容錯模式暫時僅支持圖片驗證、算術驗證和棋局驗證。"
+subfunctions:
+  desc: |
+    您正在訂製核心的審核功能，它主要由多個子功能組成。下面分別進行簡短的介紹：
+
+    新入群用戶驗證：
+    最基礎的功能，驗證入群用戶。
+
+    入群機器人限制：
+    禁言普通用戶拉入的機器人。
+
+    封殺清真及消息：
+    包括頂著清真名稱或發表清真文字消息的用戶。
+
+    預封禁問題用戶：
+    其實就是黑名單總開關，之後會單獨遷移至黑名單的訂製指令中。
+
+    注意，與其它很多可選項相反，它們預設全部是啓用狀態。這不是強制性的，在您瞭解每個子功能的具體作用的前提下當然可以自由選擇性關閉。
+  user_join: "新入群用戶驗證"
+  bot_join: "入群機器人限制"
+  ban_halal: "封殺清真及消息"
+  blacklist: "預封禁問題用戶"
+blacklist:
+  was_blocked: |
+    已攔截問題用戶（%{user}）加入本群。[在這裡](https://t.me/%{voting_channel}/%{post_id})存放有對 TA 的舉報記錄和發表垃圾內容的證據。
+
+    這些用戶都是經過大家的舉報和公投共同決定而進入黑名單的，請安心。同時歡迎大家多多使用 `/report` 指令舉報廣告消息。
+step:
+  desc: |
+    此命令用來進一步訂製容錯模式。在這裡您可以強制多次驗證，即使首次驗證結果已是正確。還可以通過調整正確率和驗證次數自定義通過的門檻。
+
+    如果配合多套訂製驗證問答，可以達到形如入群考試，按合格成績來決定是否是否具備入群資格驗證效果。
+  force_multiple: "強制多次驗證"
+  more_count_settings: "驗證次數"
+  more_accuracy_settings: "正確率"
+invalid_callback: "( ×ω× ) 這副內聯鍵盤已經失效了哦"
+setting_complete: "已更新，請注意提示消息中的當前設置預覽是否變化。編輯回復消息可更新設置。"
+questions:
+  title: "你認為自己能不能進來？"
+  answer_1: "是的，我覺得可以"
+  answer_2: "不能，請踢掉我吧"
+admin_ope_menu:
+  pass: "人工通過"
+  ban: "人工封禁"
+baned_menu:
+  unban: "解除封禁"
+  whitelist: "加入白名單"
+halal:
+  found: "d(`･∀･)b 誒發現一名清真，看我幹掉它……"
+  kicked: "(ﾉ>ω<)ﾉ 已成功丟出[一隻](tg://user?id=%{user_id})清真，真棒！"
+  kick_failed: "╰(〒皿〒)╯ [這枚](tg://user?id=%{user_id})清真移除失敗了。原因：%{reason}"
+captcha_result:
+  error:
+    desc: "踢不掉[他](tg://user?id=%{user_id})誒（%{reason}）……"
+    is_admin: "他！有！權！限！"
+    not_rights: "我！沒！權！限！"
+  admin_ban: "(|||ﾟдﾟ) 好嚇人～ [他](tg://user?id=%{user_id})還沒來得及驗證就被 %{admin} 直接幹掉了。"
+  timeout: "(〒︿〒) [他](tg://user?id=%{user_id})驗證超時[⁽¹⁾](https://policr.bluerain.io/qa#verification_failure)，永久地離開了我們[⁽²⁾](https://policr.bluerain.io/qa#verification_failure_result)。 #FAILURE #TIMEOUT"
+  wrong: "(〒︿〒) [他](tg://user?id=%{user_id})驗證錯誤[⁽¹⁾](https://policr.bluerain.io#verification_failure)，永久地離開了我們[⁽²⁾](https://policr.bluerain.io#verification_failure_result)。 #FAILURE #MISTAKE"
+restrict_bot_menu:
+  derestrict: "解除限制"
+  remove: "直接移除"
+restrict_bot: "抓到一個新加入的機器人，安全考慮已對其進行限制。如有需要可自行解除，否則請移除。"
+callback:
+  no_permission: "再亂點我報警了啊！"
+add_from_admin: "管理員拉入，自動放行。"
+only_group: "此指令僅在群組中可用。"
+only_private: "此指令僅在私聊中可用。"
+private_settings_sended: "已私聊設置。"
+no_managed_groups: "無受管群組，無法申請後台令牌。"
+unban_message: "o(￣▽￣)ｄ [TA](tg://user?id=%{user_id}) 被善良的 %{admin} 解封了，隨時可以重新回來。"
+add_to_whitelist: "o(￣▽￣)ｄ 已被解封並加入到[白名單](https://policr.bluerain.io/qa#whitelist)，下次不會再幹[TA](tg://user?id=%{user_id})了。"
+unban_error: "解封失敗，"
+unban_bot: "已解除限制，希望是個有用的機器人。"
+remove_bot: "已經被移除啦~ 安全危機解除！"
+obsolete_btn: "此消息的[內聯鍵盤功能已經過時了](https://policr.bluerain.io/qa#inline_keyboard_invalid)，沒有進行任何操作～"
+unrelated_click: "又不是問你，自作多情！"
+unrelated_warning: "(#`Д´)ﾉ 請無關人員不要來搞事"
+pass_alert: "✔ 驗證通過"
+no_pass_alert: "✖ 未通過驗證"
+pass_by_self: "(*´∀`)~♥ 恭喜[您](tg://user?id=%{user_id})通過了驗證，逃過一劫。"
+pass_by_admin: "[這傢伙](tg://user?id=%{user_id})被 %{admin}  開了後門，大家快噴他！"
+pass_slow_alert: "驗證通過，但是晚了一點點，再去試試？"
+pass_slow_receipt: "(´ﾟдﾟ`) TA 通過了驗證，但是手慢了那麼一點點，再給 TA 一次機會……"
+template:
+  desc: |
+    您正在訂製驗證的提示模板，這是個性化驗證提示的一個有效途徑。通過模板可以注入一系列的變量，以組成自己想要的提示內容。
+    下面是一個例子：
+
+    ```
+    {{mention}} 你好，請回答問題：{{question}} 通過驗證。你有 {{time}} 的時間，超時將會被封禁。
+    ```
+    完整的內置變量以及說明：
+    用戶全名 => `{{fullname}}`
+    提及用戶 => `{{mention}}`
+    用戶 ID    => `{{userid}}`
+    問題標題 => `{{question}}`
+    剩餘時間 => `{{time}}`
+
+    當前的設置：
+
+    ```
+    %{content}
+    ```
+    附加教程：
+    1. [在問題模板中嵌入鏈接](https://policr.bluerain.io/advanced#template_embed_links)
+    2. [在問題模板中插入變量](https://policr.bluerain.io/advanced#template_embed_vars)
+
+    **只有回復本消息才會被認為是設置驗證提示模板**。請盡快回復，本消息不保證時效性。回復完成記得啓用。
+
+  enable: "啓用驗證提示模板"
+  missing_content: "請先設置內容！"
+  missing_question: "缺少關鍵的問題標題變量(question)，這會導致被驗證的人不知道應該幹什麼。請重新編輯回復內容。"
 language:
   desc: |
     選擇機器人的工作語言，立即生效。
 
-torture:
-  hint: "請確認「%{title}」以通過驗證，[妳](tg://user?id=%{user_id})有 %{torture_sec} 秒的時間。"
-  no_time_reply: "請[你](tg://user?id=%{user_id})主動確認「%{title}」以解除限制"
+    很遺憾地告訴大家，由於國際化的進程才剛開始，目前只有最基本的句子被翻譯。強烈建議您加入我們，貢獻翻譯。
+  code:
+    zh_hans: "簡體中文 🇨🇳"
+    zh_hant: "繁體中文 🇭🇰"
+    english: "English 🇺🇸"
+voting:
+  no_permissions: "抱歉，您暫時沒有權限投票。"
+  report_invalid: "此舉報已經失效了，不可投票。"
+  report_ended: "此舉報已經被處理了，不可投票。"
+  author_cant_vote: "無法對自己的舉報進行投票。"
+  update_error: "此票導致狀態發生了變化，但最終更新失敗了。請向社區反饋。"
+  vote_failure: "投票失敗，原因：%{reason}"
+  success: "感謝你寶貴的一票！"
+  group_notify_msg: "好消息，之前來自本群組的一個舉報就在剛剛受理完成。相關人士已被列入全網黑名單，感謝你們的貢獻。[點我](%{voting_url})查看相關舉報。"
+  private_notify_msg: "好消息，之前來自您的一個舉報就在剛剛受理完成。相關人士已被列入全網黑名單，感謝您的貢獻。[點我](%{voting_url})查看相關舉報。"
+  apply_quiz_manage: |
+    **管理投票申請測驗**
 
+    通過回復本消息追加新的測驗問題，採取以下格式：
+
+    ```
+    -t 小紅舉報了小明對她的人身攻擊言論，是否贊成？
+    -d 贊成舉報可能會讓小明進入黑名單，反對會避免小明進入黑名單。
+    -n 不應該贊成小紅的舉報，因為這是私人矛盾，應該交由群組內部解決。並且私人矛盾也不應該造成任何一方進入黑名單。
+    - 贊成
+    + 不贊成
+    ```
+    -t 表示 title 也就是標題，-d 表示描述。-t 和 -d 是答題時顯示的內容。-n 是回答結束以後顯示的對問題的註解。- 表示錯誤答案，+ 表示正確答案。
+
+    當前設置的問題列表：
+    %{list}
+  apply_quiz_question: |
+    **操作投票申請測驗問題**
+
+    問題預覽：
+
+    **標題**：%{title}
+    **描述**：%{desc}
+    **註解**：%{note}
+    **答案列表**：
+    %{answers}
+
+    通過回復本消息更新測驗問題，模板：
+
+    ```
+    -t %{title}
+    -d %{desc}
+    -n %{note}
+    - 錯誤答案
+    + 正確答案
+    ```
+  apply_quiz:
+    question:
+      enable: "啓用"
+      disable: "停用"
+      delete: "刪除"
+    start: |
+      即將開始進行投票申請小測驗。本測驗的最終目的是設立投票准則，並強制保證相關准則被任何一個申請通過的人熟知。
+
+      我們的強制手段是通過回答一系列的以場景預設為主的題目做到的，只有全部通過才能獲得權限。當然，這不是過濾手段，所以你可以無限次地重新測驗，直到每一個都能通過為止。
+      注意，申請投票權可能還有一些硬門檻作為前提，例如舉報數量以及有效舉報率。這個門檻可能隨時調整，但通常不高。如果您沒有達到申請條件，請多使用舉報功能（但切記不要濫用）。
+    verification: |
+      **請回答**
+
+      %{title}
+
+      **描述**：%{desc}
+    failed: |
+      很遺憾，回答錯誤。原因：
+
+      %{note}
+
+      請仔細閱讀並牢記正確答案，推薦立即重來！
+
+clean_mode:
+  desc: |
+    乾淨模式可以進一步清理機器人的工作痕跡，刪除預設行為中不會清理的消息。並且它針對驗證失敗的結果獨立區分了超時驗證和錯誤驗證。
+
+    注意：如果不特地設置延遲時間，將使用預設值（1.5小時），並且預設值會隨著機器人更新而變化。
+
+    推薦：清理超時驗證，不清理錯誤驗證。延遲時間不要太短。
+  timeout_verified: "刪除超時驗證"
+  wrong_verified: "刪除錯誤驗證"
+  welcome: "刪除歡迎消息"
+  from: "刪除來源調查"
+  halal: "刪除丟出清真"
+  report: "刪除舉報完成"
+  delay_time: "延遲時間"
+  delay_setting: |
+    您正在為「%{target}」設置獨立的延遲時間。如果您沒有設置過，以下可能是預設時間。
+
+    當前設置為：%{hor}小時
+
+    如果想自定義時間，請使用數字回復本消息。單位小時，支持小數。
+  not_implemented: "暫不開放。"
+max_length:
+  none: "無"
+  desc: |
+    您正在限制消息的文字內容長度，它通常用來屏蔽霸屏消息。請通過按鈕選擇字數限制和行數限制，這兩種限制可以同時存在。
+
+    當前的設置：
+    字數： `%{total}`
+    行數： `%{rows}`
+
+    如果您想自定義以上限制，可以回復本消息用空格分隔的兩個數字。前一個表示字數，後一個表示行數。
+    若您只回復一個數字，機器人則會根據數字的大小智能地決定設置的是字數限制還是行數限制。
+
+    注意：此功能隨時可能不繼續開放，後續會另行通知。
+  invalid_value: "無效的值：%{size}"
+format_limit:
+  desc: |
+    您正在禁止上傳文件的格式，它需要指定一個或多個文件擴展名。您可以通過選中按鈕添加候選的格式，也可以通過回復指定更多的格式。
+
+    當前的設置：
+
+    ```
+    %{list}
+    ```
+    如果您需要通過回復添加，請使用空格分隔多個擴展名。回復不會重置已存在的格式列表，只會追加。若想重置，請返回並取消此功能的選中狀態。
+gomoku:
+  start: |
+    這是一個臨時存在的用以測試五子棋算法是否穩定的玩具指令。您可以在隨機生成的棋局落下一子以贏得遊戲。它將來會應用於新的驗證方式中。如果你發現問題，請向社區反饋，順便感謝您的貢獻。
+
+    注意了，您是執 ● 子的一方，而 ○ 子是您的對手，它並不是用來暗示您落子的位置。
+after_event:
+  tip: "事後審核[⁽¹⁾](https://policr.bluerain.io/qa#afterwards)，您已被禁言。請主動完成驗證以解除限制。"
+  torture: "開始驗證"
+  unban: "解除禁言"
+  kick: "直接移除"
+torture:
+  time_too_short: "時間必須大於 %{min_sec} 秒"
+  hint: "請確認「%{title}」以通過驗證，[你](tg://user?id=%{user_id})有 %{torture_sec} 秒的時間。"
+  re: "重新來過，"
+  no_time_reply: "請[你](tg://user?id=%{user_id})主動確認「%{title}」以通過驗證，否則將一直被限制。"
+  default_set: "此群組當前使用 Bot 預設的時長（%{seconds} 秒）"
+  exists_set: "此群組當前已設置時長（%{time_len}）"
+  time_setting: |
+    開始更新入群驗證的等待時間，%{current_state}。請選擇按鈕或手動回複數字（單位秒）設置時間。
+
+    如果您決定通過回復自定義時間，請即時回復，避免機器人重啓讓本消息失效。如果回復的數字過大，可能會被視作無倒計時。
+
+    附加閱讀：[不限時驗證的危害](https://policr.bluerain.io/qa#no_time_limit)
+  inf_time: "無驗證倒計時（不推薦）"
+custom:
+  wrong_format: "不合法的格式。注意至少需要存在一個正確（即前綴+的行）答案。"
+  reply_hint: "可以回復本消息了～"
+  none: "無"
+  desc: |
+    開始自定義驗證問題，示例：
+
+    ```
+    兩個黃鸝鳴翠柳的下一句
+    -朝辭白帝彩雲間
+    -忽聞岸上踏歌聲
+    +一行白鷺上青天
+    ```
+    如上，題目位於第一行，錯誤答案前綴「-」，正確答案前綴「+」，至少存在一個正確答案。消息不要使用 `Markdown` 格式，在 PC 客戶端可能需要 `<Ctrl+Enter>` 組合鍵才能換行。
+
+    當前的設置：
+
+    ```
+    %{custom_text}
+    ```
+    注意：**只有回復本消息才會被認為是自定義驗證問題**。請盡快回復，本消息不保證時效性。
+
+    附加教程：[推薦設置](https://policr.bluerain.io/qa#best_custom)
